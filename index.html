@@ -1,179 +1,197 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <title>CV GAMES</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="img/incon.png" type="image/png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES. Explore o catálogo, categorias e o jogo exclusivo CV DODGE.">
+  <meta property="og:title" content="CV GAMES — Jogos Online e Downloads">
+  <meta property="og:description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CV GAMES">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:url" content="https://cvgames.github.io/CV-GAMES/">
+  <meta property="og:image" content="https://cvgames.github.io/CV-GAMES/img/onconee.png">
+  <meta property="og:image:alt" content="Logo do CV GAMES">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CV GAMES — Jogos Online e Downloads">
+  <meta name="twitter:description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES.">
+  <meta name="twitter:image" content="https://cvgames.github.io/CV-GAMES/img/onconee.png">
+  <meta name="twitter:image:alt" content="Logo do CV GAMES">
+  <title>CV GAMES — Jogos Online e Downloads</title>
+  <link rel="canonical" href="https://cvgames.github.io/CV-GAMES/">
+  <link rel="icon" href="img/incon.png" type="image/png">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "CV GAMES",
+      "url": "https://cvgames.github.io/CV-GAMES/",
+      "description": "Portal com jogos online, jogos leves e downloads.",
+      "inLanguage": "pt-BR"
+    }
+  </script>
+  <script>
+    try {
+      const savedTheme = localStorage.getItem('cv-games-theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+    } catch {
+      // O tema escuro definido no HTML continua como padrão seguro.
+    }
+  </script>
+  <link rel="stylesheet" href="css/home.css">
+  <script src="data/jogos.js" defer></script>
+  <script src="js/stats.js" defer></script>
+  <script src="js/achievements.js" defer></script>
+  <script src="js/home.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="topo-site">
-    <div class="topo-esquerda">
-      <img src="img/onconee.png" alt="Logo da marca" />
-      <h1>CV GAMES</h1>
+  <header class="site-header" id="inicio">
+    <div class="header-inner">
+      <a class="brand" href="#inicio" aria-label="CV GAMES — Início">
+        <img src="img/onconee.png" alt="">
+        <span>CV GAMES</span>
+      </a>
+
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
+
+      <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal">
+        <a href="#inicio">Início</a>
+        <a href="#jogos">Jogos</a>
+        <a href="baixar.html">Downloads</a>
+        <a href="#categorias">Categorias</a>
+        <a href="perfil.html">Perfil</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="favorite-button" type="button" data-favorites-toggle aria-pressed="false" aria-label="Mostrar somente favoritos" title="Mostrar somente favoritos">
+          <span class="favorite-icon" aria-hidden="true">♥</span>
+          <span class="favorite-count" data-favorite-count>0</span>
+          <span>Favoritos</span>
+        </button>
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
+      </div>
     </div>
-<a href="baixar.html" class="botao-download botao-novo">
-  Download de Jogos
-  <span class="tag-novo-botao">NOVO</span>
-</a>
-
   </header>
 
-  <h2>Explore os Jogos</h2>
+  <main id="conteudo">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-panel">
+          <p class="eyebrow">Seu portal para jogar</p>
+          <h1 id="hero-title">CV GAMES</h1>
+          <p class="hero-copy"><strong>Jogue, descubra e divirta-se.</strong><br>Uma seleção de jogos online, jogos leves e downloads disponíveis para encontrar sua próxima diversão. Conheça também o CV DODGE, jogo exclusivo criado para o portal.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#jogos">🎮 Explorar Jogos</a>
+            <a class="button button-secondary" href="baixar.html">📥 Downloads</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <div class="galeria-jogos">
-    <a href="tuxocide.html" class="jogo-item">
-      <img src="CV GAMES/tuxocide/favicon_xm7QEs1.png" alt="Tuxocide" />
-      <p>Tuxocide</p>
-    </a>
+    <section class="search-section" aria-label="Pesquisar jogos">
+      <div class="container">
+        <label class="search-box" for="pesquisa-jogos">
+          <span aria-hidden="true">🔎</span>
+          <input id="pesquisa-jogos" type="search" data-game-search placeholder="Pesquisar jogos..." autocomplete="off" aria-describedby="status-pesquisa">
+        </label>
+        <p class="search-status" id="status-pesquisa" data-search-status aria-live="polite"></p>
+      </div>
+    </section>
 
-    <a href="mario.html" class="jogo-item">
-      <img src="https://upload.wikimedia.org/wikipedia/en/0/03/Super_Mario_Bros._box.png" alt="Mario" />
-      <p>Super Mario</p>
-    </a>
+    <section class="content-section" id="categorias" aria-labelledby="titulo-categorias">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="titulo-categorias">Explore por categoria</h2>
+          <p>Escolha uma categoria para filtrar o catálogo sem recarregar a página.</p>
+        </div>
+        <div class="category-list">
+          <button class="category-chip" type="button" data-category-filter="acao" aria-pressed="false"><span aria-hidden="true">🎮</span><span>Ação</span></button>
+          <button class="category-chip" type="button" data-category-filter="corrida" aria-pressed="false"><span aria-hidden="true">🏎️</span><span>Corrida</span></button>
+          <button class="category-chip" type="button" data-category-filter="terror" aria-pressed="false"><span aria-hidden="true">👻</span><span>Terror</span></button>
+          <button class="category-chip" type="button" data-category-filter="puzzle" aria-pressed="false"><span aria-hidden="true">🧩</span><span>Puzzle</span></button>
+          <button class="category-chip" type="button" data-category-filter="aventura" aria-pressed="false"><span aria-hidden="true">⚔️</span><span>Aventura</span></button>
+          <button class="category-chip" type="button" data-category-filter="multiplayer" aria-pressed="false"><span aria-hidden="true">👥</span><span>Multiplayer</span></button>
+          <button class="category-chip" type="button" data-category-filter="esportes" aria-pressed="false"><span aria-hidden="true">🏀</span><span>Esportes</span></button>
+          <button class="category-chip" type="button" data-category-filter="arcade" aria-pressed="false"><span aria-hidden="true">🕹️</span><span>Arcade</span></button>
+          <button class="category-chip" type="button" data-category-filter="pc-fraco" aria-pressed="false"><span aria-hidden="true">🟢</span><span>PC Fraco</span></button>
+        </div>
+      </div>
+    </section>
 
-    <a href="subway.html" class="jogo-item">
-      <img src="baixar/images.png" alt="Subway" />
-      <p>Subway Surfers</p>
-    </a>
+    <section class="content-section curated-section" id="destaques" aria-labelledby="titulo-destaques">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="titulo-destaques">🔥 Jogos em Destaque</h2>
+          <p>Seleção inicial do CV GAMES usando os jogos já disponíveis no portal.</p>
+        </div>
+        <div class="game-grid" id="featured-games" aria-live="polite"></div>
+      </div>
+    </section>
 
-    <a href="fnaf.html" class="jogo-item">
-      <img src="CV GAMES/five night/capsule_616x353.jpg" alt="FNaF" />
-      <p>Five Nights at Freddy's</p>
-    </a>
+    <section class="content-section curated-section" id="recentes" aria-labelledby="titulo-recentes">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="titulo-recentes">🆕 Adicionados recentemente</h2>
+          <p>Preparado para ordenar automaticamente por data de adição em uma próxima fase.</p>
+        </div>
+        <div class="game-grid" id="recent-games" aria-live="polite"></div>
+      </div>
+    </section>
 
-    <a href="flappy.html" class="jogo-item">
-      <img src="CV GAMES/Flappy Bird/Flappy_Bird_icon.png" alt="Flappy Bird" />
-      <p>Flappy Bird</p>
-    </a>
+    <section class="content-section curated-section continue-section" id="continuar-jogando" data-continue-section hidden aria-labelledby="titulo-continuar-jogando">
+      <div class="container">
+        <div class="section-heading section-heading-with-action">
+          <div class="section-heading-copy">
+            <h2 id="titulo-continuar-jogando">🎮 Continuar jogando</h2>
+            <p data-continue-description>Seus últimos jogos acessados neste dispositivo.</p>
+          </div>
+          <button class="catalog-reset" type="button" data-clear-stats>Limpar histórico</button>
+        </div>
+        <div class="game-grid" id="continue-games" aria-live="polite"></div>
+      </div>
+    </section>
 
+    <section class="content-section curated-section" id="populares" aria-labelledby="titulo-populares">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="titulo-populares">🔥 Mais jogados</h2>
+          <p data-popular-description>Ranking local por acessos neste dispositivo. Sem histórico, usamos uma seleção inicial do CV GAMES.</p>
+        </div>
+        <div class="game-grid" id="popular-games" aria-live="polite"></div>
+      </div>
+    </section>
 
-    <a href="minecraft1.html" class="jogo-item">
-      <img src="CV GAMES/eaglrcraft 1/minecraft-header.jpg" alt="Flappy Bird" />
-      <p>Minecraft</p>
-    </a>
+    <section class="content-section" id="jogos" aria-labelledby="titulo-jogos">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="titulo-jogos" data-catalog-title>🎮 Todos os jogos</h2>
+          <div class="catalog-summary">
+            <p data-results-count aria-live="polite">27 jogos encontrados</p>
+            <button class="catalog-reset" type="button" data-clear-filters>🎮 Todos os jogos</button>
+          </div>
+        </div>
+        <div class="game-grid" id="all-games" aria-live="polite">
+          <p class="empty-state">Carregando catálogo de jogos...</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-
-    <a href="Minecraft2.html" class="jogo-item">
-      <img src="CV GAMES/earglecraf2/gaming-1b33d39b9f2ddc21.webp" alt="Flappy Bird" />
-      <p>Minecraft 2</p>
-    </a>
-
-<a href="Minecraft3.html" class="jogo-item">
-      <img src="CV GAMES/arglecraft3/artworks-000451943508-eq4sn3-t500x500.jpg" alt="Flappy Bird" />
-      <p>Minecraft 3 (multiplayer)</p>
-    </a>
-
-<a href="slowroads.html" class="jogo-item">
-      <img src="CV GAMES/slosrids/slowroads_hero_1.jpg" alt="Flappy Bird" />
-      <p>Slow Roads</p>
-    </a>
-
-
-<a href="fnf.html" class="jogo-item">
-      <img src="baixar/images.png" alt="Flappy Bird" />
-      <p>Friday Night Funkin'</p>
-    </a>
-
-
-
-<a href="Stickman.html" class="jogo-item">
-      <img src="baixar/images.png" alt="Flappy Bird" />
-      <p>Stickman Hook</p>
-    </a>
-
-<a href="https://tbg95.github.io/moto-x3m/"  class="jogo-item">
-  <img src="baixar/images.png" alt="Moto X3M" />
-  <p>Moto X3M <br><small style="font-size: 0.75rem;">(TBG95)</small></p>
-</a>
-
-
-
-<a href="https://ubg98.github.io/fruit-ninja-unblocked.html"  class="jogo-item">
-  <img src="CV GAMES/jinja/unnamed.png" alt="Ninja Fruit" />
-  <p>Ninja Fruit <br><small style="font-size: 0.75rem;">(UBG98)</small></p>
-</a>
-
-<a href="https://ubg98.github.io/geometry-jump-unblocked.html"  class="jogo-item">
-  <img src="CV GAMES/geo/GeometryDash.webp" alt="Ninja Fruit" />
-  <p>Geometry Jump <br><small style="font-size: 0.75rem;">(UBG98)</small></p>
-</a>
-
-
-<a href="https://geometrydash-io.github.io/play/rocket-soccer-derby.html#"  class="jogo-item">
-  <img src="baixar/images.png" alt="Rocket Soccer Derby" />
-  <p>Rocket Soccer Derby<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://geometrydash-io.github.io/play/murder.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Murder" />
-  <p>Murder<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://geometrydash-io.github.io/play/drive-mad.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Drive Mad" />
-  <p>Drive Mad<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://geometrydash-io.github.io/play/red-ball-4.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Red Ball 4" />
-  <p>Red Ball 4<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://geometrydash-io.github.io/play/8-ball-pool.html" class="jogo-item">
-  <img src="baixar/images.png" alt="8 Ball Pool" />
-  <p>8 Ball Pool<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://geometrydash-io.github.io/play/stack-ball.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Stack Ball" />
-  <p>Stack Ball<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://geometrydash-io.github.io/play/eugenes-life.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Eugene's Life" />
-  <p>Eugene's Life<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://geometrydash-io.github.io/play/we-become-what-we-behold.html" class="jogo-item">
-  <img src="baixar/images.png" alt="We Become What We Behold" />
-  <p>We Become What We Behold<br><small style="font-size: 0.75rem;">(77PEN)</small></p>
-</a>
-
-<a href="https://tbg95.github.io/newgame/among-us.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Among Us" />
-  <p>Among Us<br><small style="font-size: 0.75rem;">(TBG95)</small></p>
-</a>
-
-<a href="https://tbg95.github.io/newgame/fireboy-and-watergirl-1.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Fireboy and Watergirl" />
-  <p>Fireboy and Watergirl<br><small style="font-size: 0.75rem;">(TBG95)</small></p>
-</a>
-
-<a href="https://tbg95.github.io/newgame/elasticman.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Elastic Man" />
-  <p>Elastic Man<br><small style="font-size: 0.75rem;">(TBG95)</small></p>
-</a>
-
-<a href="https://tbg95.github.io/newgame/mr-bullet.html" class="jogo-item">
-  <img src="baixar/images.png" alt="Mr Bullet" />
-  <p>Mr Bullet<br><small style="font-size: 0.75rem;">(TBG95)</small></p>
-</a>
-
-
-
-
-
-
-
-
-  </div>
-
-  <footer class="rodape">
-    <p>Feito por CV GAMES &copy; 2026</p>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <p><strong>CV GAMES © 2026</strong></p>
+        <p>Jogos online e downloads</p>
+      </div>
+      <nav class="footer-nav" aria-label="Navegação do rodapé">
+        <a href="#inicio">Início</a>
+        <a href="#jogos">Jogos</a>
+        <a href="baixar.html">Downloads</a>
+        <a href="perfil.html">Perfil</a>
+      </nav>
+    </div>
   </footer>
-
 </body>
 </html>
