@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Abra o PPSSPP Web em outra aba e use seus próprios jogos PSP compatíveis no navegador.">
+  <meta property="og:title" content="Emulador PSP | CV GAMES">
+  <meta property="og:description" content="Jogue no navegador com seus próprios arquivos PSP compatíveis.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CV GAMES">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:url" content="https://cvgames.github.io/CV-GAMES/emulador-psp.html">
+  <meta property="og:image" content="https://cvgames.github.io/CV-GAMES/img/onconee.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Emulador PSP | CV GAMES">
+  <meta name="twitter:description" content="Abra o PPSSPP Web em outra aba e jogue no navegador com seus próprios arquivos PSP.">
+  <meta name="twitter:image" content="https://cvgames.github.io/CV-GAMES/img/onconee.png">
+  <title>Emulador PSP | CV GAMES</title>
+  <link rel="canonical" href="https://cvgames.github.io/CV-GAMES/emulador-psp.html">
+  <link rel="icon" href="img/incon.png" type="image/png">
+  <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/central.css">
+  <link rel="stylesheet" href="css/psp-emulator.css">
+  <script src="js/institutional.js" defer></script>
+</head>
+<body class="central-page psp-emulator-page">
+  <a class="skip-link" href="#conteudo">Pular para o emulador</a>
+  <header class="site-header" id="inicio">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="CV GAMES — Início"><img src="img/onconee.png" alt=""><span>CV GAMES</span></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
+      <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal">
+        <a href="index.html">Início</a><a href="index.html#jogos">Jogos</a><a href="baixar.html">Downloads</a><a href="central.html">Central</a><a href="index.html#categorias">Categorias</a><a href="perfil.html">Perfil</a>
+      </nav>
+      <div class="header-actions">
+        <a class="favorite-button" href="index.html?favoritos=1#jogos" aria-label="Ver favoritos" title="Ver favoritos"><span class="favorite-icon" aria-hidden="true">♥</span><span>Favoritos</span></a>
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="central-main psp-main">
+    <div class="container">
+      <a class="central-back" href="emuladores.html">← Voltar para Emuladores</a>
+
+      <section class="psp-hero" aria-labelledby="psp-title">
+        <div class="psp-hero-copy">
+          <p class="eyebrow">✦ CV GAMES · PLAYSTATION PORTABLE</p>
+          <h1 id="psp-title">Seu PSP.<br><span>Direto no navegador.</span></h1>
+          <p class="psp-lead">Abra o PPSSPP Web, carregue um jogo compatível do seu dispositivo e jogue com teclado, controles de toque ou um controle conectado.</p>
+          <div class="psp-hero-actions">
+            <a class="button button-primary" href="https://root-hunter.github.io/ppsspp-web/" target="_blank" rel="noopener noreferrer">↗ Abrir em outra aba</a>
+          </div>
+          <p class="psp-hero-note"><span aria-hidden="true">🔒</span> Escolha o jogo dentro do emulador. O CV GAMES não recebe nem fornece arquivos de jogos PSP.</p>
+        </div>
+        <div class="psp-device-art" aria-hidden="true">
+          <div class="psp-device-screen"><span>CV</span><small>PLAY</small></div>
+          <span class="psp-device-dpad"></span><span class="psp-device-action psp-device-action--one"></span><span class="psp-device-action psp-device-action--two"></span>
+          <span class="psp-device-caption">CV GAMES · PORTABLE</span>
+        </div>
+      </section>
+
+      <section class="psp-guide-grid" aria-label="Como usar o emulador PSP">
+        <article class="psp-guide-card"><span aria-hidden="true">📂</span><h2>Abra seu jogo</h2><p>Quando o emulador carregar, use <strong>Open Game</strong> e selecione um arquivo PSP compatível, como ISO ou CSO.</p></article>
+        <article class="psp-guide-card"><span aria-hidden="true">🎮</span><h2>Escolha seus controles</h2><p>Use os controles de toque no celular ou conecte um gamepad. O painel do PPSSPP permite conferir e ajustar os controles.</p></article>
+        <article class="psp-guide-card"><span aria-hidden="true">⛶</span><h2>Amplie a partida</h2><p>No site do emulador, clique no botão de tela cheia do próprio PPSSPP Web para ampliar a partida.</p></article>
+      </section>
+
+      <aside class="psp-attribution" aria-label="Créditos e uso responsável">
+        <span aria-hidden="true">♙</span>
+        <p>O PPSSPP Web é aberto em outra aba e é uma versão comunitária em WebAssembly indicada na página de ports do PPSSPP. Use apenas arquivos de jogos que você tem autorização para utilizar. <a href="https://www.ppsspp.org/legacybuilds/" target="_blank" rel="noopener noreferrer">Projeto PPSSPP e créditos</a> · <a href="https://github.com/root-hunter/ppsspp-web" target="_blank" rel="noopener noreferrer">Código e licença do PPSSPP Web</a>.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer"><div class="footer-inner"><div><p><strong>CV GAMES © 2026</strong></p><p>Jogos online e downloads</p></div><nav class="footer-nav" aria-label="Navegação do rodapé"><a href="index.html">Início</a><a href="index.html#jogos">Jogos</a><a href="baixar.html">Downloads</a><a href="central.html">Central Gamer</a><a href="sobre.html">Sobre</a><a href="contato.html">Contato</a><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos</a><a href="perfil.html">Perfil</a></nav></div></footer>
+</body>
+</html>
