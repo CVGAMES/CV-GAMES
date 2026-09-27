@@ -51,7 +51,7 @@
           ${item.version ? `<span>🏷️ ${item.version}</span>` : ''}
           ${item.platform ? `<span>🖥️ ${item.platform}</span>` : ''}
         </div>
-        <a class="button button-primary" href="${item.href}" target="_blank" rel="noopener">⬇️ Baixar</a>
+        <a class="button button-primary" href="${item.href}" target="_blank" rel="noopener noreferrer">⬇️ Baixar</a>
       </div>
     `;
     const image = card.querySelector('img');

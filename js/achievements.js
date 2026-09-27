@@ -3,12 +3,16 @@
 
   /*
    * Conquistas locais do CV GAMES. A fonte das ações continua sendo
-   * CV_GAMES_STATS e os favoritos existentes; este módulo guarda somente os
-   * desbloqueios e a base de uma eventual redefinição de perfil.
+   * CV_GAMES_STATS, os favoritos existentes e marcos confirmados pelos jogos
+   * próprios; este módulo guarda somente progresso e desbloqueios locais.
    */
   const storageKey = 'cv-games-achievements';
   const favoriteStorageKey = 'cv-games-favorites';
-  const schemaVersion = 1;
+  const schemaVersion = 2;
+  const neonGameId = 'cv-neon-breaker';
+  const neonPhaseCount = 5;
+  const neonComboTarget = 5;
+  const fanExclusiveGameIds = Object.freeze(['cv-dodge', neonGameId]);
 
   const definitions = Object.freeze([
     {
@@ -45,6 +49,26 @@
       id: 'veterano', icon: '🏆', title: 'Veterano',
       description: 'Registre 25 acessos locais.',
       progress: (metrics) => ({ current: metrics.progress.totalAccesses, target: 25, label: 'acessos locais' })
+    },
+    {
+      id: 'fa-cv-games', icon: '⭐', title: 'Fã do CV GAMES',
+      description: 'Jogue CV DODGE e CV NEON BREAKER.',
+      progress: (metrics) => ({ current: metrics.progress.exclusiveGames, target: fanExclusiveGameIds.length, label: 'jogos exclusivos' })
+    },
+    {
+      id: 'quebra-gelo', icon: '🧱', title: 'Quebra-gelo',
+      description: 'Conclua a primeira fase do CV NEON BREAKER.',
+      progress: (metrics) => ({ current: metrics.neon.highestPhase, target: 1, label: 'fase concluída' })
+    },
+    {
+      id: 'combo-neon', icon: '🔥', title: 'Combo Neon',
+      description: 'Alcance um combo x5 no CV NEON BREAKER sem perder a esfera.',
+      progress: (metrics) => ({ current: metrics.neon.bestCombo, target: neonComboTarget, label: 'combo' })
+    },
+    {
+      id: 'mestre-neon', icon: '🏆', title: 'Mestre Neon',
+      description: 'Conclua as cinco fases do CV NEON BREAKER.',
+      progress: (metrics) => ({ current: metrics.neon.completed ? 1 : 0, target: 1, label: 'campanha concluída' })
     }
   ]);
 
@@ -54,7 +78,14 @@
     return Number.isFinite(number) && number > 0 ? number : 0;
   };
 
-  const createEmptyState = () => ({ version: schemaVersion, unlocked: {}, baseline: null });
+  const createEmptyNeonProgress = () => ({ highestPhase: 0, bestCombo: 0, completed: false });
+
+  const createEmptyState = () => ({
+    version: schemaVersion,
+    unlocked: {},
+    baseline: null,
+    neonProgress: createEmptyNeonProgress()
+  });
 
   const normalizeBaseline = (value) => {
     if (!isRecord(value)) return null;
@@ -72,6 +103,18 @@
     };
   };
 
+  const normalizeNeonProgress = (value) => {
+    if (!isRecord(value)) return createEmptyNeonProgress();
+    const highestPhase = Math.min(neonPhaseCount, toNonNegativeInteger(value.highestPhase));
+    const bestCombo = Math.min(neonComboTarget, toNonNegativeInteger(value.bestCombo));
+
+    return {
+      highestPhase,
+      bestCombo,
+      completed: value.completed === true && highestPhase >= neonPhaseCount
+    };
+  };
+
   const normalizeState = (value) => {
     const state = createEmptyState();
     if (!isRecord(value)) return state;
@@ -85,6 +128,7 @@
       }
     });
     state.baseline = normalizeBaseline(value.baseline);
+    state.neonProgress = normalizeNeonProgress(value.neonProgress);
     return state;
   };
 
@@ -159,6 +203,7 @@
       Math.max(highest, raw.gameVisits[id] - (baseline.gameVisits[id] || 0))
     ), 0);
     const baselineFavoriteIds = new Set(baseline.favoriteIds);
+    const exclusiveGames = fanExclusiveGameIds.filter((id) => raw.gameVisits[id] > (baseline.gameVisits[id] || 0));
 
     return {
       totalAccesses: raw.totalAccesses,
@@ -166,12 +211,14 @@
       favoriteCount: raw.favoriteIds.length,
       highestVisits: raw.highestVisits,
       recentIds: raw.uniqueGameIds,
+      neon: state.neonProgress,
       isAfterReset: Boolean(state.baseline),
       progress: {
         totalAccesses: Math.max(0, raw.totalAccesses - baseline.totalAccesses),
         uniqueGames: progressGameIds.length,
         favoriteCount: raw.favoriteIds.filter((id) => !baselineFavoriteIds.has(id)).length,
-        highestVisits: progressHighestVisits
+        highestVisits: progressHighestVisits,
+        exclusiveGames: exclusiveGames.length
       }
     };
   };
@@ -230,6 +277,47 @@
     return createResult(catalog, state, newlyUnlocked);
   };
 
+  /*
+   * Jogos próprios registram somente marcos que conseguem confirmar durante a
+   * partida. O payload é reduzido a números limitados antes de ser salvo e
+   * eventos repetidos não geram novos desbloqueios nem gravações desnecessárias.
+   */
+  const recordGameEvent = (gameId, eventName, value) => {
+    if (gameId !== neonGameId) return getState();
+
+    const state = readState();
+    const neon = state.neonProgress;
+    let changed = false;
+
+    if (eventName === 'first-phase-complete') {
+      if (toNonNegativeInteger(value) < 1) return createResult(getCatalog(), state);
+      const highestPhase = Math.max(neon.highestPhase, 1);
+      changed = highestPhase !== neon.highestPhase;
+      neon.highestPhase = highestPhase;
+    } else if (eventName === 'best-combo') {
+      const combo = Math.min(neonComboTarget, toNonNegativeInteger(value));
+      if (!combo) return createResult(getCatalog(), state);
+      changed = combo > neon.bestCombo;
+      neon.bestCombo = Math.max(neon.bestCombo, combo);
+    } else if (eventName === 'all-phases-complete') {
+      if (toNonNegativeInteger(value) < neonPhaseCount) return createResult(getCatalog(), state);
+      changed = neon.highestPhase !== neonPhaseCount || !neon.completed;
+      neon.highestPhase = neonPhaseCount;
+      neon.completed = true;
+    } else {
+      return createResult(getCatalog(), state);
+    }
+
+    if (!changed) return createResult(getCatalog(), state);
+    if (!writeState(state)) return createResult(getCatalog(), state);
+
+    const result = sync(getCatalog());
+    if (!result.newlyUnlocked.length) {
+      dispatch('cv-games-achievements-change', { gameEvent: eventName });
+    }
+    return result;
+  };
+
   const reset = (catalog = getCatalog()) => {
     const raw = getRawMetrics(catalog);
     const state = createEmptyState();
@@ -286,6 +374,15 @@
     });
     window.addEventListener('cv-games-stats-change', () => sync(getCatalog()));
     window.addEventListener('cv-games-favorites-change', () => sync(getCatalog()));
+    window.addEventListener('cv-games-neon-breaker-phase-complete', (event) => {
+      recordGameEvent(neonGameId, 'first-phase-complete', event.detail?.phase);
+    });
+    window.addEventListener('cv-games-neon-breaker-combo', (event) => {
+      recordGameEvent(neonGameId, 'best-combo', event.detail?.combo);
+    });
+    window.addEventListener('cv-games-neon-breaker-victory', (event) => {
+      recordGameEvent(neonGameId, 'all-phases-complete', event.detail?.phasesCompleted);
+    });
     window.addEventListener('storage', (event) => {
       if (event.key === 'cv-games-stats' || event.key === favoriteStorageKey) {
         sync(getCatalog(), { announce: false });
@@ -299,7 +396,8 @@
     definitions,
     getState,
     sync,
-    reset
+    reset,
+    recordGameEvent
   });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -109,6 +109,16 @@
 
   // A seleção editorial mantém a seção útil antes do primeiro acesso local.
   const fallbackPopularGames = catalog.filter((game) => game.popular);
+  const featuredPriority = ['nexus-rota-zero', 'cv-starfall', 'cv-quadrados', 'cv-xadrez'];
+
+  const getFeaturedGames = () => {
+    const featured = catalog.filter((game) => game.featured);
+    const priorityIds = new Set(featuredPriority);
+    const priorityGames = featuredPriority
+      .map((id) => featured.find((game) => game.id === id))
+      .filter(Boolean);
+    return [...priorityGames, ...featured.filter((game) => !priorityIds.has(game.id))];
+  };
 
   const renderStatisticsSections = () => {
     const recentlyPlayed = typeof stats?.getRecentlyPlayed === 'function'
@@ -276,9 +286,13 @@
     });
   };
 
-  const clearLocalStats = () => {
+  const clearLocalStats = async () => {
     if (typeof stats?.clearStats !== 'function') return;
-    const confirmed = window.confirm('Limpar somente o histórico e as estatísticas locais de jogos deste dispositivo? Favoritos e tema serão mantidos.');
+    const confirmed = await window.CV_GAMES_DIALOG.confirm({
+      title:'Limpar histórico de jogos?',
+      message:'Isso apagará somente o histórico e as estatísticas salvas neste dispositivo. Favoritos e tema serão mantidos.',
+      confirmText:'Limpar histórico', cancelText:'Manter dados', tone:'danger'
+    });
     if (!confirmed) return;
     stats.clearStats();
   };
@@ -291,7 +305,7 @@
     const initialParams = new URLSearchParams(window.location.search);
     if (initialParams.get('favoritos') === '1') filters.favoritesOnly = true;
 
-    renderGames('featured-games', catalog.filter((game) => game.featured));
+    renderGames('featured-games', getFeaturedGames());
     renderGames('recent-games', catalog.filter((game) => game.recent));
     renderStatisticsSections();
 
@@ -342,6 +356,19 @@
         menu.classList.remove('is-open');
         menuButton.setAttribute('aria-expanded', 'false');
       }));
+    }
+
+    const homeBrand = document.querySelector('.brand[href="#inicio"]');
+    if (homeBrand) {
+      homeBrand.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (window.location.hash) {
+          window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+        }
+        menu?.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     }
 
     const themeButton = document.querySelector('[data-theme-toggle]');

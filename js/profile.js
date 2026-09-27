@@ -275,8 +275,12 @@
       setText('[data-profile-status]', `Perfil salvo localmente como ${profile.nickname}.`);
     });
 
-    document.querySelector('[data-reset-profile]')?.addEventListener('click', () => {
-      const confirmed = window.confirm('Redefinir apelido, avatar e conquistas locais? Estatísticas, favoritos e tema serão mantidos.');
+    document.querySelector('[data-reset-profile]')?.addEventListener('click', async () => {
+      const confirmed = await window.CV_GAMES_DIALOG.confirm({
+        title:'Redefinir perfil e conquistas?',
+        message:'O apelido, o avatar e as conquistas locais serão redefinidos. Estatísticas, favoritos e tema serão mantidos.',
+        confirmText:'Redefinir', cancelText:'Manter perfil', tone:'danger'
+      });
       if (!confirmed) return;
       profileStore?.resetProfile?.();
       achievements?.reset?.(catalog);

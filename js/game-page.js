@@ -66,6 +66,7 @@
           <a href="index.html">Início</a>
           <a href="index.html#jogos">Jogos</a>
           <a href="baixar.html">Downloads</a>
+          <a href="central.html" aria-label="Central Gamer">Central</a>
           <a href="index.html?favoritos=1#jogos">Favoritos</a>
           <a href="perfil.html">Perfil</a>
         </nav>
@@ -84,7 +85,7 @@
     footer.innerHTML = `
       <div class="footer-inner">
         <div><p><strong>CV GAMES © 2026</strong></p><p>Jogos online e downloads</p></div>
-        <nav class="footer-nav" aria-label="Navegação do rodapé"><a href="index.html">Início</a><a href="index.html#jogos">Jogos</a><a href="baixar.html">Downloads</a><a href="perfil.html">Perfil</a></nav>
+        <nav class="footer-nav" aria-label="Navegação do rodapé"><a href="index.html">Início</a><a href="index.html#jogos">Jogos</a><a href="baixar.html">Downloads</a><a href="central.html">Central Gamer</a><a href="sobre.html">Sobre</a><a href="contato.html">Contato</a><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos</a><a href="perfil.html">Perfil</a></nav>
       </div>
     `;
   };
@@ -176,6 +177,7 @@
         <div class="game-section-heading"><h2 id="relacionados-title">🎮 Você também pode gostar</h2><p>Sugestões baseadas em categoria e características do catálogo.</p></div>
         <div class="related-grid">${relatedGames().map((item) => `<a class="related-card" href="${item.href}" data-related-game-id="${item.id}"><img src="${item.image}" alt="Capa de ${item.title}" loading="lazy"><div><strong>${item.title}</strong><span>${item.category}${item.exclusivo === true ? ' · ⭐ Exclusivo CV GAMES' : ''}</span></div></a>`).join('')}</div>
       </section>
+      <div class="ad-slot ad-slot--game-page" data-ad-slot="game-after-details" aria-hidden="true"></div>
     `;
   };
 
