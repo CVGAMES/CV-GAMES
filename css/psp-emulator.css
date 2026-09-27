@@ -1,0 +1,46 @@
+.psp-main { padding-top:clamp(1.25rem,3vw,2.4rem); }
+.psp-hero { position:relative; display:grid; min-height:27rem; grid-template-columns:minmax(0,1.15fr) minmax(18rem,.85fr); align-items:center; gap:clamp(1.5rem,5vw,4rem); overflow:hidden; padding:clamp(1.5rem,5vw,4rem); border:1px solid color-mix(in srgb,#24e0b4 22%,var(--line)); border-radius:1.4rem; background:radial-gradient(ellipse at 78% 44%,rgba(0,205,170,.2),transparent 37%),radial-gradient(ellipse at 8% 0%,rgba(48,148,205,.17),transparent 52%),linear-gradient(125deg,color-mix(in srgb,var(--surface-solid) 94%,transparent),color-mix(in srgb,#0a1824 90%,transparent)); box-shadow:var(--shadow); }
+.psp-hero::before { position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent 0 4rem,rgba(155,235,224,.025) 4.05rem 4.1rem); content:""; pointer-events:none; }
+.psp-hero-copy { position:relative; z-index:1; max-width:44rem; }
+.psp-hero-copy>.eyebrow { margin:0 0 .65rem; color:#38e6bd; font-size:.73rem; font-weight:950; letter-spacing:.16em; }
+.psp-hero h1 { margin:0; font-size:clamp(2.5rem,6.7vw,5rem); line-height:.98; letter-spacing:-.075em; }
+.psp-hero h1 span { color:#6ee5cb; text-shadow:0 0 30px rgba(24,221,182,.21); }
+.psp-lead { max-width:39rem; margin:1rem 0 0; color:var(--muted); font-size:clamp(1rem,1.7vw,1.15rem); line-height:1.65; }
+.psp-hero-actions { display:flex; flex-wrap:wrap; gap:.65rem; margin-top:1.3rem; }
+.psp-hero-actions .button { min-height:3rem; }
+.psp-hero-note { display:flex; align-items:flex-start; gap:.5rem; max-width:38rem; margin:1rem 0 0; color:var(--muted); font-size:.78rem; line-height:1.5; }
+.psp-device-art { position:relative; justify-self:center; width:min(100%,25rem); aspect-ratio:1.55; border:1px solid rgba(180,216,222,.2); border-radius:23%/34%; background:linear-gradient(145deg,rgba(45,61,69,.82),rgba(15,25,34,.96) 65%); box-shadow:0 2rem 5rem rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12); transform:rotate(-4deg); }
+.psp-device-art::before { position:absolute; inset:8%; border:1px solid rgba(255,255,255,.07); border-radius:inherit; content:""; }
+.psp-device-screen { position:absolute; top:22%; left:24%; display:grid; width:52%; height:48%; align-content:center; justify-items:center; border:1px solid rgba(37,228,189,.64); border-radius:.7rem; background:radial-gradient(ellipse at 50% 45%,rgba(28,221,180,.21),transparent 58%),linear-gradient(150deg,#041916,#071820); box-shadow:0 0 2rem rgba(10,220,173,.16),inset 0 0 1.5rem rgba(0,202,160,.1); color:#d8fff7; font-size:clamp(1.5rem,4vw,2.8rem); font-weight:1000; letter-spacing:.1em; }
+.psp-device-screen small { color:#43e8c0; font-size:.53rem; letter-spacing:.35em; }
+.psp-device-dpad { position:absolute; top:43%; left:8%; width:12%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle,#38454a,#19232a 68%); box-shadow:inset 0 2px 5px rgba(255,255,255,.12),0 3px 5px rgba(0,0,0,.4); }
+.psp-device-dpad::before,.psp-device-dpad::after { position:absolute; top:39%; left:12%; width:76%; height:22%; border-radius:.2rem; background:linear-gradient(#59646a,#28343b); content:""; }
+.psp-device-dpad::after { transform:rotate(90deg); }
+.psp-device-action { position:absolute; right:9%; width:11%; aspect-ratio:1; border:1px solid rgba(32,228,184,.35); border-radius:50%; background:radial-gradient(circle at 35% 30%,#46bea0,#183a39 74%); box-shadow:0 3px 5px rgba(0,0,0,.45); }
+.psp-device-action--one { top:34%; }
+.psp-device-action--two { top:54%; right:17%; }
+.psp-device-caption { position:absolute; right:12%; bottom:9%; color:rgba(209,231,231,.57); font-size:.5rem; font-weight:900; letter-spacing:.2em; }
+
+.psp-guide-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; margin-top:1rem; }
+.psp-guide-card { padding:1.05rem; border:1px solid var(--line); border-radius:1rem; background:var(--surface); box-shadow:var(--shadow); }
+.psp-guide-card>span { display:grid; width:2.5rem; height:2.5rem; place-items:center; border:1px solid rgba(37,228,189,.2); border-radius:.7rem; background:rgba(37,228,189,.08); font-size:1.2rem; }
+.psp-guide-card h2 { margin:.7rem 0 .35rem; font-size:.95rem; }
+.psp-guide-card p { margin:0; color:var(--muted); font-size:.81rem; line-height:1.6; }
+.psp-attribution { display:flex; align-items:flex-start; gap:.7rem; margin-top:1rem; padding:1rem; border:1px solid var(--line); border-radius:.9rem; background:color-mix(in srgb,var(--surface-solid) 80%,transparent); color:var(--muted); font-size:.78rem; line-height:1.6; }
+.psp-attribution>span { color:#43e8c0; font-size:1.2rem; }
+.psp-attribution p { margin:0; }
+.psp-attribution a { color:var(--primary); font-weight:800; }
+
+@media (max-width:800px) {
+  .psp-hero { min-height:0; grid-template-columns:minmax(0,1fr); }
+  .psp-device-art { width:min(77%,24rem); margin:0 auto .5rem; }
+  .psp-guide-grid { grid-template-columns:1fr; }
+}
+@media (max-width:600px) {
+  .psp-hero { gap:1.4rem; padding:1.35rem; }
+  .psp-hero-actions { flex-direction:column; }
+  .psp-hero-actions .button { width:100%; }
+  .psp-device-art { width:84%; }
+  .psp-attribution { padding:.8rem; }
+}
+@media (prefers-reduced-motion:reduce) { .psp-device-art { transform:none; } }
