@@ -1,0 +1,180 @@
+(function () {
+  'use strict';
+
+  const root = document.querySelector('[data-game-audio]');
+  if (!root) return;
+
+  const panelId = `cv-audio-panel-${document.body.className.split(/\s+/)[0] || 'game'}`;
+  root.innerHTML = `
+    <button class="cv-game-audio-button" type="button" data-audio-toggle aria-expanded="false" aria-controls="${panelId}" aria-label="Abrir controles de áudio" title="Controles de áudio"><span data-audio-icon aria-hidden="true">🔊</span><span>Volume</span></button>
+    <section class="cv-game-audio-panel" id="${panelId}" data-audio-panel aria-label="Controles de áudio" hidden>
+      <h2 class="cv-game-audio-heading">Áudio</h2>
+      <button class="cv-game-audio-play" type="button" data-music-play aria-pressed="false">▶ Tocar música</button>
+      <button class="cv-game-audio-mute" type="button" data-music-mute aria-pressed="false">🔇 Mutar música</button>
+      <label class="cv-game-audio-row"><span class="cv-game-audio-label"><span>Volume da música</span><output data-music-output>3%</output></span><input type="range" min="0" max="100" step="1" value="3" data-music-volume aria-label="Volume da música"></label>
+      <label class="cv-game-audio-row"><span class="cv-game-audio-label"><span>Volume do jogo</span><output data-game-output>100%</output></span><input type="range" min="0" max="100" step="1" value="100" data-game-volume aria-label="Volume dos efeitos do jogo"></label>
+      <p class="cv-game-audio-status" data-audio-status aria-live="polite">A música começa no primeiro toque ou clique.</p>
+    </section>`;
+
+  const toggle = root.querySelector('[data-audio-toggle]');
+  const panel = root.querySelector('[data-audio-panel]');
+  const musicPlay = root.querySelector('[data-music-play]');
+  const musicMute = root.querySelector('[data-music-mute]');
+  const musicSlider = root.querySelector('[data-music-volume]');
+  const gameSlider = root.querySelector('[data-game-volume]');
+  const musicOutput = root.querySelector('[data-music-output]');
+  const gameOutput = root.querySelector('[data-game-output]');
+  const audioStatus = root.querySelector('[data-audio-status]');
+  const icon = root.querySelector('[data-audio-icon]');
+  const music = new Audio(new URL(root.dataset.musicSrc, document.baseURI).href);
+  music.loop = true;
+  music.preload = 'none';
+  music.volume = 0.03;
+
+  let muted = false;
+  let hasStartedMusic = false;
+  let musicStartPending = false;
+  let userPausedMusic = false;
+  let gameVolume = 1;
+  let audioContext;
+
+  const getAudioContext = () => {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    audioContext ||= new AudioContextClass();
+    if (audioContext.state === 'suspended') audioContext.resume()?.catch?.(() => {});
+    return audioContext;
+  };
+
+  const updateMusicControl = () => {
+    music.muted = muted;
+    musicMute.setAttribute('aria-pressed', String(muted));
+    musicMute.textContent = muted ? '🔊 Ativar música' : '🔇 Mutar música';
+    const isPlaying = !music.paused;
+    musicPlay.setAttribute('aria-pressed', String(isPlaying));
+    musicPlay.textContent = isPlaying ? '⏸ Pausar música' : '▶ Tocar música';
+    icon.textContent = muted ? '🔇' : '🔊';
+    toggle.setAttribute('aria-label', muted ? 'Abrir controles de áudio; música mutada' : 'Abrir controles de áudio');
+  };
+
+  const startMusic = () => {
+    if (document.hidden || muted || userPausedMusic || !music.paused || musicStartPending) return;
+    musicStartPending = true;
+    try {
+      const result = music.play();
+      if (result && typeof result.then === 'function') {
+        result.then(() => {
+          hasStartedMusic = true;
+          musicStartPending = false;
+          audioStatus.textContent = 'Música tocando em repetição.';
+          updateMusicControl();
+        }).catch(() => {
+          musicStartPending = false;
+          audioStatus.textContent = 'Toque em “Tocar música” para iniciar o áudio.';
+          updateMusicControl();
+        });
+      } else {
+        hasStartedMusic = true;
+        musicStartPending = false;
+        audioStatus.textContent = 'Música tocando em repetição.';
+        updateMusicControl();
+      }
+    } catch (error) {
+      musicStartPending = false;
+      audioStatus.textContent = 'Toque em “Tocar música” para iniciar o áudio.';
+      updateMusicControl();
+    }
+  };
+
+  music.addEventListener('error', () => {
+    audioStatus.textContent = 'Não foi possível carregar o arquivo de música.';
+  });
+  music.addEventListener('play', updateMusicControl);
+  music.addEventListener('pause', updateMusicControl);
+
+  toggle.addEventListener('click', () => {
+    const open = panel.hidden;
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+
+  musicMute.addEventListener('click', () => {
+    muted = !muted;
+    updateMusicControl();
+    if (!muted) startMusic();
+  });
+
+  musicPlay.addEventListener('click', () => {
+    if (music.paused) {
+      userPausedMusic = false;
+      startMusic();
+    } else {
+      userPausedMusic = true;
+      music.pause();
+      audioStatus.textContent = 'Música pausada.';
+      updateMusicControl();
+    }
+  });
+
+  musicSlider.addEventListener('input', () => {
+    const value = Number(musicSlider.value);
+    music.volume = value / 100;
+    musicOutput.value = `${value}%`;
+    musicOutput.textContent = `${value}%`;
+  });
+
+  gameSlider.addEventListener('input', () => {
+    const value = Number(gameSlider.value);
+    gameVolume = value / 100;
+    gameOutput.value = `${value}%`;
+    gameOutput.textContent = `${value}%`;
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!root.contains(event.target)) {
+      panel.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    if (!hasStartedMusic) startMusic();
+  });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (event.target instanceof Element && event.target.closest('[data-music-mute], [data-music-play]')) return;
+    if (!hasStartedMusic) startMusic();
+  }, { capture:true });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !panel.hidden) {
+      panel.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    }
+    if (!hasStartedMusic) startMusic();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) music.pause();
+    else if (hasStartedMusic && !userPausedMusic) startMusic();
+  });
+
+  window.CV_GAME_AUDIO = {
+    playTone(frequency, duration = 0.08, type = 'sine', level = 0.04) {
+      if (!gameVolume || !(window.AudioContext || window.webkitAudioContext)) return;
+      const context = getAudioContext();
+      if (!context) return;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const start = context.currentTime;
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(Math.max(0.0001, level * gameVolume), start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + duration);
+    }
+  };
+
+  updateMusicControl();
+})();

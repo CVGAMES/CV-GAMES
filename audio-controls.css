@@ -1,0 +1,21 @@
+.cv-game-audio { position:relative; display:inline-flex; flex:0 0 auto; z-index:20; }
+.cv-game-audio-button { display:inline-flex; min-height:2.65rem; align-items:center; justify-content:center; gap:.4rem; padding:0 .75rem; border:1px solid var(--line); border-radius:.7rem; background:var(--bg-soft); color:var(--text); font:inherit; font-size:.77rem; font-weight:850; line-height:1.2; cursor:pointer; transition:border-color .15s ease,background .15s ease,transform .15s ease; }
+.cv-game-audio-button:hover,.cv-game-audio-button:focus-visible { border-color:var(--primary); background:var(--surface-hover); }
+.cv-game-audio-button[aria-expanded="true"] { border-color:var(--primary); }
+.cv-game-audio-panel { position:absolute; top:calc(100% + .5rem); right:0; z-index:10002; display:grid; width:min(18rem,calc(100vw - 2rem)); gap:.85rem; padding:.9rem; border:1px solid var(--line); border-radius:.9rem; background:color-mix(in srgb,var(--surface-solid) 96%,transparent); color:var(--text); text-align:left; box-shadow:0 14px 38px rgba(0,0,0,.36); backdrop-filter:blur(14px); }
+.cv-game-audio-panel[hidden] { display:none!important; }
+.cv-game-audio-heading { margin:0; font-size:.85rem; font-weight:900; }
+.cv-game-audio-play,.cv-game-audio-mute { width:100%; min-height:2.35rem; padding:.4rem .65rem; border:1px solid var(--line); border-radius:.65rem; background:var(--bg-soft); color:var(--text); font:inherit; font-size:.75rem; font-weight:800; cursor:pointer; }
+.cv-game-audio-play { border-color:var(--primary); background:color-mix(in srgb,var(--primary) 18%,var(--bg-soft)); }
+.cv-game-audio-play:hover,.cv-game-audio-play:focus-visible,.cv-game-audio-mute:hover,.cv-game-audio-mute:focus-visible { border-color:var(--primary); }
+.cv-game-audio-row { display:grid; gap:.25rem; }
+.cv-game-audio-label { display:flex; justify-content:space-between; gap:.7rem; font-size:.72rem; font-weight:800; }
+.cv-game-audio-label output { color:var(--muted); font-variant-numeric:tabular-nums; }
+.cv-game-audio-row input[type="range"] { width:100%; margin:.12rem 0; accent-color:var(--primary); cursor:pointer; }
+.cv-game-audio-status { margin:0; color:var(--muted); font-size:.68rem; line-height:1.4; }
+.cv-game-audio-panel:focus-within { outline:none; }
+
+@media (max-width:560px) {
+  .cv-game-audio-button { min-height:2.75rem; }
+  .cv-game-audio-panel { right:0; width:min(17rem,calc(100vw - 1.5rem)); }
+}
