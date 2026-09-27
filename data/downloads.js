@@ -1,19 +1,16 @@
-/*
- * Catálogo estático de downloads. Todos os destinos abaixo são os mesmos
- * links que já existiam em baixar.html antes da modernização da página.
- */
+/* Catálogo estático de downloads do CV GAMES. */
 window.CV_GAMES_DOWNLOADS = [
   {
-    id: 'minecraft-pe-1-21-92',
-    title: 'Minecraft PE 1.21.92',
-    description: 'Versão de Minecraft PE listada na área de downloads do CV GAMES.',
+    id: 'minecraft-pe-1-26-60-28',
+    title: 'Minecraft PE 1.26.60.28',
+    description: 'Baixe Minecraft PE versão 1.26.60.28 pelo MEGA.',
     category: 'Jogos',
     categoryKey: 'jogos',
-    tags: ['minecraft', 'pe', 'jogo', 'download', '1.21.92'],
-    version: '1.21.92',
-    image: 'baixar/minecraft pe/640px-Chase_the_Skies_wiki_mainpage_light.webp',
+    tags: ['minecraft', 'pe', 'jogo', 'download', '1.26.60.28'],
+    version: '1.26.60.28',
+    image: 'baixar/minecraft pe/minecraft-1.26.60.28.png',
     fallback: '⛏️',
-    href: 'https://4br.me/CVGAMESminecraft'
+    href: 'https://mega.nz/file/PJtGECQS#mNH_jVgfxK5nmbRe54WdxayMy7X8R3_tsQt-fk9VCS4'
   },
   {
     id: 'dead-cells-pc',
