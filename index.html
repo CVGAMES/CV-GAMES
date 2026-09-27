@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES. Explore o catálogo, categorias e o jogo exclusivo CV DODGE.">
+  <meta name="description" content="Jogue online no CV GAMES: explore jogos leves, downloads e jogos exclusivos como CV DODGE, CV NEON BREAKER, CV STARFALL, CV XADREZ, CV JOGO DA VELHA e CV QUADRADOS.">
   <meta property="og:title" content="CV GAMES — Jogos Online e Downloads">
   <meta property="og:description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES.">
   <meta property="og:type" content="website">
@@ -39,9 +39,11 @@
     }
   </script>
   <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/site-dialog.css">
   <script src="data/jogos.js" defer></script>
   <script src="js/stats.js" defer></script>
   <script src="js/achievements.js" defer></script>
+  <script src="js/site-dialog.js" defer></script>
   <script src="js/home.js" defer></script>
 </head>
 <body>
@@ -60,6 +62,7 @@
         <a href="#inicio">Início</a>
         <a href="#jogos">Jogos</a>
         <a href="baixar.html">Downloads</a>
+        <a href="central.html" aria-label="Central Gamer">Central</a>
         <a href="#categorias">Categorias</a>
         <a href="perfil.html">Perfil</a>
       </nav>
@@ -81,7 +84,7 @@
         <div class="hero-panel">
           <p class="eyebrow">Seu portal para jogar</p>
           <h1 id="hero-title">CV GAMES</h1>
-          <p class="hero-copy"><strong>Jogue, descubra e divirta-se.</strong><br>Uma seleção de jogos online, jogos leves e downloads disponíveis para encontrar sua próxima diversão. Conheça também o CV DODGE, jogo exclusivo criado para o portal.</p>
+          <p class="hero-copy"><strong>Jogue, descubra e divirta-se.</strong><br>Uma seleção de jogos online, jogos leves e downloads disponíveis para encontrar sua próxima diversão. Conheça também CV DODGE, CV NEON BREAKER, CV STARFALL, CV XADREZ, CV JOGO DA VELHA e CV QUADRADOS, jogos exclusivos criados para o portal.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="#jogos">🎮 Explorar Jogos</a>
             <a class="button button-secondary" href="baixar.html">📥 Downloads</a>
@@ -99,6 +102,18 @@
         <p class="search-status" id="status-pesquisa" data-search-status aria-live="polite"></p>
       </div>
     </section>
+
+    <section class="content-section curated-section" id="destaques" aria-labelledby="titulo-destaques">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="titulo-destaques">🔥 Jogos em Destaque</h2>
+          <p>Comece pelos jogos originais do CV GAMES e explore outros destaques do portal.</p>
+        </div>
+        <div class="game-grid" id="featured-games" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <div class="ad-slot ad-slot--home-catalog" data-ad-slot="home-after-featured" aria-hidden="true"></div>
 
     <section class="content-section" id="categorias" aria-labelledby="titulo-categorias">
       <div class="container">
@@ -120,13 +135,33 @@
       </div>
     </section>
 
-    <section class="content-section curated-section" id="destaques" aria-labelledby="titulo-destaques">
+    <section class="content-section central-home-section" aria-labelledby="titulo-central-gamer">
       <div class="container">
         <div class="section-heading">
-          <h2 id="titulo-destaques">🔥 Jogos em Destaque</h2>
-          <p>Seleção inicial do CV GAMES usando os jogos já disponíveis no portal.</p>
+          <div>
+            <p class="eyebrow">Novos recursos</p>
+            <h2 id="titulo-central-gamer">🎮 Explore a Central Gamer</h2>
+          </div>
+          <p>Emulação de NES e PSP no navegador, atalhos para cloud gaming oficial e ferramentas úteis em um só lugar.</p>
         </div>
-        <div class="game-grid" id="featured-games" aria-live="polite"></div>
+        <div class="central-home-grid">
+          <a class="central-home-card" href="emuladores.html">
+            <span class="central-home-icon" aria-hidden="true">🕹️</span>
+            <strong>Emuladores</strong>
+            <span>Jogue seus próprios arquivos compatíveis de NES e PSP no navegador. Os arquivos de jogo comerciais não são fornecidos pelo CV GAMES.</span>
+          </a>
+          <a class="central-home-card" href="central.html#cloud-gaming">
+            <span class="central-home-icon" aria-hidden="true">☁️</span>
+            <strong>Cloud Gaming</strong>
+            <span>Acesse atalhos para serviços oficiais de jogos pela nuvem.</span>
+          </a>
+          <a class="central-home-card" href="ferramentas.html">
+            <span class="central-home-icon" aria-hidden="true">🛠️</span>
+            <strong>Ferramentas Gamer</strong>
+            <span>Use timer e testes locais de controle, teclado e mouse.</span>
+          </a>
+        </div>
+        <div class="central-home-action"><a class="button button-secondary" href="central.html">Abrir Central Gamer</a></div>
       </div>
     </section>
 
@@ -168,7 +203,7 @@
         <div class="section-heading">
           <h2 id="titulo-jogos" data-catalog-title>🎮 Todos os jogos</h2>
           <div class="catalog-summary">
-            <p data-results-count aria-live="polite">27 jogos encontrados</p>
+            <p data-results-count aria-live="polite">28 jogos encontrados</p>
             <button class="catalog-reset" type="button" data-clear-filters>🎮 Todos os jogos</button>
           </div>
         </div>
@@ -189,6 +224,11 @@
         <a href="#inicio">Início</a>
         <a href="#jogos">Jogos</a>
         <a href="baixar.html">Downloads</a>
+        <a href="central.html">Central Gamer</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="contato.html">Contato</a>
+        <a href="privacidade.html">Privacidade</a>
+        <a href="termos.html">Termos</a>
         <a href="perfil.html">Perfil</a>
       </nav>
     </div>
