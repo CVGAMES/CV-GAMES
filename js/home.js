@@ -5,6 +5,7 @@
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
+  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-dodge'];
   const filters = { query: '', category: 'todos', favoritesOnly: false };
 
   const getFavorites = () => {
@@ -165,11 +166,18 @@
 
   const getFilteredGames = () => {
     const normalizedQuery = normalizeText(filters.query);
-    return catalog.filter((game) => {
+    const games = catalog.filter((game) => {
       const matchesSearch = !normalizedQuery || normalizeText(getSearchableText(game)).includes(normalizedQuery);
       const matchesFavorite = !filters.favoritesOnly || favorites.has(game.id);
       return matchesSearch && matchesCategory(game) && matchesFavorite;
     });
+    if (filters.favoritesOnly) {
+      const priority = new Map(ownGamesPriority.map((id, index) => [id, index]));
+      const catalogOrder = new Map(catalog.map((game, index) => [game.id, index]));
+      games.sort((a, b) => (priority.get(a.id) ?? ownGamesPriority.length + catalogOrder.get(a.id))
+        - (priority.get(b.id) ?? ownGamesPriority.length + catalogOrder.get(b.id)));
+    }
+    return games;
   };
 
   const hasActiveFilters = () => Boolean(normalizeText(filters.query) || filters.category !== 'todos' || filters.favoritesOnly);
@@ -305,6 +313,9 @@
     const initialParams = new URLSearchParams(window.location.search);
     if (initialParams.get('favoritos') === '1') filters.favoritesOnly = true;
 
+    ownGamesPriority.forEach((id) => favorites.add(id));
+    saveFavorites();
+
     renderGames('featured-games', getFeaturedGames());
     renderGames('recent-games', catalog.filter((game) => game.recent));
     renderStatisticsSections();
@@ -358,18 +369,22 @@
       }));
     }
 
-    const homeBrand = document.querySelector('.brand[href="#inicio"]');
-    if (homeBrand) {
-      homeBrand.addEventListener('click', (event) => {
-        event.preventDefault();
-        if (window.location.hash) {
-          window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-        }
-        menu?.classList.remove('is-open');
-        menuButton?.setAttribute('aria-expanded', 'false');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
+    document.querySelectorAll('a[href="#inicio"]').forEach((link) => link.addEventListener('click', (event) => {
+      event.preventDefault();
+      clearFilters();
+      if (window.location.hash) window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+      menu?.classList.remove('is-open');
+      menuButton?.setAttribute('aria-expanded', 'false');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }));
+
+    document.querySelectorAll('a[href="#jogos"]').forEach((link) => link.addEventListener('click', (event) => {
+      event.preventDefault();
+      clearFilters();
+      menu?.classList.remove('is-open');
+      menuButton?.setAttribute('aria-expanded', 'false');
+      document.getElementById('jogos')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
 
     const themeButton = document.querySelector('[data-theme-toggle]');
     if (themeButton) {
