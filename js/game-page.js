@@ -69,10 +69,10 @@
           <a href="central.html" aria-label="Central Gamer">Central</a>
           <a href="index.html?favoritos=1#jogos">Favoritos</a>
           <a href="perfil.html">Perfil</a>
+          <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
         </nav>
         <div class="header-actions">
           <a class="favorite-button" href="index.html?favoritos=1#jogos" aria-label="Ver favoritos" title="Ver favoritos"><span class="favorite-icon" aria-hidden="true">♥</span><span class="favorite-count" data-favorite-count>0</span><span>Favoritos</span></a>
-          <button class="icon-button" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
         </div>
       </div>
     `;
@@ -212,13 +212,16 @@
     const menuButton = document.querySelector('[data-menu-toggle]');
     const menu = document.querySelector('[data-primary-nav]');
     if (!menuButton || !menu) return;
-    menuButton.addEventListener('click', () => {
-      const isOpen = menu.classList.toggle('is-open');
+    const setMenuOpen = (isOpen) => {
+      menu.classList.toggle('is-open', isOpen);
       menuButton.setAttribute('aria-expanded', String(isOpen));
+      menuButton.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+    };
+    menuButton.addEventListener('click', () => {
+      setMenuOpen(!menu.classList.contains('is-open'));
     });
     menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
-      menu.classList.remove('is-open');
-      menuButton.setAttribute('aria-expanded', 'false');
+      setMenuOpen(false);
     }));
   };
 

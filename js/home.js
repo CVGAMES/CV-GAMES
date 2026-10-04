@@ -358,31 +358,30 @@
 
     const menuButton = document.querySelector('[data-menu-toggle]');
     const menu = document.querySelector('[data-primary-nav]');
+    const setMenuOpen = (isOpen) => {
+      menu?.classList.toggle('is-open', isOpen);
+      menuButton?.setAttribute('aria-expanded', String(isOpen));
+      menuButton?.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+    };
     if (menuButton && menu) {
       menuButton.addEventListener('click', () => {
-        const isOpen = menu.classList.toggle('is-open');
-        menuButton.setAttribute('aria-expanded', String(isOpen));
+        setMenuOpen(!menu.classList.contains('is-open'));
       });
-      menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
-        menu.classList.remove('is-open');
-        menuButton.setAttribute('aria-expanded', 'false');
-      }));
+      menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
     }
 
     document.querySelectorAll('a[href="#inicio"]').forEach((link) => link.addEventListener('click', (event) => {
       event.preventDefault();
       clearFilters();
       if (window.location.hash) window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-      menu?.classList.remove('is-open');
-      menuButton?.setAttribute('aria-expanded', 'false');
+      setMenuOpen(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }));
 
     document.querySelectorAll('a[href="#jogos"]').forEach((link) => link.addEventListener('click', (event) => {
       event.preventDefault();
       clearFilters();
-      menu?.classList.remove('is-open');
-      menuButton?.setAttribute('aria-expanded', 'false');
+      setMenuOpen(false);
       document.getElementById('jogos')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
 
