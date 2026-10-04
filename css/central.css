@@ -106,6 +106,7 @@
 
 .central-card-grid--cloud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .central-card-grid--emulators { grid-template-columns: minmax(0, 48rem); }
+.emulator-catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .central-card-grid--tools { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .central-card,
@@ -125,6 +126,13 @@
 }
 
 .central-card--emulator { max-width: 48rem; }
+.emulator-catalog-card { color:var(--text); text-decoration:none; transition:border-color .2s ease,background-color .2s ease,transform .2s ease,box-shadow .2s ease; }
+.emulator-catalog-card:hover,.emulator-catalog-card:focus-visible { border-color:var(--primary); background:var(--surface-hover); box-shadow:var(--shadow); transform:translateY(-3px); }
+.emulator-catalog-card .central-card-copy { display:block; }
+.emulator-card-title { color:var(--text); font-size:1.05rem; line-height:1.35; }
+.emulator-card-description { display:block; margin-top:.65rem; color:var(--muted); line-height:1.55; }
+.emulator-card-action { display:inline-flex; margin-top:1rem; }
+.emulator-coming-grid .system-card { min-height:8.5rem; }
 .central-card-copy { min-width: 0; flex: 1; }
 .central-card-copy p,
 .central-card--tool p,
@@ -574,6 +582,7 @@
   .central-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .central-card-grid--cloud,
   .central-card-grid--emulators,
+  .emulator-catalog-grid,
   .emulator-guidance-grid,
   .system-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
