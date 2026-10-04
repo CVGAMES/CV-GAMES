@@ -257,6 +257,10 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-modal-card h2 { margin:0; font-size:clamp(1.35rem,4vw,2rem); }
 .starfall-modal-card > p:not(.starfall-kicker) { margin:0; color:#b9c8dc; font-size:.82rem; }
 .starfall-modal-card .starfall-control-picker { justify-content:center; }
+.starfall-modal-card > .starfall-settings-label { margin:.2rem 0 -.35rem; color:#d8e7fb; font-size:.76rem; font-weight:850; }
+.starfall-modal-card .starfall-performance-picker { width:min(100%,22rem); }
+.starfall-performance-picker button { flex:1; }
+.starfall-performance-note { max-width:24rem; color:#9fb1c9; font-size:.7rem; line-height:1.45; }
 .starfall-modal-card .starfall-audio-tools { width:min(100%,30rem); justify-content:center; }
 .starfall-modal-close { position:absolute; top:.65rem; right:.7rem; width:2.4rem; height:2.4rem; border:1px solid rgba(160,195,255,.3); border-radius:50%; background:rgba(255,255,255,.06); color:#eef5ff; font-size:1.5rem; cursor:pointer; }
 .starfall-skin-card.is-locked,.starfall-skin-card:disabled { opacity:.53; cursor:not-allowed; filter:saturate(.55); }

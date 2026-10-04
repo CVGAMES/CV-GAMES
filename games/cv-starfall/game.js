@@ -15,7 +15,7 @@
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
-    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), shipModal: $('[data-ship-modal]'), settingsModal: $('[data-settings-modal]'), achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]')
+    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), shipModal: $('[data-ship-modal]'), settingsModal: $('[data-settings-modal]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]')
   };
   const skins = [
     { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, shape: 'classic', description: 'Uma explosão ampla atinge todos os inimigos próximos.' },
@@ -53,7 +53,7 @@
     shotCooldown: 0, waveGrace: 0, enemySpawn: 0, powerSpawn: 0, waveKills: 0,
     enemiesRequired: 6, bossWave: false, bossSpawned: false, miniBossTimer: 0, miniBossSpawned: false,
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
-    selectedSkin: readSkin(), controlMode: readControlMode(), upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1,
+    selectedSkin: readSkin(), controlMode: readControlMode(), performanceMode: readPerformanceMode(), upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
     blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: '#7df7e8' },
@@ -277,6 +277,7 @@
   function skinUnlocked(skin) { return isDeveloperProfile() || !skin.unlockWave || Math.max(readBestWave(), state.bestCompletedWave) >= skin.unlockWave; }
   function readSkin() { try { const id=localStorage.getItem('cv-games-cv-starfall-skin'); const skin=skins.find((item)=>item.id===id); return skin && (isDeveloperProfile() || !skin.unlockWave || readBestWave() >= skin.unlockWave)?id:'aurora'; } catch { return 'aurora'; } }
   function readControlMode() { try { const mode=localStorage.getItem('cv-games-cv-starfall-control'); return ['keys','touch','analog'].includes(mode)?mode:'keys'; } catch { return 'keys'; } }
+  function readPerformanceMode() { try { return localStorage.getItem('cv-games-cv-starfall-performance') === 'light' ? 'light' : 'normal'; } catch { return 'normal'; } }
   function currentSkin() { return skins.find((skin)=>skin.id===state.selectedSkin)||skins[0]; }
   function saveBest() { try { localStorage.setItem(bestKey, String(state.best)); } catch { /* Recorde mantido nesta sessão. */ } }
   function saveBestWave() { try { localStorage.setItem(bestWaveKey, String(state.bestCompletedWave)); } catch { /* Desbloqueios mantidos nesta sessão. */ } }
@@ -366,12 +367,13 @@
     });
   }
   function makeStars() {
-    state.stars = Array.from({ length: 100 }, () => ({ x: visualRandom(0, state.width), y: visualRandom(0, state.height), z: visualRandom(.25, 1), phase: visualRandom(0, 7) }));
+    const count = state.performanceMode === 'light' ? 34 : 100;
+    state.stars = Array.from({ length: count }, () => ({ x: visualRandom(0, state.width), y: visualRandom(0, state.height), z: visualRandom(.25, 1), phase: visualRandom(0, 7) }));
   }
   function resize() {
     const rect = canvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
-    state.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    state.dpr = Math.min(window.devicePixelRatio || 1, state.performanceMode === 'light' ? 1 : 2);
     canvas.width = Math.round(rect.width * state.dpr);
     canvas.height = Math.round(rect.height * state.dpr);
     ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
@@ -629,7 +631,10 @@
     state.pickups.push({ x, y, kind: pickupKind, r: 11, life: 10, spin: 0 });
   }
   function burst(x, y, color, count = 12, power = 100) {
-    for (let i = 0; i < count; i++) {
+    const lightMode = state.performanceMode === 'light';
+    const particleCount = lightMode ? Math.ceil(count * .45) : count;
+    const particleLimit = lightMode ? 110 : Infinity;
+    for (let i = 0; i < particleCount && state.particles.length < particleLimit; i++) {
       const angle = visualRandomUnit() * Math.PI * 2; const speed = visualRandom(power * .25, power);
       state.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: visualRandom(.22, .62), maxLife: .62, r: visualRandom(1.5, 3.5), color });
     }
@@ -969,7 +974,7 @@
         }
         const previous = effect.trail[effect.trail.length - 1];
         if (!previous || Math.hypot(effect.x - previous.x, effect.y - previous.y) > 9) effect.trail.push({ x: effect.x, y: effect.y });
-        if (effect.trail.length > 24) effect.trail.shift();
+        if (effect.trail.length > (state.performanceMode === 'light' ? 10 : 24)) effect.trail.shift();
         effect.hitCooldowns = (effect.hitCooldowns || []).filter((entry) => { entry.time -= dt; return entry.time > 0 && !entry.enemy.dead; });
         for (const enemy of state.enemies) {
           const cooling = effect.hitCooldowns.some((entry) => entry.enemy === enemy);
@@ -978,11 +983,11 @@
             burst(effect.x, effect.y, '#fff4c7', 10, 125); burst(effect.x, effect.y, '#ffc86e', 8, 100);
           }
         }
-        if (visualRandomUnit() < dt * 22) state.particles.push({ x: effect.x, y: effect.y, vx: visualRandom(-30, 30), vy: visualRandom(-30, 30), life: .28, maxLife: .28, r: visualRandom(2, 4), color: visualRandomUnit() < .5 ? '#fff7d5' : '#ffc86e' });
+        if (visualRandomUnit() < dt * (state.performanceMode === 'light' ? 7 : 22) && (state.performanceMode !== 'light' || state.particles.length < 110)) state.particles.push({ x: effect.x, y: effect.y, vx: visualRandom(-30, 30), vy: visualRandom(-30, 30), life: .28, maxLife: .28, r: visualRandom(2, 4), color: visualRandomUnit() < .5 ? '#fff7d5' : '#ffc86e' });
       } else if (effect.type === 'singularity-shot') {
         effect.x += effect.vx * dt; effect.y += effect.vy * dt;
         if (effect.x < 12 || effect.x > state.width - 12 || effect.y < 12 || effect.y > state.height - 12) { effect.x = clamp(effect.x, 12, state.width - 12); effect.y = clamp(effect.y, 12, state.height - 12); effect.life = 0; }
-        if (visualRandomUnit() < dt * 28) state.particles.push({ x: effect.x + visualRandom(-5, 5), y: effect.y + visualRandom(-5, 5), vx: visualRandom(-55, 55), vy: visualRandom(-55, 55), life: .38, maxLife: .38, r: visualRandom(1.5, 3), color: visualRandomUnit() < .5 ? '#8ef6ff' : '#c19cff' });
+        if (visualRandomUnit() < dt * (state.performanceMode === 'light' ? 9 : 28) && (state.performanceMode !== 'light' || state.particles.length < 110)) state.particles.push({ x: effect.x + visualRandom(-5, 5), y: effect.y + visualRandom(-5, 5), vx: visualRandom(-55, 55), vy: visualRandom(-55, 55), life: .38, maxLife: .38, r: visualRandom(1.5, 3), color: visualRandomUnit() < .5 ? '#8ef6ff' : '#c19cff' });
         const hit = state.enemies.find((enemy) => !enemy.dead && distance(effect, enemy) < enemy.r + 13);
         if (hit) { damageEnemy(hit, 24 * state.abilityPower, true); effect.life = 0; }
         if (effect.life <= 0) {
@@ -1045,7 +1050,7 @@
   function drawShip(x, y, size, skin, angle = -Math.PI / 2, alpha = 1) {
     const ship = skin && typeof skin === 'object' ? skin : currentSkin();
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.globalAlpha = alpha;
-    ctx.shadowColor = ship.color; ctx.shadowBlur = 18; ctx.fillStyle = ship.color; ctx.strokeStyle = ship.accent; ctx.lineWidth = 2;
+    ctx.shadowColor = ship.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 18; ctx.fillStyle = ship.color; ctx.strokeStyle = ship.accent; ctx.lineWidth = 2;
     ctx.beginPath();
     if (ship.shape === 'blade') {
       ctx.moveTo(0, -size * 1.65); ctx.lineTo(size * .34, -size * .22); ctx.lineTo(size * 1.12, size * .8); ctx.lineTo(0, size * .43); ctx.lineTo(-size * 1.12, size * .8); ctx.lineTo(-size * .34, -size * .22);
@@ -1063,7 +1068,7 @@
     ctx.restore();
   }
   function drawEnemy(enemy) {
-    ctx.save(); ctx.translate(enemy.x, enemy.y); ctx.rotate(enemy.angle); ctx.shadowColor = enemy.color; ctx.shadowBlur = enemy.kind === 'boss' ? 24 : 12; ctx.fillStyle = enemy.color; ctx.strokeStyle = '#ffeef5'; ctx.lineWidth = 1.2;
+    ctx.save(); ctx.translate(enemy.x, enemy.y); ctx.rotate(enemy.angle); ctx.shadowColor = enemy.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : enemy.kind === 'boss' ? 24 : 12; ctx.fillStyle = enemy.color; ctx.strokeStyle = '#ffeef5'; ctx.lineWidth = 1.2;
     if (enemy.kind === 'boss' && enemy.bossType === 'drone') {
       ctx.beginPath(); ctx.arc(0, 0, enemy.r * .82, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.strokeStyle = '#fff2fa'; ctx.beginPath(); ctx.arc(0, 0, enemy.r * 1.16, 0, Math.PI * 2); ctx.stroke();
@@ -1103,14 +1108,14 @@
     ctx.clearRect(0, 0, state.width, state.height);
     const zone = currentZone();
     const bg = ctx.createLinearGradient(0, 0, state.width, state.height); bg.addColorStop(0, zone.colors[0]); bg.addColorStop(1, zone.colors[1]); ctx.fillStyle = bg; ctx.fillRect(0, 0, state.width, state.height);
-    for (const star of state.stars) { star.y += star.z * .13; if (star.y > state.height) { star.y = 0; star.x = visualRandom(0, state.width); } const twinkle = .45 + .45 * Math.sin(timestamp / 600 + star.phase); ctx.fillStyle = `rgba(${zone.stars},${twinkle * star.z})`; ctx.fillRect(star.x, star.y, star.z * 1.5, star.z * 1.5); }
+    for (const star of state.stars) { star.y += star.z * .13; if (star.y > state.height) { star.y = 0; star.x = visualRandom(0, state.width); } const twinkle = state.performanceMode === 'light' ? .72 : .45 + .45 * Math.sin(timestamp / 600 + star.phase); ctx.fillStyle = `rgba(${zone.stars},${twinkle * star.z})`; ctx.fillRect(star.x, star.y, star.z * 1.5, star.z * 1.5); }
     ctx.strokeStyle = 'rgba(129,160,255,.045)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(state.width / 2, 0); ctx.lineTo(state.width / 2, state.height); ctx.moveTo(0, state.height / 2); ctx.lineTo(state.width, state.height / 2); ctx.stroke();
     for (const pickup of state.pickups) {
-      const color = pickup.kind === 'repair' ? '#72ffad' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff'; ctx.save(); ctx.translate(pickup.x, pickup.y); ctx.rotate(pickup.spin); ctx.shadowColor = color; ctx.shadowBlur = 16; ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -pickup.r); ctx.lineTo(pickup.r, 0); ctx.lineTo(0, pickup.r); ctx.lineTo(-pickup.r, 0); ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0; ctx.fillStyle = color; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pickup.kind === 'repair' ? '+' : pickup.kind === 'charge' ? '◷' : '⬡', 0, 0); ctx.restore();
+      const color = pickup.kind === 'repair' ? '#72ffad' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff'; ctx.save(); ctx.translate(pickup.x, pickup.y); ctx.rotate(pickup.spin); ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 16; ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -pickup.r); ctx.lineTo(pickup.r, 0); ctx.lineTo(0, pickup.r); ctx.lineTo(-pickup.r, 0); ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0; ctx.fillStyle = color; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pickup.kind === 'repair' ? '+' : pickup.kind === 'charge' ? '◷' : '⬡', 0, 0); ctx.restore();
     }
-    for (const b of state.bullets) { ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); }
+    for (const b of state.bullets) { ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); }
     ctx.shadowBlur = 0;
-    for (const b of state.enemyBullets) { ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = 10; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); }
+    for (const b of state.enemyBullets) { ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); }
     ctx.shadowBlur = 0;
     for (const enemy of state.enemies) drawEnemy(enemy);
     for (const p of state.particles) { ctx.globalAlpha = clamp(p.life / p.maxLife, 0, 1); ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
@@ -1118,31 +1123,31 @@
     for (const effect of state.effects) {
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
       if (effect.type === 'nova') {
-        ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - 40), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = 8; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = 34; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - 40), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = 8; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 34; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'blade') {
         ctx.save(); ctx.globalAlpha = Math.min(1, alpha * 1.8); ctx.lineCap = 'round';
-        if (effect.trail.length > 1) { ctx.beginPath(); ctx.moveTo(effect.trail[0].x, effect.trail[0].y); effect.trail.slice(1).forEach((point) => ctx.lineTo(point.x, point.y)); ctx.strokeStyle = 'rgba(255,200,110,.68)'; ctx.shadowColor = '#ffc86e'; ctx.shadowBlur = 22; ctx.lineWidth = 8; ctx.stroke(); ctx.strokeStyle = 'rgba(255,248,220,.84)'; ctx.shadowBlur = 7; ctx.lineWidth = 2; ctx.stroke(); }
-        ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.strokeStyle = '#fff'; ctx.shadowColor = '#ffc86e'; ctx.shadowBlur = 34; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(-34, 0); ctx.quadraticCurveTo(0, -12, 34, 0); ctx.stroke(); ctx.strokeStyle = '#fff1b4'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-29, 0); ctx.quadraticCurveTo(0, -9, 29, 0); ctx.stroke(); ctx.restore();
+        if (effect.trail.length > 1) { ctx.beginPath(); ctx.moveTo(effect.trail[0].x, effect.trail[0].y); effect.trail.slice(1).forEach((point) => ctx.lineTo(point.x, point.y)); ctx.strokeStyle = 'rgba(255,200,110,.68)'; ctx.shadowColor = '#ffc86e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 22; ctx.lineWidth = 8; ctx.stroke(); ctx.strokeStyle = 'rgba(255,248,220,.84)'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 7; ctx.lineWidth = 2; ctx.stroke(); }
+        ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.strokeStyle = '#fff'; ctx.shadowColor = '#ffc86e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 34; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(-34, 0); ctx.quadraticCurveTo(0, -12, 34, 0); ctx.stroke(); ctx.strokeStyle = '#fff1b4'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-29, 0); ctx.quadraticCurveTo(0, -9, 29, 0); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'singularity-shot' || effect.type === 'blackhole') {
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(timestamp / 260);
         const radius = effect.type === 'blackhole' ? 22 + Math.sin(timestamp / 95) * 3 : 13;
         const glow = ctx.createRadialGradient(0, 0, 1, 0, 0, effect.type === 'blackhole' ? effect.radius * .42 : 25); glow.addColorStop(0, 'rgba(4,5,18,.99)'); glow.addColorStop(.22, 'rgba(23,13,54,.97)'); glow.addColorStop(.55, 'rgba(137,105,255,.22)'); glow.addColorStop(1, 'rgba(69,219,255,0)');
         ctx.globalAlpha = effect.type === 'blackhole' ? .95 : alpha; ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(0, 0, effect.type === 'blackhole' ? effect.radius * .42 : 25, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#be9aff'; ctx.shadowColor = '#9c75ff'; ctx.shadowBlur = 28; ctx.lineWidth = effect.type === 'blackhole' ? 4 : 3; ctx.beginPath(); ctx.ellipse(0, 0, radius * 1.7, radius * .72, timestamp / 430, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#be9aff'; ctx.shadowColor = '#9c75ff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 28; ctx.lineWidth = effect.type === 'blackhole' ? 4 : 3; ctx.beginPath(); ctx.ellipse(0, 0, radius * 1.7, radius * .72, timestamp / 430, 0, Math.PI * 2); ctx.stroke();
         ctx.strokeStyle = '#8ef6ff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(0, 0, radius * 1.28, radius * .5, -timestamp / 510, 0, Math.PI * 2); ctx.stroke();
-        if (effect.type === 'blackhole') { ctx.globalAlpha = .12 + Math.sin(timestamp / 180) * .035; ctx.setLineDash([5, 13]); ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 1.5; ctx.shadowBlur = 10; ctx.beginPath(); ctx.arc(0, 0, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); }
-        ctx.fillStyle = '#03040d'; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(0, 0, radius * .58, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        if (effect.type === 'blackhole') { ctx.globalAlpha = .12 + Math.sin(timestamp / 180) * .035; ctx.setLineDash([5, 13]); ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 1.5; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10; ctx.beginPath(); ctx.arc(0, 0, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); }
+        ctx.fillStyle = '#03040d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(0, 0, radius * .58, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       } else if (effect.type === 'lightning') {
-        ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = '#dce5ff'; ctx.shadowColor = '#87aaff'; ctx.shadowBlur = 18; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = '#dce5ff'; ctx.shadowColor = '#87aaff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 18; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'aegis') {
-        if (state.tempShields > 0) { ctx.save(); ctx.globalAlpha = .35 + .25 * Math.sin(timestamp / 150); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = 3; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = 22; ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + 17, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
+        if (state.tempShields > 0) { ctx.save(); ctx.globalAlpha = .35 + .25 * Math.sin(timestamp / 150); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = 3; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 22; ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + 17, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
       } else if (effect.type === 'chronos') {
         ctx.save(); ctx.globalAlpha = .08 * alpha; ctx.fillStyle = '#c897ff'; ctx.fillRect(0, 0, state.width, state.height); ctx.restore();
       }
     }
     if (state.invulnerable <= 0 || Math.floor(timestamp / 90) % 2 === 0) drawShip(state.player.x, state.player.y, state.player.radius, currentSkin(), state.player.angle);
     if (state.shields || state.tempShields) { ctx.strokeStyle = `rgba(110,190,255,${.3 + Math.sin(timestamp / 150) * .12})`; ctx.lineWidth = 2 + Math.min(3, state.tempShields); ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + 9 + state.tempShields * 2, 0, Math.PI * 2); ctx.stroke(); }
-    for (let i = 0; i < state.drones; i++) { const a = timestamp / 800 + i * Math.PI * 2 / state.drones; ctx.fillStyle = '#eafaff'; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(state.player.x + Math.cos(a) * 39, state.player.y + Math.sin(a) * 39, 5, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; }
+    for (let i = 0; i < state.drones; i++) { const a = timestamp / 800 + i * Math.PI * 2 / state.drones; ctx.fillStyle = '#eafaff'; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(state.player.x + Math.cos(a) * 39, state.player.y + Math.sin(a) * 39, 5, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; }
   }
   function frame(timestamp) {
     if (state.mode !== 'playing') return;
@@ -1247,6 +1252,18 @@
       : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · use o botão da habilidade.'
         : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.';
   }
+  function updatePerformanceModeUI() {
+    ui.performanceModeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.performanceMode === state.performanceMode)));
+  }
+  function setPerformanceMode(mode) {
+    if (!['normal', 'light'].includes(mode) || mode === state.performanceMode) return;
+    state.performanceMode = mode;
+    try { localStorage.setItem('cv-games-cv-starfall-performance', mode); } catch { /* Preferência vale para a sessão. */ }
+    if (mode === 'light' && state.particles.length > 110) state.particles = state.particles.slice(-110);
+    updatePerformanceModeUI();
+    resize();
+    toast(mode === 'light' ? 'MODO LEVE ATIVADO' : 'MODO NORMAL ATIVADO');
+  }
   function openSettings() {
     if (state.mode === 'playing') pauseGame();
     if (ui.settingsModal) ui.settingsModal.hidden = false;
@@ -1271,6 +1288,7 @@
     try { localStorage.setItem('cv-games-cv-starfall-control', state.controlMode); } catch { /* Preferência vale para a sessão. */ }
     state.keys.clear(); state.pointer.active = false; releaseAnalog(); updateControlUI();
   }));
+  ui.performanceModeButtons.forEach((button) => button.addEventListener('click', () => setPerformanceMode(button.dataset.performanceMode)));
   $('[data-open-settings]')?.addEventListener('click', openSettings);
   $('[data-open-ships]')?.addEventListener('click', openShips);
   $('[data-open-achievements]')?.addEventListener('click', openAchievements);
@@ -1323,5 +1341,5 @@
   document.addEventListener('cv-games-fullscreenchange', resize);
   state.achievementProgress = readAchievementProgress();
   renderAchievements(); updateDailyChallengeInfo();
-  renderSkinPicker(); updateEquippedShip(); updateControlUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard();
+  renderSkinPicker(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard();
 })();
