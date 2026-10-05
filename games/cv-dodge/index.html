@@ -3,161 +3,128 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Jogue CV DODGE, o arcade exclusivo do CV GAMES: desvie de obstáculos e sobreviva o máximo possível no navegador.">
-  <meta property="og:title" content="CV DODGE — Jogo Exclusivo | CV GAMES">
-  <meta property="og:description" content="Desvie de obstáculos e sobreviva o máximo possível neste arcade exclusivo do CV GAMES.">
+  <meta name="description" content="Defenda a rota, construa torres e sobreviva às ondas em CV DEFESA ORBITAL, um jogo de estratégia original do CV GAMES.">
+  <meta property="og:title" content="CV DEFESA ORBITAL — Jogo Exclusivo | CV GAMES">
+  <meta property="og:description" content="Monte sua defesa, evolua suas torres e proteja a base de ondas cada vez mais perigosas.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CV GAMES">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/games/cv-dodge/">
-  <meta property="og:image" content="https://cvgames.com.br/games/cv-dodge/cover-social.png">
-  <meta property="og:image:alt" content="Capa do jogo CV DODGE">
+  <meta property="og:image" content="https://cvgames.com.br/games/cv-dodge/cover.svg">
+  <meta property="og:image:alt" content="Capa do jogo CV Defesa Orbital">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="CV DODGE — Jogo Exclusivo | CV GAMES">
-  <meta name="twitter:description" content="Desvie de obstáculos e sobreviva o máximo possível neste arcade exclusivo do CV GAMES.">
-  <meta name="twitter:image" content="https://cvgames.com.br/games/cv-dodge/cover-social.png">
-  <meta name="twitter:image:alt" content="Capa do jogo CV DODGE">
-  <title>CV DODGE — Jogo Exclusivo | CV GAMES</title>
+  <meta name="twitter:title" content="CV DEFESA ORBITAL — Jogo Exclusivo | CV GAMES">
+  <meta name="twitter:description" content="Monte sua defesa, evolua suas torres e proteja a base de ondas cada vez mais perigosas.">
+  <meta name="twitter:image" content="https://cvgames.com.br/games/cv-dodge/cover.svg">
+  <meta name="twitter:image:alt" content="Capa do jogo CV Defesa Orbital">
+  <title>CV DEFESA ORBITAL — Jogo Exclusivo | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/games/cv-dodge/">
   <link rel="icon" href="../../img/incon.png" type="image/png">
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "VideoGame",
-      "name": "CV DODGE",
-      "url": "https://cvgames.com.br/games/cv-dodge/",
-      "image": "https://cvgames.com.br/games/cv-dodge/cover-social.png",
-      "description": "Arcade exclusivo do CV GAMES em que o jogador desvia de obstáculos.",
-      "genre": "Arcade",
-      "gamePlatform": "Navegador",
-      "inLanguage": "pt-BR"
-    }
+    {"@context":"https://schema.org","@type":"VideoGame","name":"CV DEFESA ORBITAL","url":"https://cvgames.com.br/games/cv-dodge/","image":"https://cvgames.com.br/games/cv-dodge/cover.svg","description":"Jogo original de defesa de torres do CV GAMES. Construa sua defesa, resista às ondas e proteja a base.","genre":"Estratégia, Defesa de torres","gamePlatform":"Navegador","inLanguage":"pt-BR"}
   </script>
   <script>
-    try {
-      const savedTheme = localStorage.getItem('cv-games-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
-    } catch {
-      // O tema escuro do documento continua como padrão.
-    }
+    try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch {}
   </script>
   <link rel="stylesheet" href="../../css/home.css">
   <link rel="stylesheet" href="game.css">
   <link rel="stylesheet" href="../audio-controls.css">
   <script src="../../data/jogos.js" defer></script>
+  <script src="../../js/profile-store.js" defer></script>
   <script src="../../js/stats.js" defer></script>
   <script src="../../js/achievements.js" defer></script>
   <script src="../fullscreen.js" defer></script>
+  <script src="profile-gate.js" defer></script>
   <script src="../audio-controls.js" defer></script>
   <script src="game.js" defer></script>
 </head>
-<body class="cv-dodge-page" data-cv-dodge-state="intro">
+<body class="cv-dodge-page orbital-page" data-orbital-state="intro">
   <a class="skip-link" href="#jogo">Pular para o jogo</a>
 
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="../../index.html" aria-label="CV GAMES — Início">
-        <img src="../../img/onconee.png" alt="">
-        <span>CV GAMES</span>
-      </a>
+      <a class="brand" href="../../index.html" aria-label="CV GAMES — Início"><img src="../../img/onconee.png" alt=""><span>CV GAMES</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
       <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal">
-        <a href="../../index.html">Início</a>
-        <a href="../../index.html#jogos">Jogos</a>
-        <a href="../../baixar.html">Downloads</a>
-        <a href="../../central.html" aria-label="Central Gamer">Central</a>
-        <a href="../../perfil.html">Perfil</a>
+        <a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html" aria-label="Central Gamer">Central</a><a href="../../perfil.html">Perfil</a>
+        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
       </nav>
-      <div class="header-actions">
-        <button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV DODGE aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon" aria-hidden="true">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button>
-        <button class="icon-button" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
-      </div>
+      <div class="header-actions"><button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV Defesa Orbital aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon" aria-hidden="true">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button></div>
     </div>
   </header>
 
-  <main id="conteudo" class="dodge-main">
+  <main id="conteudo" class="orbital-main">
     <div class="container">
-      <a class="dodge-back" href="../../index.html#jogos">← Voltar para Jogos</a>
-
-      <section class="dodge-introduction" aria-labelledby="dodge-title">
-        <div>
-          <p class="eyebrow">⭐ Exclusivo CV GAMES</p>
-          <h1 id="dodge-title">CV DODGE</h1>
-          <p>Desvie dos obstáculos e sobreviva o máximo possível.</p>
-        </div>
-        <p class="dodge-credit">Um jogo CV GAMES</p>
+      <a class="orbital-back" href="../../index.html#jogos">← Voltar para Jogos</a>
+      <section class="orbital-access-card" data-profile-locked hidden aria-labelledby="orbital-access-title">
+        <p>ACESSO DE TESTE RESTRITO</p>
+        <h1 id="orbital-access-title">Protótipo reservado</h1>
+        <p>CV Defesa Orbital está disponível apenas com o perfil local <strong>educvv dev1</strong>.</p>
+        <div><a class="orbital-primary-button" href="../../perfil.html">Abrir perfil <span aria-hidden="true">→</span></a><a class="orbital-access-home" href="../../index.html">Voltar ao início</a></div>
+      </section>
+      <section class="orbital-introduction" aria-labelledby="orbital-title">
+        <div><p class="eyebrow">✦ Exclusivo CV GAMES · Estratégia</p><h1 id="orbital-title">CV DEFESA ORBITAL</h1><p>Construa sua defesa, segure as ondas e proteja o núcleo até onde conseguir.</p></div>
+        <p class="orbital-credit">ESTRATÉGIA · DEFESA DE TORRES</p>
       </section>
 
-      <section class="dodge-layout" id="jogo" aria-label="Área de jogo CV DODGE" data-fullscreen-root>
-        <div class="dodge-game-panel">
-          <div class="dodge-scoreboard" aria-live="polite">
-            <span>Pontuação <strong data-score>0</strong></span>
-            <span>🏆 Recorde <strong data-best-score>0</strong></span>
-          </div>
-
-          <div class="dodge-stage">
-            <canvas width="480" height="640" data-cv-dodge-canvas aria-label="Área do jogo CV DODGE. Desvie dos obstáculos que caem." role="img">Seu navegador não oferece suporte a Canvas para executar CV DODGE.</canvas>
-
-            <section class="dodge-screen" data-intro-screen aria-labelledby="intro-title">
-              <p class="dodge-screen-icon" aria-hidden="true">🛡️</p>
-              <h2 id="intro-title">Pronto para desviar?</h2>
-              <p>Use A / D ou as setas. No celular, segure os botões abaixo.</p>
-              <button class="button button-primary dodge-start-button" type="button" data-start-game>▶ Jogar</button>
-            </section>
-
-            <section class="dodge-screen dodge-pause-screen" data-pause-screen hidden aria-labelledby="pause-title">
-              <p class="dodge-screen-icon" aria-hidden="true">⏸️</p>
-              <h2 id="pause-title">Pausado</h2>
-              <p>A pontuação e os obstáculos estão congelados.</p>
-              <button class="button button-primary" type="button" data-resume-game>▶ Retomar</button>
-            </section>
-
-            <section class="dodge-screen dodge-gameover-screen" data-gameover-screen hidden aria-labelledby="gameover-title">
-              <p class="dodge-screen-icon" aria-hidden="true">💥</p>
-              <h2 id="gameover-title">GAME OVER</h2>
-              <p>Pontuação: <strong data-final-score>0</strong></p>
-              <p>🏆 Recorde: <strong data-final-best-score>0</strong></p>
-              <div class="dodge-screen-actions">
-                <button class="button button-primary" type="button" data-restart-game>🔄 Jogar novamente</button>
-                <a class="button button-secondary" href="../../index.html#jogos">← Voltar para CV GAMES</a>
-              </div>
-            </section>
-          </div>
-
-          <div class="dodge-controls" aria-label="Controles do jogo">
-            <button class="dodge-control-button" type="button" data-move-left aria-label="Mover para a esquerda">◀ <span>Esquerda</span></button>
-            <button class="dodge-pause-button" type="button" data-pause-game aria-label="Pausar jogo">⏸ Pausar</button>
-            <button class="dodge-control-button" type="button" data-move-right aria-label="Mover para a direita"><span>Direita</span> ▶</button>
-            <div class="dodge-audio-tools">
-              <div class="cv-game-audio" data-game-audio data-music-src="../../music/CV%20DODGE.mp3"></div>
-              <button class="dodge-pause-button dodge-fullscreen-button" type="button" data-fullscreen-button="#jogo" aria-pressed="false">⛶ Tela cheia</button>
+      <section class="orbital-layout" id="jogo" aria-label="Jogo CV Defesa Orbital" data-fullscreen-root>
+        <article class="orbital-game-panel">
+          <div class="orbital-hud" aria-live="polite">
+            <div class="orbital-hud-player"><span class="orbital-status-dot"></span><span><strong>Comando Orbital</strong><small data-hud-status>Prepare sua defesa</small></span></div>
+            <div class="orbital-metrics">
+              <span><small>Onda</small><strong data-wave>0</strong></span>
+              <span><small>Créditos</small><strong data-credits>160</strong></span>
+              <span><small>Base</small><strong data-lives>15</strong></span>
+              <span><small>Abates</small><strong data-kills>0</strong></span>
+              <span class="orbital-record"><small>Recorde</small><strong data-best-wave>0</strong></span>
             </div>
           </div>
-          <p class="dodge-status" data-game-status aria-live="polite">Tela inicial. Escolha Jogar para começar.</p>
-        </div>
 
-        <aside class="dodge-help" aria-labelledby="how-to-title">
-          <h2 id="how-to-title">Como jogar</h2>
-          <ol>
-            <li>Mova o escudo azul para longe dos blocos que caem.</li>
-            <li>Sobreviva para aumentar a pontuação e a dificuldade.</li>
-            <li>Use <kbd>P</kbd> ou Pausar para congelar a partida.</li>
-          </ol>
-          <div class="dodge-help-note"><strong>PC</strong><span>A / D ou ← / →</span></div>
-          <div class="dodge-help-note"><strong>Celular</strong><span>Segure ◀ ou ▶</span></div>
-          <p class="dodge-help-footnote">Cada início de sessão conta uma vez nas suas estatísticas locais.</p>
+          <div class="orbital-stage">
+            <canvas data-orbital-canvas aria-label="Tabuleiro de defesa orbital. Selecione uma torre e toque em um terreno vazio para construí-la." role="img">Seu navegador não oferece suporte a Canvas.</canvas>
+            <section class="orbital-screen" data-intro-screen aria-labelledby="intro-title">
+              <div class="orbital-screen-emblem" aria-hidden="true">✦</div><p class="orbital-screen-kicker">SISTEMA DE DEFESA ONLINE</p><h2 id="intro-title">A rota está sob ameaça.</h2><p>Construa torres ao redor do caminho e impeça as naves inimigas de alcançar seu núcleo.</p><ul><li><span>01</span> Escolha uma torre na central de comando.</li><li><span>02</span> Toque em uma área livre para construí-la.</li><li><span>03</span> Prepare-se e lance a próxima onda.</li></ul><button class="orbital-primary-button" type="button" data-start-game>Iniciar defesa <span aria-hidden="true">→</span></button>
+            </section>
+            <section class="orbital-screen orbital-overlay" data-pause-screen hidden aria-labelledby="pause-title"><div class="orbital-screen-emblem" aria-hidden="true">Ⅱ</div><p class="orbital-screen-kicker">PAUSA TÁTICA</p><h2 id="pause-title">Defesa pausada</h2><p>A batalha está congelada. Reorganize-se e volte quando estiver pronto.</p><button class="orbital-primary-button" type="button" data-resume-game>Retomar defesa <span aria-hidden="true">→</span></button></section>
+            <section class="orbital-screen orbital-overlay orbital-results" data-gameover-screen hidden aria-labelledby="gameover-title"><div class="orbital-screen-emblem" aria-hidden="true">◇</div><p class="orbital-screen-kicker">NÚCLEO COMPROMETIDO</p><h2 id="gameover-title">A defesa terminou</h2><div class="orbital-result-grid"><span>Onda alcançada<strong data-final-wave>0</strong></span><span>Inimigos abatidos<strong data-final-kills>0</strong></span><span>Pontuação<strong data-final-score>0</strong></span><span>Recorde<strong data-final-best>0</strong></span></div><button class="orbital-primary-button" type="button" data-restart-game>Nova missão <span aria-hidden="true">↻</span></button></section>
+            <div class="orbital-toast" data-toast aria-live="polite" hidden></div>
+          </div>
+
+          <div class="orbital-game-tools" aria-label="Controles da partida">
+            <div class="orbital-tool-group"><button class="orbital-tool-button" type="button" data-pause-game aria-label="Pausar partida" title="Pausar partida">⏸</button><span data-pause-label>PAUSAR</span></div>
+            <div class="orbital-tool-group"><div class="cv-game-audio" data-game-audio data-music-src="../../music/CV%20DODGE.mp3"></div></div>
+            <div class="orbital-tool-group"><button class="orbital-tool-button orbital-fullscreen" type="button" data-fullscreen-button="#jogo" aria-pressed="false" aria-label="Tela cheia" title="Tela cheia"><span aria-hidden="true">⛶</span><span data-fullscreen-label hidden></span></button><span data-fullscreen-hint>TELA CHEIA</span></div>
+          </div>
+          <p class="orbital-live-message" data-game-status aria-live="polite">Selecione suas torres para começar a missão.</p>
+        </article>
+
+        <aside class="orbital-command" aria-label="Central de comando">
+          <div class="orbital-command-heading"><div><p>ESTRATÉGIA</p><h2>Central de comando</h2></div><span aria-hidden="true">⌘</span></div>
+          <section class="orbital-build-section"><div class="orbital-section-heading"><h3>Construir torre</h3><span>ESCOLHA UMA</span></div>
+            <div class="orbital-tower-list">
+              <button class="orbital-tower-card is-selected" type="button" data-tower="pulse"><span class="orbital-tower-icon pulse-icon">✦</span><span class="orbital-tower-copy"><strong>Sentinela</strong><small>Equilibrada · alcance médio</small></span><span class="orbital-tower-cost">55 <i>✧</i></span></button>
+              <button class="orbital-tower-card" type="button" data-tower="cannon"><span class="orbital-tower-icon cannon-icon">◉</span><span class="orbital-tower-copy"><strong>Canhão</strong><small>Dano alto · explosão em área</small></span><span class="orbital-tower-cost">85 <i>✧</i></span></button>
+              <button class="orbital-tower-card" type="button" data-tower="cryo"><span class="orbital-tower-icon cryo-icon">❄</span><span class="orbital-tower-copy"><strong>Congelante</strong><small>Reduz a velocidade inimiga</small></span><span class="orbital-tower-cost">70 <i>✧</i></span></button>
+              <button class="orbital-tower-card" type="button" data-tower="plasma"><span class="orbital-tower-icon plasma-icon">ϟ</span><span class="orbital-tower-copy"><strong>Plasma</strong><small>Longo alcance · perfurante</small></span><span class="orbital-tower-cost">125 <i>✧</i></span></button>
+            </div>
+            <p class="orbital-command-tip" data-build-tip>Escolha uma torre e toque em uma casa livre do mapa.</p>
+          </section>
+
+          <section class="orbital-selected-section" data-selection-panel>
+            <div class="orbital-section-heading"><h3 data-selected-title>Sentinela selecionada</h3><span data-selected-level>NÍVEL 1</span></div>
+            <div class="orbital-tower-stats"><span>Dano<strong data-selected-damage>12</strong></span><span>Alcance<strong data-selected-range>2,6</strong></span><span>Alvo<strong>Avançado</strong></span></div>
+            <div class="orbital-upgrade-actions"><button type="button" data-upgrade-tower disabled>Melhorar <span data-upgrade-cost>60 ✧</span></button><button type="button" data-sell-tower disabled aria-label="Vender torre">Vender</button></div>
+          </section>
+
+          <section class="orbital-wave-section"><div class="orbital-next-wave"><span class="orbital-wave-icon" aria-hidden="true">⌁</span><span><small data-wave-label>MISSÃO PRONTA</small><strong data-wave-summary>Construa sua defesa</strong></span></div><button class="orbital-launch-button" type="button" data-launch-wave disabled>Iniciar defesa <span aria-hidden="true">→</span></button><p data-wave-reward>Sobreviva às ondas e ganhe créditos para expandir.</p></section>
+          <div class="orbital-command-footer"><span><i></i> SISTEMAS ONLINE</span><span>CV GAMES · DEFESA ORBITAL</span></div>
         </aside>
       </section>
-
-      <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-dodge-after-game" aria-hidden="true"></div>
+      <aside class="orbital-howto" aria-label="Dicas de jogo"><strong>Como jogar</strong><span>Monte torres ao lado da rota, evolua as que estão selecionadas e lance as ondas quando estiver preparado.</span><span class="orbital-howto-controls"><kbd>Toque / clique</kbd> construir · <kbd>Esc</kbd> pausar</span></aside>
+      <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-orbital-after-game" aria-hidden="true"></div>
     </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div><p><strong>CV GAMES © 2026</strong></p><p>Jogos online e downloads</p></div>
-      <nav class="footer-nav" aria-label="Navegação do rodapé"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central Gamer</a><a href="../../sobre.html">Sobre</a><a href="../../contato.html">Contato</a><a href="../../privacidade.html">Privacidade</a><a href="../../termos.html">Termos</a><a href="../../perfil.html">Perfil</a></nav>
-    </div>
-  </footer>
+  <footer class="site-footer"><div class="footer-inner"><div><p><strong>CV GAMES © 2026</strong></p><p>Jogos online e downloads</p></div><nav class="footer-nav" aria-label="Navegação do rodapé"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central Gamer</a><a href="../../sobre.html">Sobre</a><a href="../../contato.html">Contato</a><a href="../../privacidade.html">Privacidade</a><a href="../../termos.html">Termos</a><a href="../../perfil.html">Perfil</a></nav></div></footer>
 </body>
 </html>

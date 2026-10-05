@@ -129,3 +129,52 @@
 .neon-game-panel.is-fullscreen-fallback .cv-game-audio-panel { top:auto; bottom:calc(100% + .5rem); }
 .neon-game-panel.is-fullscreen-fallback { position: fixed; inset: 0; z-index: 9999; }
 body.has-fullscreen-fallback { overflow: hidden; }
+
+/* Controles selecionáveis e interface imersiva do CV NEON BREAKER. */
+.neon-game-panel { position:relative; }
+.neon-controls { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:.55rem; width:min(100%,50rem); margin:.9rem auto 0; }
+.neon-touch-controls { display:none; align-items:center; gap:.4rem; }
+.neon-touch-controls:not([hidden]) { display:flex; }
+.neon-control-button { display:inline-grid; width:3.3rem; min-width:3.3rem; height:3.3rem; min-height:3.3rem; place-items:center; padding:0; font-size:1.1rem; }
+.neon-launch-button,.neon-pause-button,.neon-settings-button,.neon-fullscreen-button { min-height:3.3rem; }
+.neon-settings-button { display:inline-grid; width:3.3rem; min-width:3.3rem; place-items:center; padding:0; border:1px solid var(--line); border-radius:.85rem; background:var(--bg-soft); color:var(--text); font:inherit; font-size:1.05rem; font-weight:850; cursor:pointer; touch-action:manipulation; transition:transform .15s ease,border-color .15s ease,background-color .15s ease; }
+.neon-settings-button:hover,.neon-settings-button:focus-visible { transform:translateY(-2px); border-color:var(--primary); background:var(--surface-hover); }
+.neon-audio-tools { display:flex; align-items:center; justify-content:center; gap:.45rem; margin:0; }
+.neon-fullscreen-button { display:inline-flex; align-items:center; justify-content:center; gap:.35rem; }
+.neon-settings-modal { position:absolute; z-index:20; inset:0; display:grid; place-items:center; overflow:auto; padding:1rem; background:rgba(3,7,18,.86); backdrop-filter:blur(12px); }
+.neon-settings-modal[hidden] { display:none !important; }
+.neon-settings-card { position:relative; display:flex; width:min(100%,32rem); max-height:100%; flex-direction:column; align-items:center; gap:.75rem; overflow:auto; padding:clamp(1.3rem,4vw,2rem); border:1px solid rgba(186,114,255,.38); border-radius:1.2rem; background:linear-gradient(145deg,rgba(24,24,62,.98),rgba(7,13,32,.98)); box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 38px rgba(173,102,255,.14); color:#f9f4ff; text-align:center; }
+.neon-settings-card h2 { margin:0; font-size:clamp(1.4rem,4vw,2rem); }
+.neon-settings-card>p:not(.neon-settings-kicker) { margin:0; color:#d1c8e9; font-size:.84rem; }
+.neon-settings-kicker { margin:0; color:#d09dff; font-size:.68rem; font-weight:950; letter-spacing:.18em; }
+.neon-settings-close { position:absolute; top:.65rem; right:.7rem; display:grid; width:2.4rem; height:2.4rem; place-items:center; border:1px solid rgba(190,161,255,.32); border-radius:50%; background:rgba(255,255,255,.06); color:#f9f4ff; font-size:1.5rem; cursor:pointer; }
+.neon-control-picker { display:flex; width:min(100%,25rem); flex-wrap:wrap; justify-content:center; gap:.25rem; padding:.25rem; border:1px solid rgba(190,161,255,.2); border-radius:.8rem; background:rgba(8,13,34,.8); }
+.neon-control-picker button { min-height:2.5rem; flex:1 1 8rem; padding:.45rem .65rem; border:0; border-radius:.58rem; background:transparent; color:#c4badb; font:inherit; font-size:.76rem; font-weight:850; cursor:pointer; }
+.neon-control-picker button[aria-pressed="true"] { background:rgba(186,114,255,.18); color:#fff; box-shadow:inset 0 0 0 1px rgba(190,161,255,.42); }
+
+.neon-game-panel:fullscreen,.neon-game-panel.is-fullscreen-fallback { box-sizing:border-box; display:grid; width:100vw; height:100vh; height:100dvh; max-height:100dvh; grid-template-columns:minmax(0,1fr); grid-template-rows:min-content minmax(0,1fr) min-content; justify-items:center; align-items:center; gap:.55rem; margin:0; padding:clamp(.5rem,1.2vw,1rem); overflow:hidden; border:0; border-radius:0; background:radial-gradient(ellipse at 50% 0%,rgba(146,75,255,.13),transparent 58%),#07102d; }
+.neon-game-panel:fullscreen .neon-scoreboard,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard { display:flex; width:min(100%,72rem); justify-content:center; gap:.45rem; margin:0; }
+.neon-game-panel:fullscreen .neon-scoreboard span,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard span { min-height:2.35rem; justify-content:center; padding:.3rem .65rem; border:1px solid rgba(166,190,238,.14); border-radius:.7rem; background:rgba(16,29,54,.85); font-size:.68rem; }
+.neon-game-panel:fullscreen .neon-scoreboard strong,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard strong { font-size:.9rem; }
+.neon-game-panel:fullscreen .neon-stage,.neon-game-panel.is-fullscreen-fallback .neon-stage { place-self:center; width:min(100%,calc((100dvh - 10rem) * 1.4286),80rem); max-width:100%; max-height:calc(100dvh - 10rem); height:auto; flex:none; aspect-ratio:10/7; border-radius:.85rem; }
+.neon-game-panel:fullscreen .neon-controls,.neon-game-panel.is-fullscreen-fallback .neon-controls { display:flex; width:min(100%,60rem); flex:0 0 auto; align-items:center; justify-content:center; flex-wrap:wrap; gap:.45rem; margin:0; }
+.neon-game-panel:fullscreen .neon-touch-controls,.neon-game-panel.is-fullscreen-fallback .neon-touch-controls { gap:.35rem; }
+.neon-game-panel:fullscreen .neon-touch-controls:not([hidden]),.neon-game-panel.is-fullscreen-fallback .neon-touch-controls:not([hidden]) { display:flex; }
+.neon-game-panel:fullscreen .neon-control-button,.neon-game-panel:fullscreen .neon-launch-button,.neon-game-panel:fullscreen .neon-pause-button,.neon-game-panel:fullscreen .neon-settings-button,.neon-game-panel:fullscreen .neon-fullscreen-button,.neon-game-panel.is-fullscreen-fallback .neon-control-button,.neon-game-panel.is-fullscreen-fallback .neon-launch-button,.neon-game-panel.is-fullscreen-fallback .neon-pause-button,.neon-game-panel.is-fullscreen-fallback .neon-settings-button,.neon-game-panel.is-fullscreen-fallback .neon-fullscreen-button { box-sizing:border-box; display:inline-grid; width:2.7rem; min-width:2.7rem; height:2.7rem; min-height:2.7rem; place-items:center; overflow:hidden; padding:0; border:1px solid rgba(176,205,220,.3); border-radius:50%; background:rgba(13,25,39,.8); color:#e8efff; font-size:1rem; line-height:1; box-shadow:0 5px 18px rgba(0,0,0,.3); backdrop-filter:blur(8px); }
+.neon-game-panel:fullscreen [data-launch-label],.neon-game-panel.is-fullscreen-fallback [data-launch-label],.neon-game-panel:fullscreen [data-pause-label],.neon-game-panel.is-fullscreen-fallback [data-pause-label],.neon-game-panel:fullscreen [data-fullscreen-label],.neon-game-panel.is-fullscreen-fallback [data-fullscreen-label] { display:none; }
+.neon-game-panel:fullscreen .neon-audio-tools,.neon-game-panel.is-fullscreen-fallback .neon-audio-tools { display:flex; gap:.35rem; margin:0; }
+.neon-game-panel:fullscreen .cv-game-audio-button,.neon-game-panel.is-fullscreen-fallback .cv-game-audio-button { box-sizing:border-box; width:2.7rem; min-height:2.7rem; padding:0; border-color:rgba(176,205,220,.3); border-radius:50%; background:rgba(13,25,39,.8); color:#e8efff; font-size:1rem; line-height:1; box-shadow:0 5px 18px rgba(0,0,0,.3); backdrop-filter:blur(8px); }
+.neon-game-panel:fullscreen .cv-game-audio-button>span:not([aria-hidden="true"]),.neon-game-panel.is-fullscreen-fallback .cv-game-audio-button>span:not([aria-hidden="true"]) { display:none; }
+.neon-game-panel:fullscreen .neon-status,.neon-game-panel.is-fullscreen-fallback .neon-status { display:none; }
+.neon-game-panel:fullscreen .cv-game-audio-panel,.neon-game-panel.is-fullscreen-fallback .cv-game-audio-panel { top:auto; bottom:calc(100% + .5rem); }
+.neon-game-panel.is-fullscreen-fallback { position:fixed; inset:0; z-index:9999; }
+body.has-fullscreen-fallback { overflow:hidden; }
+@media(max-width:620px) {
+  .neon-game-panel:fullscreen,.neon-game-panel.is-fullscreen-fallback { gap:.35rem; padding:.4rem; }
+  .neon-game-panel:fullscreen .neon-scoreboard,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.25rem; }
+  .neon-game-panel:fullscreen .neon-scoreboard span,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard span { min-height:1.9rem; padding:.2rem .25rem; font-size:.58rem; }
+  .neon-game-panel:fullscreen .neon-scoreboard span:last-child,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard span:last-child { grid-column:auto; }
+  .neon-game-panel:fullscreen .neon-stage,.neon-game-panel.is-fullscreen-fallback .neon-stage { width:min(100%,calc((100dvh - 9rem) * 1.4286)); max-height:calc(100dvh - 9rem); }
+  .neon-controls { gap:.35rem; }
+  .neon-launch-button,.neon-pause-button,.neon-settings-button { min-height:3rem; }
+}

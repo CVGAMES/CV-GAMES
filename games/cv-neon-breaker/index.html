@@ -67,10 +67,10 @@
         <a href="../../baixar.html">Downloads</a>
         <a href="../../central.html" aria-label="Central Gamer">Central</a>
         <a href="../../perfil.html">Perfil</a>
+        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
       </nav>
       <div class="header-actions">
         <button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV NEON BREAKER aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon" aria-hidden="true">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button>
-        <button class="icon-button" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
       </div>
     </div>
   </header>
@@ -89,7 +89,7 @@
       </section>
 
       <section class="neon-layout" id="jogo" aria-label="Área de jogo CV NEON BREAKER">
-        <div class="neon-game-panel" id="neon-painel-jogo" data-fullscreen-root>
+        <div class="neon-game-panel" id="neon-painel-jogo" data-fullscreen-root data-neon-game-panel>
           <div class="neon-scoreboard" aria-live="polite">
             <span>Fase <strong data-phase>1 / 5</strong></span>
             <span>Pontuação <strong data-score>0</strong></span>
@@ -156,22 +156,39 @@
           </div>
 
           <div class="neon-controls" aria-label="Controles do jogo">
-            <button class="neon-control-button" type="button" data-move-left aria-label="Mover plataforma para a esquerda">◀ <span>Esquerda</span></button>
-            <button class="neon-launch-button" type="button" data-launch-ball aria-label="Lançar esfera">● <span>Lançar</span></button>
-            <button class="neon-pause-button" type="button" data-pause-game aria-label="Pausar jogo">⏸ Pausar</button>
-            <button class="neon-control-button" type="button" data-move-right aria-label="Mover plataforma para a direita"><span>Direita</span> ▶</button>
-          </div>
-          <div class="neon-audio-tools">
-            <div class="cv-game-audio" data-game-audio data-music-src="../../music/CV%20NEON%20BREAKER.mp3"></div>
-            <button class="neon-fullscreen-button" type="button" data-fullscreen-button="#neon-painel-jogo" aria-pressed="false">⛶ Tela cheia</button>
+            <div class="neon-touch-controls" data-touch-controls hidden aria-label="Botões virtuais de movimento">
+              <button class="neon-control-button" type="button" data-move-left aria-label="Mover plataforma para a esquerda">◀</button>
+              <button class="neon-control-button" type="button" data-move-right aria-label="Mover plataforma para a direita">▶</button>
+            </div>
+            <button class="neon-launch-button" type="button" data-launch-ball aria-label="Lançar esfera"><span aria-hidden="true">●</span><span data-launch-label>Lançar</span></button>
+            <button class="neon-pause-button" type="button" data-pause-game aria-label="Pausar jogo"><span data-pause-icon aria-hidden="true">⏸</span><span data-pause-label> Pausar</span></button>
+            <button class="neon-settings-button" type="button" data-open-settings aria-label="Abrir configurações" title="Configurações">⚙</button>
+            <div class="neon-audio-tools">
+              <div class="cv-game-audio" data-game-audio data-music-src="../../music/CV%20NEON%20BREAKER.mp3"></div>
+              <button class="neon-fullscreen-button" type="button" data-fullscreen-button="#neon-painel-jogo" aria-pressed="false" aria-label="Alternar tela cheia"><span aria-hidden="true">⛶</span><span data-fullscreen-label> Tela cheia</span></button>
+            </div>
           </div>
           <p class="neon-status" data-game-status aria-live="polite">Tela inicial. Escolha Jogar para preparar a primeira esfera.</p>
+          <section class="neon-settings-modal" data-settings-modal hidden role="dialog" aria-modal="true" aria-labelledby="neon-settings-title">
+            <div class="neon-settings-card">
+              <button class="neon-settings-close" type="button" data-close-settings aria-label="Fechar configurações">×</button>
+              <p class="neon-settings-kicker">AJUSTES DA PARTIDA</p>
+              <h2 id="neon-settings-title">Configurações</h2>
+              <p>Escolha como controlar a plataforma.</p>
+              <div class="neon-control-picker" role="group" aria-label="Modo de controle">
+                <button type="button" data-control-mode="keyboard" aria-pressed="true">⌨ Teclado</button>
+                <button type="button" data-control-mode="touch" aria-pressed="false">☝ Toque na tela</button>
+                <button type="button" data-control-mode="buttons" aria-pressed="false">◀ Botões na tela ▶</button>
+              </div>
+              <button class="button button-primary" type="button" data-close-settings>PRONTO</button>
+            </div>
+          </section>
         </div>
 
         <aside class="neon-help" aria-labelledby="how-to-title">
           <h2 id="how-to-title">Como jogar</h2>
           <ol>
-            <li>Mova a plataforma com <kbd>A</kbd> / <kbd>D</kbd> ou <kbd>←</kbd> / <kbd>→</kbd>.</li>
+            <li>Escolha nas configurações: teclado, arrastar na arena ou botões virtuais na tela.</li>
             <li>Use <kbd>Espaço</kbd>, toque na arena ou Lançar para soltar a esfera.</li>
             <li>Blocos lisos precisam de um impacto; blocos marcados com <strong>II</strong> precisam de dois.</li>
             <li>Use <kbd>P</kbd> ou Pausar quando precisar de uma pausa.</li>

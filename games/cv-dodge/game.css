@@ -1,112 +1,184 @@
-.cv-dodge-page { min-height: 100vh; }
-.dodge-main { padding: clamp(1.15rem, 3vw, 2.5rem) 0 4rem; }
-.dodge-back { display: inline-flex; margin-bottom: 1rem; color: var(--muted); font-size: .9rem; font-weight: 800; text-decoration: none; }
-.dodge-back:hover, .dodge-back:focus-visible { color: var(--primary); }
+.orbital-page { min-height: 100vh; }
+.orbital-main { padding: clamp(.8rem, 2vw, 1.35rem) 0 3rem; }
+.orbital-back { display: inline-flex; margin: 0 0 .75rem; color: var(--muted); font-size: .85rem; font-weight: 800; text-decoration: none; }
+.orbital-back:hover, .orbital-back:focus-visible { color: var(--primary); }
+.orbital-access-card { display: grid; justify-items: center; width: min(100%, 44rem); min-height: 23rem; margin: clamp(2rem, 8vh, 5rem) auto; padding: clamp(1.5rem, 5vw, 3rem); border: 1px solid color-mix(in srgb, #58d9d2 40%, var(--line)); border-radius: 1.25rem; text-align: center; background: radial-gradient(ellipse at top, rgba(65, 185, 185, .13), transparent 65%), var(--surface); box-shadow: var(--shadow); }
+.orbital-access-card[hidden] { display: none; }
+.orbital-access-card > p:first-child { margin: 0 0 .6rem; color: #67dcd3; font-size: .67rem; font-weight: 950; letter-spacing: .17em; }
+.orbital-access-card h1 { margin: 0; font-size: clamp(1.7rem, 5vw, 2.5rem); letter-spacing: -.05em; }
+.orbital-access-card > p:not(:first-child) { max-width: 32rem; margin: .75rem 0 0; color: var(--muted); line-height: 1.6; }
+.orbital-access-card > p strong { color: var(--text); }
+.orbital-access-card > div { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-top: 1.25rem; }
+.orbital-access-card .orbital-primary-button { margin: 0; text-decoration: none; }
+.orbital-access-home { color: var(--muted); font-size: .8rem; font-weight: 800; text-decoration: none; }
+.orbital-access-home:hover { color: var(--primary); }
+.orbital-introduction { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; padding: .25rem .1rem; }
+.orbital-introduction .eyebrow { margin: 0 0 .3rem; color: #5ed9d3; font-size: .73rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.orbital-introduction h1 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.8rem); letter-spacing: -.055em; line-height: 1; }
+.orbital-introduction p:not(.eyebrow):not(.orbital-credit) { margin: .5rem 0 0; color: var(--muted); font-size: .9rem; }
+.orbital-introduction .orbital-credit { margin: 0 .15rem .2rem 0; color: var(--muted); font-size: .68rem; font-weight: 900; letter-spacing: .13em; }
+.orbital-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 21rem); align-items: stretch; gap: .85rem; }
+.orbital-game-panel, .orbital-command { min-width: 0; border: 1px solid color-mix(in srgb, var(--line) 82%, #58cfcf); border-radius: 1.05rem; background: var(--surface); box-shadow: var(--shadow); }
+.orbital-game-panel { display: flex; flex-direction: column; min-height: 35rem; padding: .7rem; overflow: hidden; }
+.orbital-hud { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: .8rem; padding: .45rem .55rem .7rem; }
+.orbital-hud-player { display: flex; align-items: center; gap: .6rem; min-width: 9rem; }
+.orbital-status-dot { width: .65rem; height: .65rem; flex: 0 0 auto; border-radius: 50%; background: #52dfc3; box-shadow: 0 0 1rem #52dfc3a8; }
+.orbital-hud-player strong, .orbital-hud-player small { display: block; }
+.orbital-hud-player strong { font-size: .77rem; }
+.orbital-hud-player small { margin-top: .12rem; color: var(--muted); font-size: .67rem; }
+.orbital-metrics { display: flex; align-items: center; justify-content: flex-end; gap: clamp(.55rem, 1.7vw, 1.2rem); }
+.orbital-metrics > span { display: grid; gap: .1rem; text-align: center; }
+.orbital-metrics small { color: var(--muted); font-size: .58rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.orbital-metrics strong { font-size: 1.04rem; font-variant-numeric: tabular-nums; }
+.orbital-metrics > span:nth-child(2) strong { color: #69e0cf; }
+.orbital-metrics > span:nth-child(3) strong { color: #ff858c; }
+.orbital-record { padding-left: .7rem; border-left: 1px solid var(--line); }
+.orbital-stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; aspect-ratio: 3 / 2; border: 1px solid rgba(96, 186, 199, .24); border-radius: .85rem; background: #081427; box-shadow: inset 0 0 0 1px rgba(255,255,255,.035), 0 12px 30px rgba(3, 11, 25, .2); }
+.orbital-stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.orbital-screen { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .7rem; padding: clamp(1rem, 3vw, 2.2rem); overflow-y: auto; color: #f5f9ff; text-align: center; background: linear-gradient(145deg, rgba(5, 16, 33, .94), rgba(8, 31, 53, .9) 55%, rgba(15, 26, 55, .94)); backdrop-filter: blur(9px); }
+.orbital-screen[hidden] { display: none; }
+.orbital-screen-emblem { display: grid; width: 3.4rem; height: 3.4rem; place-items: center; border: 1px solid rgba(83, 222, 207, .4); border-radius: 1rem; color: #65ecdc; font-size: 1.7rem; background: rgba(35, 190, 181, .1); box-shadow: 0 0 2rem rgba(56, 208, 194, .15); }
+.orbital-screen-kicker { margin: .1rem 0 -.25rem; color: #70e2d7; font-size: .63rem; font-weight: 900; letter-spacing: .18em; }
+.orbital-screen h2 { max-width: 35rem; margin: 0; font-size: clamp(1.55rem, 4vw, 2.55rem); letter-spacing: -.05em; line-height: 1.05; }
+.orbital-screen > p:not(.orbital-screen-kicker) { max-width: 29rem; margin: 0; color: #b6c9da; font-size: .9rem; line-height: 1.55; }
+.orbital-screen ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; width: min(100%, 40rem); margin: .45rem 0 .2rem; padding: 0; list-style: none; }
+.orbital-screen li { display: grid; justify-items: center; gap: .45rem; min-height: 4.6rem; padding: .7rem .55rem; border: 1px solid rgba(169, 199, 219, .14); border-radius: .65rem; color: #c5d4e2; font-size: .7rem; background: rgba(255,255,255,.035); }
+.orbital-screen li span { color: #58d5cd; font-size: .6rem; font-weight: 900; letter-spacing: .1em; }
+.orbital-primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; min-width: min(100%, 15rem); min-height: 2.95rem; margin-top: .2rem; padding: 0 1.1rem; border: 1px solid #71ebe0; border-radius: .65rem; color: #05212d; font: inherit; font-size: .84rem; font-weight: 950; background: linear-gradient(115deg, #63eadb, #7de9b4); box-shadow: 0 .65rem 1.7rem rgba(52, 222, 205, .18); cursor: pointer; transition: transform .16s ease, filter .16s ease; }
+.orbital-primary-button:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.orbital-overlay { background: rgba(4, 14, 29, .89); }
+.orbital-results { background: linear-gradient(145deg, rgba(42, 15, 30, .95), rgba(8, 21, 42, .97)); }
+.orbital-result-grid { display: grid; grid-template-columns: repeat(2, minmax(7rem, 1fr)); gap: .5rem; width: min(100%, 24rem); margin: .25rem 0; }
+.orbital-result-grid span { display: grid; gap: .2rem; padding: .6rem; border: 1px solid rgba(255,255,255,.12); border-radius: .55rem; color: #a9bdd0; font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; background: rgba(255,255,255,.035); }
+.orbital-result-grid strong { color: #f7fbff; font-size: 1.15rem; letter-spacing: 0; }
+.orbital-toast { position: absolute; z-index: 4; top: .8rem; left: 50%; max-width: calc(100% - 2rem); padding: .65rem .9rem; transform: translateX(-50%); border: 1px solid rgba(100, 228, 215, .4); border-radius: .65rem; color: #eafffd; font-size: .77rem; font-weight: 800; text-align: center; background: rgba(8, 34, 49, .94); box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.25); }
+.orbital-toast[hidden] { display: none; }
+.orbital-game-tools { display: flex; align-items: center; justify-content: space-between; gap: .7rem; padding: .65rem .2rem .1rem; }
+.orbital-tool-group { display: inline-flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .58rem; font-weight: 900; letter-spacing: .1em; }
+.orbital-tool-button { display: grid; width: 2.45rem; height: 2.45rem; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--text); font: inherit; font-size: 1rem; font-weight: 900; background: var(--bg-soft); cursor: pointer; transition: border-color .16s ease, color .16s ease, transform .16s ease; }
+.orbital-tool-button:hover, .orbital-tool-button:focus-visible { transform: translateY(-1px); border-color: #5cded4; color: #62e1d5; }
+.orbital-fullscreen span { font-size: 1.2rem; line-height: 1; }
+.orbital-live-message { min-height: .9rem; margin: .35rem 0 0; color: var(--muted); font-size: .66rem; text-align: center; }
 
-.dodge-introduction,
-.dodge-game-panel,
-.dodge-help {
-  border: 1px solid var(--line);
-  border-radius: 1.25rem;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-}
+.orbital-command { display: flex; flex-direction: column; gap: .8rem; padding: 1rem; }
+.orbital-command-heading { display: flex; align-items: center; justify-content: space-between; padding: .1rem .1rem .8rem; border-bottom: 1px solid var(--line); }
+.orbital-command-heading p { margin: 0 0 .2rem; color: #67dcd3; font-size: .58rem; font-weight: 950; letter-spacing: .15em; }
+.orbital-command-heading h2 { margin: 0; font-size: 1.08rem; letter-spacing: -.03em; }
+.orbital-command-heading > span { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid var(--line); border-radius: .6rem; color: #72e4db; font-size: 1rem; background: var(--bg-soft); }
+.orbital-section-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .5rem; }
+.orbital-section-heading h3 { margin: 0; font-size: .77rem; }
+.orbital-section-heading > span { color: var(--muted); font-size: .53rem; font-weight: 900; letter-spacing: .09em; }
+.orbital-tower-list { display: grid; gap: .4rem; }
+.orbital-tower-card { display: flex; align-items: center; gap: .55rem; width: 100%; min-width: 0; padding: .48rem .55rem; border: 1px solid var(--line); border-radius: .65rem; color: var(--text); text-align: left; background: var(--bg-soft); cursor: pointer; transition: border-color .14s ease, background .14s ease, transform .14s ease; }
+.orbital-tower-card:hover { transform: translateX(2px); border-color: color-mix(in srgb, #58d9d2 56%, var(--line)); }
+.orbital-tower-card.is-selected { border-color: #58d9d2; background: color-mix(in srgb, #58d9d2 11%, var(--bg-soft)); box-shadow: inset 0 0 0 1px rgba(88,217,210,.09); }
+.orbital-tower-icon { display: grid; width: 2.25rem; height: 2.25rem; flex: 0 0 auto; place-items: center; border: 1px solid currentColor; border-radius: .65rem; font-size: 1rem; font-weight: 900; background: rgba(255,255,255,.035); }
+.pulse-icon { color: #5ce1d6; }.cannon-icon { color: #ffac71; }.cryo-icon { color: #79caff; }.plasma-icon { color: #d39cff; }
+.orbital-tower-copy { display: grid; min-width: 0; gap: .17rem; }
+.orbital-tower-copy strong { font-size: .69rem; }
+.orbital-tower-copy small { overflow: hidden; color: var(--muted); font-size: .57rem; text-overflow: ellipsis; white-space: nowrap; }
+.orbital-tower-cost { margin-left: auto; color: #74e1d5; font-size: .7rem; font-weight: 950; white-space: nowrap; }
+.orbital-tower-cost i { color: #9af0df; font-style: normal; }
+.orbital-command-tip { min-height: 1.1rem; margin: .4rem 0 0; color: var(--muted); font-size: .6rem; line-height: 1.4; }
+.orbital-selected-section { padding: .65rem; border: 1px solid var(--line); border-radius: .7rem; background: color-mix(in srgb, var(--bg-soft) 78%, transparent); }
+.orbital-tower-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; margin: .65rem 0; }
+.orbital-tower-stats span { display: grid; gap: .18rem; color: var(--muted); font-size: .54rem; }
+.orbital-tower-stats strong { color: var(--text); font-size: .7rem; }
+.orbital-upgrade-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .4rem; }
+.orbital-upgrade-actions button { min-height: 2.1rem; padding: 0 .55rem; border: 1px solid var(--line); border-radius: .55rem; color: var(--text); font: inherit; font-size: .62rem; font-weight: 850; background: var(--surface); cursor: pointer; }
+.orbital-upgrade-actions button:first-child { display: flex; justify-content: space-between; gap: .35rem; border-color: rgba(82, 217, 199, .45); color: #62dfd2; }
+.orbital-upgrade-actions button:disabled { opacity: .43; cursor: not-allowed; }
+.orbital-upgrade-actions button:not(:disabled):hover { border-color: #5bded0; }
+.orbital-wave-section { margin-top: auto; padding: .75rem; border: 1px solid rgba(83, 215, 197, .24); border-radius: .75rem; background: linear-gradient(145deg, rgba(36, 176, 166, .085), rgba(36, 176, 166, .02)); }
+.orbital-next-wave { display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem; }
+.orbital-wave-icon { display: grid; width: 2.15rem; height: 2.15rem; place-items: center; border: 1px solid rgba(97, 222, 209, .32); border-radius: .62rem; color: #61e1d2; font-size: 1.35rem; background: rgba(88, 210, 199, .08); }
+.orbital-next-wave small, .orbital-next-wave strong { display: block; }
+.orbital-next-wave small { margin-bottom: .13rem; color: var(--muted); font-size: .52rem; font-weight: 900; letter-spacing: .11em; }
+.orbital-next-wave strong { font-size: .7rem; }
+.orbital-launch-button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 2.65rem; padding: 0 .8rem; border: 1px solid #6ce9d6; border-radius: .6rem; color: #06202a; font: inherit; font-size: .72rem; font-weight: 950; background: linear-gradient(110deg, #62e2d4, #87e9b8); cursor: pointer; transition: filter .14s ease, transform .14s ease; }
+.orbital-launch-button:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.06); }
+.orbital-launch-button:disabled { opacity: .45; cursor: not-allowed; filter: saturate(.5); }
+.orbital-wave-section > p { margin: .45rem 0 0; color: var(--muted); font-size: .55rem; line-height: 1.4; }
+.orbital-command-footer { display: flex; justify-content: space-between; gap: .4rem; padding: .2rem .1rem 0; color: var(--muted); font-size: .48rem; font-weight: 900; letter-spacing: .08em; }
+.orbital-command-footer span:first-child { display: inline-flex; align-items: center; gap: .35rem; color: #79d9c8; }
+.orbital-command-footer i { width: .38rem; height: .38rem; border-radius: 50%; background: #5ae1b3; box-shadow: 0 0 .5rem #5ae1b3; }
+.orbital-howto { display: flex; align-items: center; gap: .75rem; margin: .75rem .2rem 0; color: var(--muted); font-size: .68rem; }
+.orbital-howto > strong { flex: 0 0 auto; color: var(--text); }
+.orbital-howto-controls { margin-left: auto; white-space: nowrap; }
+.orbital-howto kbd { padding: .1rem .28rem; border: 1px solid var(--line); border-radius: .25rem; color: var(--text); font: inherit; font-size: .58rem; }
 
-.dodge-introduction { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: clamp(1.15rem, 3vw, 2rem); }
-.dodge-introduction .eyebrow { margin-bottom: .35rem; }
-.dodge-introduction h1 { margin: 0; font-size: clamp(2.35rem, 6vw, 4.4rem); letter-spacing: -.06em; line-height: .95; }
-.dodge-introduction p:not(.eyebrow):not(.dodge-credit) { max-width: 42rem; margin: .75rem 0 0; color: var(--muted); }
-.dodge-credit { flex: 0 0 auto; margin: 0; color: var(--accent); font-size: .82rem; font-weight: 900; letter-spacing: .08em; text-align: right; text-transform: uppercase; }
-
-.dodge-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, .42fr); align-items: start; gap: clamp(1rem, 3vw, 1.8rem); margin-top: 1.2rem; }
-.dodge-game-panel { min-width: 0; padding: clamp(.8rem, 2vw, 1.15rem); }
-.dodge-scoreboard { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem; margin-bottom: .8rem; }
-.dodge-scoreboard span { display: inline-flex; align-items: center; gap: .4rem; color: var(--muted); font-size: .8rem; font-weight: 800; text-transform: uppercase; }
-.dodge-scoreboard strong { color: var(--text); font-size: 1.05rem; }
-
-.dodge-stage { position: relative; width: min(100%, 30rem); margin: 0 auto; overflow: hidden; aspect-ratio: 3 / 4; border: 1px solid color-mix(in srgb, var(--primary) 55%, var(--line)); border-radius: 1.1rem; background: #071e3f; box-shadow: inset 0 0 0 1px rgba(255,255,255,.05), 0 16px 32px rgba(7, 28, 63, .26); }
-.dodge-stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
-.dodge-screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; padding: 1.3rem; background: linear-gradient(160deg, rgba(4, 17, 38, .79), rgba(12, 35, 70, .86)); color: #f7fbff; text-align: center; backdrop-filter: blur(5px); }
-.dodge-screen[hidden] { display: none; }
-.dodge-screen-icon { margin: 0; font-size: clamp(2.4rem, 8vw, 3.7rem); }
-.dodge-screen h2 { margin: 0; font-size: clamp(1.6rem, 5vw, 2.2rem); letter-spacing: -.04em; }
-.dodge-screen p { max-width: 23rem; margin: 0; color: #c9ddfa; }
-.dodge-start-button { min-width: min(100%, 13rem); margin-top: .25rem; }
-.dodge-screen-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-top: .2rem; }
-.dodge-screen-actions .button { text-decoration: none; }
-.dodge-pause-screen { background: rgba(4, 17, 38, .9); }
-.dodge-gameover-screen { background: linear-gradient(160deg, rgba(51, 15, 36, .9), rgba(8, 23, 52, .94)); }
-
-.dodge-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: .65rem; width: min(100%, 30rem); margin: .9rem auto 0; }
-.dodge-control-button,
-.dodge-pause-button { min-height: 3.45rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--bg-soft); color: var(--text); font-weight: 850; cursor: pointer; touch-action: none; transition: transform .15s ease, border-color .15s ease, background-color .15s ease; }
-.dodge-control-button { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; }
-.dodge-pause-button { padding: 0 .8rem; }
-.dodge-control-button:hover, .dodge-control-button:focus-visible, .dodge-pause-button:hover, .dodge-pause-button:focus-visible { border-color: var(--primary); background: var(--surface-hover); transform: translateY(-2px); }
-.dodge-control-button:active, .dodge-pause-button:active { transform: translateY(0); }
-.dodge-status { min-height: 1.25rem; margin: .75rem 0 0; color: var(--muted); font-size: .8rem; text-align: center; }
-.dodge-audio-tools { display:flex; grid-column:1/-1; align-items:center; justify-content:center; gap:.55rem; }
-.dodge-fullscreen-button { min-height: 2.8rem; padding: 0 1.2rem; }
-
-.dodge-help { min-width: 0; padding: 1.15rem; }
-.dodge-help h2 { margin: 0; font-size: 1.25rem; }
-.dodge-help ol { display: grid; gap: .7rem; margin: 1rem 0; padding-left: 1.25rem; color: var(--muted); font-size: .9rem; }
-.dodge-help li::marker { color: var(--accent); font-weight: 900; }
-.dodge-help-note { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .7rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
-.dodge-help-note strong { color: var(--text); }
-.dodge-help-footnote { margin: 1rem 0 0; color: var(--muted); font-size: .76rem; }
-.dodge-help kbd { display: inline-block; padding: .06rem .32rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: .3rem; background: var(--bg-soft); color: var(--text); font: inherit; font-weight: 850; }
-
-@media (max-width: 900px) {
-  .dodge-layout { grid-template-columns: minmax(0, 1fr); }
-  .dodge-help { width: min(100%, 30rem); margin: 0 auto; }
-}
-
-@media (max-width: 620px) {
-  .dodge-main { padding-bottom: 2.5rem; }
-  .dodge-introduction { align-items: flex-start; flex-direction: column; }
-  .dodge-credit { text-align: left; }
-  .dodge-screen-actions { width: 100%; flex-direction: column; }
-  .dodge-screen-actions .button { width: 100%; }
-  .dodge-control-button span { display: none; }
-  .dodge-controls { grid-template-columns: 1fr auto 1fr; }
-}
-
-@media (max-width: 390px) {
-  .dodge-game-panel { padding: .65rem; }
-  .dodge-stage { border-radius: .9rem; }
-  .dodge-controls { gap: .45rem; }
-  .dodge-control-button, .dodge-pause-button { min-height: 3.2rem; padding: 0 .55rem; }
-}
-
-.dodge-layout:fullscreen,
-.dodge-layout.is-fullscreen-fallback {
-  box-sizing: border-box;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  margin: 0;
-  padding: clamp(.65rem, 2vw, 1.5rem);
-  align-items: center;
-  grid-template-columns: minmax(0, 1fr) minmax(16rem, .38fr);
-  gap: clamp(.75rem, 2vw, 1.5rem);
-  overflow: auto;
-  background: var(--bg);
-}
-.dodge-layout:fullscreen .dodge-game-panel,
-.dodge-layout.is-fullscreen-fallback .dodge-game-panel { max-height: 100%; overflow: auto; }
-.dodge-layout:fullscreen .dodge-stage,
-.dodge-layout.is-fullscreen-fallback .dodge-stage { width: min(100%, 54dvh, 31.5rem); aspect-ratio: 3 / 4; }
-.dodge-layout:fullscreen .dodge-help,
-.dodge-layout.is-fullscreen-fallback .dodge-help { width: auto; max-width: none; margin: 0; }
-.dodge-layout:fullscreen .dodge-controls,
-.dodge-layout.is-fullscreen-fallback .dodge-controls { width: min(100%, 31.5rem); }
-.dodge-layout.is-fullscreen-fallback { position: fixed; inset: 0; z-index: 9999; }
+.orbital-layout:fullscreen, .orbital-layout.is-fullscreen-fallback { box-sizing: border-box; display: grid; width: 100vw; height: 100vh; height: 100dvh; max-height: 100dvh; margin: 0; padding: clamp(.35rem, .8vw, .75rem); grid-template-columns: minmax(0, 1fr) minmax(17rem, 20rem); grid-template-rows: minmax(0, 1fr); gap: .65rem; overflow: hidden; background: #081426; }
+.orbital-layout:fullscreen .orbital-game-panel, .orbital-layout.is-fullscreen-fallback .orbital-game-panel { display: grid; width: 100%; height: 100%; min-height: 0; grid-template-rows: min-content minmax(0, 1fr) min-content min-content; gap: .3rem; padding: .45rem; border: 0; border-radius: .75rem; background: transparent; box-shadow: none; }
+.orbital-layout:fullscreen .orbital-stage, .orbital-layout.is-fullscreen-fallback .orbital-stage { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; }
+.orbital-layout:fullscreen .orbital-command, .orbital-layout.is-fullscreen-fallback .orbital-command { height: 100%; min-height: 0; overflow-y: auto; }
+.orbital-layout:fullscreen .orbital-live-message, .orbital-layout.is-fullscreen-fallback .orbital-live-message { display: none; }
+.orbital-layout:fullscreen .orbital-howto, .orbital-layout.is-fullscreen-fallback .orbital-howto { display: none; }
+.orbital-layout:fullscreen .orbital-hud, .orbital-layout.is-fullscreen-fallback .orbital-hud { padding-top: .2rem; }
+.orbital-layout.is-fullscreen-fallback { position: fixed; inset: 0; z-index: 9999; }
 body.has-fullscreen-fallback { overflow: hidden; }
 
-@media (max-width: 700px) and (orientation: portrait) {
-  .dodge-layout:fullscreen,
-  .dodge-layout.is-fullscreen-fallback { grid-template-columns: minmax(0, 1fr); align-content: start; }
-  .dodge-layout:fullscreen .dodge-help,
-  .dodge-layout.is-fullscreen-fallback .dodge-help { width: min(100%, 31.5rem); margin: 0 auto; }
+@media (max-width: 980px) {
+  .orbital-layout { grid-template-columns: minmax(0, 1fr) minmax(17rem, 19rem); }
+  .orbital-game-panel { min-height: 31rem; }
+  .orbital-command { padding: .8rem; }
+}
+@media (max-width: 760px) {
+  .orbital-introduction { align-items: flex-start; flex-direction: column; gap: .45rem; }
+  .orbital-credit { display: none; }
+  .orbital-layout { grid-template-columns: minmax(0, 1fr); }
+  .orbital-game-panel { min-height: auto; }
+  .orbital-stage { flex: none; width: 100%; aspect-ratio: 1.35 / 1; }
+  .orbital-command { display: grid; grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+  .orbital-command-heading { padding-bottom: .55rem; }
+  .orbital-tower-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .orbital-tower-card { min-height: 3.2rem; }
+  .orbital-wave-section { margin-top: 0; }
+  .orbital-howto { align-items: flex-start; flex-wrap: wrap; }
+  .orbital-howto-controls { margin-left: 0; }
+  .orbital-layout:fullscreen, .orbital-layout.is-fullscreen-fallback { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: .25rem; padding: .3rem; }
+  .orbital-layout:fullscreen .orbital-game-panel, .orbital-layout.is-fullscreen-fallback .orbital-game-panel { grid-row: 1; }
+  .orbital-layout:fullscreen .orbital-command, .orbital-layout.is-fullscreen-fallback .orbital-command { grid-row: 2; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .35rem .65rem; max-height: 34dvh; padding: .4rem .55rem; border-radius: .65rem; }
+  .orbital-layout:fullscreen .orbital-command-heading, .orbital-layout.is-fullscreen-fallback .orbital-command-heading { display: none; }
+  .orbital-layout:fullscreen .orbital-build-section, .orbital-layout.is-fullscreen-fallback .orbital-build-section { grid-row: span 2; }
+  .orbital-layout:fullscreen .orbital-tower-list, .orbital-layout.is-fullscreen-fallback .orbital-tower-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .orbital-layout:fullscreen .orbital-tower-card, .orbital-layout.is-fullscreen-fallback .orbital-tower-card { min-height: 2.6rem; padding: .25rem .35rem; }
+  .orbital-layout:fullscreen .orbital-tower-icon, .orbital-layout.is-fullscreen-fallback .orbital-tower-icon { width: 1.7rem; height: 1.7rem; }
+  .orbital-layout:fullscreen .orbital-command-footer, .orbital-layout.is-fullscreen-fallback .orbital-command-footer { display: none; }
+}
+@media (max-width: 500px) {
+  .orbital-main { padding-top: .55rem; }
+  .orbital-introduction { margin-bottom: .65rem; }
+  .orbital-introduction h1 { font-size: 1.8rem; }
+  .orbital-introduction p:not(.eyebrow):not(.orbital-credit) { font-size: .79rem; }
+  .orbital-hud { align-items: flex-start; flex-direction: column; gap: .5rem; padding: .3rem .25rem .55rem; }
+  .orbital-hud-player { display: none; }
+  .orbital-metrics { width: 100%; justify-content: space-between; gap: .35rem; }
+  .orbital-metrics small { font-size: .48rem; }
+  .orbital-metrics strong { font-size: .91rem; }
+  .orbital-record { padding-left: .4rem; }
+  .orbital-game-panel { padding: .45rem; }
+  .orbital-stage { aspect-ratio: 1.2 / 1; border-radius: .65rem; }
+  .orbital-screen { gap: .45rem; padding: .65rem; }
+  .orbital-screen-emblem { width: 2.4rem; height: 2.4rem; border-radius: .75rem; font-size: 1.3rem; }
+  .orbital-screen-kicker { font-size: .5rem; }
+  .orbital-screen h2 { font-size: 1.35rem; }
+  .orbital-screen > p:not(.orbital-screen-kicker) { font-size: .71rem; }
+  .orbital-screen ul { gap: .3rem; margin: .1rem 0; }
+  .orbital-screen li { min-height: 3.5rem; padding: .4rem .25rem; font-size: .56rem; }
+  .orbital-primary-button { min-height: 2.5rem; font-size: .72rem; }
+  .orbital-game-tools { padding-top: .4rem; }
+  .orbital-tool-group { gap: .3rem; font-size: .49rem; }
+  .orbital-tool-button { width: 2.2rem; height: 2.2rem; }
+  .orbital-command { padding: .65rem; }
+  .orbital-tower-list { gap: .3rem; }
+  .orbital-tower-card { gap: .35rem; padding: .4rem; }
+  .orbital-tower-icon { width: 1.8rem; height: 1.8rem; }
+  .orbital-tower-copy strong { font-size: .63rem; }
+  .orbital-tower-copy small { font-size: .49rem; }
+  .orbital-tower-cost { font-size: .59rem; }
+  .orbital-howto { font-size: .62rem; }
+  .orbital-layout:fullscreen .orbital-command, .orbital-layout.is-fullscreen-fallback .orbital-command { max-height: 37dvh; }
+  .orbital-layout:fullscreen .orbital-command-tip, .orbital-layout.is-fullscreen-fallback .orbital-command-tip,
+  .orbital-layout:fullscreen .orbital-selected-section, .orbital-layout.is-fullscreen-fallback .orbital-selected-section,
+  .orbital-layout:fullscreen .orbital-wave-section > p, .orbital-layout.is-fullscreen-fallback .orbital-wave-section > p { display: none; }
 }

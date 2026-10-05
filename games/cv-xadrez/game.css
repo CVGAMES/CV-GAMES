@@ -52,7 +52,7 @@
 .seat-turn-indicator { width:.48rem; flex:0 0 auto; aspect-ratio:1; border-radius:50%; background:transparent; }
 .chess-player-seat.is-active .seat-turn-indicator { background:#85e6a8; box-shadow:0 0 10px #85e6a8; }
 .chess-board-wrap { box-sizing:border-box; display:grid; width:100%; aspect-ratio:1 / 1; padding:.34rem; border:1px solid rgba(164,199,177,.25); border-radius:.75rem; background:#233246; box-shadow:0 12px 30px rgba(0,0,0,.2); }
-.chess-board { container-type:inline-size; display:grid; width:100%; height:100%; min-width:0; min-height:0; grid-template-columns:repeat(8,minmax(0,1fr)); grid-template-rows:repeat(8,minmax(0,1fr)); overflow:hidden; aspect-ratio:1 / 1; border-radius:.42rem; transform:translateZ(0) rotate(0deg); transform-origin:center center; transition:transform .58s cubic-bezier(.2,.8,.2,1); will-change:transform; }
+.chess-board { container-type:inline-size; display:grid; width:100%; height:100%; min-width:0; min-height:0; grid-template-columns:repeat(8,minmax(0,1fr)); grid-template-rows:repeat(8,minmax(0,1fr)); overflow:hidden; aspect-ratio:1 / 1; border-radius:.42rem; transform:translate3d(0,0,0) rotate(0deg); transform-origin:center center; backface-visibility:hidden; transition:transform .42s cubic-bezier(.2,.8,.2,1); will-change:transform; }
 .chess-board.is-flipped { transform:translateZ(0) rotate(180deg); }
 .chess-square { position:relative; display:grid; min-width:0; min-height:0; padding:0; place-items:center; border:0; border-radius:0; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 .chess-square.light { background:#e9e3d1; }
@@ -170,7 +170,10 @@ body.has-fullscreen-fallback { overflow:hidden; }
   .chess-game-view:fullscreen .chess-history-card,.chess-game-view.is-fullscreen-fallback .chess-history-card { grid-column:1/-1; }
 }
 @media (max-width:900px) {
-  .chess-board,.chess-piece { transition-duration:.44s; transition-timing-function:cubic-bezier(.2,.8,.2,1); }
+  .chess-board,.chess-piece { transition-duration:.3s; transition-timing-function:cubic-bezier(.2,.8,.2,1); }
+}
+@media (hover:none) and (pointer:coarse) and (max-width:900px) {
+  .chess-board,.chess-piece,.square-coordinate { transition-duration:.2s; transition-timing-function:cubic-bezier(.18,.72,.3,1); }
 }
 @media (prefers-reduced-motion:reduce) { .chess-board,.chess-piece,.square-coordinate { transition:none; } }
 

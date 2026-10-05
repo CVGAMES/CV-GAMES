@@ -3,6 +3,7 @@
 
   const gameId = 'cv-neon-breaker';
   const bestScoreKey = 'cv-games-cv-neon-breaker-best';
+  const controlModeKey = 'cv-games-cv-neon-breaker-control';
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
   const canvasWidth = 800;
@@ -74,6 +75,13 @@
   const gameOverScreen = bySelector('[data-gameover-screen]');
   const victoryScreen = bySelector('[data-victory-screen]');
   const pauseButton = bySelector('[data-pause-game]');
+  const pauseIcon = bySelector('[data-pause-icon]');
+  const pauseLabel = bySelector('[data-pause-label]');
+  const settingsOpenButton = bySelector('[data-open-settings]');
+  const gamePanel = bySelector('[data-neon-game-panel]');
+  const touchControls = bySelector('[data-touch-controls]');
+  const controlModeButtons = [...document.querySelectorAll('[data-control-mode]')];
+  const settingsModal = bySelector('[data-settings-modal]');
   const statusElement = bySelector('[data-game-status]');
   const favoriteButton = bySelector('[data-game-favorite]');
   const launchButtons = [...document.querySelectorAll('[data-launch-ball]')];
@@ -94,9 +102,11 @@
     powerUps: [],
     effects: { wideUntil: 0, slowUntil: 0, slowActive: false },
     bestScore: readBestScore(),
+    controlMode: readControlMode(),
     accessRegistered: false,
     announcedMilestones: new Set(),
-    movement: { left: false, right: false }
+    movement: { left: false, right: false },
+    touchPointerId: null
   };
 
   const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
@@ -109,6 +119,39 @@
     } catch {
       return 0;
     }
+  }
+
+  function detectControlMode() {
+    const coarsePointer = window.matchMedia?.('(pointer: coarse)')?.matches;
+    const hasTouch = coarsePointer === undefined ? (navigator.maxTouchPoints || 0) > 0 : coarsePointer;
+    return hasTouch ? 'touch' : 'keyboard';
+  }
+
+  function readControlMode() {
+    try {
+      const saved = localStorage.getItem(controlModeKey);
+      return ['keyboard', 'touch', 'buttons'].includes(saved) ? saved : detectControlMode();
+    } catch {
+      return detectControlMode();
+    }
+  }
+
+  function updateControlMode() {
+    if (gamePanel) gamePanel.dataset.controlMode = state.controlMode;
+    if (touchControls) touchControls.hidden = state.controlMode !== 'buttons';
+    controlModeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.controlMode === state.controlMode)));
+    clearMovement();
+  }
+
+  function setControlMode(mode) {
+    if (!['keyboard', 'touch', 'buttons'].includes(mode)) return;
+    state.controlMode = mode;
+    try {
+      localStorage.setItem(controlModeKey, mode);
+    } catch {
+      // A escolha continua ativa durante esta sessão.
+    }
+    updateControlMode();
   }
 
   function persistBestScore() {
@@ -183,7 +226,8 @@
     launchButtons.forEach((button) => { button.disabled = mode !== 'ready'; });
     if (pauseButton) {
       const isPaused = mode === 'paused';
-      pauseButton.textContent = isPaused ? '▶ Retomar' : '⏸ Pausar';
+      if (pauseIcon) pauseIcon.textContent = isPaused ? '▶' : '⏸';
+      if (pauseLabel) pauseLabel.textContent = isPaused ? ' Retomar' : ' Pausar';
       pauseButton.setAttribute('aria-label', isPaused ? 'Retomar jogo' : 'Pausar jogo');
       pauseButton.disabled = mode !== 'running' && mode !== 'paused';
     }
@@ -223,6 +267,7 @@
   function clearMovement() {
     state.movement.left = false;
     state.movement.right = false;
+    state.touchPointerId = null;
   }
 
   function cancelFrame() {
@@ -815,11 +860,11 @@
   }
 
   function isMovementKey(event) {
-    return event.code === 'KeyA' || event.code === 'KeyD' || event.key === 'ArrowLeft' || event.key === 'ArrowRight';
+    return state.controlMode === 'keyboard' && (event.code === 'KeyA' || event.code === 'KeyD' || event.key === 'ArrowLeft' || event.key === 'ArrowRight');
   }
 
   function setMovementFromKey(event, pressed) {
-    if ((state.mode !== 'running' && state.mode !== 'ready') || !isMovementKey(event)) return false;
+    if (state.controlMode !== 'keyboard' || (state.mode !== 'running' && state.mode !== 'ready') || !isMovementKey(event)) return false;
     const isLeft = event.code === 'KeyA' || event.key === 'ArrowLeft';
     const isRight = event.code === 'KeyD' || event.key === 'ArrowRight';
     if (isLeft) state.movement.left = pressed;
@@ -842,7 +887,7 @@
     if (!button) return;
     const release = () => { state.movement[direction] = false; };
     button.addEventListener('pointerdown', (event) => {
-      if (state.mode !== 'running' && state.mode !== 'ready') return;
+      if (state.controlMode !== 'buttons' || (state.mode !== 'running' && state.mode !== 'ready')) return;
       event.preventDefault();
       state.movement[direction] = true;
       if (state.mode === 'ready' && state.paddle) {
@@ -862,6 +907,19 @@
     button.addEventListener('lostpointercapture', release);
   }
 
+  function openSettings() {
+    if (state.mode === 'running') pauseGame();
+    if (!settingsModal) return;
+    settingsModal.hidden = false;
+    settingsModal.querySelector('[data-close-settings]')?.focus();
+  }
+
+  function closeSettings() {
+    if (!settingsModal) return;
+    settingsModal.hidden = true;
+    settingsOpenButton?.focus({ preventScroll: true });
+  }
+
   function prepareMenu() {
     const menuButton = bySelector('[data-menu-toggle]');
     const menu = bySelector('[data-primary-nav]');
@@ -879,6 +937,7 @@
   function init() {
     resetCampaign();
     setMode('intro');
+    updateControlMode();
     updateFinalScores();
     updateFavoriteInterface();
     prepareMenu();
@@ -891,6 +950,10 @@
     bySelector('[data-next-phase]')?.addEventListener('click', nextPhase);
     pauseButton?.addEventListener('click', togglePause);
     bySelector('[data-resume-game]')?.addEventListener('click', resumeGame);
+    settingsOpenButton?.addEventListener('click', openSettings);
+    document.querySelectorAll('[data-close-settings]').forEach((button) => button.addEventListener('click', closeSettings));
+    settingsModal?.addEventListener('click', (event) => { if (event.target === settingsModal) closeSettings(); });
+    controlModeButtons.forEach((button) => button.addEventListener('click', () => setControlMode(button.dataset.controlMode)));
     favoriteButton?.addEventListener('click', () => {
       if (favorites.has(gameId)) favorites.delete(gameId);
       else favorites.add(gameId);
@@ -902,16 +965,33 @@
     });
 
     canvas.addEventListener('pointermove', (event) => {
-      if (event.pointerType === 'touch' || event.buttons || event.pointerType === 'mouse') setPaddleCenter(getCanvasX(event));
+      if (state.mode !== 'running' && state.mode !== 'ready') return;
+      if (event.pointerType === 'mouse') {
+        setPaddleCenter(getCanvasX(event));
+        if (state.mode === 'ready') drawScene();
+        return;
+      }
+      if (state.controlMode === 'touch' && state.touchPointerId === event.pointerId) setPaddleCenter(getCanvasX(event));
     });
     canvas.addEventListener('pointerdown', (event) => {
+      if (state.controlMode === 'touch' && (event.pointerType === 'touch' || event.pointerType === 'mouse') && (state.mode === 'running' || state.mode === 'ready')) {
+        event.preventDefault();
+        state.touchPointerId = event.pointerId;
+        setPaddleCenter(getCanvasX(event));
+        try { canvas.setPointerCapture(event.pointerId); } catch { /* Alguns navegadores não permitem captura em eventos sintetizados. */ }
+      }
       if (state.mode === 'ready') {
         event.preventDefault();
         launchBall();
       }
     });
+    canvas.addEventListener('pointerup', clearMovement);
+    canvas.addEventListener('pointercancel', clearMovement);
+    canvas.addEventListener('lostpointercapture', clearMovement);
 
     document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && settingsModal && !settingsModal.hidden) { closeSettings(); return; }
+      if (settingsModal && !settingsModal.hidden) return;
       if (event.key.toLowerCase() === 'p' && (state.mode === 'running' || state.mode === 'paused')) {
         event.preventDefault();
         togglePause();
