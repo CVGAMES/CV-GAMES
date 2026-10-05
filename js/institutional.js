@@ -70,7 +70,7 @@
     const catalog = Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
     if (!container || !catalog.length) return;
 
-    const exclusives = catalog.filter((game) => game.exclusivo === true);
+    const exclusives = catalog.filter((game) => game.exclusivo === true && game.id !== 'cv-dodge');
     if (!exclusives.length) return;
     const fragment = document.createDocumentFragment();
     exclusives.forEach((game) => fragment.appendChild(createExclusiveCard(game)));

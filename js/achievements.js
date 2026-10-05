@@ -52,7 +52,7 @@
     },
     {
       id: 'fa-cv-games', icon: '⭐', title: 'Fã do CV GAMES',
-      description: 'Jogue CV DODGE e CV NEON BREAKER.',
+      description: 'Jogue CV DEFESA ORBITAL e CV NEON BREAKER.',
       progress: (metrics) => ({ current: metrics.progress.exclusiveGames, target: fanExclusiveGameIds.length, label: 'jogos exclusivos' })
     },
     {

@@ -1,11 +1,20 @@
 (function () {
   'use strict';
 
-  const catalog = Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
+  const profileNickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
+    .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+  window.addEventListener('pageshow', () => {
+    const currentNickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
+      .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+    if (currentNickname !== profileNickname) window.location.reload();
+  });
+  const orbitalProfileAllowed = profileNickname === 'educvv dev1';
+  const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
+    .filter((game) => game.id !== 'cv-dodge' || orbitalProfileAllowed);
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
-  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-dodge'];
+  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
   const filters = { query: '', category: 'todos', favoritesOnly: false };
 
   const getFavorites = () => {
@@ -191,7 +200,7 @@
     });
 
     const count = document.querySelector('[data-favorite-count]');
-    if (count) count.textContent = String(favorites.size);
+    if (count) count.textContent = String(catalog.reduce((total, game) => total + Number(favorites.has(game.id)), 0));
   };
 
   const updateFilterInterface = (resultCount) => {
