@@ -169,9 +169,9 @@ window.CV_GAMES_CATALOG = [
     rating: 4, addedAt: '2026-01-15', featured: false, recent: false, popular: false, pcFraco: true, multiplayer: false
   },
   {
-    id: 'cv-dodge', title: 'CV DODGE', category: 'Arcade', categoryKey: 'arcade',
-    description: 'Desvie dos obstáculos e sobreviva o máximo possível neste arcade original do CV GAMES.', tags: ['arcade', 'desvio', 'obstaculos', 'cv dodge', 'cv games', 'leve'],
-    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-dodge/index.html', image: 'games/cv-dodge/cover.svg', fallback: '🛡️',
+    id: 'cv-dodge', title: 'CV DEFESA ORBITAL', category: 'Estratégia', categoryKey: 'estrategia',
+    description: 'Construa torres, evolua sua defesa e proteja o núcleo de ondas de inimigos neste jogo de estratégia original do CV GAMES.', tags: ['estrategia', 'defesa de torres', 'tower defense', 'ondas', 'chefes', 'cv defesa orbital', 'cv games'],
+    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-dodge/index.html', image: 'games/cv-dodge/cover.svg', fallback: '✦',
     rating: 5, addedAt: '2026-08-20', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
