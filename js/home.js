@@ -14,7 +14,7 @@
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
-  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
+  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-damas', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
   const filters = { query: '', category: 'todos', favoritesOnly: false };
 
   const getFavorites = () => {
@@ -119,7 +119,7 @@
 
   // A seleção editorial mantém a seção útil antes do primeiro acesso local.
   const fallbackPopularGames = catalog.filter((game) => game.popular);
-  const featuredPriority = ['nexus-rota-zero', 'cv-starfall', 'cv-quadrados', 'cv-xadrez'];
+  const featuredPriority = ['nexus-rota-zero', 'cv-starfall', 'cv-quadrados', 'cv-xadrez', 'cv-damas'];
 
   const getFeaturedGames = () => {
     const featured = catalog.filter((game) => game.featured);
