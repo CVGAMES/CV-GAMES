@@ -26,7 +26,6 @@
 .chess-mode-card > span:not(.chess-mode-icon):not(.chess-mode-tag) { max-width:35rem; color:var(--muted); font-size:.85rem; line-height:1.5; }
 .chess-mode-card > b { display:flex; justify-content:space-between; width:100%; margin-top:auto; padding-top:.5rem; color:#a6ebc5; font-size:.84rem; }
 .chess-mode-soon > b { color:var(--muted); }
-.chess-lobby-footnote { margin:1rem 0 0; color:var(--muted); font-size:.78rem; }
 .chess-game-view { margin-top:1rem; padding:clamp(.6rem,1.6vw,1rem); }
 .chess-game-view[hidden] { display:none; }
 .chess-game-toolbar { display:flex; align-items:center; justify-content:space-between; gap:.8rem; margin-bottom:.8rem; }

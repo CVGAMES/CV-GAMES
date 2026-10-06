@@ -37,7 +37,6 @@
         <button class="chess-mode-card chess-mode-local" type="button" data-start-local><span class="chess-mode-icon" aria-hidden="true">♟♙</span><span class="chess-mode-tag">DISPONÍVEL AGORA</span><strong>2 jogadores locais</strong><span>Uma pessoa joga de brancas e outra de pretas, alternando no mesmo computador ou tablet.</span><b>Começar partida <span aria-hidden="true">→</span></b></button>
         <button class="chess-mode-card chess-mode-soon" type="button" disabled><span class="chess-mode-icon" aria-hidden="true">♙✦</span><span class="chess-mode-tag">EM BREVE</span><strong>Jogador vs. computador</strong><span>Uma partida contra um adversário controlado pelo computador.</span><b>Modo em desenvolvimento</b></button>
       </div>
-      <p class="chess-lobby-footnote">Brancas começam. Depois de cada jogada, o tabuleiro gira para deixar o próximo jogador na parte inferior.</p>
     </section>
 
     <section class="chess-game-view" data-game-view data-fullscreen-root id="chess-fullscreen" hidden aria-label="Partida de xadrez local">
@@ -89,8 +88,8 @@
   <dialog class="chess-dialog chess-settings-dialog" data-settings-dialog aria-labelledby="settings-title">
     <form method="dialog"><button class="dialog-close" aria-label="Fechar" value="cancel">×</button></form>
     <p class="chess-kicker">PREFERÊNCIAS DA PARTIDA</p><h2 id="settings-title">Configurações</h2>
-    <label class="setting-row"><span><strong>Girar tabuleiro a cada jogada</strong><small>Deixa o jogador da vez na parte inferior.</small></span><input type="checkbox" data-setting-rotate checked></label>
-    <label class="setting-row"><span><strong>Mostrar movimentos legais</strong><small>Destaca as casas para onde a peça pode ir.</small></span><input type="checkbox" data-setting-moves checked></label>
+    <label class="setting-row"><span><strong>Girar tabuleiro a cada jogada</strong><small>Deixa quem está na vez na parte inferior.</small></span><input type="checkbox" data-setting-rotate checked></label>
+    <label class="setting-row"><span><strong>Mostrar movimentos legais</strong><small>Destaca as casas disponíveis para a peça.</small></span><input type="checkbox" data-setting-moves checked></label>
     <label class="setting-row"><span><strong>Mostrar coordenadas</strong><small>Exibe letras e números nas bordas.</small></span><input type="checkbox" data-setting-coordinates checked></label>
     <button class="button button-primary settings-done" type="button" data-settings-close>Pronto</button>
   </dialog>

@@ -4,6 +4,7 @@
 const $ = (id) => document.getElementById(id);
 const SAVE_KEY = "nexusRouteZeroSaveV2";
 const PROFILE_KEY = "nexusRouteZeroProfileV2";
+const DIFFICULTY_PREF_KEY = "nexusRouteZeroPreferredDifficultyV1";
 const VERSION = 2;
 
 const DIFFICULTIES = {
@@ -1126,7 +1127,9 @@ function startNewRun() {
     return;
   }
   const selected = document.querySelector('input[name="difficulty"]:checked');
-  game = createRun(nick, selected ? selected.value : "normal");
+  const selectedDifficulty = selected && DIFFICULTIES[selected.value] ? selected.value : "normal";
+  try { localStorage.setItem(DIFFICULTY_PREF_KEY, selectedDifficulty); } catch { /* Mantém a escolha nesta missão. */ }
+  game = createRun(nick, selectedDifficulty);
   profile.lastNick = nick;
   profile.stats.runs += 1;
   saveProfile();
@@ -2662,6 +2665,17 @@ function trapModalFocus(event) {
 
 function init() {
   $("nick").value = profile.lastNick || "";
+  try {
+    const savedDifficulty = localStorage.getItem(DIFFICULTY_PREF_KEY);
+    if (DIFFICULTIES[savedDifficulty]) {
+      const savedOption = document.querySelector(`input[name="difficulty"][value="${savedDifficulty}"]`);
+      if (savedOption) savedOption.checked = true;
+    }
+  } catch { /* Usa a dificuldade padrão deste dispositivo. */ }
+  document.querySelectorAll('input[name="difficulty"]').forEach((option) => option.addEventListener("change", () => {
+    if (!DIFFICULTIES[option.value]) return;
+    try { localStorage.setItem(DIFFICULTY_PREF_KEY, option.value); } catch { /* A escolha segue ativa nesta sessão. */ }
+  }));
   syncSettingsUI();
   unlockAchievements(true);
   updateContinueButton();

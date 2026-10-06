@@ -25,32 +25,34 @@
     ],
     [
       '.NNRNNRNN.',
-      'NNWNNNNNSN',
+      'NNWNNMNSNN',
       '.NRNNRNNN.',
-      '..NNLNN...'
+      '..NLNNP...'
     ],
     [
       'NNRNNRNNNN',
       '.RNNWNNR..',
-      'NNNRNNNNSN',
-      '.NNRNNRL..'
+      'NNNXMNNNSN',
+      '.NNRNNRLB.',
+      '..A..A....'
     ],
     [
       'RNNRNNRNNR',
-      '.NNWNNNSN.',
+      '.NNWMMNSN.',
       'NNRNNRNNNN',
       '.RNNLNNR..',
-      '..NNRNN...'
+      '..XXNNXX..'
     ],
     [
       'RNNRNNRNNR',
       'NNWNNRNNNS',
-      'RNNRNNRNNR',
-      '.NNLNNRNN.',
+      'RNNXNNXNNR',
+      '.A.MH.MA..',
       'RNNRNNRNNR'
     ]
   ];
   const blockPalette = ['#48e6f5', '#a770ff', '#ff70c4', '#ffd05e', '#54e5b3'];
+  const powerUpSymbols = { wide: '↔', slow: '◷', life: '♥', pierce: '✦', shield: '⬡', blast: '✹' };
 
   const bySelector = (selector) => document.querySelector(selector);
   const canvas = bySelector('[data-cv-neon-breaker-canvas]');
@@ -100,7 +102,15 @@
     ball: null,
     blocks: [],
     powerUps: [],
-    effects: { wideUntil: 0, slowUntil: 0, slowActive: false },
+    effects: {
+      wideUntil: 0,
+      slowUntil: 0,
+      slowActive: false,
+      pierceUntil: 0,
+      shieldCharges: 0,
+      shieldFlashUntil: 0,
+      blasts: []
+    },
     bestScore: readBestScore(),
     controlMode: readControlMode(),
     accessRegistered: false,
@@ -286,22 +296,29 @@
     const totalWidth = columns * blockWidth + (columns - 1) * gap;
     const startX = (canvasWidth - totalWidth) / 2;
     const startY = 62;
-    const powerUps = { W: 'wide', S: 'slow', L: 'life' };
+    const powerUps = { W: 'wide', S: 'slow', L: 'life', P: 'pierce', H: 'shield', B: 'blast' };
     const blocks = [];
 
     layout.forEach((row, rowIndex) => {
       Array.from(row.padEnd(columns, '.')).slice(0, columns).forEach((symbol, columnIndex) => {
         if (symbol === '.') return;
-        const isStrong = symbol === 'R';
+        const moving = symbol === 'M';
+        const explosive = symbol === 'X';
+        const hits = symbol === 'A' ? 3 : symbol === 'R' ? 2 : 1;
         blocks.push({
           x: startX + columnIndex * (blockWidth + gap),
+          originX: startX + columnIndex * (blockWidth + gap),
           y: startY + rowIndex * (blockHeight + gap),
           width: blockWidth,
           height: blockHeight,
-          hits: isStrong ? 2 : 1,
-          strong: isStrong,
+          hits,
+          strong: hits > 1,
+          armored: symbol === 'A',
+          explosive,
+          moving,
+          motionSeed: rowIndex * .8 + columnIndex * .57,
           powerUp: powerUps[symbol] || null,
-          hue: (phaseIndex * 2 + rowIndex + columnIndex) % blockPalette.length
+          hue: explosive ? 3 : moving ? 0 : (phaseIndex * 2 + rowIndex + columnIndex) % blockPalette.length
         });
       });
     });
@@ -312,6 +329,10 @@
     state.effects.wideUntil = 0;
     state.effects.slowUntil = 0;
     state.effects.slowActive = false;
+    state.effects.pierceUntil = 0;
+    state.effects.shieldCharges = 0;
+    state.effects.shieldFlashUntil = 0;
+    state.effects.blasts = [];
     state.powerUps = [];
     if (state.paddle) {
       state.paddle.width = paddleBaseWidth;
@@ -440,10 +461,39 @@
       emitMilestone('cv-games-neon-breaker-combo', { combo: state.combo, score: state.score }, 'combo-neon');
     }
     if (block.powerUp) spawnPowerUp(block);
+    if (block.explosive) {
+      const x = block.x + block.width / 2;
+      const y = block.y + block.height / 2;
+      state.effects.blasts.push({ x, y, radius: 0, life: .28, duration: .28, maxRadius: 90 });
+      damageBlocksInRadius(x, y, 90);
+    }
+  }
+
+  function damageBlock(index, block) {
+    if (index < 0 || state.blocks[index] !== block) return;
+    if (block.hits > 1) {
+      block.hits -= 1;
+      addScore(6);
+      window.CV_GAME_AUDIO?.playTone(310, .055, 'triangle', .028);
+      return;
+    }
+    destroyBlock(index, block);
+  }
+
+  function damageBlocksInRadius(x, y, radius) {
+    const targets = state.blocks.filter((block) => {
+      const dx = block.x + block.width / 2 - x;
+      const dy = block.y + block.height / 2 - y;
+      return Math.hypot(dx, dy) <= radius;
+    });
+    targets.forEach((block) => {
+      const index = state.blocks.indexOf(block);
+      if (index >= 0) damageBlock(index, block);
+    });
   }
 
   function spawnPowerUp(block) {
-    const labels = { wide: '↔', slow: '🐢', life: '❤' };
+    const labels = { wide: '↔', slow: '🐢', life: '❤', pierce: '✦', shield: '⬡', blast: '✹' };
     state.powerUps.push({
       kind: block.powerUp,
       label: labels[block.powerUp],
@@ -467,6 +517,17 @@
       if (!wasActive) scaleBallVelocity(slowMultiplier);
     } else if (kind === 'life') {
       state.lives = Math.min(maximumLives, state.lives + 1);
+    } else if (kind === 'pierce') {
+      state.effects.pierceUntil = state.clock + 6;
+    } else if (kind === 'shield') {
+      state.effects.shieldCharges = Math.min(2, state.effects.shieldCharges + 1);
+      state.effects.shieldFlashUntil = state.clock + .35;
+    } else if (kind === 'blast') {
+      const x = state.paddle.x + state.paddle.width / 2;
+      const y = Math.max(130, state.paddle.y - 155);
+      state.effects.blasts.push({ x, y, radius: 0, life: .42, duration: .42, maxRadius: 250 });
+      damageBlocksInRadius(x, y, 235);
+      window.CV_GAME_AUDIO?.playTone(180, .24, 'sawtooth', .07);
     }
     updateHud();
   }
@@ -518,6 +579,10 @@
 
   function collideWithBlock(index, block) {
     const ball = state.ball;
+    if (state.effects.pierceUntil > state.clock) {
+      damageBlock(index, block);
+      return;
+    }
     const overlapLeft = ball.x + ball.radius - block.x;
     const overlapRight = block.x + block.width - (ball.x - ball.radius);
     const overlapTop = ball.y + ball.radius - block.y;
@@ -538,13 +603,7 @@
       ball.vy = Math.abs(ball.vy);
     }
 
-    if (block.hits > 1) {
-      block.hits -= 1;
-      addScore(6);
-      window.CV_GAME_AUDIO?.playTone(310, .055, 'triangle', .028);
-      return;
-    }
-    destroyBlock(index, block);
+    damageBlock(index, block);
   }
 
   function moveBall(delta) {
@@ -588,7 +647,27 @@
       }
     }
 
-    if (ball.y - ball.radius > canvasHeight) loseLife();
+    if (ball.vy > 0 && ball.y + ball.radius >= canvasHeight - 18 && state.effects.shieldCharges > 0) {
+      ball.y = canvasHeight - 18 - ball.radius;
+      ball.vy = -Math.abs(ball.vy);
+      state.effects.shieldCharges -= 1;
+      state.effects.shieldFlashUntil = state.clock + .35;
+      window.CV_GAME_AUDIO?.playTone(620, .13, 'triangle', .055);
+    } else if (ball.y - ball.radius > canvasHeight) loseLife();
+  }
+
+  function updateMovingBlocks() {
+    state.blocks.forEach((block) => {
+      if (block.moving) block.x = block.originX + Math.sin(state.clock * 1.45 + block.motionSeed) * 17;
+    });
+  }
+
+  function updateVisualEffects(delta) {
+    state.effects.blasts = state.effects.blasts.filter((blast) => {
+      blast.life -= delta;
+      blast.radius = blast.maxRadius * (1 - blast.life / blast.duration);
+      return blast.life > 0;
+    });
   }
 
   function updatePowerUps(delta) {
@@ -680,10 +759,12 @@
   function update(delta) {
     state.clock += delta;
     updateEffects();
+    updateMovingBlocks();
     updatePaddle(delta);
     moveBall(delta);
     if (state.mode !== 'running') return;
     updatePowerUps(delta);
+    updateVisualEffects(delta);
     if (!state.blocks.length) finishPhase();
   }
 
@@ -730,7 +811,7 @@
   }
 
   function drawBlock(block) {
-    const color = blockPalette[block.hue];
+    const color = block.explosive ? '#ff895f' : blockPalette[block.hue];
     context.save();
     context.shadowColor = color;
     context.shadowBlur = block.strong ? 13 : 9;
@@ -738,21 +819,22 @@
     context.fillStyle = color;
     context.fill();
     context.shadowBlur = 0;
-    context.lineWidth = block.strong ? 3 : 2;
-    context.strokeStyle = block.strong ? '#fff3cb' : 'rgba(240, 253, 255, .78)';
+    context.lineWidth = block.strong || block.explosive ? 3 : 2;
+    context.strokeStyle = block.explosive ? '#fff1c6' : block.strong ? '#fff3cb' : 'rgba(240, 253, 255, .78)';
     context.stroke();
-    if (block.strong) {
+    if (block.explosive || block.moving || block.strong) {
       context.fillStyle = '#1b1644';
       context.font = '900 14px system-ui, sans-serif';
       context.textAlign = 'center';
       context.textBaseline = 'middle';
-      context.fillText(block.hits === 2 ? 'II' : 'I', block.x + block.width / 2, block.y + block.height / 2 + 1);
+      const symbol = block.explosive ? '✹' : block.moving ? '↔' : block.armored ? ['III', 'II', 'I'][3 - block.hits] : block.hits === 2 ? 'II' : 'I';
+      context.fillText(symbol, block.x + block.width / 2, block.y + block.height / 2 + 1);
     } else if (block.powerUp) {
       context.fillStyle = 'rgba(12, 19, 55, .72)';
       context.font = '900 14px system-ui, sans-serif';
       context.textAlign = 'center';
       context.textBaseline = 'middle';
-      context.fillText('◆', block.x + block.width / 2, block.y + block.height / 2 + 1);
+      context.fillText(powerUpSymbols[block.powerUp] || '◆', block.x + block.width / 2, block.y + block.height / 2 + 1);
     }
     context.restore();
   }
@@ -800,7 +882,7 @@
 
   function drawPowerUps() {
     state.powerUps.forEach((powerUp) => {
-      const colors = { wide: '#49e8f8', slow: '#9a8dff', life: '#ff78b9' };
+      const colors = { wide: '#49e8f8', slow: '#9a8dff', life: '#ff78b9', pierce: '#fff06b', shield: '#75f5bc', blast: '#ff9867' };
       context.save();
       context.shadowColor = colors[powerUp.kind];
       context.shadowBlur = 12;
@@ -821,6 +903,8 @@
     const effects = [];
     if (state.effects.wideUntil > state.clock) effects.push('↔ Plataforma maior');
     if (state.effects.slowUntil > state.clock) effects.push('🐢 Slow');
+    if (state.effects.pierceUntil > state.clock) effects.push('✦ Perfuração');
+    if (state.effects.shieldCharges > 0) effects.push(`⬡ Escudo ${state.effects.shieldCharges}`);
     if (!effects.length) return;
     context.save();
     context.font = '800 13px system-ui, sans-serif';
@@ -831,10 +915,39 @@
     context.restore();
   }
 
+  function drawSpecialEffects() {
+    if (state.effects.shieldCharges > 0 || state.effects.shieldFlashUntil > state.clock) {
+      const flashing = state.effects.shieldFlashUntil > state.clock;
+      context.save();
+      context.strokeStyle = flashing ? 'rgba(153,255,217,.98)' : 'rgba(102,235,195,.65)';
+      context.lineWidth = flashing ? 8 : 3;
+      context.shadowColor = '#66ebc3';
+      context.shadowBlur = flashing ? 26 : 12;
+      context.beginPath();
+      context.moveTo(18, canvasHeight - 15);
+      context.lineTo(canvasWidth - 18, canvasHeight - 15);
+      context.stroke();
+      context.restore();
+    }
+    state.effects.blasts.forEach((blast) => {
+      context.save();
+      context.globalAlpha = Math.max(0, blast.life / blast.duration);
+      context.strokeStyle = '#ffe98a';
+      context.lineWidth = 7;
+      context.shadowColor = '#ff9f65';
+      context.shadowBlur = 25;
+      context.beginPath();
+      context.arc(blast.x, blast.y, blast.radius, 0, Math.PI * 2);
+      context.stroke();
+      context.restore();
+    });
+  }
+
   function drawScene() {
     drawBackground();
     state.blocks.forEach(drawBlock);
     drawPowerUps();
+    drawSpecialEffects();
     drawPaddle();
     drawBall();
     drawEffectLabels();

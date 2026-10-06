@@ -3,6 +3,21 @@
 
   const root = document.querySelector('[data-game-audio]');
   if (!root) return;
+  const settingsKey = 'cv-games-audio-settings-v1';
+  const readSettings = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(settingsKey) || '{}');
+      return {
+        musicVolume: Number.isFinite(Number(saved.musicVolume)) ? Math.max(0, Math.min(100, Number(saved.musicVolume))) : 3,
+        gameVolume: Number.isFinite(Number(saved.gameVolume)) ? Math.max(0, Math.min(100, Number(saved.gameVolume))) : 100,
+        muted: saved.muted === true
+      };
+    } catch { return { musicVolume:3, gameVolume:100, muted:false }; }
+  };
+  const settings = readSettings();
+  const saveSettings = () => {
+    try { localStorage.setItem(settingsKey, JSON.stringify({ musicVolume:Number(musicSlider.value), gameVolume:Number(gameSlider.value), muted })); } catch { /* Áudio segue configurado nesta sessão. */ }
+  };
 
   const panelId = `cv-audio-panel-${document.body.className.split(/\s+/)[0] || 'game'}`;
   root.innerHTML = `
@@ -29,13 +44,19 @@
   const music = new Audio(new URL(root.dataset.musicSrc, document.baseURI).href);
   music.loop = true;
   music.preload = 'none';
-  music.volume = 0.03;
+  musicSlider.value = String(settings.musicVolume);
+  gameSlider.value = String(settings.gameVolume);
+  musicOutput.value = `${settings.musicVolume}%`;
+  musicOutput.textContent = `${settings.musicVolume}%`;
+  gameOutput.value = `${settings.gameVolume}%`;
+  gameOutput.textContent = `${settings.gameVolume}%`;
+  music.volume = settings.musicVolume / 100;
 
-  let muted = false;
+  let muted = settings.muted;
   let hasStartedMusic = false;
   let musicStartPending = false;
   let userPausedMusic = false;
-  let gameVolume = 1;
+  let gameVolume = settings.gameVolume / 100;
   let audioContext;
 
   const getAudioContext = () => {
@@ -100,6 +121,7 @@
 
   musicMute.addEventListener('click', () => {
     muted = !muted;
+    saveSettings();
     updateMusicControl();
     if (!muted) startMusic();
   });
@@ -121,6 +143,7 @@
     music.volume = value / 100;
     musicOutput.value = `${value}%`;
     musicOutput.textContent = `${value}%`;
+    saveSettings();
   });
 
   gameSlider.addEventListener('input', () => {
@@ -128,6 +151,7 @@
     gameVolume = value / 100;
     gameOutput.value = `${value}%`;
     gameOutput.textContent = `${value}%`;
+    saveSettings();
   });
 
   document.addEventListener('click', (event) => {

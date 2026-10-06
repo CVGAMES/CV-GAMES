@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Jogue CV NEON BREAKER, o brick breaker arcade exclusivo do CV GAMES com cinco fases, blocos resistentes e power-ups locais.">
+  <meta name="description" content="Jogue CV NEON BREAKER, o arcade do CV GAMES com cinco fases, blocos móveis e explosivos e novos poderes.">
   <meta property="og:title" content="CV NEON BREAKER — Jogo Exclusivo | CV GAMES">
-  <meta property="og:description" content="Destrua blocos, mantenha a esfera em jogo e avance por cinco fases neste arcade exclusivo do CV GAMES.">
+  <meta property="og:description" content="Destrua blocos móveis, resistentes e explosivos, use novos poderes e avance por cinco fases no CV NEON BREAKER.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CV GAMES">
   <meta property="og:locale" content="pt_BR">
@@ -14,7 +14,7 @@
   <meta property="og:image:alt" content="Capa do jogo CV NEON BREAKER">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="CV NEON BREAKER — Jogo Exclusivo | CV GAMES">
-  <meta name="twitter:description" content="Destrua blocos, mantenha a esfera em jogo e avance por cinco fases neste arcade exclusivo do CV GAMES.">
+  <meta name="twitter:description" content="Destrua blocos móveis, resistentes e explosivos, use novos poderes e avance por cinco fases no CV NEON BREAKER.">
   <meta name="twitter:image" content="https://cvgames.com.br/games/cv-neon-breaker/cover-social.png">
   <meta name="twitter:image:alt" content="Capa do jogo CV NEON BREAKER">
   <title>CV NEON BREAKER — Jogo Exclusivo | CV GAMES</title>
@@ -27,7 +27,7 @@
       "name": "CV NEON BREAKER",
       "url": "https://cvgames.com.br/games/cv-neon-breaker/",
       "image": "https://cvgames.com.br/games/cv-neon-breaker/cover-social.png",
-      "description": "Arcade exclusivo do CV GAMES em que o jogador rebate uma esfera para destruir blocos em cinco fases.",
+      "description": "Arcade exclusivo do CV GAMES com blocos móveis, explosivos e resistentes e novos poderes em cinco fases.",
       "genre": "Arcade",
       "gamePlatform": "Navegador",
       "inLanguage": "pt-BR"
@@ -99,13 +99,22 @@
           </div>
 
           <div class="neon-stage">
-            <canvas width="800" height="560" data-cv-neon-breaker-canvas aria-label="Área do jogo CV NEON BREAKER. Mova a plataforma e rebata a esfera contra os blocos." role="img">Seu navegador não oferece suporte a Canvas para executar CV NEON BREAKER.</canvas>
+            <canvas width="800" height="560" data-cv-neon-breaker-canvas aria-label="Área do jogo CV NEON BREAKER. Mova a plataforma, rebata a esfera e use os poderes para destruir blocos resistentes, móveis e explosivos." role="img">Seu navegador não oferece suporte a Canvas para executar CV NEON BREAKER.</canvas>
 
             <section class="neon-screen" data-intro-screen aria-labelledby="intro-title">
               <p class="neon-screen-icon" aria-hidden="true">🟣</p>
               <h2 id="intro-title">CV NEON BREAKER</h2>
-              <p>Quebre todos os blocos de cinco fases, use os power-ups e não deixe a esfera cair.</p>
+              <p>Supere cinco fases com blocos móveis, blindados e explosivos. Pegue poderes e mantenha a esfera no jogo.</p>
               <p class="neon-best-line">🏆 Melhor pontuação: <strong data-intro-best-score>0</strong></p>
+              <div class="neon-intro-preferences">
+                <p class="neon-settings-kicker">SEU CONTROLE</p>
+                <div class="neon-control-picker" role="group" aria-label="Modo de controle antes da partida">
+                  <button type="button" data-control-mode="keyboard" aria-pressed="true">⌨ Teclado</button>
+                  <button type="button" data-control-mode="touch" aria-pressed="false">☝ Toque na tela</button>
+                  <button type="button" data-control-mode="buttons" aria-pressed="false">◀ Botões na tela ▶</button>
+                </div>
+                <small>Preferência salva neste aparelho. Você pode mudar em Configurações.</small>
+              </div>
               <button class="button button-primary neon-start-button" type="button" data-start-game>▶ Jogar</button>
             </section>
 
@@ -190,12 +199,16 @@
           <ol>
             <li>Escolha nas configurações: teclado, arrastar na arena ou botões virtuais na tela.</li>
             <li>Use <kbd>Espaço</kbd>, toque na arena ou Lançar para soltar a esfera.</li>
-            <li>Blocos lisos precisam de um impacto; blocos marcados com <strong>II</strong> precisam de dois.</li>
+            <li>Blocos <strong>II</strong> resistem a dois impactos; os <strong>III</strong> aguentam três. Os com <strong>↔</strong> se movem.</li>
+            <li>Blocos <strong>✹</strong> explodem e atingem os vizinhos. Use a explosão para abrir caminho pelos grupos.</li>
             <li>Use <kbd>P</kbd> ou Pausar quando precisar de uma pausa.</li>
           </ol>
           <div class="neon-help-note"><strong>↔ Plataforma maior</strong><span>temporário</span></div>
           <div class="neon-help-note"><strong>🐢 Slow</strong><span>temporário</span></div>
           <div class="neon-help-note"><strong>❤️ Vida extra</strong><span>até 5 vidas</span></div>
+          <div class="neon-help-note"><strong>✦ Perfuração</strong><span>atravessa blocos</span></div>
+          <div class="neon-help-note"><strong>⬡ Escudo</strong><span>salva uma queda</span></div>
+          <div class="neon-help-note"><strong>✹ Explosão</strong><span>atinge vários blocos</span></div>
           <p class="neon-help-footnote">Cada carregamento registra apenas o primeiro lançamento nas estatísticas locais.</p>
         </aside>
       </section>

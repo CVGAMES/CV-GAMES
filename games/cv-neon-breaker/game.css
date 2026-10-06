@@ -33,6 +33,11 @@
 .neon-screen p { max-width: 28rem; margin: 0; color: #e2d8ff; }
 .neon-best-line { font-size: .9rem; }
 .neon-best-line strong { color: #ffe373; }
+.neon-intro-preferences { display:grid; width:min(100%,27rem); justify-items:center; gap:.3rem; margin:.12rem 0; }
+.neon-intro-preferences .neon-settings-kicker { margin:0; font-size:.58rem; }
+.neon-intro-preferences .neon-control-picker { padding:.16rem; gap:.12rem; }
+.neon-intro-preferences .neon-control-picker button { min-height:2.15rem; flex:1 1 7rem; padding:.28rem .35rem; font-size:.68rem; }
+.neon-intro-preferences small { color:#d1c8e9; font-size:.65rem; line-height:1.35; }
 .neon-start-button { min-width: min(100%, 13rem); margin-top: .2rem; }
 .neon-screen-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-top: .2rem; }
 .neon-screen-actions .button { text-decoration: none; }
@@ -140,6 +145,7 @@ body.has-fullscreen-fallback { overflow: hidden; }
 .neon-settings-button { display:inline-grid; width:3.3rem; min-width:3.3rem; place-items:center; padding:0; border:1px solid var(--line); border-radius:.85rem; background:var(--bg-soft); color:var(--text); font:inherit; font-size:1.05rem; font-weight:850; cursor:pointer; touch-action:manipulation; transition:transform .15s ease,border-color .15s ease,background-color .15s ease; }
 .neon-settings-button:hover,.neon-settings-button:focus-visible { transform:translateY(-2px); border-color:var(--primary); background:var(--surface-hover); }
 .neon-audio-tools { display:flex; align-items:center; justify-content:center; gap:.45rem; margin:0; }
+.neon-audio-tools .cv-game-audio-panel { top:auto; bottom:calc(100% + .5rem); right:0; }
 .neon-fullscreen-button { display:inline-flex; align-items:center; justify-content:center; gap:.35rem; }
 .neon-settings-modal { position:absolute; z-index:20; inset:0; display:grid; place-items:center; overflow:auto; padding:1rem; background:rgba(3,7,18,.86); backdrop-filter:blur(12px); }
 .neon-settings-modal[hidden] { display:none !important; }
@@ -156,7 +162,7 @@ body.has-fullscreen-fallback { overflow: hidden; }
 .neon-game-panel:fullscreen .neon-scoreboard,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard { display:flex; width:min(100%,72rem); justify-content:center; gap:.45rem; margin:0; }
 .neon-game-panel:fullscreen .neon-scoreboard span,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard span { min-height:2.35rem; justify-content:center; padding:.3rem .65rem; border:1px solid rgba(166,190,238,.14); border-radius:.7rem; background:rgba(16,29,54,.85); font-size:.68rem; }
 .neon-game-panel:fullscreen .neon-scoreboard strong,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard strong { font-size:.9rem; }
-.neon-game-panel:fullscreen .neon-stage,.neon-game-panel.is-fullscreen-fallback .neon-stage { place-self:center; width:min(100%,calc((100dvh - 10rem) * 1.4286),80rem); max-width:100%; max-height:calc(100dvh - 10rem); height:auto; flex:none; aspect-ratio:10/7; border-radius:.85rem; }
+.neon-game-panel:fullscreen .neon-stage,.neon-game-panel.is-fullscreen-fallback .neon-stage { place-self:center; width:min(100%,calc((100dvh - 8rem) * 1.4286),88rem); max-width:100%; max-height:calc(100dvh - 8rem); height:auto; flex:none; aspect-ratio:10/7; border-radius:.85rem; }
 .neon-game-panel:fullscreen .neon-controls,.neon-game-panel.is-fullscreen-fallback .neon-controls { display:flex; width:min(100%,60rem); flex:0 0 auto; align-items:center; justify-content:center; flex-wrap:wrap; gap:.45rem; margin:0; }
 .neon-game-panel:fullscreen .neon-touch-controls,.neon-game-panel.is-fullscreen-fallback .neon-touch-controls { gap:.35rem; }
 .neon-game-panel:fullscreen .neon-touch-controls:not([hidden]),.neon-game-panel.is-fullscreen-fallback .neon-touch-controls:not([hidden]) { display:flex; }
@@ -170,11 +176,15 @@ body.has-fullscreen-fallback { overflow: hidden; }
 .neon-game-panel.is-fullscreen-fallback { position:fixed; inset:0; z-index:9999; }
 body.has-fullscreen-fallback { overflow:hidden; }
 @media(max-width:620px) {
-  .neon-game-panel:fullscreen,.neon-game-panel.is-fullscreen-fallback { gap:.35rem; padding:.4rem; }
-  .neon-game-panel:fullscreen .neon-scoreboard,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.25rem; }
-  .neon-game-panel:fullscreen .neon-scoreboard span,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard span { min-height:1.9rem; padding:.2rem .25rem; font-size:.58rem; }
+  .neon-game-panel:fullscreen,.neon-game-panel.is-fullscreen-fallback { gap:.22rem; padding:max(.2rem,env(safe-area-inset-top)) max(.2rem,env(safe-area-inset-right)) max(.2rem,env(safe-area-inset-bottom)) max(.2rem,env(safe-area-inset-left)); }
+  .neon-game-panel:fullscreen .neon-scoreboard,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.18rem; }
+  .neon-game-panel:fullscreen .neon-scoreboard span,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard span { min-height:1.7rem; padding:.12rem .2rem; font-size:.56rem; }
+  .neon-game-panel:fullscreen .neon-scoreboard strong,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard strong { font-size:.76rem; }
   .neon-game-panel:fullscreen .neon-scoreboard span:last-child,.neon-game-panel.is-fullscreen-fallback .neon-scoreboard span:last-child { grid-column:auto; }
-  .neon-game-panel:fullscreen .neon-stage,.neon-game-panel.is-fullscreen-fallback .neon-stage { width:min(100%,calc((100dvh - 9rem) * 1.4286)); max-height:calc(100dvh - 9rem); }
+  .neon-game-panel:fullscreen .neon-stage,.neon-game-panel.is-fullscreen-fallback .neon-stage { width:min(100%,calc((100dvh - 7.2rem) * 1.2)); max-height:calc(100dvh - 7.2rem); aspect-ratio:1.2 / 1; border-radius:.65rem; }
+  .neon-game-panel:fullscreen .neon-controls,.neon-game-panel.is-fullscreen-fallback .neon-controls { gap:.28rem; }
+  .neon-game-panel:fullscreen .neon-control-button,.neon-game-panel:fullscreen .neon-launch-button,.neon-game-panel:fullscreen .neon-pause-button,.neon-game-panel:fullscreen .neon-settings-button,.neon-game-panel:fullscreen .neon-fullscreen-button,.neon-game-panel.is-fullscreen-fallback .neon-control-button,.neon-game-panel.is-fullscreen-fallback .neon-launch-button,.neon-game-panel.is-fullscreen-fallback .neon-pause-button,.neon-game-panel.is-fullscreen-fallback .neon-settings-button,.neon-game-panel.is-fullscreen-fallback .neon-fullscreen-button { width:2.55rem; min-width:2.55rem; height:2.55rem; min-height:2.55rem; }
+  .neon-game-panel:fullscreen .cv-game-audio-button,.neon-game-panel.is-fullscreen-fallback .cv-game-audio-button { width:2.55rem; min-height:2.55rem; }
   .neon-controls { gap:.35rem; }
   .neon-launch-button,.neon-pause-button,.neon-settings-button { min-height:3rem; }
 }

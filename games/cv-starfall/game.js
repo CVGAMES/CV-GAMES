@@ -4,6 +4,9 @@
   const gameId = 'cv-starfall';
   const bestKey = 'cv-games-cv-starfall-best';
   const bestWaveKey = 'cv-games-cv-starfall-best-wave';
+  const setupCompleteKey = 'cv-games-cv-starfall-setup-complete';
+  const controlModeKey = 'cv-games-cv-starfall-control';
+  const performanceModeKey = 'cv-games-cv-starfall-performance';
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
   const favoritesKey = 'cv-games-favorites';
@@ -12,17 +15,18 @@
   if (!canvas || !ctx) return;
   const $ = (selector) => document.querySelector(selector);
   const ui = {
-    stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'),
+    stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
     skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), shipModal: $('[data-ship-modal]'), settingsModal: $('[data-settings-modal]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]')
   };
   const skins = [
     { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, shape: 'classic', description: 'Uma explosão ampla atinge todos os inimigos próximos.' },
-    { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, shape: 'blade', unlockWave: 5, description: 'Uma lâmina veloz faz curvas e ricocheteia em várias direções.' },
+    { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 25, shape: 'shield', unlockWave: 10, description: 'Uma barreira absorve três impactos.' },
+    { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 25, shape: 'ring', unlockWave: 20, description: 'Desacelera inimigos e projéteis por alguns segundos.' },
     { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 34, shape: 'wing', unlockWave: 30, description: 'Dispare uma singularidade que puxa e fere os inimigos próximos.' },
-    { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 25, shape: 'ring', unlockWave: 35, description: 'Desacelera inimigos e projéteis por alguns segundos.' },
-    { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 25, shape: 'shield', unlockWave: 10, description: 'Uma barreira absorve três impactos.' }
+    { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, shape: 'blade', unlockWave: 40, description: 'Uma lâmina veloz faz curvas e ricocheteia em várias direções.' },
+    { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, shape: 'reflector', secret: true, description: 'Por alguns segundos, reflete projéteis: parte volta pela trajetória e parte mira em quem atacou.' }
   ];
   const starfallAchievements = [
     { id: 'first-flight', icon: '🚀', title: 'Primeiro voo', description: 'Comece sua primeira missão.', metric: 'missionsStarted', target: 1, unit: 'missão' },
@@ -31,7 +35,7 @@
     { id: 'daily-pilot', icon: '📅', title: 'Piloto diário', description: 'Termine um Desafio Diário.', metric: 'dailyRunsFinished', target: 1, unit: 'desafio' },
     { id: 'planet-hopper', icon: '🪐', title: 'Viajante galáctico', description: 'Alcance a onda 15.', metric: 'bestWaveReached', target: 15, unit: 'ondas' },
     { id: 'star-legend', icon: '🌌', title: 'Lenda das estrelas', description: 'Alcance a onda 50.', metric: 'bestWaveReached', target: 50, unit: 'ondas' },
-    { id: 'ability-collector', icon: '✨', title: 'Mestre das naves', description: 'Use a habilidade de cada nave.', metric: 'abilityShips', target: 5, unit: 'naves' }
+    { id: 'ability-collector', icon: '✨', title: 'Mestre das naves', description: 'Use a habilidade de cada nave.', metric: 'abilityShips', target: skins.length, unit: 'naves' }
   ];
   const zones = [
     { name: 'Órbita Azul', colors: ['#07132b', '#111d36'], stars: '190,220,255' },
@@ -55,10 +59,10 @@
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
     selectedSkin: readSkin(), controlMode: readControlMode(), performanceMode: readPerformanceMode(), upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
-    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, endlessDamage: 0, endlessSpeed: 0,
+    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: '#7df7e8' },
     pointer: { active: false, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
-    dailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null,
+    dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
     waveDamageTaken: false, achievementProgress: null
   };
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -105,6 +109,7 @@
     ,{ id:'lowHull', icon:'⚑', name:'Protocolo de emergência', description:'Ganha velocidade quando restam duas vidas ou menos.', max:3, available:()=>state.lowHullBoost<3, apply:()=>{state.lowHullBoost+=1;} }
     ,{ id:'lifeSupport', icon:'♥+', name:'Casco reforçado', description:'Aumenta o máximo de vida e recupera uma unidade.', max:3, available:()=>state.maxLives<9, apply:()=>{state.maxLives=Math.min(9,state.maxLives+1);state.lives=Math.min(state.maxLives,state.lives+1);} }
     ,{ id:'gravityWell', icon:'🌀', name:'Poço gravitacional', description:'Amplia e prolonga o buraco negro da Tempestade.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('gravityWell')<3, apply:()=>{state.singularityRadius+=32;state.singularityDuration+=.7;} }
+    ,{ id:'returnCore', icon:'⟲', name:'Núcleo de contra-ataque', description:'Aumenta o dano, prolonga o escudo refletor e reduz sua recarga.', max:4, available:()=>currentSkin().id==='redshift'&&upgradeLevel('returnCore')<4, apply:()=>{state.reflectDamageBonus=Math.min(.9,state.reflectDamageBonus+.23);state.reflectDurationBonus=Math.min(2,state.reflectDurationBonus+.5);state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1.25);} }
     ,{ id:'salvageHeal', icon:'✚', name:'Recuperação de destroços', description:'Inimigos destruídos podem liberar energia de reparo.', max:4, available:()=>state.salvageHeal<4, apply:()=>{state.salvageHeal+=1;} }
     ,{ id:'endlessDamage', icon:'✹', name:'Núcleo adaptativo', description:'Reforço repetível com ganho decrescente e limite seguro de dano.', max:0, stack:true, available:()=>state.endlessDamage<1.24, apply:()=>{state.endlessDamage=Math.min(1.25,state.endlessDamage + .11 / (1 + upgradeLevel('endlessDamage') * .14));} }
     ,{ id:'endlessSpeed', icon:'➤', name:'Impulso de longo curso', description:'Aumenta a mobilidade aos poucos, com velocidade máxima controlada.', max:0, stack:true, available:()=>state.endlessSpeed<118, apply:()=>{state.endlessSpeed=Math.min(120,state.endlessSpeed + 8 / (1 + upgradeLevel('endlessSpeed') * .12));} }
@@ -186,6 +191,7 @@
       });
     }
     ui.dailySummaryModal.hidden = false;
+    syncAudioVisibility();
     ui.dailySummaryModal.querySelector('[data-close-daily-summary]')?.focus();
   }
   function closeDailySummary() {
@@ -196,6 +202,7 @@
       state.challengeDate = '';
       state.dailyBestScore = 0;
       state.randomStreams = null;
+      if (state.skinBeforeDaily) { state.selectedSkin = state.skinBeforeDaily; state.skinBeforeDaily = ''; }
       resetGame();
       setMode('intro');
       ui.title.textContent = 'O céu está caindo.';
@@ -204,6 +211,7 @@
       ui.status.textContent = 'Pronto para a missão.';
     }
     ui.dailyStart?.focus();
+    syncAudioVisibility();
   }
   function achievementStorageKey() {
     const nickname = profileNickname();
@@ -272,21 +280,38 @@
     renderAchievements();
   }
   function isDeveloperProfile() { return ['educvv dev', 'educvv dev1'].includes(profileNickname()); }
+  function isCypherProfile() { return profileNickname() === 'cypher'; }
   function isAllUpgradesProfile() { return profileNickname() === 'educvv dev1'; }
   function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge; }
-  function skinUnlocked(skin) { return isDeveloperProfile() || !skin.unlockWave || Math.max(readBestWave(), state.bestCompletedWave) >= skin.unlockWave; }
-  function readSkin() { try { const id=localStorage.getItem('cv-games-cv-starfall-skin'); const skin=skins.find((item)=>item.id===id); return skin && (isDeveloperProfile() || !skin.unlockWave || readBestWave() >= skin.unlockWave)?id:'aurora'; } catch { return 'aurora'; } }
-  function readControlMode() { try { const mode=localStorage.getItem('cv-games-cv-starfall-control'); return ['keys','touch','analog'].includes(mode)?mode:'keys'; } catch { return 'keys'; } }
-  function readPerformanceMode() { try { return localStorage.getItem('cv-games-cv-starfall-performance') === 'light' ? 'light' : 'normal'; } catch { return 'normal'; } }
-  function currentSkin() { return skins.find((skin)=>skin.id===state.selectedSkin)||skins[0]; }
+  function skinUnlocked(skin) {
+    if (skin.secret) return isDeveloperProfile() || isCypherProfile();
+    return isDeveloperProfile() || !skin.unlockWave || Math.max(readBestWave(), state.bestCompletedWave) >= skin.unlockWave;
+  }
+  function readSkin() {
+    try {
+      const id = localStorage.getItem('cv-games-cv-starfall-skin');
+      const skin = skins.find((item) => item.id === id);
+      if (!skin) return 'aurora';
+      const unlocked = skin.secret
+        ? isDeveloperProfile() || isCypherProfile()
+        : isDeveloperProfile() || !skin.unlockWave || readBestWave() >= skin.unlockWave;
+      return unlocked ? id : 'aurora';
+    } catch { return 'aurora'; }
+  }
+  function readControlMode() { try { const mode=localStorage.getItem(controlModeKey); return ['keys','touch','analog'].includes(mode)?mode:'keys'; } catch { return 'keys'; } }
+  function readPerformanceMode() { try { return localStorage.getItem(performanceModeKey) === 'light' ? 'light' : 'normal'; } catch { return 'normal'; } }
+  function currentSkin() {
+    const selected = skins.find((skin) => skin.id === state.selectedSkin);
+    return selected && skinUnlocked(selected) ? selected : skins[0];
+  }
   function saveBest() { try { localStorage.setItem(bestKey, String(state.best)); } catch { /* Recorde mantido nesta sessão. */ } }
   function saveBestWave() { try { localStorage.setItem(bestWaveKey, String(state.bestCompletedWave)); } catch { /* Desbloqueios mantidos nesta sessão. */ } }
   function updateEquippedShip() {
     if (!ui.equippedShip) return;
     const skin = currentSkin();
-    const silhouettes = { classic: 'M20 3 L34 35 L20 28 L6 35 Z', blade: 'M20 2 L24 16 L36 33 L20 27 L4 33 L16 16 Z', wing: 'M20 2 L25 16 L37 30 L25 27 L20 38 L15 27 L3 30 L15 16 Z', shield: 'M20 2 L32 17 L29 32 L20 37 L11 32 L8 17 Z', ring: 'M20 3 L34 35 L20 28 L6 35 Z' };
+    const silhouettes = { classic: 'M20 3 L34 35 L20 28 L6 35 Z', blade: 'M20 2 L24 16 L36 33 L20 27 L4 33 L16 16 Z', wing: 'M20 2 L25 16 L37 30 L25 27 L20 38 L15 27 L3 30 L15 16 Z', shield: 'M20 2 L32 17 L29 32 L20 37 L11 32 L8 17 Z', ring: 'M20 3 L34 35 L20 28 L6 35 Z', reflector: 'M20 2 L33 10 L37 23 L28 34 L20 38 L12 34 L3 23 L7 10 Z' };
     ui.equippedShip.style.setProperty('--skin-color', skin.color);
-    ui.equippedShip.innerHTML = '<svg class="starfall-equipped-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : '') + '</svg><span><strong>Nave equipada: ' + skin.name + '</strong><small>' + skin.ability + (hasDeveloperPerks() ? ' · sem recarga' : ' · recarga ' + skin.cooldown + 's') + '</small></span>';
+    ui.equippedShip.innerHTML = '<svg class="starfall-equipped-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : '') + '</svg><span><strong>Nave equipada: ' + skin.name + '</strong><small>' + skin.ability + (hasDeveloperPerks() ? ' · sem recarga' : ' · recarga ' + skin.cooldown + 's') + '</small></span>';
   }
   function releaseAnalog() {
     state.analog.active = false; state.analog.x = 0; state.analog.y = 0; state.analog.pointerId = null;
@@ -299,12 +324,15 @@
     ui.overlay.hidden = !['intro', 'gameover', 'paused'].includes(mode);
     const menuActions = [ui.dailyStart, ui.dailyRecord, ui.overlay?.querySelector('[data-open-ships]'), ui.overlay?.querySelector('[data-open-achievements]')];
     menuActions.forEach((item) => { if (item) item.hidden = mode === 'paused'; });
+    const menuExit = ui.overlay?.querySelector('[data-exit-from-menu]');
+    if (menuExit) menuExit.hidden = mode !== 'paused';
     ui.upgrade.hidden = mode !== 'upgrade';
     ui.pause.disabled = !['playing'].includes(mode) && mode !== 'paused';
     if (ui.pauseIcon) ui.pauseIcon.textContent = mode === 'paused' ? '▶' : '⏸';
     if (ui.pauseLabel) ui.pauseLabel.textContent = mode === 'paused' ? 'RETOMAR' : 'PAUSAR';
     ui.pause.setAttribute('aria-label', mode === 'paused' ? 'Retomar missão' : 'Pausar missão');
     ui.pause.title = mode === 'paused' ? 'Retomar missão' : 'Pausar missão';
+    if (ui.stop) ui.stop.hidden = !['playing', 'paused', 'upgrade', 'gameover'].includes(mode);
     updateAbilityButton();
   }
   function formatTime(seconds) {
@@ -345,6 +373,17 @@
     if (!ui.skinPicker) return;
     ui.skinPicker.replaceChildren();
     skins.forEach((skin) => {
+      if (skin.secret && !skinUnlocked(skin)) {
+        const secretCard = document.createElement('button');
+        secretCard.type = 'button';
+        secretCard.className = 'starfall-skin-card is-secret';
+        secretCard.disabled = true;
+        secretCard.setAttribute('aria-label', 'Nave desconhecida, conteúdo secreto');
+        secretCard.title = 'Nave desconhecida · secreta';
+        secretCard.innerHTML = '<span class="starfall-skin-icon" aria-hidden="true">?</span><strong>Desconhecido</strong><span>SECRETO</span>';
+        ui.skinPicker.append(secretCard);
+        return;
+      }
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'starfall-skin-card' + (skin.id === state.selectedSkin ? ' is-selected' : '');
@@ -402,7 +441,7 @@
     state.player = { x: state.width / 2, y: state.height * .78, radius: 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
-    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.endlessDamage = 0; state.endlessSpeed = 0;
+    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
     if (isAllUpgradesProfile() && !state.dailyChallenge) grantAllUpgrades();
     state.keys.clear(); state.pointer.active = false; releaseAnalog();
@@ -430,8 +469,9 @@
     if (!['intro', 'gameover'].includes(state.mode)) return;
     cancelAnimationFrame(state.raf);
     if (ui.dailySummaryModal) ui.dailySummaryModal.hidden = true;
+    syncAudioVisibility();
     if (dailyChallenge) {
-      state.skinBeforeDaily = state.selectedSkin;
+      if (!state.skinBeforeDaily) state.skinBeforeDaily = state.selectedSkin;
       state.selectedSkin = 'aurora';
       state.dailyChallenge = true;
       state.challengeDate = saoPauloDateKey();
@@ -670,7 +710,7 @@
   }
   function enemyFire(enemy) {
     const angle = Math.atan2(state.player.y - enemy.y, state.player.x - enemy.x);
-    const shot = (a, speed, r, extras = {}) => state.enemyBullets.push({ x: enemy.x, y: enemy.y + enemy.r * .35, vx: Math.cos(a) * speed * enemyUpgradeAttackScale(), vy: Math.sin(a) * speed * enemyUpgradeAttackScale(), r: r || 5, color: enemy.color, ...extras });
+    const shot = (a, speed, r, extras = {}) => state.enemyBullets.push({ x: enemy.x, y: enemy.y + enemy.r * .35, vx: Math.cos(a) * speed * enemyUpgradeAttackScale(), vy: Math.sin(a) * speed * enemyUpgradeAttackScale(), r: r || 5, color: enemy.color, source: enemy, ...extras });
     if (enemy.isMiniBoss) {
       const speed = Math.min(285, 175 + state.wave * 1.35);
       if (enemy.bossType === 'prism') {
@@ -722,7 +762,7 @@
     bullet.exploded = true; bullet.dead = true;
     const radius = bullet.blastRadius || 78;
     burst(bullet.x, bullet.y, '#ffbd67', 26, 165); burst(bullet.x, bullet.y, '#fff1b4', 13, 105);
-    if (distance(bullet, state.player) < radius + state.player.radius) damagePlayer(bullet.damage || 2);
+    if (distance(bullet, state.player) < radius + state.player.radius && state.reflectTime <= 0) damagePlayer(bullet.damage || 2);
     state.enemies.forEach((enemy) => { if (!enemy.dead && distance(bullet, enemy) < radius + enemy.r) damageEnemy(enemy, 8 + state.wave * .2, true); });
   }
   function damagePlayer(amount = 1) {
@@ -737,6 +777,33 @@
     state.lives = Math.max(0, state.lives - remaining);
     state.invulnerable = 1.35; burst(state.player.x, state.player.y, '#ff6687', 22, 160); tone(120, .23, 'sawtooth', .05); updateHud();
     if (state.lives <= 0) finishGame();
+  }
+  function reflectIncomingBullet(bullet) {
+    if (state.reflectTime <= 0 || bullet.dead || bullet.reflected) return false;
+    const shieldRadius = state.player.radius + 20;
+    if (distance(bullet, state.player) > shieldRadius + bullet.r) return false;
+    const originalAttacker = bullet.source && !bullet.source.dead && state.enemies.includes(bullet.source) ? bullet.source : null;
+    const target = randomUnit('ability') < .58 ? originalAttacker || nearestEnemy() : null;
+    const angle = target
+      ? Math.atan2(target.y - state.player.y, target.x - state.player.x)
+      : Math.atan2(-bullet.vy, -bullet.vx);
+    const speed = clamp(Math.hypot(bullet.vx, bullet.vy) * 1.08, 300, 480);
+    bullet.x = state.player.x + Math.cos(angle) * (shieldRadius + bullet.r + 2);
+    bullet.y = state.player.y + Math.sin(angle) * (shieldRadius + bullet.r + 2);
+    bullet.vx = Math.cos(angle) * speed;
+    bullet.vy = Math.sin(angle) * speed;
+    bullet.damage = Math.min(12, Math.max(2, (bullet.damage || 1) * (1 + state.abilityPower * .42 + state.reflectDamageBonus)));
+    bullet.color = currentSkin().color;
+    bullet.r = clamp(bullet.r || 5, 4, 7);
+    bullet.reflected = true;
+    bullet.reflectLife = 2.2;
+    bullet.explosive = false;
+    bullet.exploded = false;
+    bullet.fuse = null;
+    bullet.blastRadius = 0;
+    bullet.bounces = 0;
+    burst(bullet.x, bullet.y, currentSkin().accent, 5, 85);
+    return true;
   }
   function defeatEnemy(enemy, ability) {
     if (!enemy || enemy.dead) return;
@@ -791,8 +858,15 @@
       toast('SINGULARIDADE DISPARADA');
     } else if (skin.id === 'chronos') {
       state.slowTime = 5.4; state.effects.push({ type: 'chronos', life: 5.4, total: 5.4 }); toast('TEMPO DOBRADO');
-    } else {
+    } else if (skin.id === 'aegis') {
       state.tempShields = Math.max(state.tempShields, 3); state.effects.push({ type: 'aegis', life: 9, total: 9 }); toast('BARREIRA AEGIS · 3 IMPACTOS'); updateHud();
+    } else if (skin.id === 'redshift') {
+      const duration = Math.min(10, 8 + state.reflectDurationBonus);
+      state.reflectTime = duration;
+      state.reflectContacts = new Set();
+      state.effects.push({ type: 'reflect-shield', life: duration, total: duration });
+      burst(state.player.x, state.player.y, skin.color, 42, 210); burst(state.player.x, state.player.y, skin.accent, 18, 145);
+      toast('ESCUDO DE RETORNO · ' + duration.toFixed(1).replace('.', ',') + 's');
     }
     updateAbilityButton(); tone(740, .22, 'triangle', .05);
   }
@@ -804,6 +878,7 @@
     state.powerSpawn -= dt;
     state.abilityCooldown = Math.max(0, state.abilityCooldown - dt);
     state.slowTime = Math.max(0, state.slowTime - dt);
+    state.reflectTime = Math.max(0, state.reflectTime - dt);
     if (state.regenLevel > 0 && state.lives < state.maxLives) {
       state.regenTimer -= dt;
       if (state.regenTimer <= 0) { state.lives++; state.regenTimer = Math.max(16, 32 - state.regenLevel * 4); toast('NANORREPARO +1 VIDA'); updateHud(); }
@@ -844,6 +919,20 @@
     const slowFactor = state.slowTime > 0 ? .42 : 1;
     for (const bullet of state.enemyBullets) {
       if (bullet.dead) continue;
+      reflectIncomingBullet(bullet);
+      if (bullet.reflected) {
+        bullet.reflectLife -= dt;
+        bullet.x += bullet.vx * dt;
+        bullet.y += bullet.vy * dt;
+        const target = state.enemies.find((enemy) => !enemy.dead && Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.r + enemy.r * .72);
+        if (target) {
+          damageEnemy(target, bullet.damage, true);
+          burst(bullet.x, bullet.y, bullet.color, 8, 95);
+          bullet.dead = true;
+        }
+        if (bullet.reflectLife <= 0 || bullet.x < -24 || bullet.x > state.width + 24 || bullet.y < -24 || bullet.y > state.height + 24) bullet.dead = true;
+        continue;
+      }
       if (bullet.fuse != null) { bullet.fuse -= dt * slowFactor; if (bullet.fuse <= 0) { explodeBullet(bullet); continue; } }
       bullet.x += bullet.vx * dt * slowFactor; bullet.y += bullet.vy * dt * slowFactor;
       const hitX = bullet.x < bullet.r || bullet.x > state.width - bullet.r;
@@ -892,6 +981,18 @@
         }
       }
       if (distance(state.player, enemy) < state.player.radius + enemy.r * .75) {
+        if (state.reflectTime > 0) {
+          if (!state.reflectContacts.has(enemy)) {
+            state.reflectContacts.add(enemy);
+            const angleAway = Math.atan2(enemy.y - state.player.y, enemy.x - state.player.x);
+            const separation = enemy.r + state.player.radius + 10;
+            enemy.x = clamp(state.player.x + Math.cos(angleAway) * separation, enemy.r, state.width - enemy.r);
+            enemy.y = clamp(state.player.y + Math.sin(angleAway) * separation, enemy.r, state.height - enemy.r);
+            damageEnemy(enemy, (enemy.kind === 'boss' ? 7 : 5) * state.abilityPower, true);
+            burst(state.player.x + Math.cos(angleAway) * (state.player.radius + 14), state.player.y + Math.sin(angleAway) * (state.player.radius + 14), currentSkin().accent, 8, 120);
+          }
+          continue;
+        }
         if (enemy.kind !== 'hunter' || enemy.ramCooldown <= 0) {
           damagePlayer(enemy.kind === 'boss' && enemy.phase >= 2 ? 2 : 1);
           if (enemy.kind === 'hunter') {
@@ -918,7 +1019,8 @@
     }
     state.bullets = state.bullets.filter(b => !b.dead);
     state.enemies = state.enemies.filter(e => !e.dead && e.y > -100 && e.y < state.height + 100 && e.x > -100 && e.x < state.width + 100);
-    for (const bullet of state.enemyBullets) if (!bullet.dead && Math.hypot(bullet.x - state.player.x, bullet.y - state.player.y) < bullet.r + state.player.radius * .7) {
+    for (const bullet of state.enemyBullets) if (!bullet.dead && !bullet.reflected && Math.hypot(bullet.x - state.player.x, bullet.y - state.player.y) < bullet.r + state.player.radius * .7) {
+      if (reflectIncomingBullet(bullet)) continue;
       if (bullet.explosive) explodeBullet(bullet);
       else { bullet.dead = true; damagePlayer(bullet.damage || 1); }
     }
@@ -1054,6 +1156,8 @@
     ctx.beginPath();
     if (ship.shape === 'blade') {
       ctx.moveTo(0, -size * 1.65); ctx.lineTo(size * .34, -size * .22); ctx.lineTo(size * 1.12, size * .8); ctx.lineTo(0, size * .43); ctx.lineTo(-size * 1.12, size * .8); ctx.lineTo(-size * .34, -size * .22);
+    } else if (ship.shape === 'reflector') {
+      ctx.moveTo(0, -size * 1.55); ctx.lineTo(size * .58, -size * .62); ctx.lineTo(size * 1.24, -size * .12); ctx.lineTo(size * .8, size * .78); ctx.lineTo(size * .27, size * .48); ctx.lineTo(0, size * 1.02); ctx.lineTo(-size * .27, size * .48); ctx.lineTo(-size * .8, size * .78); ctx.lineTo(-size * 1.24, -size * .12); ctx.lineTo(-size * .58, -size * .62);
     } else if (ship.shape === 'wing') {
       ctx.moveTo(0, -size * 1.5); ctx.lineTo(size * .5, -size * .25); ctx.lineTo(size * 1.25, size * .65); ctx.lineTo(size * .34, size * .42); ctx.lineTo(0, size); ctx.lineTo(-size * .34, size * .42); ctx.lineTo(-size * 1.25, size * .65); ctx.lineTo(-size * .5, -size * .25);
     } else if (ship.shape === 'shield') {
@@ -1139,6 +1243,18 @@
         ctx.fillStyle = '#03040d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(0, 0, radius * .58, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       } else if (effect.type === 'lightning') {
         ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = '#dce5ff'; ctx.shadowColor = '#87aaff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 18; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'reflect-shield') {
+        ctx.save(); ctx.translate(state.player.x, state.player.y);
+        const shieldRadius = state.player.radius + 20;
+        const pulse = .48 + Math.sin(timestamp / 105) * .09;
+        ctx.globalAlpha = pulse * alpha;
+        const glow = ctx.createRadialGradient(0, 0, shieldRadius * .55, 0, 0, shieldRadius + 8);
+        glow.addColorStop(0, 'rgba(216,58,46,0)'); glow.addColorStop(.76, 'rgba(216,58,46,.08)'); glow.addColorStop(1, 'rgba(255,208,106,.24)');
+        ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(0, 0, shieldRadius + 8, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = currentSkin().color; ctx.lineWidth = 3; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 22;
+        ctx.beginPath(); ctx.arc(0, 0, shieldRadius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = Math.max(.22, pulse * alpha * .72); ctx.strokeStyle = currentSkin().accent; ctx.lineWidth = 2; ctx.setLineDash([7, 9]); ctx.lineDashOffset = -timestamp * .035; ctx.beginPath(); ctx.arc(0, 0, shieldRadius + 5, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        ctx.restore();
       } else if (effect.type === 'aegis') {
         if (state.tempShields > 0) { ctx.save(); ctx.globalAlpha = .35 + .25 * Math.sin(timestamp / 150); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = 3; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 22; ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + 17, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
       } else if (effect.type === 'chronos') {
@@ -1258,58 +1374,168 @@
   function setPerformanceMode(mode) {
     if (!['normal', 'light'].includes(mode) || mode === state.performanceMode) return;
     state.performanceMode = mode;
-    try { localStorage.setItem('cv-games-cv-starfall-performance', mode); } catch { /* Preferência vale para a sessão. */ }
+    try { localStorage.setItem(performanceModeKey, mode); } catch { /* Preferência vale para a sessão. */ }
     if (mode === 'light' && state.particles.length > 110) state.particles = state.particles.slice(-110);
     updatePerformanceModeUI();
     resize();
-    toast(mode === 'light' ? 'MODO LEVE ATIVADO' : 'MODO NORMAL ATIVADO');
+    if (ui.missionSetupModal?.hidden && ui.settingsModal?.hidden) toast(mode === 'light' ? 'MODO LEVE ATIVADO' : 'MODO NORMAL ATIVADO');
+  }
+  function syncAudioVisibility() {
+    if (!ui.audio) return;
+    const modalOpen = [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal]
+      .some((modal) => modal && !modal.hidden);
+    ui.audio.classList.toggle('is-menu-hidden', modalOpen);
+    if (modalOpen) {
+      const audioToggle = ui.audio.querySelector('[data-audio-toggle]');
+      const audioPanel = ui.audio.querySelector('[data-audio-panel]');
+      if (audioPanel) audioPanel.hidden = true;
+      audioToggle?.setAttribute('aria-expanded', 'false');
+    }
+  }
+  function openMissionSetup(dailyChallenge = false) {
+    if (!['intro', 'gameover'].includes(state.mode) || !ui.missionSetupModal) return;
+    try {
+      const alreadyConfigured = localStorage.getItem(setupCompleteKey) === 'true';
+      const preferencesWereSaved = localStorage.getItem(controlModeKey) !== null && localStorage.getItem(performanceModeKey) !== null;
+      if (alreadyConfigured || preferencesWereSaved) {
+        localStorage.setItem(setupCompleteKey, 'true');
+        startGame(dailyChallenge);
+        return;
+      }
+    } catch { /* Se o armazenamento estiver bloqueado, a escolha é mostrada novamente. */ }
+    state.pendingDailyChallenge = dailyChallenge;
+    ui.missionSetupModal.hidden = false;
+    syncAudioVisibility();
+    ui.missionSetupModal.querySelector('[data-confirm-mission-setup]')?.focus();
+  }
+  function closeMissionSetup() {
+    if (!ui.missionSetupModal) return;
+    ui.missionSetupModal.hidden = true;
+    const dailyChallenge = state.pendingDailyChallenge;
+    state.pendingDailyChallenge = false;
+    syncAudioVisibility();
+    const returnTarget = ui.dailySummaryModal && !ui.dailySummaryModal.hidden
+      ? ui.dailySummaryStart
+      : dailyChallenge ? ui.dailyStart : ui.start;
+    returnTarget?.focus();
+  }
+  function confirmMissionSetup() {
+    const dailyChallenge = state.pendingDailyChallenge;
+    state.pendingDailyChallenge = false;
+    try { localStorage.setItem(setupCompleteKey, 'true'); } catch { /* A configuração vale durante esta sessão. */ }
+    if (ui.missionSetupModal) ui.missionSetupModal.hidden = true;
+    syncAudioVisibility();
+    startGame(dailyChallenge);
+  }
+  function openExitConfirmation() {
+    if (!ui.exitModal) { returnToMenu(); return; }
+    state.exitReturnFocus = document.activeElement;
+    state.exitWasPlaying = state.mode === 'playing';
+    if (state.exitWasPlaying) pauseGame();
+    ui.exitModal.hidden = false;
+    syncAudioVisibility();
+    ui.exitModal.querySelector('[data-cancel-exit]')?.focus();
+  }
+  function closeExitConfirmation() {
+    if (!ui.exitModal) return;
+    ui.exitModal.hidden = true;
+    syncAudioVisibility();
+    const returnTarget = state.exitReturnFocus;
+    state.exitReturnFocus = null;
+    const resume = state.exitWasPlaying;
+    state.exitWasPlaying = false;
+    if (resume && state.mode === 'paused') {
+      pauseGame();
+      ui.pause?.focus();
+    } else if (returnTarget instanceof HTMLElement && returnTarget.isConnected && !returnTarget.hidden && returnTarget.getClientRects().length) returnTarget.focus();
+    else ui.overlay?.querySelector('[data-exit-from-menu]')?.focus();
+  }
+  function returnToMenu() {
+    cancelAnimationFrame(state.raf);
+    state.raf = 0;
+    state.keys.clear();
+    state.pointer.active = false;
+    releaseAnalog();
+    state.pendingDailyChallenge = false;
+    state.exitReturnFocus = null;
+    state.exitWasPlaying = false;
+    if (state.skinBeforeDaily) {
+      state.selectedSkin = state.skinBeforeDaily;
+      state.skinBeforeDaily = '';
+    }
+    state.dailyChallenge = false;
+    state.challengeDate = '';
+    state.dailyBestScore = 0;
+    state.randomStreams = null;
+    [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal]
+      .forEach((modal) => { if (modal) modal.hidden = true; });
+    resetGame();
+    setMode('intro');
+    ui.title.textContent = 'O céu está caindo.';
+    ui.copy.textContent = 'Desvie dos meteoros, destrua os drones e sobreviva. A cada onda, escolha uma melhoria para sua nave.';
+    ui.start.textContent = '▶ INICIAR MISSÃO';
+    ui.status.textContent = 'Pronto para a missão.';
+    updateDailyChallengeInfo();
+    syncAudioVisibility();
+    ui.start.focus();
   }
   function openSettings() {
     if (state.mode === 'playing') pauseGame();
     if (ui.settingsModal) ui.settingsModal.hidden = false;
+    syncAudioVisibility();
     ui.settingsModal?.querySelector('[data-close-settings]')?.focus();
   }
-  function closeSettings() { if (ui.settingsModal) ui.settingsModal.hidden = true; }
+  function closeSettings() { if (ui.settingsModal) ui.settingsModal.hidden = true; syncAudioVisibility(); }
   function openShips() {
     if (!['intro', 'gameover'].includes(state.mode)) return;
     if (ui.shipModal) ui.shipModal.hidden = false;
+    syncAudioVisibility();
     ui.shipModal?.querySelector('[data-close-ships]')?.focus();
   }
-  function closeShips() { if (ui.shipModal) ui.shipModal.hidden = true; }
+  function closeShips() { if (ui.shipModal) ui.shipModal.hidden = true; syncAudioVisibility(); }
   function openAchievements() {
     if (!['intro', 'gameover'].includes(state.mode)) return;
     renderAchievements();
     if (ui.achievementsModal) ui.achievementsModal.hidden = false;
+    syncAudioVisibility();
     ui.achievementsModal?.querySelector('[data-close-achievements]')?.focus();
   }
-  function closeAchievements() { if (ui.achievementsModal) ui.achievementsModal.hidden = true; }
+  function closeAchievements() { if (ui.achievementsModal) ui.achievementsModal.hidden = true; syncAudioVisibility(); }
   document.querySelectorAll('[data-control-mode]').forEach((button) => button.addEventListener('click', () => {
     state.controlMode = button.dataset.controlMode;
-    try { localStorage.setItem('cv-games-cv-starfall-control', state.controlMode); } catch { /* Preferência vale para a sessão. */ }
+    try { localStorage.setItem(controlModeKey, state.controlMode); } catch { /* Preferência vale para a sessão. */ }
     state.keys.clear(); state.pointer.active = false; releaseAnalog(); updateControlUI();
   }));
   ui.performanceModeButtons.forEach((button) => button.addEventListener('click', () => setPerformanceMode(button.dataset.performanceMode)));
   $('[data-open-settings]')?.addEventListener('click', openSettings);
   $('[data-open-ships]')?.addEventListener('click', openShips);
   $('[data-open-achievements]')?.addEventListener('click', openAchievements);
-  ui.dailyStart?.addEventListener('click', () => startGame(true));
+  ui.dailyStart?.addEventListener('click', () => openMissionSetup(true));
+  document.querySelectorAll('[data-close-mission-setup]').forEach((button) => button.addEventListener('click', closeMissionSetup));
+  $('[data-confirm-mission-setup]')?.addEventListener('click', confirmMissionSetup);
+  ui.stop?.addEventListener('click', openExitConfirmation);
+  $('[data-exit-from-menu]')?.addEventListener('click', openExitConfirmation);
+  document.querySelectorAll('[data-cancel-exit]').forEach((button) => button.addEventListener('click', closeExitConfirmation));
+  $('[data-confirm-exit]')?.addEventListener('click', returnToMenu);
   document.querySelectorAll('[data-close-settings]').forEach((button) => button.addEventListener('click', closeSettings));
   document.querySelectorAll('[data-close-ships]').forEach((button) => button.addEventListener('click', closeShips));
   document.querySelectorAll('[data-close-achievements]').forEach((button) => button.addEventListener('click', closeAchievements));
   document.querySelectorAll('[data-close-daily-summary]').forEach((button) => button.addEventListener('click', closeDailySummary));
-  ui.dailySummaryStart?.addEventListener('click', () => startGame(true));
-  ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : startGame());
+  ui.dailySummaryStart?.addEventListener('click', () => openMissionSetup(true));
+  ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : openMissionSetup());
   ui.pause.addEventListener('click', pauseGame);
   ui.ability?.addEventListener('click', activateAbility);
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
+    if (event.code === 'Escape' && ui.missionSetupModal && !ui.missionSetupModal.hidden) { closeMissionSetup(); return; }
+    if (event.code === 'Escape' && ui.exitModal && !ui.exitModal.hidden) { closeExitConfirmation(); return; }
     if (event.code === 'Escape' && ui.settingsModal && !ui.settingsModal.hidden) { closeSettings(); return; }
     if (event.code === 'Escape' && ui.shipModal && !ui.shipModal.hidden) { closeShips(); return; }
     if (event.code === 'Escape' && ui.achievementsModal && !ui.achievementsModal.hidden) { closeAchievements(); return; }
     if (event.code === 'Escape' && ui.dailySummaryModal && !ui.dailySummaryModal.hidden) { closeDailySummary(); return; }
     if (event.code === 'Escape' || event.code === 'KeyP') { if (state.mode === 'playing' || state.mode === 'paused') pauseGame(); }
-    if (event.code === 'Enter' && ['intro', 'gameover'].includes(state.mode) && (!ui.shipModal || ui.shipModal.hidden) && !event.target.closest('button,[role="dialog"],input,select,textarea')) startGame();
+    if (event.code === 'Enter' && ['intro', 'gameover'].includes(state.mode) && (!ui.shipModal || ui.shipModal.hidden) && !event.target.closest('button,[role="dialog"],input,select,textarea')) openMissionSetup();
     if (event.code === 'KeyE' && !event.repeat) activateAbility();
     if (state.controlMode === 'keys') state.keys.add(event.code);
   });

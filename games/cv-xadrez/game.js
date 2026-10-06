@@ -28,7 +28,7 @@
     settingsOpen:$('[data-settings-open]'), settingsClose:$('[data-settings-close]'),
     moveList:$('[data-move-list]'), moveCount:$('[data-move-count]'), whiteCaptured:$('[data-white-captured]'), blackCaptured:$('[data-black-captured]'),
     whiteMaterial:$('[data-white-material]'), blackMaterial:$('[data-black-material]'),
-    rotateSetting:$('[data-setting-rotate]'), movesSetting:$('[data-setting-moves]'), coordinatesSetting:$('[data-setting-coordinates]'), favorite:$('[data-game-favorite]'),
+    favorite:$('[data-game-favorite]'),
     resultOverlay:$('[data-result-overlay]'), resultTitle:$('[data-result-title]'), resultDetail:$('[data-result-detail]'), resultNewGame:$('[data-result-new-game]')
   };
   const state = {
@@ -379,19 +379,22 @@
   }
 
   function loadSettingsIntoDialog() {
-    ui.rotateSetting.checked = state.settings.rotate;
-    ui.movesSetting.checked = state.settings.showMoves;
-    ui.coordinatesSetting.checked = state.settings.coordinates;
+    document.querySelectorAll('[data-setting-rotate]').forEach((control) => { control.checked = state.settings.rotate; });
+    document.querySelectorAll('[data-setting-moves]').forEach((control) => { control.checked = state.settings.showMoves; });
+    document.querySelectorAll('[data-setting-coordinates]').forEach((control) => { control.checked = state.settings.coordinates; });
   }
 
-  function updateSettings() {
-    state.settings.rotate = ui.rotateSetting.checked;
-    state.settings.showMoves = ui.movesSetting.checked;
-    state.settings.coordinates = ui.coordinatesSetting.checked;
+  function updateSettings(event) {
+    const control = event.currentTarget;
+    const settingKey = Object.entries({ '[data-setting-rotate]':'rotate', '[data-setting-moves]':'showMoves', '[data-setting-coordinates]':'coordinates' }).find(([selector]) => control.matches(selector))?.[1];
+    if (!settingKey) return;
+    state.settings[settingKey] = control.checked;
+    loadSettingsIntoDialog();
     saveSettings();
     renderBoard();
     renderSeats();
   }
+  loadSettingsIntoDialog();
 
   function readFavorites() {
     try {
@@ -463,7 +466,7 @@
   ui.resultNewGame.addEventListener('click',startLocalGame);
   ui.settingsOpen.addEventListener('click',() => { loadSettingsIntoDialog(); if (settingsDialog.showModal) settingsDialog.showModal(); else settingsDialog.setAttribute('open',''); });
   ui.settingsClose.addEventListener('click',() => closeDialog(settingsDialog));
-  for (const control of [ui.rotateSetting,ui.movesSetting,ui.coordinatesSetting]) control.addEventListener('change',updateSettings);
+  for (const selector of ['[data-setting-rotate]','[data-setting-moves]','[data-setting-coordinates]']) document.querySelectorAll(selector).forEach((control) => control.addEventListener('change',(event) => updateSettings(event)));
   document.querySelectorAll('[data-promote]').forEach((button) => button.addEventListener('click',() => {
     if (!state.promotionMove) return;
     playMove({ ...state.promotionMove, promotion:button.dataset.promote });
