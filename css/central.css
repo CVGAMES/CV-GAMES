@@ -582,9 +582,9 @@
   .central-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .central-card-grid--cloud,
   .central-card-grid--emulators,
-  .emulator-catalog-grid,
   .emulator-guidance-grid,
   .system-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .emulator-catalog-grid { grid-template-columns: minmax(0, 1fr); }
 
   .emulator-system-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .emulator-controls-grid { grid-template-columns: 1fr; }
@@ -602,9 +602,16 @@
   .central-card-grid--tools,
   .central-card-grid--cloud,
   .central-card-grid--emulators,
+  .emulator-catalog-grid,
   .emulator-guidance-grid,
   .system-grid,
   .emulator-system-list { grid-template-columns: 1fr; }
+  .emulator-catalog-card { min-width:0; }
+  .emulator-catalog-card .central-card-copy { min-width:0; }
+  .emulator-catalog-card .central-card-title-row { align-items:flex-start; flex-direction:row; flex-wrap:wrap; gap:.45rem; }
+  .emulator-catalog-card .emulator-card-title { min-width:0; flex:1 1 12rem; overflow-wrap:anywhere; }
+  .emulator-catalog-card .central-status { white-space:normal; }
+  .emulator-catalog-card .emulator-card-action { width:100%; justify-content:center; text-align:center; }
   .central-card-title-row { align-items: flex-start; flex-direction: column; }
   .external-label { white-space: normal; }
   .central-card--tool { min-height: 0; }

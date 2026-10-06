@@ -199,6 +199,12 @@ window.CV_GAMES_CATALOG = [
     rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
   },
   {
+    id: 'cv-damas', title: 'CV DAMAS', category: 'Puzzle', categoryKey: 'puzzle',
+    description: 'Desafie outra pessoa no mesmo dispositivo com capturas obrigatórias, jogadas em sequência e coroação das peças.', tags: ['damas', 'checkers', 'estrategia', 'tabuleiro', '2 jogadores', 'multiplayer local', 'cv damas'],
+    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-damas/index.html', image: 'games/cv-damas/cover.svg', fallback: '●',
+    rating: 5, addedAt: '2026-10-05', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
+  },
+  {
     id: 'cv-jogo-da-velha', title: 'CV JOGO DA VELHA', category: 'Puzzle', categoryKey: 'puzzle',
     description: 'Desafie outra pessoa no mesmo dispositivo, complete três símbolos em linha e acompanhe o placar.', tags: ['jogo da velha', 'tic tac toe', '2 jogadores', 'multiplayer local', 'estrategia', 'cv jogo da velha'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-jogo-da-velha/index.html', image: 'games/cv-jogo-da-velha/cover.svg', fallback: '⭕',
