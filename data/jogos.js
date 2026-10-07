@@ -181,6 +181,12 @@ window.CV_GAMES_CATALOG = [
     rating: 5, addedAt: '2026-08-21', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
+    id: 'cv-turbo-circuit', title: 'CV TURBO CIRCUIT', category: 'Corrida', categoryKey: 'corrida',
+    description: 'Corra em circuitos vistos de cima, dispute o pódio contra quatro pilotos robôs e avance por cinco etapas cada vez mais difíceis.', tags: ['corrida', 'carros', 'campeonato', 'robôs', 'analógico', 'teclado', 'cv turbo circuit', 'cv games'],
+    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-turbo-circuit/index.html', image: 'games/cv-turbo-circuit/cover.svg', fallback: '🏎️',
+    rating: 5, addedAt: '2026-10-06', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
+  },
+  {
     id: 'nexus-rota-zero', title: 'NEXUS: Rota Zero', category: 'Aventura', categoryKey: 'aventura',
     description: 'Aventura sci-fi interativa com decisões, minigames e vários finais.', tags: ['aventura', 'ficcao cientifica', 'terror', 'historia', 'minigames', 'narrativo'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/nexus-rota-zero/index.html', image: 'games/nexus-rota-zero/img/nexus-hero-v2.png', fallback: '🚚',
