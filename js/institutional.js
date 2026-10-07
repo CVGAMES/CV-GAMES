@@ -70,7 +70,17 @@
     const catalog = Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
     if (!container || !catalog.length) return;
 
-    const exclusives = catalog.filter((game) => game.exclusivo === true && game.id !== 'cv-dodge');
+    let nickname = '';
+    try {
+      nickname = String(JSON.parse(localStorage.getItem('cv-games-profile') || 'null')?.nickname || '')
+        .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+    } catch {
+      // Sem perfil local válido, mantém o jogo de teste fora das páginas públicas.
+    }
+    const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(nickname);
+    const exclusives = catalog.filter((game) => game.exclusivo === true
+      && game.id !== 'cv-dodge'
+      && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed));
     if (!exclusives.length) return;
     const fragment = document.createDocumentFragment();
     exclusives.forEach((game) => fragment.appendChild(createExclusiveCard(game)));

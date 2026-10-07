@@ -1,7 +1,11 @@
 (function () {
   'use strict';
 
-  const catalog = Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
+  const profileNickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
+    .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+  const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
+  const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
+    .filter((game) => game.id !== 'cv-turbo-circuit' || turboProfileAllowed);
   const stats = window.CV_GAMES_STATS;
   const achievements = window.CV_GAMES_ACHIEVEMENTS;
   const profileStore = window.CV_GAMES_PROFILE;

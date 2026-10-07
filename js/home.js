@@ -9,12 +9,14 @@
     if (currentNickname !== profileNickname) window.location.reload();
   });
   const orbitalProfileAllowed = profileNickname === 'educvv dev1';
+  const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
   const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
-    .filter((game) => game.id !== 'cv-dodge' || orbitalProfileAllowed);
+    .filter((game) => (game.id !== 'cv-dodge' || orbitalProfileAllowed)
+      && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
-  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-damas', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
+  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-damas', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-turbo-circuit', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
   const filters = { query: '', category: 'todos', favoritesOnly: false };
 
   const getFavorites = () => {
