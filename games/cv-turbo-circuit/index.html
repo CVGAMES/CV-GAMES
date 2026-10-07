@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#09121b">
+  <meta name="description" content="Entre no CV TURBO CIRCUIT, uma corrida de carros vista de cima com campeonato, rivais robôs e controles de teclado ou analógico.">
+  <meta property="og:title" content="CV TURBO CIRCUIT — Corrida | CV GAMES">
+  <meta property="og:description" content="Acelere, freie, escape da pista e chegue entre os três primeiros para avançar no campeonato.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CV GAMES">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:url" content="https://cvgames.com.br/games/cv-turbo-circuit/">
+  <meta property="og:image" content="https://cvgames.com.br/games/cv-turbo-circuit/cover.svg">
+  <meta name="twitter:card" content="summary">
+  <title>CV TURBO CIRCUIT — Corrida | CV GAMES</title>
+  <link rel="canonical" href="https://cvgames.com.br/games/cv-turbo-circuit/">
+  <link rel="icon" href="../../img/incon.png" type="image/png">
+  <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); document.documentElement.dataset.turboAccess = ['educvv dev1', 'educvv dev'].includes(nickname) ? 'granted' : 'locked'; } catch { document.documentElement.dataset.turboAccess = 'locked'; }</script>
+  <link rel="stylesheet" href="../../css/home.css">
+  <link rel="stylesheet" href="../audio-controls.css">
+  <link rel="stylesheet" href="game.css">
+  <script src="../../data/jogos.js" defer></script>
+  <script src="../../js/profile-store.js" defer></script>
+  <script src="../../js/stats.js" defer></script>
+  <script src="../fullscreen.js" defer></script>
+  <script src="profile-gate.js" defer></script>
+  <script src="../audio-controls.js" defer></script>
+  <script src="game.js" defer></script>
+  <script src="../../js/cv-input-capabilities.js"></script>
+</head>
+<body class="cv-turbo-page" data-game-id="cv-turbo-circuit">
+  <a class="skip-link" href="#jogo">Pular para a corrida</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="../../index.html" aria-label="CV GAMES — Início"><img src="../../img/onconee.png" alt=""><span>CV GAMES</span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
+    <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central</a><a href="../../perfil.html">Perfil</a><button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button></nav>
+    <div class="header-actions"><button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV TURBO CIRCUIT aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon" aria-hidden="true">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button></div>
+  </div></header>
+
+  <main class="racer-main"><div class="container">
+    <section class="racer-access-card" data-profile-locked hidden aria-labelledby="racer-access-title"><p>ACESSO DE TESTE RESTRITO</p><h1 id="racer-access-title">CV TURBO CIRCUIT reservado</h1><p>Este jogo está disponível por enquanto apenas nos perfis locais <strong>educvv dev1</strong> e <strong>educvv dev</strong>.</p><div><a class="button button-primary racer-primary" href="../../perfil.html">Abrir perfil →</a><a class="racer-access-home" href="../../index.html">Voltar ao início</a></div></section>
+    <a class="racer-back" href="../../index.html#jogos">← Voltar para Jogos</a>
+    <section class="racer-intro"><div><p class="eyebrow">🏁 EXCLUSIVO CV GAMES</p><h1>CV <span>TURBO CIRCUIT</span></h1><p>Domine as curvas. Controle a velocidade. Suba no pódio.</p></div><strong class="racer-byline">CAMPEONATO CONTRA ROBÔS</strong></section>
+
+    <section class="racer-layout" aria-label="CV Turbo Circuit">
+      <div class="racer-panel" id="turbo-game-panel" data-fullscreen-root>
+        <div class="racer-hud" aria-live="polite">
+          <span>ETAPA <strong data-stage>01 / 05</strong></span>
+          <span>VOLTA <strong data-lap>1 / 3</strong></span>
+          <span>POSIÇÃO <strong data-position>—</strong></span>
+          <span>VELOCIDADE <strong data-speed>0</strong><small>km/h</small></span>
+          <span class="racer-damage" aria-label="Integridade do carro"><small>CARRO</small><span data-damage-track><i></i><i></i><i></i><i></i><i></i></span></span>
+        </div>
+
+        <div class="racer-stage" data-stage-root>
+          <canvas data-race-canvas aria-label="Pista do CV Turbo Circuit. Use teclado ou analógico para virar e os pedais para acelerar ou frear." role="img">Seu navegador não oferece suporte ao Canvas.</canvas>
+          <div class="racer-track-vignette" aria-hidden="true"></div>
+          <div class="racer-countdown" data-countdown hidden>3</div>
+          <section class="racer-screen racer-start-screen" data-start-screen aria-labelledby="racer-start-title">
+            <span class="racer-screen-icon" aria-hidden="true">🏎️</span><p class="racer-kicker">CAMPEONATO CV · <span data-start-stage>ETAPA 01</span></p><h2 id="racer-start-title">A pista é sua.</h2>
+            <p data-start-copy>Corra três voltas contra quatro pilotos robôs. Termine entre os três primeiros para avançar.</p>
+            <div class="racer-car-preview"><span aria-hidden="true">🏁</span><span><strong>5 carros na pista</strong><small>1 piloto · 4 rivais</small></span><span data-unlocked-label>ETAPA 1 LIBERADA</span></div>
+            <div class="racer-screen-actions"><button class="button button-primary racer-primary" type="button" data-start-race>▶ INICIAR CORRIDA</button><button class="button button-secondary racer-settings-open" type="button" data-open-settings>⚙ Controles</button></div>
+            <small class="racer-control-summary" data-control-summary>Analógico · acelere e freie nos pedais.</small>
+          </section>
+          <section class="racer-screen racer-pause-screen" data-pause-screen hidden aria-labelledby="racer-pause-title"><span class="racer-screen-icon" aria-hidden="true">Ⅱ</span><p class="racer-kicker">PIT STOP</p><h2 id="racer-pause-title">Corrida pausada</h2><p>Respire. A pista continua esperando por você.</p><button class="button button-primary racer-primary" type="button" data-resume-race>▶ RETOMAR CORRIDA</button></section>
+          <section class="racer-screen racer-results-screen" data-results-screen hidden aria-labelledby="racer-results-title"><span class="racer-screen-icon" data-result-icon aria-hidden="true">🏆</span><p class="racer-kicker" data-result-kicker>FIM DE CORRIDA</p><h2 id="racer-results-title" data-result-title>Você chegou ao pódio!</h2><p class="racer-player-place" data-player-place>Você terminou em 1º lugar.</p><ol class="racer-podium" data-podium></ol><p class="racer-result-note" data-result-note>Entre no top 3 para liberar a próxima etapa.</p><div class="racer-screen-actions"><button class="button button-primary racer-primary" type="button" data-next-race hidden>PRÓXIMA ETAPA →</button><button class="button button-secondary" type="button" data-race-again>↻ TENTAR DE NOVO</button></div></section>
+          <div class="racer-joystick" data-joystick hidden aria-hidden="true"><span class="racer-joystick-ring"></span><span class="racer-joystick-nub" data-joystick-nub></span></div>
+        </div>
+
+        <div class="racer-controls" aria-label="Controles da corrida">
+          <button class="racer-pedal racer-brake" type="button" data-brake aria-label="Frear"><span>◀</span><strong>FREIO</strong></button>
+          <div class="racer-toolbar"><button class="racer-icon-button" type="button" data-open-settings aria-label="Configurações" title="Configurações">⚙</button><button class="racer-icon-button" type="button" data-pause aria-label="Pausar corrida" title="Pausar corrida"><span data-pause-icon>Ⅱ</span></button><button class="racer-icon-button racer-exit" type="button" data-exit aria-label="Sair para o menu" title="Sair para o menu">↩</button><div class="cv-game-audio" data-game-audio data-music-src="../../music/Pixelated%20Dreams.mp3"></div><button class="racer-icon-button racer-fullscreen" type="button" data-fullscreen-button="#turbo-game-panel" aria-pressed="false" aria-label="Alternar tela cheia" title="Tela cheia"><span aria-hidden="true">⛶</span></button></div>
+          <button class="racer-pedal racer-accelerate" type="button" data-accelerate aria-label="Acelerar"><span>▲</span><strong>ACELERAR</strong></button>
+        </div>
+        <p class="racer-status" data-race-status aria-live="polite">Prepare-se para a largada.</p>
+
+        <section class="racer-modal" data-settings-modal hidden role="dialog" aria-modal="true" aria-labelledby="racer-settings-title"><div class="racer-modal-card"><button class="racer-modal-close" type="button" data-close-settings aria-label="Fechar configurações">×</button><p class="racer-kicker">AJUSTES DA CORRIDA</p><h2 id="racer-settings-title">Como quer dirigir?</h2><p>Escolha como virar. Acelerar e frear continuam nos pedais.</p><div class="racer-control-picker" role="group" aria-label="Forma de direção"><button type="button" data-control-mode="analog" aria-pressed="false">◉ Analógico</button><button type="button" data-control-mode="keyboard" aria-pressed="false">⌨ Teclado</button></div><small>Essa escolha fica salva neste aparelho e pode ser alterada depois.</small><button class="button button-primary racer-primary" type="button" data-close-settings>PRONTO</button></div></section>
+        <section class="racer-exit-modal" data-exit-modal hidden role="dialog" aria-modal="true" aria-labelledby="racer-exit-title"><div class="racer-modal-card"><button class="racer-modal-close" type="button" data-close-exit aria-label="Cancelar saída">×</button><p class="racer-kicker">CONFIRMAÇÃO</p><h2 id="racer-exit-title">Sair da corrida?</h2><p>Deseja voltar ao menu? O progresso desta etapa não será salvo.</p><div class="racer-screen-actions"><button class="button button-secondary" type="button" data-close-exit>CONTINUAR</button><button class="button button-primary racer-primary" type="button" data-confirm-exit>SIM, SAIR</button></div></div></section>
+      </div>
+      <aside class="racer-help"><h2>Como jogar</h2><p>Complete três voltas contra quatro robôs. O campeonato fica mais rápido e exigente a cada etapa. O top 3 libera a próxima pista.</p><ul><li><strong>Analógico:</strong> toque e arraste na pista para apontar a direção.</li><li data-hardware-hint><strong>Teclado:</strong> use ← → ou A/D para virar.</li><li>Segure <strong>Acelerar</strong> para ganhar velocidade e <strong>Freio</strong> para reduzir.</li><li>Sair do asfalto faz o carro derrapar e voltar perto do ponto de saída.</li><li>Cada batida consome uma das cinco partes de integridade. Na quinta, o carro explode e abandona a corrida.</li></ul><p class="racer-help-tip">Dica: tire o pé do acelerador nas curvas fechadas e passe longe dos rivais.</p></aside>
+    </section>
+    <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-turbo-circuit-after-game" aria-hidden="true"></div>
+  </div></main>
+  <footer class="site-footer"><div class="footer-inner"><div><p><strong>CV GAMES © 2026</strong></p><p>Jogos online e downloads</p></div><nav class="footer-nav" aria-label="Navegação do rodapé"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central</a><a href="../../sobre.html">Sobre</a><a href="../../contato.html">Contato</a><a href="../../privacidade.html">Privacidade</a><a href="../../termos.html">Termos</a><a href="../../perfil.html">Perfil</a></nav></div></footer>
+</body>
+</html>

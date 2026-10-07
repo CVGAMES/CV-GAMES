@@ -17,6 +17,7 @@
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
   <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
   <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="engine.js" defer></script><script src="game.js" defer></script>
+  <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="chess-page">
   <a class="skip-link" href="#conteudo">Pular para o jogo</a>
@@ -74,7 +75,7 @@
           <button class="chess-result-new-game" type="button" data-result-new-game>＋ Nova partida</button>
         </section>
       </div>
-      <p class="chess-keyboard-tip">Dica: clique em uma peça para ver os lances legais. Use as setas do teclado para navegar pelo tabuleiro.</p>
+      <p class="chess-keyboard-tip">Toque em uma peça para ver os lances legais.<span data-hardware-hint> No computador, clique em uma peça ou use as setas do teclado para navegar.</span></p>
     </section>
     <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-xadrez-after-game" aria-hidden="true"></div>
   </div></main>

@@ -15,7 +15,7 @@
   <text x="38" y="64" fill="#95e9bd" font-family="system-ui,sans-serif" font-size="17" font-weight="900" letter-spacing="4">EXCLUSIVO CV GAMES</text>
   <text x="36" y="126" fill="#f3f7fb" font-family="system-ui,sans-serif" font-size="51" font-weight="950" letter-spacing="-3">CV DAMAS</text>
   <text x="39" y="157" fill="#b8c8da" font-family="system-ui,sans-serif" font-size="16">Duas cores. Um tabuleiro. Cada captura muda tudo.</text>
-  <g transform="translate(286 20)" filter="url(#shadow)">
+  <g transform="translate(350 24) scale(.84)" filter="url(#shadow)">
     <rect x="-8" y="-8" width="336" height="336" rx="18" fill="#243448" stroke="#70927f" stroke-opacity=".55" stroke-width="2"/>
     <rect width="320" height="320" rx="10" fill="url(#board)"/>
     <g fill="url(#darkPiece)" stroke="#0e1725" stroke-width="2">

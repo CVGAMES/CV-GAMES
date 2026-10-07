@@ -17,6 +17,7 @@
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
   <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
   <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="game.js" defer></script>
+  <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="checkers-page">
   <a class="skip-link" href="#conteudo">Pular para o jogo</a>
@@ -73,7 +74,7 @@
           <button class="checkers-result-new-game" type="button" data-result-new-game>＋ Próxima partida</button>
         </section>
       </div>
-      <p class="checkers-keyboard-tip">Dica: toque ou clique em uma peça e depois em uma casa marcada. Se houver captura, faça uma das sequências mais longas.</p>
+      <p class="checkers-keyboard-tip">Toque em uma peça e depois em uma casa marcada. Se houver captura, faça uma das sequências mais longas.<span data-hardware-hint> No computador, também pode clicar nas peças.</span></p>
     </section>
     <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-damas-after-game" aria-hidden="true"></div>
   </div></main>

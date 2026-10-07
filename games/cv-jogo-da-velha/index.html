@@ -17,6 +17,7 @@
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
   <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
   <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="game.js" defer></script>
+  <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="ttt-page">
   <a class="skip-link" href="#conteudo">Pular para o jogo</a>
@@ -75,7 +76,7 @@
           <button class="ttt-result-next-round" type="button" data-result-next-round>＋ Próxima rodada</button>
         </section>
       </div>
-      <p class="ttt-keyboard-tip">Use o mouse, toque na casa ou navegue pelo tabuleiro com as setas do teclado.</p>
+      <p class="ttt-keyboard-tip">Toque em uma casa para jogar.<span data-hardware-hint> No computador, use o mouse ou navegue pelo tabuleiro com as setas do teclado.</span></p>
     </section>
     <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-jogo-da-velha-after-game" aria-hidden="true"></div>
   </div></main>

@@ -404,14 +404,17 @@
   }
   function updateFavorite() {
     if (!ui.favorite) return;
-    const active = readFavorites().has(gameId);
+    const favorites = readFavorites();
+    const active = favorites.has(gameId);
     const icon = ui.favorite.querySelector('.favorite-icon');
     const label = ui.favorite.querySelector('[data-favorite-label]');
+    const count = ui.favorite.querySelector('[data-favorite-count]');
     ui.favorite.setAttribute('aria-pressed',String(active));
     ui.favorite.setAttribute('aria-label',`${active ? 'Remover' : 'Adicionar'} CV XADREZ ${active ? 'dos' : 'aos'} favoritos`);
     ui.favorite.title = active ? 'Remover dos favoritos' : 'Adicionar aos favoritos';
     if (icon) icon.textContent = active ? '♥' : '♡';
     if (label) label.textContent = active ? 'Favoritado' : 'Favoritar';
+    if (count) count.textContent = String(favorites.size);
   }
   function toggleFavorite() {
     const favorites = readFavorites();

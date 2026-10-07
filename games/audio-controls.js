@@ -58,6 +58,7 @@
   let userPausedMusic = false;
   let gameVolume = settings.gameVolume / 100;
   let audioContext;
+  const sfxChannels = new Map();
 
   const getAudioContext = () => {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -65,6 +66,24 @@
     audioContext ||= new AudioContextClass();
     if (audioContext.state === 'suspended') audioContext.resume()?.catch?.(() => {});
     return audioContext;
+  };
+
+  const playSfx = (src, level = 0.5) => {
+    if (!gameVolume || !src) return;
+    const url = new URL(src, document.baseURI).href;
+    let channels = sfxChannels.get(url);
+    if (!channels) {
+      channels = Array.from({ length: 2 }, () => {
+        const audio = new Audio(url);
+        audio.preload = 'auto';
+        return audio;
+      });
+      sfxChannels.set(url, channels);
+    }
+    const audio = channels.find((channel) => channel.paused || channel.ended) || channels[0];
+    try { audio.currentTime = 0; } catch { /* O navegador ainda pode estar carregando o clipe. */ }
+    audio.volume = Math.max(0, Math.min(1, gameVolume * level));
+    audio.play()?.catch?.(() => {});
   };
 
   const updateMusicControl = () => {
@@ -182,6 +201,7 @@
   });
 
   window.CV_GAME_AUDIO = {
+    playSfx,
     playTone(frequency, duration = 0.08, type = 'sine', level = 0.04) {
       if (!gameVolume || !(window.AudioContext || window.webkitAudioContext)) return;
       const context = getAudioContext();

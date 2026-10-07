@@ -17,6 +17,7 @@
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
   <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
   <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="game.js" defer></script>
+  <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="squares-page">
   <a class="skip-link" href="#conteudo">Pular para o jogo</a>
@@ -78,7 +79,7 @@
           <button class="squares-new-game-button" type="button" data-next-match>↻ Próxima partida</button>
         </section>
       </div>
-      <p class="squares-keyboard-tip">Use o mouse, toque em uma linha ou navegue com as setas e pressione Enter.</p>
+      <p class="squares-keyboard-tip">Toque em uma linha entre dois pontos.<span data-hardware-hint> No computador, use o mouse ou as setas e pressione Enter.</span></p>
     </section>
     <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-quadrados-after-game" aria-hidden="true"></div>
   </div></main>

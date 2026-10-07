@@ -10,10 +10,13 @@
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
   const favoritesKey = 'cv-games-favorites';
+  const eclipseSprite = new Image();
+  eclipseSprite.src = new URL('eclipse-ship.png', document.baseURI).href;
   const canvas = document.querySelector('[data-game-canvas]');
   const ctx = canvas?.getContext('2d');
   if (!canvas || !ctx) return;
   const $ = (selector) => document.querySelector(selector);
+  const eclipseSlashSounds = Array.from({ length: 5 }, (_, index) => new URL(`../../CV%20GAMES/sprite%20nave%20sprites/espada%20som${index + 1}.mp3`, document.baseURI).href);
   const ui = {
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
@@ -26,7 +29,8 @@
     { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 25, shape: 'ring', unlockWave: 20, description: 'Desacelera inimigos e projéteis por alguns segundos.' },
     { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 34, shape: 'wing', unlockWave: 30, description: 'Dispare uma singularidade que puxa e fere os inimigos próximos.' },
     { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, shape: 'blade', unlockWave: 40, description: 'Uma lâmina veloz faz curvas e ricocheteia em várias direções.' },
-    { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, shape: 'reflector', secret: true, description: 'Por alguns segundos, reflete projéteis: parte volta pela trajetória e parte mira em quem atacou.' }
+    { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'Por alguns segundos, reflete projéteis: parte volta pela trajetória e parte mira em quem atacou.' },
+    { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Cortes da Eclipse', abilityShort: 'CORTES', cooldown: 36, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'Segure para desaparecer, congelar os inimigos e cruzar a arena com cortes cósmicos.' }
   ];
   const starfallAchievements = [
     { id: 'first-flight', icon: '🚀', title: 'Primeiro voo', description: 'Comece sua primeira missão.', metric: 'missionsStarted', target: 1, unit: 'missão' },
@@ -35,7 +39,7 @@
     { id: 'daily-pilot', icon: '📅', title: 'Piloto diário', description: 'Termine um Desafio Diário.', metric: 'dailyRunsFinished', target: 1, unit: 'desafio' },
     { id: 'planet-hopper', icon: '🪐', title: 'Viajante galáctico', description: 'Alcance a onda 15.', metric: 'bestWaveReached', target: 15, unit: 'ondas' },
     { id: 'star-legend', icon: '🌌', title: 'Lenda das estrelas', description: 'Alcance a onda 50.', metric: 'bestWaveReached', target: 50, unit: 'ondas' },
-    { id: 'ability-collector', icon: '✨', title: 'Mestre das naves', description: 'Use a habilidade de cada nave.', metric: 'abilityShips', target: skins.length, unit: 'naves' }
+    { id: 'ability-collector', icon: '✨', title: 'Mestre das naves', description: 'Use a habilidade de cada nave disponível para este perfil.', metric: 'abilityShips', target: skins.filter((skin) => !skin.secret || skin.allowedProfiles.includes(profileNickname())).length, unit: 'naves' }
   ];
   const zones = [
     { name: 'Órbita Azul', colors: ['#07132b', '#111d36'], stars: '190,220,255' },
@@ -59,7 +63,7 @@
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
     selectedSkin: readSkin(), controlMode: readControlMode(), performanceMode: readPerformanceMode(), upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
-    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, endlessDamage: 0, endlessSpeed: 0,
+    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, eclipseTime: 0, eclipseHeld: false, eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseSoundCooldown: 0, eclipseLastSound: -1, eclipsePointerId: null, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: '#7df7e8' },
     pointer: { active: false, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
@@ -110,6 +114,7 @@
     ,{ id:'lifeSupport', icon:'♥+', name:'Casco reforçado', description:'Aumenta o máximo de vida e recupera uma unidade.', max:3, available:()=>state.maxLives<9, apply:()=>{state.maxLives=Math.min(9,state.maxLives+1);state.lives=Math.min(state.maxLives,state.lives+1);} }
     ,{ id:'gravityWell', icon:'🌀', name:'Poço gravitacional', description:'Amplia e prolonga o buraco negro da Tempestade.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('gravityWell')<3, apply:()=>{state.singularityRadius+=32;state.singularityDuration+=.7;} }
     ,{ id:'returnCore', icon:'⟲', name:'Núcleo de contra-ataque', description:'Aumenta o dano, prolonga o escudo refletor e reduz sua recarga.', max:4, available:()=>currentSkin().id==='redshift'&&upgradeLevel('returnCore')<4, apply:()=>{state.reflectDamageBonus=Math.min(.9,state.reflectDamageBonus+.23);state.reflectDurationBonus=Math.min(2,state.reflectDurationBonus+.5);state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1.25);} }
+    ,{ id:'eclipseVeil', icon:'✧', name:'Manto de eclipse', description:'Prolonga a sequência e amplia o alcance dos cortes.', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseVeil')<4, apply:()=>{state.eclipseDurationBonus=Math.min(2.2,state.eclipseDurationBonus+.55);state.eclipseCutBonus=Math.min(36,state.eclipseCutBonus+9);} }
     ,{ id:'salvageHeal', icon:'✚', name:'Recuperação de destroços', description:'Inimigos destruídos podem liberar energia de reparo.', max:4, available:()=>state.salvageHeal<4, apply:()=>{state.salvageHeal+=1;} }
     ,{ id:'endlessDamage', icon:'✹', name:'Núcleo adaptativo', description:'Reforço repetível com ganho decrescente e limite seguro de dano.', max:0, stack:true, available:()=>state.endlessDamage<1.24, apply:()=>{state.endlessDamage=Math.min(1.25,state.endlessDamage + .11 / (1 + upgradeLevel('endlessDamage') * .14));} }
     ,{ id:'endlessSpeed', icon:'➤', name:'Impulso de longo curso', description:'Aumenta a mobilidade aos poucos, com velocidade máxima controlada.', max:0, stack:true, available:()=>state.endlessSpeed<118, apply:()=>{state.endlessSpeed=Math.min(120,state.endlessSpeed + 8 / (1 + upgradeLevel('endlessSpeed') * .12));} }
@@ -117,7 +122,7 @@
 
   function readBest() { try { return Math.max(0, Number(localStorage.getItem(bestKey)) || 0); } catch { return 0; } }
   function readBestWave() { try { return Math.max(0, Number(localStorage.getItem(bestWaveKey)) || 0); } catch { return 0; } }
-  function profileNickname() { return String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '').trim().toLocaleLowerCase('pt-BR'); }
+  function profileNickname() { return String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); }
   function saoPauloDateKey(date = new Date()) {
     try {
       const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
@@ -280,11 +285,10 @@
     renderAchievements();
   }
   function isDeveloperProfile() { return ['educvv dev', 'educvv dev1'].includes(profileNickname()); }
-  function isCypherProfile() { return profileNickname() === 'cypher'; }
   function isAllUpgradesProfile() { return profileNickname() === 'educvv dev1'; }
   function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge; }
   function skinUnlocked(skin) {
-    if (skin.secret) return isDeveloperProfile() || isCypherProfile();
+    if (skin.secret) return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname());
     return isDeveloperProfile() || !skin.unlockWave || Math.max(readBestWave(), state.bestCompletedWave) >= skin.unlockWave;
   }
   function readSkin() {
@@ -292,10 +296,7 @@
       const id = localStorage.getItem('cv-games-cv-starfall-skin');
       const skin = skins.find((item) => item.id === id);
       if (!skin) return 'aurora';
-      const unlocked = skin.secret
-        ? isDeveloperProfile() || isCypherProfile()
-        : isDeveloperProfile() || !skin.unlockWave || readBestWave() >= skin.unlockWave;
-      return unlocked ? id : 'aurora';
+      return skinUnlocked(skin) ? id : 'aurora';
     } catch { return 'aurora'; }
   }
   function readControlMode() { try { const mode=localStorage.getItem(controlModeKey); return ['keys','touch','analog'].includes(mode)?mode:'keys'; } catch { return 'keys'; } }
@@ -311,7 +312,10 @@
     const skin = currentSkin();
     const silhouettes = { classic: 'M20 3 L34 35 L20 28 L6 35 Z', blade: 'M20 2 L24 16 L36 33 L20 27 L4 33 L16 16 Z', wing: 'M20 2 L25 16 L37 30 L25 27 L20 38 L15 27 L3 30 L15 16 Z', shield: 'M20 2 L32 17 L29 32 L20 37 L11 32 L8 17 Z', ring: 'M20 3 L34 35 L20 28 L6 35 Z', reflector: 'M20 2 L33 10 L37 23 L28 34 L20 38 L12 34 L3 23 L7 10 Z' };
     ui.equippedShip.style.setProperty('--skin-color', skin.color);
-    ui.equippedShip.innerHTML = '<svg class="starfall-equipped-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : '') + '</svg><span><strong>Nave equipada: ' + skin.name + '</strong><small>' + skin.ability + (hasDeveloperPerks() ? ' · sem recarga' : ' · recarga ' + skin.cooldown + 's') + '</small></span>';
+    const equippedIcon = skin.shape === 'eclipse'
+      ? '<span class="starfall-equipped-icon starfall-eclipse-sprite" aria-hidden="true"></span>'
+      : '<svg class="starfall-equipped-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : '') + '</svg>';
+    ui.equippedShip.innerHTML = equippedIcon + '<span><strong>Nave equipada: ' + skin.name + '</strong><small>' + skin.ability + (hasDeveloperPerks() ? ' · sem recarga' : ' · recarga ' + skin.cooldown + 's') + '</small></span>';
   }
   function releaseAnalog() {
     state.analog.active = false; state.analog.x = 0; state.analog.y = 0; state.analog.pointerId = null;
@@ -319,6 +323,7 @@
     if (ui.joystickNub) { ui.joystickNub.style.left = '50%'; ui.joystickNub.style.top = '50%'; }
   }
   function setMode(mode) {
+    if (mode !== 'playing' && state.eclipseHeld) stopEclipseChannel();
     state.mode = mode;
     document.body.dataset.cvStarfallState = mode;
     ui.overlay.hidden = !['intro', 'gameover', 'paused'].includes(mode);
@@ -363,11 +368,13 @@
     if (!ui.ability) return;
     const skin = currentSkin();
     const ready = state.abilityCooldown <= 0;
-    ui.ability.disabled = state.mode !== 'playing' || !ready;
+    const channeling = skin.id === 'eclipse' && state.eclipseHeld;
+    ui.ability.disabled = state.mode !== 'playing' || (!ready && !channeling);
+    ui.ability.setAttribute('aria-pressed', String(channeling));
     ui.ability.textContent = '★';
-    ui.ability.setAttribute('aria-label', ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
-    if (ui.abilityCooldown) ui.abilityCooldown.textContent = hasDeveloperPerks() ? 'Livre' : ready ? 'Pronta' : Math.ceil(state.abilityCooldown) + 's';
-    ui.ability.title = skin.ability + (hasDeveloperPerks() ? ' · sem recarga: ' : ': ') + skin.description;
+    ui.ability.setAttribute('aria-label', channeling ? 'Canalizando cortes. Solte para encerrar. ' + Math.ceil(state.eclipseTime) + ' segundos restantes' : ready ? (skin.id === 'eclipse' ? 'Segure para canalizar ' : 'Usar habilidade ') + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
+    if (ui.abilityCooldown) ui.abilityCooldown.textContent = channeling ? 'CORTES ' + Math.ceil(state.eclipseTime) + 's' : hasDeveloperPerks() ? 'Livre' : ready ? 'Pronta' : Math.ceil(state.abilityCooldown) + 's';
+    ui.ability.title = skin.id === 'eclipse' ? (channeling ? 'Solte para encerrar os cortes' : 'Segure para canalizar cortes; solte para parar. ') + skin.description : skin.ability + (hasDeveloperPerks() ? ' · sem recarga: ' : ': ') + skin.description;
   }
   function renderSkinPicker() {
     if (!ui.skinPicker) return;
@@ -392,13 +399,15 @@
       const unlocked = skinUnlocked(skin);
       button.disabled = !unlocked;
       button.classList.toggle('is-locked', !unlocked);
-      button.innerHTML = '<span class="starfall-skin-icon" style="--skin-color:' + skin.color + '" aria-hidden="true">' + (unlocked ? '✦' : '🔒') + '</span><strong>' + skin.name + '</strong><span>' + (unlocked ? skin.ability : 'Desbloqueia na onda ' + skin.unlockWave) + '</span><small>' + skin.description + '</small>';
+      const icon = skin.shape === 'eclipse' ? '<span class="starfall-skin-icon starfall-eclipse-sprite" aria-hidden="true"></span>' : '<span class="starfall-skin-icon" style="--skin-color:' + skin.color + '" aria-hidden="true">' + (unlocked ? '✦' : '🔒') + '</span>';
+      button.innerHTML = icon + '<strong>' + skin.name + '</strong><span>' + (unlocked ? skin.ability : 'Desbloqueia na onda ' + skin.unlockWave) + '</span><small>' + skin.description + '</small>';
       button.addEventListener('click', () => {
         if (!skinUnlocked(skin) || state.mode === 'playing' || state.mode === 'upgrade') return;
         state.selectedSkin = skin.id;
         try { localStorage.setItem('cv-games-cv-starfall-skin', skin.id); } catch { /* A escolha vale para esta sessão. */ }
         renderSkinPicker();
         updateEquippedShip();
+        updateControlUI();
         ui.copy.textContent = skin.description;
         closeShips();
       });
@@ -441,7 +450,7 @@
     state.player = { x: state.width / 2, y: state.height * .78, radius: 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
-    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
+    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.eclipseTime = 0; state.eclipseHeld = false; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseSoundCooldown = 0; state.eclipseLastSound = -1; state.eclipsePointerId = null; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
     if (isAllUpgradesProfile() && !state.dailyChallenge) grantAllUpgrades();
     state.keys.clear(); state.pointer.active = false; releaseAnalog();
@@ -766,7 +775,7 @@
     state.enemies.forEach((enemy) => { if (!enemy.dead && distance(bullet, enemy) < radius + enemy.r) damageEnemy(enemy, 8 + state.wave * .2, true); });
   }
   function damagePlayer(amount = 1) {
-    if (state.invulnerable > 0 || state.mode !== 'playing') return;
+    if (state.eclipseHeld || state.invulnerable > 0 || state.mode !== 'playing') return;
     if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
     let remaining = Math.max(1, Math.floor(amount));
     const tempUsed = Math.min(state.tempShields, remaining); state.tempShields -= tempUsed; remaining -= tempUsed;
@@ -837,13 +846,77 @@
     }
     if (enemy.hp <= 0) defeatEnemy(enemy, fromAbility);
   }
+  function stopEclipseChannel() {
+    if (!state.eclipseHeld) { state.eclipsePointerId = null; return; }
+    state.eclipseHeld = false; state.eclipseTime = 0; state.eclipseCutTimer = 0;
+    state.eclipseHitCooldowns = []; state.eclipsePointerId = null;
+    updateAbilityButton();
+  }
+  function updateEclipseCuts(dt) {
+    if (!state.eclipseHeld || state.eclipseTime <= 0) return;
+    state.eclipseCutTimer -= dt;
+    if (state.eclipseCutTimer > 0) return;
+    const lightMode = state.performanceMode === 'light';
+    state.eclipseCutTimer = lightMode ? .2 : .16;
+    const cutCount = lightMode ? 5 : 7;
+    const cutLifetime = lightMode ? .32 : .36;
+    if (state.eclipseSoundCooldown <= 0 && window.CV_GAME_AUDIO?.playSfx) {
+      let soundIndex = Math.floor(randomUnit('ability') * eclipseSlashSounds.length);
+      if (soundIndex === state.eclipseLastSound) soundIndex = (soundIndex + 1 + Math.floor(randomUnit('ability') * (eclipseSlashSounds.length - 1))) % eclipseSlashSounds.length;
+      state.eclipseLastSound = soundIndex;
+      state.eclipseSoundCooldown = .32;
+      window.CV_GAME_AUDIO.playSfx(eclipseSlashSounds[soundIndex], .5);
+    }
+    for (let cut = 0; cut < cutCount; cut++) {
+      const angle = random(-Math.PI, Math.PI, 'ability');
+      const directionX = Math.cos(angle); const directionY = Math.sin(angle);
+      const centerX = random(state.width * .16, state.width * .84, 'ability');
+      const centerY = random(state.height * .16, state.height * .84, 'ability');
+      const xBounds = [((0 - centerX) / directionX), ((state.width - centerX) / directionX)].sort((a, b) => a - b);
+      const yBounds = [((0 - centerY) / directionY), ((state.height - centerY) / directionY)].sort((a, b) => a - b);
+      const start = Math.max(xBounds[0], yBounds[0]); const end = Math.min(xBounds[1], yBounds[1]);
+      const x1 = centerX + directionX * start; const y1 = centerY + directionY * start;
+      const x2 = centerX + directionX * end; const y2 = centerY + directionY * end;
+      const width = random(lightMode ? 1.1 : 1.2, lightMode ? 2 : 2.4, 'ability');
+      const color = randomUnit('ability') < .5 ? '#c99aff' : '#edddff';
+      state.effects.push({ type: 'eclipse-slash', x1, y1, x2, y2, angle, width, color, life: cutLifetime, total: cutLifetime });
+      const lineX = x2 - x1; const lineY = y2 - y1; const lineLengthSquared = lineX * lineX + lineY * lineY;
+      for (const enemy of state.enemies) {
+        if (enemy.dead) continue;
+        const projection = clamp(((enemy.x - x1) * lineX + (enemy.y - y1) * lineY) / lineLengthSquared, 0, 1);
+        const nearestX = x1 + lineX * projection; const nearestY = y1 + lineY * projection;
+        if (Math.hypot(enemy.x - nearestX, enemy.y - nearestY) > enemy.r + width + state.eclipseCutBonus) continue;
+        if (state.eclipseHitCooldowns.some((hit) => hit.enemy === enemy)) continue;
+        if (state.eclipseImpactCooldown <= 0) {
+          state.eclipseImpactCooldown = random(1.05, 1.45, 'ability');
+          state.effects.push({ type: 'eclipse-impact', x: nearestX, y: nearestY, angle: random(-Math.PI, Math.PI, 'ability'), size: random(30, 48, 'ability'), life: .11, total: .11 });
+        }
+        damageEnemy(enemy, 2 * state.abilityPower, true);
+        state.eclipseHitCooldowns.push({ enemy, time: .55 });
+        burst(nearestX, nearestY, '#e8dcff', 5, 82);
+      }
+    }
+  }
   function activateAbility() {
     const developerProfile = hasDeveloperPerks();
     if (state.mode !== 'playing' || (!developerProfile && state.abilityCooldown > 0)) return;
     const skin = currentSkin();
+    if (skin.id === 'eclipse' && state.eclipseHeld) return;
     recordAchievementEvent('ship-ability', skin.id);
     state.abilityCooldown = developerProfile ? 0 : state.abilityBaseCooldown || skin.cooldown;
-    if (skin.id === 'aurora') {
+    if (skin.id === 'eclipse') {
+      const duration = Math.min(10.3, 10 + state.eclipseDurationBonus + Math.max(0, state.abilityPower - 1) * .7);
+      state.eclipseTime = duration;
+      state.eclipseHeld = true;
+      state.eclipseCutTimer = .36;
+      state.eclipseHitCooldowns = [];
+      state.eclipseSoundCooldown = 0; state.eclipseLastSound = -1;
+      state.effects.push({ type: 'eclipse-intro', x: state.player.x, y: state.player.y, life: .36, total: .36 });
+      burst(state.player.x, state.player.y, skin.color, 42, 205);
+      burst(state.player.x, state.player.y, '#f4eaff', 24, 160);
+      burst(state.player.x, state.player.y, '#8ef6ff', 20, 130);
+      toast('ECLIPSE · SEGURE PARA CANALIZAR OS CORTES');
+    } else if (skin.id === 'aurora') {
       const radius = 285;
       state.effects.push({ type: 'nova', x: state.player.x, y: state.player.y, radius: 0, maxRadius: radius, life: .95, total: .95 });
       state.enemies.slice().forEach((enemy) => { const d = distance(state.player, enemy); if (d < radius + enemy.r) damageEnemy(enemy, (33 + Math.max(0, radius - d) * .1) * state.abilityPower, true); });
@@ -879,12 +952,21 @@
     state.abilityCooldown = Math.max(0, state.abilityCooldown - dt);
     state.slowTime = Math.max(0, state.slowTime - dt);
     state.reflectTime = Math.max(0, state.reflectTime - dt);
+    state.eclipseTime = Math.max(0, state.eclipseTime - dt);
+    state.eclipseImpactCooldown = Math.max(0, state.eclipseImpactCooldown - dt);
+    state.eclipseSoundCooldown = Math.max(0, state.eclipseSoundCooldown - dt);
+    state.eclipseHitCooldowns.forEach((hit) => { hit.time -= dt; });
+    state.eclipseHitCooldowns = state.eclipseHitCooldowns.filter((hit) => hit.time > 0 && !hit.enemy.dead);
+    if (state.eclipseHeld && state.eclipseTime <= 0) stopEclipseChannel();
     if (state.regenLevel > 0 && state.lives < state.maxLives) {
       state.regenTimer -= dt;
       if (state.regenTimer <= 0) { state.lives++; state.regenTimer = Math.max(16, 32 - state.regenLevel * 4); toast('NANORREPARO +1 VIDA'); updateHud(); }
     }
     let dx = 0; let dy = 0;
-    if (state.controlMode === 'keys') {
+    if (state.eclipseHeld) {
+      state.pointer.active = false;
+      if (state.analog.active) releaseAnalog();
+    } else if (state.controlMode === 'keys') {
       if (state.keys.has('ArrowLeft') || state.keys.has('KeyA')) dx -= 1;
       if (state.keys.has('ArrowRight') || state.keys.has('KeyD')) dx += 1;
       if (state.keys.has('ArrowUp') || state.keys.has('KeyW')) dy -= 1;
@@ -903,7 +985,8 @@
     const moveSpeed = Math.min(525, state.player.speed + state.endlessSpeed);
     state.player.x = clamp(state.player.x + (dx / norm) * moveSpeed * hullSpeed * dt, 17, state.width - 17);
     state.player.y = clamp(state.player.y + (dy / norm) * moveSpeed * hullSpeed * dt, 17, state.height - 17);
-    if (state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = state.player.fireRate; }
+    updateEclipseCuts(dt);
+    if (!state.eclipseHeld && state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = state.player.fireRate; }
     if (!state.bossWave && state.waveKills < state.enemiesRequired && state.waveGrace <= 0) {
       state.enemySpawn -= dt;
       if (state.enemySpawn <= 0 && state.enemies.length < Math.min(42, 12 + Math.floor(state.wave * .62))) { spawnEnemy(); state.enemySpawn = Math.max(.2, .72 - state.wave * .01 - Math.floor((state.wave - 1) / 10) * .045) * random(.52, .88, 'spawnTimer'); }
@@ -950,37 +1033,43 @@
     state.enemyBullets = state.enemyBullets.filter(b => !b.dead);
     for (const enemy of state.enemies) {
       const angle = Math.atan2(state.player.y - enemy.y, state.player.x - enemy.x);
-      enemy.angle += enemy.spin * dt;
-      enemy.ramCooldown = Math.max(0, (enemy.ramCooldown || 0) - dt);
-      enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
-      if (enemy.kind === 'boss') {
-        enemy.drift += dt * slowFactor * (.65 + (enemy.phase || 1) * .22);
-        if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && enemy.dashTime > 0) {
-          enemy.x += Math.cos(angle) * 420 * dt; enemy.y += Math.sin(angle) * 420 * dt; enemy.dashTime -= dt;
-        } else {
-          const targetY = 112 + Math.sin(enemy.drift * .8) * Math.min(35, state.height * .045);
-          enemy.y += clamp(targetY - enemy.y, -enemy.speed * dt * slowFactor, enemy.speed * dt * slowFactor);
-          const targetX = state.width / 2 + Math.sin(enemy.drift * (enemy.bossType === 'prism' ? 1.7 : 1.1)) * Math.min(state.width * .34, 260);
-          enemy.x += clamp(targetX - enemy.x, -enemy.speed * (1 + (enemy.phase - 1) * .5) * dt * slowFactor, enemy.speed * (1 + (enemy.phase - 1) * .5) * dt * slowFactor);
-          if (enemy.bossType === 'hunter' && !enemy.isMiniBoss) {
-            enemy.x += Math.cos(angle) * 36 * dt * slowFactor;
-            enemy.dashCooldown -= dt * slowFactor;
-            if (enemy.dashCooldown <= 0) { enemy.dashTime = .55; enemy.dashCooldown = Math.max(1.5, 3.1 - enemy.phase * .5); toast('INVESTIDA DO ESPECTRO'); }
-          }
-        }
+      const frozenByEclipse = state.eclipseHeld;
+      if (frozenByEclipse) {
+        enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
       } else {
-        const speed = enemy.kind === 'hunter' || enemy.kind === 'ricochet' ? enemy.speed : enemy.speed * .82;
-        enemy.x += Math.cos(angle) * speed * dt * slowFactor; enemy.y += Math.sin(angle) * speed * dt * slowFactor;
-      }
-      if (enemy.cooldown) {
-        enemy.cooldown -= dt * slowFactor;
-        if (enemy.cooldown <= 0 && enemy.y > 0 && enemy.y < state.height - 25) {
-          enemyFire(enemy);
-          const baseCooldown = enemy.kind === 'boss' ? (enemy.isMiniBoss ? random(2.1, 2.7, 'attack') : Math.max(.48, (enemy.bossType === 'hunter' ? .92 : enemy.bossType === 'drone' ? .76 : enemy.bossType === 'prism' ? .86 : 1.1) * (1 - (enemy.phase - 1) * .16))) : enemy.kind === 'brute' || enemy.kind === 'ricochet' ? random(1.05, 1.55, 'attack') : random(1.45, 2.35, 'attack');
-          enemy.cooldown = baseCooldown * enemyUpgradeFireRateScale();
+        enemy.angle += enemy.spin * dt;
+        enemy.ramCooldown = Math.max(0, (enemy.ramCooldown || 0) - dt);
+        enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
+        if (enemy.kind === 'boss') {
+          enemy.drift += dt * slowFactor * (.65 + (enemy.phase || 1) * .22);
+          if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && enemy.dashTime > 0) {
+            enemy.x += Math.cos(angle) * 420 * dt; enemy.y += Math.sin(angle) * 420 * dt; enemy.dashTime -= dt;
+          } else {
+            const targetY = 112 + Math.sin(enemy.drift * .8) * Math.min(35, state.height * .045);
+            enemy.y += clamp(targetY - enemy.y, -enemy.speed * dt * slowFactor, enemy.speed * dt * slowFactor);
+            const targetX = state.width / 2 + Math.sin(enemy.drift * (enemy.bossType === 'prism' ? 1.7 : 1.1)) * Math.min(state.width * .34, 260);
+            enemy.x += clamp(targetX - enemy.x, -enemy.speed * (1 + (enemy.phase - 1) * .5) * dt * slowFactor, enemy.speed * (1 + (enemy.phase - 1) * .5) * dt * slowFactor);
+            if (enemy.bossType === 'hunter' && !enemy.isMiniBoss) {
+              enemy.x += Math.cos(angle) * 36 * dt * slowFactor;
+              enemy.dashCooldown -= dt * slowFactor;
+              if (enemy.dashCooldown <= 0) { enemy.dashTime = .55; enemy.dashCooldown = Math.max(1.5, 3.1 - enemy.phase * .5); toast('INVESTIDA DO ESPECTRO'); }
+            }
+          }
+        } else {
+          const speed = enemy.kind === 'hunter' || enemy.kind === 'ricochet' ? enemy.speed : enemy.speed * .82;
+          enemy.x += Math.cos(angle) * speed * dt * slowFactor; enemy.y += Math.sin(angle) * speed * dt * slowFactor;
+        }
+        if (enemy.cooldown) {
+          enemy.cooldown -= dt * slowFactor;
+          if (enemy.cooldown <= 0 && enemy.y > 0 && enemy.y < state.height - 25) {
+            enemyFire(enemy);
+            const baseCooldown = enemy.kind === 'boss' ? (enemy.isMiniBoss ? random(2.1, 2.7, 'attack') : Math.max(.48, (enemy.bossType === 'hunter' ? .92 : enemy.bossType === 'drone' ? .76 : enemy.bossType === 'prism' ? .86 : 1.1) * (1 - (enemy.phase - 1) * .16))) : enemy.kind === 'brute' || enemy.kind === 'ricochet' ? random(1.05, 1.55, 'attack') : random(1.45, 2.35, 'attack');
+            enemy.cooldown = baseCooldown * enemyUpgradeFireRateScale();
+          }
         }
       }
       if (distance(state.player, enemy) < state.player.radius + enemy.r * .75) {
+        if (state.eclipseTime > 0) continue;
         if (state.reflectTime > 0) {
           if (!state.reflectContacts.has(enemy)) {
             state.reflectContacts.add(enemy);
@@ -1119,8 +1208,10 @@
           if (enemy.dead) continue;
           const dxHole = effect.x - enemy.x; const dyHole = effect.y - enemy.y; const d = Math.hypot(dxHole, dyHole);
           if (d < effect.radius) {
-            const pull = (110 + (1 - d / effect.radius) * 260) * dt;
-            enemy.x += dxHole / (d || 1) * pull; enemy.y += dyHole / (d || 1) * pull;
+            if (!state.eclipseHeld) {
+              const pull = (110 + (1 - d / effect.radius) * 260) * dt;
+              enemy.x += dxHole / (d || 1) * pull; enemy.y += dyHole / (d || 1) * pull;
+            }
           }
         }
         if (effect.damageClock <= 0) {
@@ -1152,6 +1243,40 @@
   function drawShip(x, y, size, skin, angle = -Math.PI / 2, alpha = 1) {
     const ship = skin && typeof skin === 'object' ? skin : currentSkin();
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.globalAlpha = alpha;
+    if (ship.shape === 'eclipse' && eclipseSprite.complete && eclipseSprite.naturalWidth) {
+      const now = performance.now();
+      const spriteHeight = size * 4.65;
+      const spriteWidth = spriteHeight * eclipseSprite.naturalWidth / eclipseSprite.naturalHeight;
+      const thrusters = [
+        { x: -size * .43, y: size * 1.02, width: size * .36, length: size * 1.3, phase: 1.7 },
+        { x: 0, y: size * 1.06, width: size * .48, length: size * 1.58, phase: 0 },
+        { x: size * .43, y: size * 1.02, width: size * .36, length: size * 1.3, phase: 3.1 }
+      ];
+      thrusters.forEach((thruster) => {
+        const pulse = .82 + .18 * Math.sin(now / 49 + thruster.phase);
+        const flameLength = thruster.length * pulse;
+        const flame = ctx.createLinearGradient(thruster.x, thruster.y, thruster.x, thruster.y + flameLength);
+        flame.addColorStop(0, 'rgba(246,228,255,.98)');
+        flame.addColorStop(.22, 'rgba(207,153,255,.94)');
+        flame.addColorStop(.64, 'rgba(151,74,255,.7)');
+        flame.addColorStop(1, 'rgba(111,45,255,0)');
+        ctx.fillStyle = flame;
+        ctx.shadowColor = ship.color;
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12;
+        ctx.beginPath();
+        ctx.moveTo(thruster.x - thruster.width * .32, thruster.y);
+        ctx.quadraticCurveTo(thruster.x - thruster.width * .62, thruster.y + flameLength * .48, thruster.x, thruster.y + flameLength);
+        ctx.quadraticCurveTo(thruster.x + thruster.width * .62, thruster.y + flameLength * .48, thruster.x + thruster.width * .32, thruster.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+      ctx.shadowColor = ship.color;
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 11;
+      ctx.drawImage(eclipseSprite, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight);
+      ctx.restore();
+      return;
+    }
     ctx.shadowColor = ship.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 18; ctx.fillStyle = ship.color; ctx.strokeStyle = ship.accent; ctx.lineWidth = 2;
     ctx.beginPath();
     if (ship.shape === 'blade') {
@@ -1228,6 +1353,44 @@
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
       if (effect.type === 'nova') {
         ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - 40), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = 8; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 34; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'eclipse-intro') {
+        const progress = 1 - alpha; const maxRadius = Math.hypot(state.width, state.height) * .62;
+        ctx.save(); ctx.globalAlpha = alpha * .12; ctx.fillStyle = '#a879ff'; ctx.fillRect(0, 0, state.width, state.height);
+        for (let ring = 0; ring < 3; ring++) {
+          const ringProgress = clamp(progress * 1.8 - ring * .2, 0, 1);
+          const radius = 16 + ringProgress * maxRadius;
+          ctx.globalAlpha = alpha * (.48 - ring * .09); ctx.strokeStyle = ring === 1 ? '#e8dcff' : '#a879ff';
+          ctx.shadowColor = '#a879ff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 14;
+          ctx.lineWidth = ring === 0 ? 2.2 : 1.2; ctx.beginPath(); ctx.ellipse(effect.x, effect.y, radius, radius * .62, -progress * .35, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'eclipse-slash') {
+        const dx = effect.x2 - effect.x1; const dy = effect.y2 - effect.y1;
+        const length = Math.hypot(dx, dy) || 1; const nx = -dy / length; const ny = dx / length;
+        const slashAlpha = Math.min(1, (1 - alpha) * 10, alpha * 2);
+        ctx.save(); ctx.lineCap = 'round';
+        ctx.globalAlpha = slashAlpha * .32; ctx.strokeStyle = effect.color; ctx.shadowColor = '#a879ff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10;
+        ctx.lineWidth = effect.width * 2.2; ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke();
+        ctx.globalAlpha = slashAlpha * .82; ctx.strokeStyle = '#f5edff'; ctx.shadowColor = '#d8b8ff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 5;
+        ctx.lineWidth = effect.width * .72; ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke();
+        ctx.globalAlpha = slashAlpha * .3; ctx.strokeStyle = '#c99aff'; ctx.shadowBlur = 0;
+        ctx.lineWidth = .7; ctx.beginPath(); ctx.moveTo(effect.x1 + nx * 2.5, effect.y1 + ny * 2.5); ctx.lineTo(effect.x2 + nx * 2.5, effect.y2 + ny * 2.5); ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'eclipse-impact') {
+        const flash = clamp((alpha - .08) / .58, 0, 1); const size = effect.size * (.78 + (1 - alpha) * .72);
+        ctx.save();
+        ctx.globalAlpha = flash * .1; ctx.fillStyle = '#f4eaff'; ctx.fillRect(0, 0, state.width, state.height);
+        ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.lineCap = 'square';
+        ctx.globalAlpha = flash * .72; ctx.strokeStyle = '#bb8aff'; ctx.shadowColor = '#c99aff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 15;
+        ctx.lineWidth = 3;
+        for (let ray = 0; ray < 8; ray++) {
+          const angle = ray * Math.PI / 4; const inner = size * .22; const outer = size * (ray % 2 ? .9 : 1.35);
+          ctx.beginPath(); ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner); ctx.lineTo(Math.cos(angle) * outer, Math.sin(angle) * outer); ctx.stroke();
+        }
+        const core = ctx.createRadialGradient(0, 0, 1, 0, 0, size * .34);
+        core.addColorStop(0, 'rgba(255,255,255,.95)'); core.addColorStop(.4, 'rgba(238,220,255,.72)'); core.addColorStop(1, 'rgba(184,137,255,0)');
+        ctx.globalAlpha = flash; ctx.fillStyle = core; ctx.beginPath(); ctx.arc(0, 0, size * .34, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
       } else if (effect.type === 'blade') {
         ctx.save(); ctx.globalAlpha = Math.min(1, alpha * 1.8); ctx.lineCap = 'round';
         if (effect.trail.length > 1) { ctx.beginPath(); ctx.moveTo(effect.trail[0].x, effect.trail[0].y); effect.trail.slice(1).forEach((point) => ctx.lineTo(point.x, point.y)); ctx.strokeStyle = 'rgba(255,200,110,.68)'; ctx.shadowColor = '#ffc86e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 22; ctx.lineWidth = 8; ctx.stroke(); ctx.strokeStyle = 'rgba(255,248,220,.84)'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 7; ctx.lineWidth = 2; ctx.stroke(); }
@@ -1261,9 +1424,10 @@
         ctx.save(); ctx.globalAlpha = .08 * alpha; ctx.fillStyle = '#c897ff'; ctx.fillRect(0, 0, state.width, state.height); ctx.restore();
       }
     }
-    if (state.invulnerable <= 0 || Math.floor(timestamp / 90) % 2 === 0) drawShip(state.player.x, state.player.y, state.player.radius, currentSkin(), state.player.angle);
-    if (state.shields || state.tempShields) { ctx.strokeStyle = `rgba(110,190,255,${.3 + Math.sin(timestamp / 150) * .12})`; ctx.lineWidth = 2 + Math.min(3, state.tempShields); ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + 9 + state.tempShields * 2, 0, Math.PI * 2); ctx.stroke(); }
-    for (let i = 0; i < state.drones; i++) { const a = timestamp / 800 + i * Math.PI * 2 / state.drones; ctx.fillStyle = '#eafaff'; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(state.player.x + Math.cos(a) * 39, state.player.y + Math.sin(a) * 39, 5, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; }
+    const eclipseActive = currentSkin().id === 'eclipse' && state.eclipseTime > 0;
+    if (!eclipseActive && (state.invulnerable <= 0 || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, currentSkin(), state.player.angle);
+    if (!eclipseActive && (state.shields || state.tempShields)) { ctx.strokeStyle = `rgba(110,190,255,${.3 + Math.sin(timestamp / 150) * .12})`; ctx.lineWidth = 2 + Math.min(3, state.tempShields); ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + 9 + state.tempShields * 2, 0, Math.PI * 2); ctx.stroke(); }
+    if (!eclipseActive) for (let i = 0; i < state.drones; i++) { const a = timestamp / 800 + i * Math.PI * 2 / state.drones; ctx.fillStyle = '#eafaff'; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(state.player.x + Math.cos(a) * 39, state.player.y + Math.sin(a) * 39, 5, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; }
   }
   function frame(timestamp) {
     if (state.mode !== 'playing') return;
@@ -1281,7 +1445,9 @@
     const favorites = readFavorites(); const active = favorites.has(gameId);
     ui.favorite.setAttribute('aria-pressed', String(active)); ui.favorite.setAttribute('aria-label', `${active ? 'Remover' : 'Adicionar'} CV STARFALL ${active ? 'dos' : 'aos'} favoritos`); ui.favorite.title = active ? 'Remover dos favoritos' : 'Adicionar aos favoritos';
     const icon = ui.favorite.querySelector('.favorite-icon'); const label = ui.favorite.querySelector('[data-favorite-label]');
+    const count = ui.favorite.querySelector('[data-favorite-count]');
     if (icon) icon.textContent = active ? '♥' : '♡'; if (label) label.textContent = active ? 'Favoritado' : 'Favoritar';
+    if (count) count.textContent = String(favorites.size);
   }
   function toggleFavorite() {
     const favorites = readFavorites(); if (favorites.has(gameId)) favorites.delete(gameId); else favorites.add(gameId);
@@ -1363,11 +1529,14 @@
   function updateControlUI() {
     document.querySelectorAll('[data-control-mode]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.controlMode === state.controlMode)));
     if (ui.joystick && !state.analog.active) ui.joystick.hidden = true;
+    const hardwareInputDetected = document.documentElement.classList.contains('cv-hardware-input-detected');
+    const abilityInstruction = currentSkin().id === 'eclipse' ? 'segure para canalizar cortes' : 'ativa a habilidade';
     if (ui.controlHint) ui.controlHint.textContent = state.controlMode === 'keys'
-      ? 'WASD ou setas movem · E ativa a habilidade · disparo automático.'
-      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · use o botão da habilidade.'
+      ? hardwareInputDetected ? 'WASD ou setas movem · E ' + abilityInstruction + ' · disparo automático.' : 'Disparo automático · controles configuráveis.'
+      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (currentSkin().id === 'eclipse' ? 'segure o botão para canalizar cortes.' : 'use o botão da habilidade.')
         : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.';
   }
+  window.addEventListener('cv-input-capabilities-change', updateControlUI);
   function updatePerformanceModeUI() {
     ui.performanceModeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.performanceMode === state.performanceMode)));
   }
@@ -1524,7 +1693,24 @@
   ui.dailySummaryStart?.addEventListener('click', () => openMissionSetup(true));
   ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : openMissionSetup());
   ui.pause.addEventListener('click', pauseGame);
-  ui.ability?.addEventListener('click', activateAbility);
+  ui.ability?.addEventListener('click', () => { if (currentSkin().id !== 'eclipse') activateAbility(); });
+  ui.ability?.addEventListener('pointerdown', (event) => {
+    if (currentSkin().id !== 'eclipse' || state.mode !== 'playing') return;
+    event.preventDefault(); state.eclipsePointerId = event.pointerId;
+    try { ui.ability.setPointerCapture(event.pointerId); } catch { /* O canal também encerra no pointerup global. */ }
+    activateAbility();
+  });
+  const releaseEclipsePointer = (event) => { if (state.eclipsePointerId === event.pointerId) stopEclipseChannel(); };
+  ui.ability?.addEventListener('pointerup', releaseEclipsePointer);
+  ui.ability?.addEventListener('pointercancel', releaseEclipsePointer);
+  ui.ability?.addEventListener('lostpointercapture', releaseEclipsePointer);
+  window.addEventListener('pointerup', releaseEclipsePointer);
+  window.addEventListener('pointercancel', releaseEclipsePointer);
+  ui.ability?.addEventListener('keydown', (event) => {
+    if (currentSkin().id !== 'eclipse' || !['Space', 'Enter'].includes(event.code)) return;
+    event.preventDefault(); if (!event.repeat) activateAbility();
+  });
+  ui.ability?.addEventListener('keyup', (event) => { if (currentSkin().id === 'eclipse' && ['Space', 'Enter'].includes(event.code)) stopEclipseChannel(); });
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
@@ -1539,8 +1725,8 @@
     if (event.code === 'KeyE' && !event.repeat) activateAbility();
     if (state.controlMode === 'keys') state.keys.add(event.code);
   });
-  window.addEventListener('keyup', (event) => state.keys.delete(event.code));
-  window.addEventListener('blur', () => { state.keys.clear(); state.pointer.active = false; releaseAnalog(); if (state.mode === 'playing') pauseGame(); });
+  window.addEventListener('keyup', (event) => { state.keys.delete(event.code); if (event.code === 'KeyE') stopEclipseChannel(); });
+  window.addEventListener('blur', () => { state.keys.clear(); state.pointer.active = false; releaseAnalog(); stopEclipseChannel(); if (state.mode === 'playing') pauseGame(); });
   canvas.addEventListener('pointerdown', (event) => {
     if (state.mode !== 'playing' || !['touch', 'analog'].includes(state.controlMode)) return;
     event.preventDefault(); canvas.setPointerCapture(event.pointerId);
