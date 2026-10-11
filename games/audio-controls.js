@@ -59,6 +59,9 @@
   let gameVolume = settings.gameVolume / 100;
   let audioContext;
   const sfxChannels = new Map();
+  let specialMusic = null;
+  let musicSuppressed = false;
+  let resumeBackgroundAfterSpecial = false;
 
   const getAudioContext = () => {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -86,11 +89,72 @@
     audio.play()?.catch?.(() => {});
   };
 
+  const finishSpecialMusic = (player) => {
+    if (specialMusic !== player) return;
+    specialMusic = null;
+    musicSuppressed = false;
+    const shouldResume = resumeBackgroundAfterSpecial && !userPausedMusic && !muted;
+    resumeBackgroundAfterSpecial = false;
+    updateMusicControl();
+    if (shouldResume) startMusic();
+  };
+
+  const pauseForCutscene = () => {
+    resumeBackgroundAfterSpecial = !music.paused && !userPausedMusic;
+    musicSuppressed = true;
+    musicStartPending = false;
+    music.pause();
+    if (specialMusic) { specialMusic.pause(); specialMusic = null; }
+    sfxChannels.forEach((channels) => channels.forEach((channel) => {
+      channel.pause();
+      try { channel.currentTime = 0; } catch { /* Pode ainda não haver dados carregados. */ }
+    }));
+    if (audioContext) {
+      const context = audioContext;
+      audioContext = null;
+      context.close()?.catch?.(() => {});
+    }
+    updateMusicControl();
+  };
+
+  const playSpecialMusic = (src, volume = Number(musicSlider.value) / 100) => {
+    if (!src || muted) { stopSpecialMusic(); return; }
+    if (specialMusic) { specialMusic.pause(); specialMusic = null; }
+    musicSuppressed = true;
+    const player = new Audio(new URL(src, document.baseURI).href);
+    player.loop = false;
+    player.preload = 'auto';
+    player.volume = Math.max(0, Math.min(1, Number(volume)));
+    player.muted = muted;
+    specialMusic = player;
+    player.addEventListener('play', updateMusicControl);
+    player.addEventListener('pause', updateMusicControl);
+    player.addEventListener('ended', () => finishSpecialMusic(player), { once: true });
+    player.addEventListener('error', () => {
+      audioStatus.textContent = 'Não foi possível carregar a música especial da Eclipse.';
+      finishSpecialMusic(player);
+    }, { once: true });
+    player.play()?.then?.(() => {
+      audioStatus.textContent = 'Música especial da Eclipse tocando até o fim.';
+      updateMusicControl();
+    }).catch(() => finishSpecialMusic(player));
+  };
+
+  const stopSpecialMusic = () => {
+    if (specialMusic) { specialMusic.pause(); specialMusic = null; }
+    musicSuppressed = false;
+    const shouldResume = resumeBackgroundAfterSpecial && !userPausedMusic && !muted;
+    resumeBackgroundAfterSpecial = false;
+    updateMusicControl();
+    if (shouldResume) startMusic();
+  };
+
   const updateMusicControl = () => {
     music.muted = muted;
+    if (specialMusic) specialMusic.muted = muted;
     musicMute.setAttribute('aria-pressed', String(muted));
     musicMute.textContent = muted ? '🔊 Ativar música' : '🔇 Mutar música';
-    const isPlaying = !music.paused;
+    const isPlaying = !((specialMusic || music).paused);
     musicPlay.setAttribute('aria-pressed', String(isPlaying));
     musicPlay.textContent = isPlaying ? '⏸ Pausar música' : '▶ Tocar música';
     icon.textContent = muted ? '🔇' : '🔊';
@@ -98,7 +162,7 @@
   };
 
   const startMusic = () => {
-    if (document.hidden || muted || userPausedMusic || !music.paused || musicStartPending) return;
+    if (document.hidden || muted || userPausedMusic || musicSuppressed || !music.paused || musicStartPending) return;
     musicStartPending = true;
     try {
       const result = music.play();
@@ -106,6 +170,7 @@
         result.then(() => {
           hasStartedMusic = true;
           musicStartPending = false;
+          if (musicSuppressed) { music.pause(); return; }
           audioStatus.textContent = 'Música tocando em repetição.';
           updateMusicControl();
         }).catch(() => {
@@ -146,12 +211,14 @@
   });
 
   musicPlay.addEventListener('click', () => {
-    if (music.paused) {
+    const activeMusic = specialMusic || music;
+    if (activeMusic.paused) {
       userPausedMusic = false;
-      startMusic();
+      if (specialMusic) specialMusic.play()?.catch?.(() => {});
+      else startMusic();
     } else {
       userPausedMusic = true;
-      music.pause();
+      activeMusic.pause();
       audioStatus.textContent = 'Música pausada.';
       updateMusicControl();
     }
@@ -160,6 +227,7 @@
   musicSlider.addEventListener('input', () => {
     const value = Number(musicSlider.value);
     music.volume = value / 100;
+    if (specialMusic) specialMusic.volume = value / 100;
     musicOutput.value = `${value}%`;
     musicOutput.textContent = `${value}%`;
     saveSettings();
@@ -196,12 +264,16 @@
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) music.pause();
+    if (document.hidden) { music.pause(); specialMusic?.pause(); }
+    else if (specialMusic && !userPausedMusic && !muted) specialMusic.play()?.catch?.(() => {});
     else if (hasStartedMusic && !userPausedMusic) startMusic();
   });
 
   window.CV_GAME_AUDIO = {
     playSfx,
+    pauseForCutscene,
+    playSpecialMusic,
+    stopSpecialMusic,
     playTone(frequency, duration = 0.08, type = 'sine', level = 0.04) {
       if (!gameVolume || !(window.AudioContext || window.webkitAudioContext)) return;
       const context = getAudioContext();
