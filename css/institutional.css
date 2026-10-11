@@ -101,6 +101,18 @@
 
 .institutional-links .button { min-width: min(100%, 13rem); }
 
+.updates-list { display: grid; gap: .85rem; margin-top: 1.1rem; }
+.update-entry { min-width: 0; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface-solid); padding: clamp(1rem, 2.5vw, 1.35rem); }
+.update-entry-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; }
+.update-entry h3 { margin: .35rem 0 0; color: var(--text); font-size: 1.08rem; }
+.update-entry p { margin: .55rem 0 0; }
+.update-tag { color: var(--primary); font-size: .7rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.update-status { display: inline-flex; align-items: center; min-height: 1.7rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); padding: .2rem .6rem; color: var(--text); font-size: .7rem; font-weight: 800; }
+.update-plan-list { display: grid; gap: .6rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.update-plan-list li { display: flex; gap: .65rem; align-items: flex-start; color: var(--muted); }
+.update-plan-list li::before { flex: 0 0 auto; color: var(--primary); content: '✦'; font-weight: 900; }
+.updates-page .whats-new-button[aria-current="page"] { border-color: var(--primary); }
+
 .exclusive-game-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

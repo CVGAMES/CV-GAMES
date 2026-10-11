@@ -167,6 +167,10 @@ a { color: inherit; }
 
 .favorite-button { display: inline-flex; align-items: center; gap: .25rem; font-size: .86rem; white-space: nowrap; text-decoration: none; }
 .favorite-button.is-active { border-color: #ff6688; background: rgba(255, 102, 136, .14); color: var(--text); }
+.whats-new-button { gap: .4rem; }
+.whats-new-button:hover,
+.whats-new-button:focus-visible,
+.whats-new-button[aria-current="page"] { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, var(--surface)); color: var(--text); }
 
 .icon-button { width: 2.35rem; padding: .35rem; font-size: 1.06rem; }
 
@@ -522,6 +526,9 @@ body.is-filtering .curated-section { display: none; }
   .favorite-button { min-width: 2.35rem; font-size: 0; }
   .favorite-button .favorite-icon { font-size: 1rem; }
   .favorite-button .favorite-count { margin-left: .2rem; font-size: .76rem; }
+  .whats-new-button { justify-content: center; padding-inline: .5rem; }
+  .whats-new-button .whats-new-icon { font-size: 1rem; }
+  .whats-new-label { display: none; }
   .hero { padding-top: 2.2rem; }
   .hero-panel { border-radius: 1.15rem; }
   .section-heading { align-items: start; flex-direction: column; }
