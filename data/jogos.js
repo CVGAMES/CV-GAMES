@@ -187,10 +187,16 @@ window.CV_GAMES_CATALOG = [
     rating: 5, addedAt: '2026-10-06', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
+    id: 'wasm-arcade', title: 'WASM Arcade', category: 'Arcade', categoryKey: 'arcade',
+    description: 'Portal externo com jogos de arcade, clássicos retrô e experiências 3D para jogar no navegador.', tags: ['wasm arcade', 'arcade', 'jogos online', 'classicos', 'retro', 'flash', 'jogos 3d'],
+    type: 'Portal externo', platform: 'Navegador', href: 'https://wasmarcade.com/', image: 'img/wasm-arcade-cover.png', fallback: '🕹️',
+    rating: 5, addedAt: '2026-10-14', featured: true, recent: true, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
     id: 'nexus-rota-zero', title: 'NEXUS: Rota Zero', category: 'Aventura', categoryKey: 'aventura',
     description: 'Aventura sci-fi interativa com decisões, minigames e vários finais.', tags: ['aventura', 'ficcao cientifica', 'terror', 'historia', 'minigames', 'narrativo'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/nexus-rota-zero/index.html', image: 'games/nexus-rota-zero/img/nexus-hero-v2.png', fallback: '🚚',
-    rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: false, multiplayer: false, exclusivo: true
+    rating: 5, addedAt: '2026-09-24', featured: false, recent: true, popular: false, pcFraco: false, multiplayer: false, exclusivo: true
   },
   {
     id: 'cv-starfall', title: 'CV STARFALL', category: 'Ação', categoryKey: 'acao',
