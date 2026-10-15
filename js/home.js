@@ -74,7 +74,7 @@
         <p class="card-meta">${game.category}</p>
         <div class="stars" aria-label="Avaliação visual: ${game.rating} de 5 estrelas">${ratingStars(game.rating)}</div>
         ${localVisits > 0 ? `<p class="card-local-stats">🎮 ${localVisits} ${localStatsLabel}</p>` : ''}
-        <a class="button button-primary" href="${game.href}" data-play-game-id="${game.id}">Jogar</a>
+        <a class="button button-primary" href="${game.href}"${game.externalPortal === true ? ' target="_blank" rel="noopener noreferrer"' : ''} data-play-game-id="${game.id}">${game.externalPortal === true ? 'Abrir site ↗' : 'Jogar'}</a>
       </div>
     `;
 
@@ -121,7 +121,7 @@
 
   // A seleção editorial mantém a seção útil antes do primeiro acesso local.
   const fallbackPopularGames = catalog.filter((game) => game.popular);
-  const featuredPriority = ['nexus-rota-zero', 'cv-starfall', 'cv-quadrados', 'cv-xadrez', 'cv-damas'];
+  const featuredPriority = ['cv-starfall', 'wasm-arcade', 'cv-quadrados', 'cv-xadrez', 'cv-damas'];
 
   const getFeaturedGames = () => {
     const featured = catalog.filter((game) => game.featured);
