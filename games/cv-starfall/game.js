@@ -34,7 +34,8 @@
     { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 34, shape: 'wing', unlockWave: 30, description: 'Dispare uma singularidade que puxa e fere os inimigos próximos.' },
     { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, shape: 'blade', unlockWave: 40, description: 'Uma lâmina veloz faz curvas e ricocheteia em várias direções.' },
     { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'Por alguns segundos, reflete projéteis: parte volta pela trajetória e parte mira em quem atacou.' },
-    { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral por 4 segundos para atrair disparos diretos.' }
+    { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral por 4 segundos para atrair disparos diretos.' },
+    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm'], description: 'E: atordoa uma grande área; três garras leves reaparecem a cada 2 segundos por 15 segundos. Q causa dano extra aos alvos marcados.' }
   ];
   const starfallAchievements = [
     { id: 'first-flight', icon: '🚀', title: 'Primeiro voo', description: 'Comece sua primeira missão.', metric: 'missionsStarted', target: 1, unit: 'missão' },
@@ -77,7 +78,7 @@
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
     selectedSkin: readSkin(), controlMode: readControlMode(), performanceMode: readPerformanceMode(), mobileSizing: detectedMobileDevice, upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1, adminNoCooldown: false, adminBuffsActive: false,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
-    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, endlessDamage: 0, endlessSpeed: 0,
+    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: '#7df7e8' },
     pointer: { active: false, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
@@ -132,6 +133,9 @@
     ,{ id:'eclipseVeil', icon:'✧', name:'Manto de eclipse', description:'Prolonga a sequência e amplia o alcance dos cortes.', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseVeil')<4, apply:()=>{state.eclipseDurationBonus=Math.min(2.2,state.eclipseDurationBonus+.55);state.eclipseCutBonus=Math.min(36,state.eclipseCutBonus+9);} }
     ,{ id:'eclipseCooldown', icon:'◷', name:'Ressonador do domínio', description:'Reduz a recarga da Eclipse em 1 segundo, até o mínimo de 25 segundos.', max:5, available:()=>currentSkin().id==='eclipse'&&state.abilityBaseCooldown>25, apply:()=>{state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1);state.abilityCooldown=Math.max(0,state.abilityCooldown-1);} }
     ,{ id:'eclipseDamage', icon:'⚔', name:'Fio do domínio', description:'Aumenta o dano de cada corte em 0,25 (até +1,00).', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseDamage')<4, apply:()=>{state.eclipseCutDamage=Math.min(1,state.eclipseCutDamage+.25);} }
+    ,{ id:'dinoFangs', icon:'〰', name:'Ressonância jurássica', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=4;state.dinoRoarRangeBonus+=18;} }
+    ,{ id:'dinoStampede', icon:'🐾', name:'Manada ancestral', description:'Adiciona um raptor ao Estouro da Manada e fortalece a investida.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=2.5;} }
+    ,{ id:'dinoResonance', icon:'◷', name:'Ressonância fóssil', description:'Reduz em 2 segundos o intervalo de recarga entre as cargas de Q, até 24 segundos.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoResonance')<4, apply:()=>{state.dinoStampedeRecharge=Math.max(0,state.dinoStampedeRecharge-2);} }
     ,{ id:'salvageHeal', icon:'✚', name:'Recuperação de destroços', description:'Inimigos destruídos podem liberar energia de reparo.', max:4, available:()=>state.salvageHeal<4, apply:()=>{state.salvageHeal+=1;} }
     ,{ id:'endlessDamage', icon:'✹', name:'Núcleo adaptativo', description:'Reforço repetível com ganho decrescente e limite seguro de dano.', max:0, stack:true, available:()=>state.endlessDamage<1.24, apply:()=>{state.endlessDamage=Math.min(1.25,state.endlessDamage + .11 / (1 + upgradeLevel('endlessDamage') * .14));} }
     ,{ id:'endlessSpeed', icon:'➤', name:'Impulso de longo curso', description:'Aumenta a mobilidade aos poucos, com velocidade máxima controlada.', max:0, stack:true, available:()=>state.endlessSpeed<118, apply:()=>{state.endlessSpeed=Math.min(120,state.endlessSpeed + 8 / (1 + upgradeLevel('endlessSpeed') * .12));} }
@@ -307,7 +311,9 @@
   function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge && state.adminNoCooldown; }
   function shipCooldownSummary(skin) {
     if (hasDeveloperPerks()) return 'sem recarga';
-    return skin.id === 'eclipse' ? 'E 30s→25s com melhorias · Q 24s' : 'recarga ' + skin.cooldown + 's';
+    if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q 24s';
+    if (skin.id === 'saurion') return 'E ' + skin.cooldown + 's→22s · Q 3 cargas · ' + skin.cooldownQ + 's→24s por carga';
+    return 'recarga ' + skin.cooldown + 's';
   }
   function skinUnlocked(skin) {
     if (isAllShipsProfile()) return true;
@@ -337,6 +343,7 @@
     ui.equippedShip.style.setProperty('--skin-color', skin.color);
     const equippedIcon = skin.shape === 'eclipse'
       ? '<span class="starfall-equipped-icon starfall-eclipse-sprite" aria-hidden="true"></span>'
+      : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon" aria-hidden="true">🦖</span>'
       : '<svg class="starfall-equipped-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : '') + '</svg>';
     ui.equippedShip.innerHTML = equippedIcon + '<span><strong>Nave equipada: ' + skin.name + '</strong><small>' + skin.ability + ' · ' + shipCooldownSummary(skin) + '</small></span>';
     updateEclipseSkipOption();
@@ -411,20 +418,27 @@
       ui.ability.title = skin.ability + (hasDeveloperPerks() ? ' · sem recarga: ' : ': ') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
-      const showQ = skin.id === 'eclipse' && ['playing', 'paused'].includes(state.mode);
-      const decoyActive = Boolean(state.eclipseDecoy && state.eclipseDecoy.life > 0);
-      const qReady = hasDeveloperPerks() || state.eclipseDecoyCooldown <= 0;
+      const isEclipse = skin.id === 'eclipse';
+      const isSaurion = skin.id === 'saurion';
+      const showQ = (isEclipse || isSaurion) && ['playing', 'paused'].includes(state.mode);
+      const stampedeRemaining = state.effects.reduce((remaining, effect) => effect.type === 'dino-raptor' ? Math.max(remaining, effect.life) : remaining, 0);
+      const qActive = isEclipse ? Boolean(state.eclipseDecoy && state.eclipseDecoy.life > 0) : isSaurion && stampedeRemaining > 0;
+      const qCooldown = isEclipse ? state.eclipseDecoyCooldown : state.dinoStampedeRecharge;
+      const dinoCharges = hasDeveloperPerks() ? 3 : state.dinoStampedeCharges;
+      const qReady = hasDeveloperPerks() || (isEclipse ? qCooldown <= 0 : dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
-      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.eclipsePhase !== 'idle' || decoyActive || !qReady;
-      ui.eclipseQ.setAttribute('aria-pressed', String(decoyActive));
-      ui.eclipseQ.setAttribute('aria-label', decoyActive
+      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || (isEclipse && state.eclipsePhase !== 'idle') || (isEclipse && qActive) || !qReady;
+      ui.eclipseQ.textContent = isEclipse ? '◉' : '✦';
+      ui.eclipseQ.classList.toggle('is-saurion', isSaurion);
+      ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
+      ui.eclipseQ.setAttribute('aria-label', qActive && isEclipse
         ? 'Isca Umbral ativa por mais ' + Math.ceil(state.eclipseDecoy.life) + ' segundos'
-        : !qReady ? 'Isca Umbral recarregando: ' + Math.ceil(state.eclipseDecoyCooldown) + ' segundos'
-          : 'Ativar Isca Umbral · tecla Q · cópia por 4 segundos');
-      ui.eclipseQ.title = 'Isca Umbral · Q · cópia por 4s · recarga de 24s';
-      if (ui.eclipseQCooldown) ui.eclipseQCooldown.textContent = decoyActive
-        ? 'ISCA ' + Math.ceil(state.eclipseDecoy.life) + 's'
-        : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(state.eclipseDecoyCooldown) + 's';
+        : !qReady ? isEclipse ? 'Isca Umbral recarregando: ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
+          : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia por 4 segundos' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes'));
+      ui.eclipseQ.title = isEclipse ? 'Isca Umbral · Q · cópia por 4s · recarga de 24s' : 'Estouro da Manada · 3 cargas · Q · recarga de ' + Math.max(24, skin.cooldownQ - upgradeLevel('dinoResonance') * 2) + 's por carga';
+      if (ui.eclipseQCooldown) ui.eclipseQCooldown.textContent = isEclipse
+        ? qActive ? 'ISCA ' + Math.ceil(state.eclipseDecoy.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
+        : hasDeveloperPerks() ? '∞ CARGAS' : dinoCharges + '/3' + (dinoCharges < 3 ? ' · ' + Math.ceil(qCooldown) + 's' : ' CARGAS');
     }
   }
   function renderSkinPicker() {
@@ -450,7 +464,7 @@
       const unlocked = skinUnlocked(skin);
       button.disabled = !unlocked;
       button.classList.toggle('is-locked', !unlocked);
-      const icon = skin.shape === 'eclipse' ? '<span class="starfall-skin-icon starfall-eclipse-sprite" aria-hidden="true"></span>' : '<span class="starfall-skin-icon" style="--skin-color:' + skin.color + '" aria-hidden="true">' + (unlocked ? '✦' : '🔒') + '</span>';
+      const icon = skin.shape === 'eclipse' ? '<span class="starfall-skin-icon starfall-eclipse-sprite" aria-hidden="true"></span>' : skin.shape === 'dino' ? '<span class="starfall-skin-icon starfall-dino-icon" aria-hidden="true">🦖</span>' : '<span class="starfall-skin-icon" style="--skin-color:' + skin.color + '" aria-hidden="true">' + (unlocked ? '✦' : '🔒') + '</span>';
       button.innerHTML = icon + '<strong>' + skin.name + '</strong><span>' + (unlocked ? skin.ability : 'Desbloqueia na onda ' + skin.unlockWave) + '</span><small>' + skin.description + '<br>' + shipCooldownSummary(skin) + '</small>';
       button.addEventListener('click', () => {
         if (!skinUnlocked(skin) || state.mode === 'playing' || state.mode === 'upgrade') return;
@@ -501,7 +515,7 @@
     state.player = { x: state.width / 2, y: state.height * .78, radius: mobileSize(13), speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0; state.adminNoCooldown = isDeveloperProfile(); state.adminBuffsActive = false;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
-    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
+    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
     if (isAllUpgradesProfile() && !state.dailyChallenge) grantAllUpgrades();
     state.keys.clear(); state.pointer.active = false; releaseAnalog();
@@ -1025,6 +1039,7 @@
     if (currentSkin().id !== 'eclipse' || state.mode !== 'playing' || state.eclipsePhase !== 'idle' || state.eclipseDecoy?.life > 0) return;
     const developerProfile = hasDeveloperPerks();
     if (!developerProfile && state.eclipseDecoyCooldown > 0) return;
+    recordAchievementEvent('ship-ability', 'eclipse');
     state.eclipseDecoy = { x: state.player.x, y: state.player.y, angle: state.player.angle, life: 4, total: 4 };
     state.eclipseDecoyCooldown = developerProfile ? 0 : 24;
     burst(state.player.x, state.player.y, '#bd91ff', 24, 120);
@@ -1032,6 +1047,98 @@
     toast('ISCA UMBRAL · MIRA DESVIADA');
     tone(310, .13, 'sine', .035);
     updateAbilityButton();
+  }
+  function dinoStampedeCooldownDuration() {
+    return Math.max(24, currentSkin().cooldownQ - upgradeLevel('dinoResonance') * 2);
+  }
+  function advanceDinoStampedeRecharge(seconds) {
+    if (hasDeveloperPerks()) { state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; return; }
+    if (state.dinoStampedeCharges >= 3) { state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; return; }
+    if (state.dinoStampedeRecharge <= 0) {
+      state.dinoStampedeCharges = Math.min(3, state.dinoStampedeCharges + 1);
+      state.dinoStampedeRecharge = state.dinoStampedeCharges < 3 ? dinoStampedeCooldownDuration() : 0;
+      return;
+    }
+    state.dinoStampedeRecharge = Math.max(0, state.dinoStampedeRecharge - seconds);
+    if (state.dinoStampedeRecharge <= 0) {
+      state.dinoStampedeCharges = Math.min(3, state.dinoStampedeCharges + 1);
+      state.dinoStampedeRecharge = state.dinoStampedeCharges < 3 ? dinoStampedeCooldownDuration() : 0;
+    }
+  }
+  function nearestDinoTarget(x, y, preferBoss = false, hit = []) {
+    const available = state.enemies.filter((enemy) => !enemy.dead && !hit.includes(enemy));
+    if (!available.length) return null;
+    if (preferBoss) {
+      const bosses = available.filter((enemy) => enemy.kind === 'boss' && !enemy.isMiniBoss);
+      if (bosses.length) return bosses.sort((a, b) => Math.hypot(x - a.x, y - a.y) - Math.hypot(x - b.x, y - b.y))[0];
+    }
+    return available.sort((a, b) => Math.hypot(x - a.x, y - a.y) - Math.hypot(x - b.x, y - b.y))[0];
+  }
+  function emitDinoClawSet(enemy) {
+    const scale = visualRandom(.58, 1.08);
+    const sideAngle = visualRandom(-Math.PI, Math.PI);
+    const centerDistance = enemy.r * visualRandom(.12, .36);
+    const centerX = enemy.x + Math.cos(sideAngle) * centerDistance;
+    const centerY = enemy.y + Math.sin(sideAngle) * centerDistance;
+    const slashAngle = sideAngle + Math.PI / 2 + visualRandom(-.16, .16);
+    const directionX = Math.cos(slashAngle); const directionY = Math.sin(slashAngle);
+    const normalX = -directionY; const normalY = directionX;
+    const spacing = Math.max(mobileSize(5), enemy.r * .36 * scale);
+    for (let claw = -1; claw <= 1; claw++) {
+      const clawScale = scale * visualRandom(claw === 0 ? .78 : .58, claw === 0 ? 1.12 : 1.32);
+      const length = Math.max(mobileSize(13), enemy.r * clawScale * visualRandom(.95, 1.45));
+      const offset = claw * spacing;
+      const x1 = centerX + normalX * offset - directionX * length * .5;
+      const y1 = centerY + normalY * offset - directionY * length * .5;
+      const x2 = centerX + normalX * offset + directionX * length * .5;
+      const y2 = centerY + normalY * offset + directionY * length * .5;
+      const bend = visualRandom(-length * .12, length * .12);
+      state.effects.push({
+        type: 'dino-claw', x1, y1, x2, y2,
+        cx: (x1 + x2) / 2 + normalX * bend,
+        cy: (y1 + y2) / 2 + normalY * bend,
+        width: mobileSize(Math.max(1.15, enemy.r * .065 * clawScale)),
+        life: .32, total: .32, color: claw === 0 ? '#efffc8' : '#72f58e'
+      });
+    }
+  }
+  function strokeDinoClawPath(effect) {
+    ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1);
+    if (Number.isFinite(effect.cx) && Number.isFinite(effect.cy)) ctx.quadraticCurveTo(effect.cx, effect.cy, effect.x2, effect.y2);
+    else ctx.lineTo(effect.x2, effect.y2);
+    ctx.stroke();
+  }
+  function activateDinoStampede() {
+    if (currentSkin().id !== 'saurion' || state.mode !== 'playing') return;
+    const developerProfile = hasDeveloperPerks();
+    if (!developerProfile && state.dinoStampedeCharges <= 0) return;
+    recordAchievementEvent('ship-ability', 'saurion');
+    if (!developerProfile) {
+      state.dinoStampedeCharges = Math.max(0, state.dinoStampedeCharges - 1);
+      if (state.dinoStampedeRecharge <= 0) state.dinoStampedeRecharge = dinoStampedeCooldownDuration();
+    }
+    const count = 3 + state.dinoStampedeExtra;
+    const speed = Math.max(590, Math.min(740, state.width * .92));
+    const mainBoss = nearestDinoTarget(state.player.x, state.player.y, true);
+    for (let index = 0; index < count; index++) {
+      const lanePosition = index / Math.max(1, count - 1);
+      const y = index === 0 ? clamp(state.player.y, 34, state.height - 34) : clamp(state.height * (.2 + lanePosition * .6) + random(-state.height * .04, state.height * .04, 'ability'), 34, state.height - 34);
+      const fromLeft = index === 0 && mainBoss ? mainBoss.x >= state.player.x : randomUnit('ability') < .5;
+      const x = fromLeft ? -75 : state.width + 75;
+      const target = index === 0 && mainBoss ? mainBoss : nearestDinoTarget(x, y, false);
+      const angle = target ? Math.atan2(target.y - y, target.x - x) : fromLeft ? 0 : Math.PI;
+      const life = 2.65;
+      state.effects.push({ type: 'dino-raptor', x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, angle, turnRate: 5.1, target, size: mobileSize(34), radius: mobileSize(36), damage: (13 + state.dinoStampedeDamageBonus) * state.abilityPower, life, total: life, hit: [] });
+    }
+    burst(state.player.x, state.player.y, '#75f28b', 30, 160);
+    burst(state.player.x, state.player.y, '#eaffb2', 9, 100);
+    toast('ESTOURO DA MANADA · ' + count + ' RAPTORES · ' + (developerProfile ? '∞' : state.dinoStampedeCharges + '/3') + ' CARGAS');
+    tone(125, .28, 'sawtooth', .045);
+    updateAbilityButton();
+  }
+  function activateSecondaryAbility() {
+    if (currentSkin().id === 'eclipse') activateEclipseDecoy();
+    else if (currentSkin().id === 'saurion') activateDinoStampede();
   }
   function activateAbility() {
     const developerProfile = hasDeveloperPerks();
@@ -1069,9 +1176,38 @@
       state.effects.push({ type: 'reflect-shield', life: duration, total: duration });
       burst(state.player.x, state.player.y, skin.color, 42, 210); burst(state.player.x, state.player.y, skin.accent, 18, 145);
       toast('ESCUDO DE RETORNO · ' + duration.toFixed(1).replace('.', ',') + 's');
+    } else if (skin.id === 'saurion') {
+      const radius = mobileSize(460 + state.dinoRoarRangeBonus);
+      state.effects.push({ type: 'dino-roar', x: state.player.x, y: state.player.y, radius, life: .92, total: .92 });
+      let clearedBullets = 0;
+      for (const bullet of state.enemyBullets) {
+        if (bullet.dead || bullet.reflected) continue;
+        if (distance(state.player, bullet) <= radius) {
+          bullet.dead = true; clearedBullets++;
+          burst(bullet.x, bullet.y, '#caff91', 5, 70);
+        }
+      }
+      let markedTargets = 0;
+      for (const enemy of state.enemies) {
+        if (enemy.dead || distance(state.player, enemy) > radius + enemy.r) continue;
+        const boss = enemy.kind === 'boss';
+        enemy.dinoStun = Math.max(enemy.dinoStun || 0, boss ? .68 : 1.2);
+        enemy.dinoCutMark = 15;
+        enemy.dinoClawBursts = 8;
+        enemy.dinoClawTimer = .12;
+        markedTargets++;
+        burst(enemy.x, enemy.y, '#75f28b', boss ? 6 : 4, boss ? 92 : 72);
+      }
+      burst(state.player.x, state.player.y, '#75f28b', 34, 260);
+      burst(state.player.x, state.player.y, '#eaffb2', 12, 150);
+      const roarSummary = ['RUGIDO DE GARRAS'];
+      if (markedTargets) roarSummary.push(markedTargets + ' ALVOS MARCADOS');
+      if (clearedBullets) roarSummary.push(clearedBullets + ' PROJÉTEIS DESFEITOS');
+      toast(roarSummary.join(' · '));
     }
     updateAbilityButton();
-    if (skin.id !== 'eclipse') tone(740, .22, 'triangle', .05);
+    if (skin.id === 'saurion') tone(92, .38, 'sawtooth', .04);
+    else if (skin.id !== 'eclipse') tone(740, .22, 'triangle', .05);
   }
   function update(dt) {
     state.elapsed += dt;
@@ -1081,6 +1217,7 @@
     state.powerSpawn -= dt;
     state.abilityCooldown = Math.max(0, state.abilityCooldown - dt);
     state.eclipseDecoyCooldown = Math.max(0, state.eclipseDecoyCooldown - dt);
+    advanceDinoStampedeRecharge(dt);
     if (state.eclipseDecoy) {
       state.eclipseDecoy.life = Math.max(0, state.eclipseDecoy.life - dt);
       if (state.eclipseDecoy.life <= 0) state.eclipseDecoy = null;
@@ -1196,10 +1333,26 @@
     }
     state.enemyBullets = state.enemyBullets.filter(b => !b.dead);
     for (const enemy of state.enemies) {
+      if (enemy.dead) continue;
       const aimTarget = enemyAimTarget();
       const angle = Math.atan2(aimTarget.y - enemy.y, aimTarget.x - enemy.x);
       const frozenByEclipse = state.eclipsePhase === 'cinematic';
-      if (frozenByEclipse) {
+      enemy.dinoStun = Math.max(0, (enemy.dinoStun || 0) - dt);
+      enemy.dinoCutMark = Math.max(0, (enemy.dinoCutMark || 0) - dt);
+      if (enemy.dinoCutMark > 0 && (enemy.dinoClawBursts || 0) > 0) {
+        enemy.dinoClawTimer = Math.max(0, (enemy.dinoClawTimer || 0) - dt);
+        if (enemy.dinoClawTimer <= 0) {
+          emitDinoClawSet(enemy);
+          const clawDamage = (.65 + state.dinoRoarBonus * .0125) * state.abilityPower * (enemy.kind === 'boss' ? 1.25 : 1);
+          damageEnemy(enemy, clawDamage, true);
+          burst(enemy.x, enemy.y, '#caff91', enemy.kind === 'boss' ? 6 : 4, 96);
+          enemy.dinoClawBursts--;
+          enemy.dinoClawTimer = 2;
+          if (enemy.dead) continue;
+        }
+      }
+      const stunnedByDino = enemy.dinoStun > 0;
+      if (frozenByEclipse || stunnedByDino) {
         enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
       } else {
         enemy.angle += enemy.spin * dt;
@@ -1234,7 +1387,7 @@
         }
       }
       if (distance(state.player, enemy) < state.player.radius + enemy.r * .75) {
-        if (state.eclipseTime > 0) continue;
+        if (state.eclipseTime > 0 || stunnedByDino) continue;
         if (state.reflectTime > 0) {
           if (!state.reflectContacts.has(enemy)) {
             state.reflectContacts.add(enemy);
@@ -1297,7 +1450,12 @@
       if (distance(state.player, pickup) < state.player.radius + pickup.r) {
         pickup.dead = true;
         if (pickup.kind === 'repair') { state.lives = Math.min(state.maxLives, state.lives + 1); toast('CASCO REPARADO +1 VIDA'); }
-        else if (pickup.kind === 'charge') { state.abilityCooldown = Math.max(0, state.abilityCooldown - 8); toast('CARGA DE HABILIDADE −8s'); }
+        else if (pickup.kind === 'charge') {
+          state.abilityCooldown = Math.max(0, state.abilityCooldown - 8);
+          if (currentSkin().id === 'eclipse') state.eclipseDecoyCooldown = Math.max(0, state.eclipseDecoyCooldown - 8);
+          if (currentSkin().id === 'saurion') advanceDinoStampedeRecharge(8);
+          toast('CARGA DE HABILIDADE −8s');
+        }
         else { state.shields = Math.min(4, state.shields + 1); toast('ESCUDO DE ENERGIA +1'); }
         const color = pickup.kind === 'repair' ? '#76ffae' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff';
         burst(pickup.x, pickup.y, color, 14, 90); tone(780, .17, 'sine', .04); updateHud();
@@ -1307,7 +1465,29 @@
     const activeEffects = [];
     for (const effect of state.effects) {
       effect.life -= dt;
-      if (effect.type === 'blade') {
+      if (effect.type === 'dino-raptor') {
+        if (!effect.target || effect.target.dead || effect.hit.includes(effect.target)) effect.target = nearestDinoTarget(effect.x, effect.y, false, effect.hit);
+        if (effect.target) {
+          const desiredAngle = Math.atan2(effect.target.y - effect.y, effect.target.x - effect.x);
+          const difference = Math.atan2(Math.sin(desiredAngle - effect.angle), Math.cos(desiredAngle - effect.angle));
+          effect.angle += clamp(difference, -effect.turnRate * dt, effect.turnRate * dt);
+        }
+        const speed = Math.hypot(effect.vx, effect.vy) || 680;
+        effect.vx = Math.cos(effect.angle) * speed; effect.vy = Math.sin(effect.angle) * speed;
+        effect.x += effect.vx * dt; effect.y += effect.vy * dt;
+        effect.hit = effect.hit || [];
+        for (const enemy of state.enemies) {
+          if (enemy.dead || effect.hit.includes(enemy) || Math.hypot(effect.x - enemy.x, effect.y - enemy.y) >= effect.radius + enemy.r * .7) continue;
+          const markedBySaurion = enemy.dinoCutMark > 0;
+          damageEnemy(enemy, effect.damage * (markedBySaurion ? 1.3 : 1), true);
+          effect.hit.push(enemy);
+          if (effect.type === 'dino-raptor') effect.target = null;
+          burst(effect.x, effect.y, markedBySaurion ? '#eaffb2' : '#9dff79', markedBySaurion ? 14 : 10, markedBySaurion ? 130 : 105);
+          burst(effect.x, effect.y, '#e9ffd0', 5, 72);
+        }
+        if (visualRandomUnit() < dt * 16 && (state.performanceMode !== 'light' || state.particles.length < 110)) state.particles.push({ x: effect.x + visualRandom(-12, 12), y: effect.y + visualRandom(-12, 12), vx: visualRandom(-32, 32), vy: visualRandom(-32, 32), life: .34, maxLife: .34, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#d4ff72' : '#50e884' });
+        if (effect.x < -100 || effect.x > state.width + 100 || effect.y < -100 || effect.y > state.height + 100) effect.life = 0;
+      } else if (effect.type === 'blade') {
         effect.turnTimer -= dt;
         if (effect.turnTimer <= 0) {
           const target = state.enemies.filter((enemy) => !enemy.dead)
@@ -1404,6 +1584,111 @@
     if (Math.floor(state.elapsed) !== Math.floor(state.elapsed - dt)) updateHud();
     updateAbilityButton();
   }
+  function drawDinoHeadLocal(size, color, accent, jawOpen, timestamp) {
+    const pulse = .92 + Math.sin(timestamp / 95) * .08;
+    if (state.performanceMode !== 'light') {
+      const aura = ctx.createRadialGradient(0, 0, size * .12, 0, 0, size * 1.8);
+      aura.addColorStop(0, 'rgba(92,255,117,.2)'); aura.addColorStop(.58, 'rgba(44,210,102,.12)'); aura.addColorStop(1, 'rgba(35,190,99,0)');
+      ctx.fillStyle = aura; ctx.beginPath(); ctx.ellipse(0, 0, size * 1.65, size * 1.85, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    const armor = ctx.createLinearGradient(-size, -size, size, size);
+    armor.addColorStop(0, '#123d35'); armor.addColorStop(.35, color); armor.addColorStop(.72, '#168c56'); armor.addColorStop(1, '#0b382f');
+    for (const side of [-1, 1]) {
+      ctx.fillStyle = '#14613e'; ctx.strokeStyle = accent; ctx.lineWidth = size * .055;
+      ctx.beginPath(); ctx.moveTo(side * size * .48, -size * .48); ctx.lineTo(side * size * 1.02, -size * .94); ctx.lineTo(side * size * .86, -size * .28); ctx.lineTo(side * size * 1.24, size * .02); ctx.lineTo(side * size * .61, size * .18); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#a9ff74'; ctx.beginPath(); ctx.moveTo(side * size * .73, -size * .58); ctx.lineTo(side * size * .96, -size * .8); ctx.lineTo(side * size * .85, -size * .39); ctx.closePath(); ctx.fill();
+    }
+    ctx.fillStyle = armor; ctx.strokeStyle = accent; ctx.lineWidth = size * .075; ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .32;
+    ctx.beginPath(); ctx.moveTo(0, -size * 1.38); ctx.quadraticCurveTo(size * .78, -size * 1.16, size * .72, -size * .48); ctx.lineTo(size * .92, -size * .08); ctx.quadraticCurveTo(size * .73, size * .28, size * .35, size * .27); ctx.lineTo(0, size * .1); ctx.lineTo(-size * .35, size * .27); ctx.quadraticCurveTo(-size * .73, size * .28, -size * .92, -size * .08); ctx.lineTo(-size * .72, -size * .48); ctx.quadraticCurveTo(-size * .78, -size * 1.16, 0, -size * 1.38); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#071d1c'; ctx.beginPath(); ctx.moveTo(-size * .66, size * .02); ctx.quadraticCurveTo(0, size * .27, size * .66, size * .02); ctx.lineTo(size * .48, size * (.34 + jawOpen * .2)); ctx.quadraticCurveTo(0, size * (.48 + jawOpen * .45), -size * .48, size * (.34 + jawOpen * .2)); ctx.closePath(); ctx.fill();
+    const jaw = ctx.createLinearGradient(0, size * .18, 0, size * 1.03);
+    jaw.addColorStop(0, accent); jaw.addColorStop(.32, '#5bea7a'); jaw.addColorStop(1, '#106546');
+    ctx.fillStyle = jaw; ctx.strokeStyle = '#caff8e'; ctx.lineWidth = size * .045;
+    ctx.beginPath(); ctx.moveTo(-size * .58, size * (.28 + jawOpen * .18)); ctx.quadraticCurveTo(0, size * (.44 + jawOpen * .38), size * .58, size * (.28 + jawOpen * .18)); ctx.lineTo(size * .42, size * (.79 + jawOpen * .4)); ctx.quadraticCurveTo(0, size * (.98 + jawOpen * .48), -size * .42, size * (.79 + jawOpen * .4)); ctx.closePath(); ctx.fill(); ctx.stroke();
+    for (const side of [-1, 1]) {
+      ctx.fillStyle = '#f4ffd4'; ctx.beginPath(); ctx.moveTo(side * size * .48, size * .08); ctx.lineTo(side * size * .31, size * .08); ctx.lineTo(side * size * .42, size * (.33 + jawOpen * .12)); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(side * size * .34, size * (.38 + jawOpen * .2)); ctx.lineTo(side * size * .2, size * (.38 + jawOpen * .2)); ctx.lineTo(side * size * .3, size * (.54 + jawOpen * .25)); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#08251d'; ctx.beginPath(); ctx.ellipse(side * size * .43, -size * .34, size * .22, size * .16, side * -.16, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#dcff7a'; ctx.shadowColor = '#c9ff70'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .18; ctx.beginPath(); ctx.ellipse(side * size * .45, -size * .34, size * .09, size * .08 * pulse, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+      ctx.fillStyle = '#baff7c'; ctx.beginPath(); ctx.ellipse(side * size * .3, -size * .56, size * .075, size * .055, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.strokeStyle = '#d8ff9b'; ctx.globalAlpha *= .8; ctx.lineWidth = size * .035; ctx.beginPath(); ctx.moveTo(-size * .28, -size * .91); ctx.quadraticCurveTo(0, -size * 1.02, size * .28, -size * .91); ctx.stroke();
+  }
+  function drawDinoHead(x, y, size, angle, jawOpen, timestamp, alpha = 1, skin = currentSkin()) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.globalAlpha = alpha;
+    drawDinoHeadLocal(size, skin.color, skin.accent, jawOpen, timestamp);
+    ctx.restore();
+  }
+  function drawDinoShipLocal(size, color, accent, timestamp) {
+    const pulse = .88 + Math.sin(timestamp / 72) * .12;
+    const baseAlpha = ctx.globalAlpha;
+    if (state.performanceMode !== 'light') {
+      const aura = ctx.createRadialGradient(0, 0, size * .18, 0, 0, size * 2.15);
+      aura.addColorStop(0, 'rgba(68,238,112,.18)'); aura.addColorStop(.62, 'rgba(54,196,100,.08)'); aura.addColorStop(1, 'rgba(30,150,76,0)');
+      ctx.fillStyle = aura; ctx.beginPath(); ctx.ellipse(0, 0, size * 1.9, size * 2.05, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+
+    // Twin ion thrusters establish the rear and give the silhouette a clear fighter-ship profile.
+    for (const side of [-1, 1]) {
+      const engineX = side * size * .47;
+      const flameLength = size * (1.18 + Math.sin(timestamp / 48 + side) * .13);
+      const flame = ctx.createLinearGradient(engineX, size * .62, engineX, size * .62 + flameLength);
+      flame.addColorStop(0, 'rgba(228,255,157,.96)'); flame.addColorStop(.26, 'rgba(91,255,119,.82)'); flame.addColorStop(.72, 'rgba(39,215,126,.42)'); flame.addColorStop(1, 'rgba(31,174,121,0)');
+      ctx.fillStyle = flame; ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .38;
+      ctx.beginPath(); ctx.moveTo(engineX - size * .14, size * .48); ctx.quadraticCurveTo(engineX - size * .21, size * 1.08, engineX, size * .62 + flameLength); ctx.quadraticCurveTo(engineX + size * .21, size * 1.08, engineX + size * .14, size * .48); ctx.closePath(); ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#092b27'; ctx.strokeStyle = accent; ctx.lineWidth = size * .07;
+      ctx.beginPath(); ctx.rect(engineX - size * .18, size * .43, size * .36, size * .37); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#aaff85'; ctx.globalAlpha *= pulse; ctx.beginPath(); ctx.ellipse(engineX, size * .61, size * .075, size * .13, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha /= pulse;
+    }
+
+    // Swept, armored wings with small claw-like tips keep the dinosaur theme while reading as a ship.
+    const wing = ctx.createLinearGradient(0, -size * .65, 0, size * .72);
+    wing.addColorStop(0, '#a7ff77'); wing.addColorStop(.28, color); wing.addColorStop(.72, '#167d52'); wing.addColorStop(1, '#0b3a36');
+    for (const side of [-1, 1]) {
+      ctx.fillStyle = wing; ctx.strokeStyle = accent; ctx.lineWidth = size * .055;
+      ctx.beginPath(); ctx.moveTo(side * size * .23, -size * .57); ctx.quadraticCurveTo(side * size * .72, -size * .48, side * size * 1.2, -size * .04); ctx.lineTo(side * size * 1.34, size * .38); ctx.lineTo(side * size * 1.05, size * .28); ctx.lineTo(side * size * 1.17, size * .73); ctx.lineTo(side * size * .66, size * .51); ctx.quadraticCurveTo(side * size * .39, size * .39, side * size * .25, size * .18); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#d8ff98'; ctx.globalAlpha = baseAlpha * .84;
+      ctx.beginPath(); ctx.moveTo(side * size * 1.02, size * .26); ctx.lineTo(side * size * 1.34, size * .38); ctx.lineTo(side * size * 1.17, size * .73); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = baseAlpha * .72; ctx.strokeStyle = '#baff8c'; ctx.lineWidth = size * .035;
+      ctx.beginPath(); ctx.moveTo(side * size * .44, -size * .27); ctx.quadraticCurveTo(side * size * .84, size * .02, side * size * 1.05, size * .47); ctx.stroke();
+      ctx.globalAlpha = baseAlpha;
+      ctx.fillStyle = '#082b2b'; ctx.beginPath(); ctx.ellipse(side * size * .76, size * .13, size * .12, size * .07, side * .18, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = accent; ctx.shadowColor = accent; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .12; ctx.beginPath(); ctx.arc(side * size * .76, size * .13, size * .045, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+    }
+
+    // Central armored fuselage: pointed nose, cockpit and a short row of dorsal plates.
+    ctx.globalAlpha = baseAlpha;
+    const hull = ctx.createLinearGradient(-size * .46, -size, size * .46, size * .92);
+    hull.addColorStop(0, '#dcff9a'); hull.addColorStop(.2, color); hull.addColorStop(.56, '#168b56'); hull.addColorStop(1, '#073b37');
+    ctx.fillStyle = hull; ctx.strokeStyle = '#caff91'; ctx.lineWidth = size * .075; ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .28;
+    ctx.beginPath(); ctx.moveTo(0, -size * 1.55); ctx.lineTo(size * .3, -size * .93); ctx.lineTo(size * .42, -size * .31); ctx.lineTo(size * .34, size * .48); ctx.lineTo(size * .19, size * .82); ctx.lineTo(0, size * 1.02); ctx.lineTo(-size * .19, size * .82); ctx.lineTo(-size * .34, size * .48); ctx.lineTo(-size * .42, -size * .31); ctx.lineTo(-size * .3, -size * .93); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
+
+    // The nose has a raptor-mask brow; the inset canopy remains visibly cockpit-like.
+    ctx.fillStyle = '#082b2d'; ctx.strokeStyle = '#92ff88'; ctx.lineWidth = size * .045;
+    ctx.beginPath(); ctx.moveTo(0, -size * 1.24); ctx.quadraticCurveTo(size * .25, -size * .9, size * .2, -size * .52); ctx.quadraticCurveTo(0, -size * .37, -size * .2, -size * .52); ctx.quadraticCurveTo(-size * .25, -size * .9, 0, -size * 1.24); ctx.closePath(); ctx.fill(); ctx.stroke();
+    const canopy = ctx.createLinearGradient(0, -size * 1.12, 0, -size * .51);
+    canopy.addColorStop(0, '#d5ff9b'); canopy.addColorStop(.18, '#52f3bd'); canopy.addColorStop(.55, '#0d6570'); canopy.addColorStop(1, '#092c3b');
+    ctx.fillStyle = canopy; ctx.beginPath(); ctx.moveTo(0, -size * 1.12); ctx.quadraticCurveTo(size * .16, -size * .88, size * .13, -size * .58); ctx.quadraticCurveTo(0, -size * .46, -size * .13, -size * .58); ctx.quadraticCurveTo(-size * .16, -size * .88, 0, -size * 1.12); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(231,255,186,.9)'; ctx.lineWidth = size * .025; ctx.beginPath(); ctx.moveTo(-size * .09, -size * .96); ctx.quadraticCurveTo(0, -size * .89, size * .08, -size * .75); ctx.stroke();
+
+    // Emerald eyes and swept dorsal fins act as the signature saurian markings.
+    for (const side of [-1, 1]) {
+      ctx.globalAlpha = baseAlpha; ctx.fillStyle = '#062621'; ctx.beginPath(); ctx.ellipse(side * size * .29, -size * .67, size * .115, size * .075, side * -.22, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#e6ff83'; ctx.shadowColor = '#baff63'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .14; ctx.beginPath(); ctx.ellipse(side * size * .3, -size * .67, size * .052, size * .046 * pulse, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+      ctx.fillStyle = '#caff88'; ctx.beginPath(); ctx.moveTo(side * size * .16, size * .08); ctx.lineTo(side * size * .35, size * .31); ctx.lineTo(side * size * .16, size * .27); ctx.closePath(); ctx.fill();
+    }
+    for (let plate = 0; plate < 4; plate++) {
+      const y = -size * .18 + plate * size * .2;
+      const plateSize = size * (.14 - plate * .012);
+      ctx.globalAlpha = baseAlpha; ctx.fillStyle = plate % 2 ? '#60ed81' : '#dcff91'; ctx.strokeStyle = '#1a9a61'; ctx.lineWidth = size * .025;
+      ctx.beginPath(); ctx.moveTo(-plateSize, y + plateSize * .5); ctx.lineTo(0, y - plateSize); ctx.lineTo(plateSize, y + plateSize * .5); ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(206,255,148,.78)'; ctx.beginPath(); ctx.ellipse(0, size * .59, size * .1, size * .19, 0, 0, Math.PI * 2); ctx.fill();
+  }
   function drawShip(x, y, size, skin, angle = -Math.PI / 2, alpha = 1) {
     const ship = skin && typeof skin === 'object' ? skin : currentSkin();
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.globalAlpha = alpha;
@@ -1438,6 +1723,11 @@
       ctx.shadowColor = ship.color;
       ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 11;
       ctx.drawImage(eclipseSprite, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight);
+      ctx.restore();
+      return;
+    }
+    if (ship.shape === 'dino') {
+      drawDinoShipLocal(size, ship.color, ship.accent, performance.now());
       ctx.restore();
       return;
     }
@@ -1481,6 +1771,28 @@
       ctx.fillStyle = '#fff'; ctx.fillRect(-3, -2, 6, 4);
     }
     ctx.restore();
+    if (enemy.dinoCutMark > 0) {
+      ctx.save(); ctx.globalAlpha = clamp(enemy.dinoCutMark / .8, .3, .82);
+      ctx.strokeStyle = '#9cff85'; ctx.shadowColor = '#62f58a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 8;
+      ctx.lineWidth = mobileSize(1.4); ctx.setLineDash([mobileSize(3), mobileSize(6)]);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(5), performance.now() / 500, performance.now() / 500 + Math.PI * 1.55); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+    if (enemy.dinoStun > 0) {
+      ctx.save(); ctx.globalAlpha = .58 + Math.sin(performance.now() / 65 + enemy.x) * .16;
+      ctx.strokeStyle = '#eaffb2'; ctx.shadowColor = '#aaff82'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10;
+      ctx.lineWidth = mobileSize(1.5); ctx.setLineDash([mobileSize(4), mobileSize(4)]);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(8), 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]); ctx.fillStyle = '#eaffb2';
+      for (let spark = 0; spark < 3; spark++) {
+        const spin = performance.now() / 260 + spark * Math.PI * 2 / 3;
+        const sx = enemy.x + Math.cos(spin) * (enemy.r + mobileSize(10));
+        const sy = enemy.y + Math.sin(spin) * (enemy.r + mobileSize(10));
+        ctx.beginPath(); ctx.arc(sx, sy, mobileSize(2), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
     if (enemy.kind === 'boss' && !enemy.isMiniBoss) {
       const barWidth = Math.min(250, state.width * .48); const ratio = clamp(enemy.hp / enemy.maxHp, 0, 1);
       const immersive = ui.panel && (document.fullscreenElement === ui.panel || document.webkitFullscreenElement === ui.panel || ui.panel.classList.contains('is-fullscreen-fallback'));
@@ -1533,6 +1845,69 @@
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
       if (effect.type === 'nova') {
         ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - mobileSize(40)), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = mobileSize(8); ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'dino-roar') {
+        const progress = 1 - alpha;
+        const waveRadius = effect.radius * (.08 + progress * .92);
+        const waveAlpha = Math.sin(Math.PI * Math.min(1, progress * 1.08)) * .8 + alpha * .14;
+        ctx.save();
+        const wave = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, waveRadius - mobileSize(56)), effect.x, effect.y, waveRadius);
+        wave.addColorStop(0, 'rgba(190,255,119,0)'); wave.addColorStop(.76, 'rgba(88,244,131,.045)'); wave.addColorStop(.94, 'rgba(88,244,131,.2)'); wave.addColorStop(1, 'rgba(234,255,178,.48)');
+        ctx.globalAlpha = waveAlpha; ctx.fillStyle = wave;
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, waveRadius, 0, Math.PI * 2); ctx.fill();
+        ctx.lineCap = 'round'; ctx.shadowColor = '#7aff91'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(20);
+        for (let ring = 0; ring < 3; ring++) {
+          const ringRadius = waveRadius * (1 - ring * .11);
+          ctx.globalAlpha = waveAlpha * (.9 - ring * .22); ctx.strokeStyle = ring === 1 ? '#eaffb2' : '#63f5a2'; ctx.lineWidth = mobileSize(ring === 0 ? 4 : 2);
+          ctx.beginPath(); ctx.arc(effect.x, effect.y, ringRadius, 0, Math.PI * 2); ctx.stroke();
+        }
+        const coreFlash = clamp(1 - progress * 4.5, 0, 1);
+        ctx.shadowBlur = 0; ctx.globalAlpha = coreFlash * .52; ctx.fillStyle = '#eaffb2';
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, mobileSize(18 + progress * 32), 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = waveAlpha * .18; ctx.fillStyle = '#70f69b';
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, waveRadius * .62, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      } else if (effect.type === 'dino-claw') {
+        const fade = Math.min(1, (1 - alpha) * 9, alpha * 2.4);
+        const dx = effect.x2 - effect.x1; const dy = effect.y2 - effect.y1; const length = Math.hypot(dx, dy) || 1;
+        const ux = dx / length; const uy = dy / length; const nx = -uy; const ny = ux;
+        ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.globalAlpha = fade * .5; ctx.strokeStyle = '#103d29'; ctx.shadowColor = '#52fa8d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 11;
+        ctx.lineWidth = effect.width * 3.2; strokeDinoClawPath(effect);
+        ctx.globalAlpha = fade * .9; ctx.strokeStyle = effect.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 8;
+        ctx.lineWidth = effect.width * 1.9; strokeDinoClawPath(effect);
+        ctx.globalAlpha = fade; ctx.strokeStyle = '#f1ffd2'; ctx.shadowColor = '#caff91'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 5;
+        ctx.lineWidth = effect.width * .58; strokeDinoClawPath(effect);
+        ctx.shadowBlur = 0; ctx.fillStyle = '#eaffb2'; ctx.globalAlpha = fade * .8;
+        for (const end of [{ x: effect.x1, y: effect.y1, sign: 1 }, { x: effect.x2, y: effect.y2, sign: -1 }]) {
+          const tipLength = effect.width * 3.2;
+          const baseX = end.x + ux * tipLength * end.sign; const baseY = end.y + uy * tipLength * end.sign;
+          ctx.beginPath(); ctx.moveTo(end.x, end.y); ctx.lineTo(baseX + nx * effect.width * .72, baseY + ny * effect.width * .72);
+          ctx.lineTo(baseX - nx * effect.width * .72, baseY - ny * effect.width * .72); ctx.closePath(); ctx.fill();
+        }
+        ctx.restore();
+      } else if (effect.type === 'dino-raptor') {
+        const progress = 1 - alpha;
+        const fade = clamp(Math.min(progress * 9, alpha * 3.2), 0, 1);
+        const jawOpen = .28 + Math.sin(timestamp / 75 + effect.y) * .2;
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle + Math.PI / 2);
+        const trail = ctx.createLinearGradient(0, effect.size * .35, 0, effect.size * 3.2);
+        trail.addColorStop(0, 'rgba(226,255,157,.7)'); trail.addColorStop(.22, 'rgba(113,255,135,.48)'); trail.addColorStop(.68, 'rgba(49,219,126,.17)'); trail.addColorStop(1, 'rgba(29,177,128,0)');
+        ctx.globalAlpha = fade * .78; ctx.fillStyle = trail; ctx.shadowColor = '#48ef80'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15);
+        ctx.beginPath(); ctx.moveTo(-effect.size * .3, effect.size * .48); ctx.quadraticCurveTo(-effect.size * .18, effect.size * 1.85, 0, effect.size * 3.05); ctx.quadraticCurveTo(effect.size * .18, effect.size * 1.85, effect.size * .3, effect.size * .48); ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0;
+        ctx.globalAlpha = fade * .72; ctx.strokeStyle = '#bfff87'; ctx.lineWidth = mobileSize(1.7);
+        ctx.beginPath(); ctx.ellipse(0, effect.size * .32, effect.size * .95, effect.size * .3, timestamp / 190 + effect.y * .01, .15, Math.PI * 1.78); ctx.stroke();
+        ctx.globalAlpha = fade * .4; ctx.strokeStyle = '#53f6ad'; ctx.lineWidth = mobileSize(1.1);
+        ctx.beginPath(); ctx.ellipse(0, effect.size * .58, effect.size * .7, effect.size * .23, -timestamp / 240 - effect.x * .01, Math.PI, Math.PI * 2.72); ctx.stroke();
+        for (let spark = 0; spark < 3; spark++) {
+          const orbit = timestamp / 155 + spark * Math.PI * 2 / 3 + effect.y * .02;
+          const sx = Math.cos(orbit) * effect.size * (.42 + spark * .08);
+          const sy = effect.size * (.9 + spark * .57) + Math.sin(orbit) * effect.size * .17;
+          ctx.globalAlpha = fade * (.55 - spark * .1); ctx.fillStyle = spark === 0 ? '#f2ffbd' : '#8dff9f';
+          ctx.beginPath(); ctx.arc(sx, sy, mobileSize(1.8 + spark * .45), 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.restore();
+        drawDinoHead(effect.x, effect.y, effect.size, effect.angle, jawOpen, timestamp, fade * .96, { color: '#42d66e', accent: '#d4ff72' });
+      } else if (effect.type === 'eclipse-intro') {
       } else if (effect.type === 'eclipse-intro') {
         const progress = 1 - alpha; const maxRadius = Math.hypot(state.width, state.height) * .62;
         ctx.save(); ctx.globalAlpha = alpha * .12; ctx.fillStyle = '#e32636'; ctx.fillRect(0, 0, state.width, state.height);
@@ -1723,11 +2098,13 @@
     document.querySelectorAll('[data-control-mode]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.controlMode === state.controlMode)));
     if (ui.joystick && !state.analog.active) ui.joystick.hidden = true;
     const hardwareInputDetected = document.documentElement.classList.contains('cv-hardware-input-detected');
-    const abilityInstruction = currentSkin().id === 'eclipse' ? 'E abre o Domínio · Q ativa a Isca Umbral' : 'ativa a habilidade';
+    const isEclipse = currentSkin().id === 'eclipse';
+    const isSaurion = currentSkin().id === 'saurion';
+    const abilityInstruction = isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : 'ativa a habilidade';
     if (ui.controlHint) ui.controlHint.textContent = state.controlMode === 'keys'
       ? hardwareInputDetected ? 'WASD ou setas movem · ' + abilityInstruction + ' · disparo automático.' : 'Disparo automático · controles configuráveis.'
-      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (currentSkin().id === 'eclipse' ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
-        : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.' + (currentSkin().id === 'eclipse' ? ' Botões E e Q ativam as habilidades.' : '');
+      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (isEclipse || isSaurion ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
+        : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.' + (isEclipse || isSaurion ? ' Botões E e Q ativam as habilidades.' : '');
   }
   function createDeviceIndicators() {
     [ui.missionSetupModal, ui.settingsModal].forEach((modal) => {
@@ -1876,6 +2253,12 @@
     state.reflectDurationBonus = 0;
     state.eclipseDecoy = null;
     state.eclipseDecoyCooldown = 0;
+    state.dinoRoarBonus = 0;
+    state.dinoRoarRangeBonus = 0;
+    state.dinoStampedeCharges = 3;
+    state.dinoStampedeRecharge = 0;
+    state.dinoStampedeExtra = 0;
+    state.dinoStampedeDamageBonus = 0;
     state.eclipseTime = 0;
     state.eclipsePhase = 'idle';
     state.eclipseHitCooldowns = [];
@@ -2083,7 +2466,7 @@
   ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : openMissionSetup());
   ui.pause.addEventListener('click', pauseGame);
   ui.ability?.addEventListener('click', activateAbility);
-  ui.eclipseQ?.addEventListener('click', activateEclipseDecoy);
+  ui.eclipseQ?.addEventListener('click', activateSecondaryAbility);
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
     if (state.eclipsePhase === 'cinematic') { event.preventDefault(); return; }
@@ -2100,7 +2483,7 @@
     if (event.code === 'Escape' || event.code === 'KeyP') { if (state.mode === 'playing' || state.mode === 'paused') pauseGame(); }
     if (event.code === 'Enter' && ['intro', 'gameover'].includes(state.mode) && (!ui.shipModal || ui.shipModal.hidden) && !event.target.closest('button,[role="dialog"],input,select,textarea')) openMissionSetup();
     if (event.code === 'KeyE' && !event.repeat) activateAbility();
-    if (event.code === 'KeyQ' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) activateEclipseDecoy();
+    if (event.code === 'KeyQ' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) activateSecondaryAbility();
     if (state.controlMode === 'keys') state.keys.add(event.code);
   });
   window.addEventListener('keyup', (event) => { state.keys.delete(event.code); });

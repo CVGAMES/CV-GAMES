@@ -430,6 +430,10 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
 .starfall-secondary-ability { position:relative; border-color:rgba(190,151,255,.62); background:linear-gradient(145deg,rgba(79,52,131,.82),rgba(18,24,50,.95)); color:#f0e5ff; }
 .starfall-secondary-ability::after { content:"Q"; position:absolute; top:-.26rem; right:-.22rem; display:grid; width:1rem; height:1rem; place-items:center; border:1px solid rgba(215,195,255,.65); border-radius:50%; background:#211736; color:#eadcff; font-size:.58rem; font-weight:900; }
 .starfall-secondary-ability[aria-pressed="true"] { border-color:#e4d2ff; background:linear-gradient(145deg,rgba(130,91,194,.95),rgba(37,25,70,.98)); box-shadow:0 0 20px rgba(177,136,255,.42); }
+.starfall-secondary-ability.is-saurion { border-color:rgba(121,255,146,.72); background:linear-gradient(145deg,rgba(35,111,69,.88),rgba(13,39,38,.96)); color:#e2ffd2; }
+.starfall-secondary-ability.is-saurion::after { border-color:rgba(179,255,122,.8); background:#123a2b; color:#eaffb8; }
+.starfall-secondary-ability.is-saurion[aria-pressed="true"] { border-color:#d4ff72; background:linear-gradient(145deg,rgba(66,173,81,.95),rgba(19,77,53,.98)); box-shadow:0 0 20px rgba(86,237,115,.42); }
+.starfall-dino-icon { background:radial-gradient(circle at 35% 30%,#b8ff86,transparent 62%),linear-gradient(145deg,#14663c,#0c302d); color:#d7ff8a; text-shadow:0 0 15px rgba(157,255,115,.7); }
 
 @media(max-width:700px) {
   .starfall-game-panel:fullscreen .starfall-hud,
