@@ -44,21 +44,9 @@ window.CV_GAMES_CATALOG = [
   },
   {
     id: 'bad-ice-cream', title: 'Bad Ice Cream', category: 'Arcade', categoryKey: 'arcade',
-    description: 'Explore labirintos e encare desafios neste jogo arcade de visual retrô.', tags: ['arcade', 'labirinto', 'puzzle', 'online'],
+    description: 'Explore labirintos e encare desafios em dupla neste jogo arcade de visual retrô.', tags: ['arcade', 'labirinto', 'puzzle', 'online', '2 jogadores'],
     type: 'Jogo online', platform: 'Navegador', href: 'https://badicecream.org/', image: 'CV GAMES/bad ice cream/bad-ice-cream.png', fallback: '🍦',
-    rating: 4, addedAt: '2026-09-26', featured: false, recent: true, popular: false, pcFraco: true, multiplayer: false
-  },
-  {
-    id: 'minecraft', title: 'Minecraft', category: 'Aventura', categoryKey: 'aventura',
-    description: 'Explore e construa em uma aventura de blocos.', tags: ['aventura', 'construcao', 'blocos', 'online'],
-    type: 'Jogo online', platform: 'Navegador', href: 'https://eaglercraft.com/', image: 'CV GAMES/eaglrcraft 1/minecraft-header.jpg', fallback: '⛏️',
-    rating: 5, addedAt: '2026-01-15', featured: true, recent: false, popular: true, pcFraco: false, multiplayer: false
-  },
-  {
-    id: 'minecraft-2', title: 'Minecraft 2', category: 'Aventura', categoryKey: 'aventura',
-    description: 'Outra versão online para explorar mundos de blocos.', tags: ['aventura', 'construcao', 'blocos', 'online'],
-    type: 'Jogo online', platform: 'Navegador', href: 'Minecraft2.html', image: 'CV GAMES/earglecraf2/gaming-1b33d39b9f2ddc21.webp', fallback: '⛏️',
-    rating: 4, addedAt: '2026-01-15', featured: false, recent: true, popular: false, pcFraco: false, multiplayer: false
+    rating: 4, addedAt: '2026-09-26', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true
   },
   {
     id: 'slow-roads', title: 'Slow Roads', category: 'Corrida', categoryKey: 'corrida',
@@ -76,7 +64,7 @@ window.CV_GAMES_CATALOG = [
     id: 'stickman-hook', title: 'Stickman Hook', category: 'Ação', categoryKey: 'acao',
     description: 'Balance pelo cenário usando o gancho do Stickman.', tags: ['acao', 'arcade', 'online', 'leve'],
     type: 'Jogo online', platform: 'Navegador', href: 'https://sites.google.com/view/wdbgr/other/stickman-hook?pli=1&authuser=0', image: 'CV GAMES/stick/15911-stickman-hook-pro-512x384.avif', fallback: '🪝',
-    rating: 4, addedAt: '2026-01-15', featured: false, recent: false, popular: true, pcFraco: true, multiplayer: false
+    rating: 4, addedAt: '2026-01-15', featured: true, recent: false, popular: true, pcFraco: true, multiplayer: false
   },
   {
     id: 'moto-x3m', title: 'Moto X3M', category: 'Corrida', categoryKey: 'corrida',
@@ -94,7 +82,7 @@ window.CV_GAMES_CATALOG = [
     id: 'geometry-jump', title: 'Geometry Jump', category: 'Arcade', categoryKey: 'arcade',
     description: 'Salte por desafios de ritmo em uma corrida geométrica.', tags: ['arcade', 'ritmo', 'online', 'leve'],
     type: 'Jogo online', href: 'https://ubg98.github.io/geometry-jump-unblocked.html', image: 'CV GAMES/geo/GeometryDash.webp', fallback: '🔺',
-    rating: 4, addedAt: '2026-01-15', featured: false, recent: false, popular: true, pcFraco: true, multiplayer: false
+    rating: 4, addedAt: '2026-01-15', featured: true, recent: false, popular: true, pcFraco: true, multiplayer: false
   },
   {
     id: 'rocket-soccer-derby', title: 'Rocket Soccer Derby', category: 'Esportes', categoryKey: 'esportes',
@@ -152,15 +140,21 @@ window.CV_GAMES_CATALOG = [
   },
   {
     id: 'fireboy-watergirl', title: 'Fireboy and Watergirl', category: 'Aventura', categoryKey: 'aventura',
-    description: 'Aventura de plataforma com desafios de elementos.', tags: ['aventura', 'plataforma', 'online', 'leve'],
+    description: 'Aventura de plataforma cooperativa para duas pessoas, com desafios de fogo e água.', tags: ['aventura', 'plataforma', 'online', 'leve', '2 jogadores', 'cooperativo'],
     type: 'Jogo online', href: 'https://amhooman.github.io/fireboywatergirl/game.html', image: 'CV GAMES/fire and warer/cover-1586285142530.avif', fallback: '🔥',
-    rating: 5, addedAt: '2026-01-15', featured: true, recent: false, popular: true, pcFraco: true, multiplayer: false
+    rating: 5, addedAt: '2026-01-15', featured: true, recent: false, popular: true, pcFraco: true, multiplayer: true
   },
   {
     id: 'elastic-man', title: 'Elastic Man', category: 'Puzzle', categoryKey: 'puzzle',
     description: 'Experiência interativa com física elástica.', tags: ['puzzle', 'interativo', 'online'],
     type: 'Jogo online', href: 'https://elasticman.gitlab.io/', image: 'CV GAMES/elastic/RickandMortyElasticMan.webp', fallback: '🌀',
     rating: 4, addedAt: '2026-01-15', featured: false, recent: false, popular: false, pcFraco: false, multiplayer: false
+  },
+  {
+    id: '2048', title: '2048', category: 'Puzzle', categoryKey: 'puzzle',
+    description: 'Combine peças com o mesmo número, alcance 2048 e tente superar sua pontuação.', tags: ['2048', 'puzzle', 'numeros', 'logica', 'quebra-cabeca', 'jogo online'],
+    type: 'Jogo online', platform: 'Navegador', href: 'https://play2048.co/', image: 'img/2048-cover.png', imageFit: 'contain', fallback: '🔢',
+    rating: 5, addedAt: '2026-10-19', featured: false, recent: true, popular: false, pcFraco: true, multiplayer: false
   },
   {
     id: 'mr-bullet', title: 'Mr Bullet', category: 'Ação', categoryKey: 'acao',
@@ -190,7 +184,7 @@ window.CV_GAMES_CATALOG = [
     id: 'wasm-arcade', title: 'WASM Arcade', category: 'Arcade', categoryKey: 'arcade',
     description: 'Portal externo com jogos de arcade, clássicos retrô e experiências 3D para jogar no navegador.', tags: ['wasm arcade', 'arcade', 'jogos online', 'classicos', 'retro', 'flash', 'jogos 3d'],
     type: 'Portal externo', platform: 'Navegador', href: 'https://wasmarcade.com/', image: 'img/wasm-arcade-cover.png', fallback: '🕹️',
-    rating: 5, addedAt: '2026-10-14', featured: true, recent: true, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+    rating: 5, addedAt: '2026-10-14', featured: false, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true, externalWarning: true
   },
   {
     id: 'nexus-rota-zero', title: 'NEXUS: Rota Zero', category: 'Aventura', categoryKey: 'aventura',
@@ -203,6 +197,18 @@ window.CV_GAMES_CATALOG = [
     description: 'Pilote sua nave, sobreviva a ondas cósmicas, escolha melhorias e enfrente guardiões.', tags: ['acao', 'arcade', 'espaco', 'nave', 'sobrevivencia', 'ondas', 'melhorias', 'cv starfall'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-starfall/index.html', image: 'games/cv-starfall/cover.svg', fallback: '🚀',
     rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
+  },
+  {
+    id: 'gx-launcher', title: 'Minecraft - GX Launcher', category: 'Aventura', categoryKey: 'aventura',
+    description: 'Acesse o GX Launcher e confira Minecraft 26.3 direto no navegador.', tags: ['gx launcher', 'minecraft', 'minecraft 26.3', 'aventura', 'construção', 'blocos', 'jogo online'],
+    type: 'Portal externo', platform: 'Navegador', href: 'https://gx-launcher.github.io/', image: 'img/gx-launcher-cover.png', fallback: '⛏️',
+    rating: 5, addedAt: '2026-10-19', featured: true, recent: true, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'cv-labirinto', title: 'CV LABIRINTO: ESTAÇÃO PERDIDA', category: 'Aventura', categoryKey: 'aventura',
+    description: 'Explore setores de uma estação abandonada, encontre cartões de acesso e escape dos robôs antes que o tempo acabe.', tags: ['aventura', 'labirinto', 'exploração', 'robôs', 'sobrevivência', 'cv labirinto', 'cv games'],
+    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-labirinto-estacao-perdida/index.html', image: 'games/cv-labirinto-estacao-perdida/cover.svg', fallback: '🧭',
+    rating: 5, addedAt: '2026-10-18', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
     id: 'cv-xadrez', title: 'CV XADREZ', category: 'Puzzle', categoryKey: 'puzzle',

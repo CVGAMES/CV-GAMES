@@ -1,18 +1,6 @@
 /* Catálogo estático de downloads do CV GAMES. */
 window.CV_GAMES_DOWNLOADS = [
   {
-    id: 'minecraft-pe-1-26-60-28',
-    title: 'Minecraft PE 1.26.60.28',
-    description: 'Baixe Minecraft PE versão 1.26.60.28 pelo MEGA.',
-    category: 'Jogos',
-    categoryKey: 'jogos',
-    tags: ['minecraft', 'pe', 'jogo', 'download', '1.26.60.28'],
-    version: '1.26.60.28',
-    image: 'baixar/minecraft pe/minecraft-1.26.60.28.png',
-    fallback: '⛏️',
-    href: 'https://mega.nz/file/PJtGECQS#mNH_jVgfxK5nmbRe54WdxayMy7X8R3_tsQt-fk9VCS4'
-  },
-  {
     id: 'dead-cells-pc',
     title: 'Dead Cells (PC)',
     description: 'Jogo para PC disponível na área de downloads do CV GAMES.',
