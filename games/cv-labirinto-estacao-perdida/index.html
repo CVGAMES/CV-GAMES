@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Explore a estação perdida no CV LABIRINTO. Encontre os cartões de acesso, escape dos robôs e atravesse cinco setores antes do tempo acabar.">
+  <meta property="og:title" content="CV LABIRINTO: ESTAÇÃO PERDIDA — CV GAMES">
+  <meta property="og:description" content="Um labirinto de exploração, cartões de acesso e robôs patrulhando. Jogue no computador ou celular.">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="CV GAMES"><meta property="og:locale" content="pt_BR">
+  <meta property="og:url" content="https://cvgames.com.br/games/cv-labirinto-estacao-perdida/"><meta property="og:image" content="https://cvgames.com.br/games/cv-labirinto-estacao-perdida/cover.svg"><meta property="og:image:alt" content="Capa de CV LABIRINTO: ESTAÇÃO PERDIDA">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="CV LABIRINTO: ESTAÇÃO PERDIDA — CV GAMES"><meta name="twitter:description" content="Encontre as chaves e escape dos robôs em cinco setores da estação abandonada."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-labirinto-estacao-perdida/cover.svg">
+  <title>CV LABIRINTO: ESTAÇÃO PERDIDA — Jogo Exclusivo | CV GAMES</title>
+  <link rel="canonical" href="https://cvgames.com.br/games/cv-labirinto-estacao-perdida/">
+  <link rel="icon" href="../../img/incon.png" type="image/png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV LABIRINTO: ESTAÇÃO PERDIDA","url":"https://cvgames.com.br/games/cv-labirinto-estacao-perdida/","image":"https://cvgames.com.br/games/cv-labirinto-estacao-perdida/cover.svg","description":"Explore labirintos, encontre cartões de acesso e escape dos robôs em cinco setores de uma estação abandonada.","genre":"Aventura, Labirinto","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
+  <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; const nickname = String(JSON.parse(localStorage.getItem('cv-games-profile') || 'null')?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); document.documentElement.dataset.mazeAccess = ['educvv dev1', 'educvv dev'].includes(nickname) ? 'granted' : 'locked'; } catch { document.documentElement.dataset.mazeAccess = 'locked'; }</script>
+  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="game.css">
+  <script src="../../data/jogos.js" defer></script><script src="../../js/profile-store.js" defer></script><script src="../../js/stats.js" defer></script><script src="../fullscreen.js" defer></script><script src="profile-gate.js" defer></script><script src="game.js" defer></script>
+</head>
+<body class="maze-page">
+  <a class="skip-link" href="#conteudo">Pular para o jogo</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="../../index.html" aria-label="CV GAMES — Início"><img src="../../img/onconee.png" alt=""><span>CV GAMES</span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
+    <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central</a><a href="../../perfil.html">Perfil</a><button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button></nav>
+    <div class="header-actions"><button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV LABIRINTO aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button></div>
+  </div></header>
+
+  <main class="maze-main" id="conteudo"><div class="container">
+    <section class="maze-access-card" data-profile-locked hidden aria-labelledby="maze-access-title"><p>ACESSO DE TESTE RESTRITO</p><h1 id="maze-access-title">CV LABIRINTO reservado</h1><p>Este jogo está disponível por enquanto apenas nos perfis locais <strong>educvv dev1</strong> e <strong>educvv dev</strong>.</p><div><a class="button button-primary maze-access-primary" href="../../perfil.html">Abrir perfil →</a><a href="../../index.html">Voltar ao início</a></div></section>
+    <a class="maze-back" href="../../index.html#jogos">← Voltar para Jogos</a>
+    <section class="maze-intro"><div class="maze-intro-copy"><p class="eyebrow">✦ JOGO ORIGINAL CV GAMES</p><h1>CV LABIRINTO:<br><span>ESTAÇÃO PERDIDA</span></h1><p>Uma estação abandonada. Robôs à espreita. Encontre os cartões e alcance a saída antes do tempo acabar.</p></div><div class="maze-intro-mark" aria-hidden="true"><span>⌗</span><i>✦</i></div></section>
+
+    <section class="maze-shell" id="maze-fullscreen" data-fullscreen-root aria-label="CV Labirinto: Estação Perdida">
+      <div class="maze-toolbar">
+        <div class="maze-game-brand"><span class="maze-brand-icon" aria-hidden="true">⌗</span><span><strong>EXPLORAÇÃO</strong><small data-mode-label>CONTROLES AUTOMÁTICOS</small></span></div>
+        <div class="maze-toolbar-actions">
+          <button class="maze-tool-button" type="button" data-settings-open aria-label="Configurações" title="Configurações">⚙</button>
+          <button class="maze-tool-button" type="button" data-sound-toggle aria-pressed="false" aria-label="Desativar efeitos sonoros" title="Som ligado">🔊</button>
+          <button class="maze-tool-button" type="button" data-pause disabled aria-label="Pausar partida" title="Pausar">Ⅱ</button>
+          <button class="maze-tool-button maze-exit-button" type="button" data-exit-open aria-label="Sair da exploração" title="Sair">↩</button>
+          <button class="maze-tool-button maze-fullscreen-button" type="button" data-fullscreen-button="#maze-fullscreen" aria-pressed="false" aria-label="Tela cheia" title="Tela cheia"><span aria-hidden="true">⛶</span><span data-fullscreen-label></span></button>
+        </div>
+      </div>
+
+      <div class="maze-hud" aria-label="Estado da exploração">
+        <div class="maze-stat"><span>SETOR</span><strong data-room>— / 5</strong></div>
+        <div class="maze-stat maze-stat-time"><span>TEMPO</span><strong data-time>01:50</strong></div>
+        <div class="maze-stat"><span>CARTÕES</span><strong data-keys>0 / 2</strong></div>
+        <div class="maze-stat"><span>VIDAS</span><strong class="maze-lives" data-lives aria-label="3 vidas">♥ ♥ ♥</strong></div>
+        <div class="maze-stat"><span>PONTOS</span><strong data-score>0</strong></div>
+        <div class="maze-stat maze-stat-charge"><span>EMP</span><strong data-charge>0</strong></div>
+      </div>
+
+      <div class="maze-stage" data-stage>
+        <canvas data-canvas aria-label="Labirinto da estação perdida. Use as setas ou WASD para mover sua exploradora." tabindex="0"></canvas>
+        <div class="maze-overlay" data-overlay role="status">
+          <div class="maze-overlay-card"><span class="maze-overlay-icon" data-overlay-icon aria-hidden="true">⌗</span><p class="maze-kicker" data-overlay-kicker>TRANSMISSÃO RECEBIDA</p><h2 data-overlay-title>Encontre uma saída</h2><p data-overlay-copy>Explore cinco setores, recupere os cartões de acesso e evite os robôs de segurança. Cada setor tem um novo labirinto.</p><div class="maze-overlay-record" data-overlay-record></div><button class="button button-primary maze-overlay-primary" type="button" data-overlay-primary>▶ INICIAR EXPLORAÇÃO</button><button class="maze-overlay-secondary" type="button" data-overlay-secondary hidden>VOLTAR AO MENU</button></div>
+        </div>
+      </div>
+
+      <div class="maze-controls-row">
+        <div class="maze-dpad" data-touch-controls aria-label="Controles de movimento por toque">
+          <button type="button" data-move="up" aria-label="Mover para cima">▲</button>
+          <button type="button" data-move="left" aria-label="Mover para a esquerda">◀</button>
+          <button type="button" data-move="down" aria-label="Mover para baixo">▼</button>
+          <button type="button" data-move="right" aria-label="Mover para a direita">▶</button>
+        </div>
+        <button class="maze-emp-button" type="button" data-emp disabled aria-label="Pulso EMP; encontre células de energia para carregar">✦<span><strong>PULSO EMP</strong><small data-emp-label>Encontre energia</small></span></button>
+        <p class="maze-control-hint" data-control-hint>WASD ou setas para mover · E para usar o pulso EMP</p>
+      </div>
+      <div class="maze-status-line"><span class="maze-status-led" data-status-led></span><p data-status-text aria-live="polite">A estação está silenciosa. Encontre o primeiro cartão.</p><strong>RECORDE <span data-best-score>0</span></strong></div>
+    </section>
+
+    <section class="maze-how-to" aria-label="Como jogar">
+      <article><span>01</span><div><strong>Procure os cartões</strong><p>As saídas de cada setor só abrem depois que todos os cartões forem encontrados.</p></div></article>
+      <article><span>02</span><div><strong>Despiste os robôs</strong><p>Fique longe das patrulhas. Um impacto custa uma vida; o pulso EMP pode atordoar os robôs próximos.</p></div></article>
+      <article><span>03</span><div><strong>Escape da estação</strong><p>Conclua cinco setores cada vez maiores antes que o tempo de cada sala termine.</p></div></article>
+    </section>
+    <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-labirinto-after-game" aria-hidden="true"></div>
+  </div></main>
+
+  <dialog class="maze-dialog" data-settings-dialog aria-labelledby="maze-settings-title">
+    <form method="dialog"><button class="maze-dialog-close" aria-label="Fechar configurações" value="cancel">×</button></form>
+    <p class="maze-kicker">AJUSTES DA EXPLORAÇÃO</p><h2 id="maze-settings-title">Configurações</h2>
+    <p class="maze-dialog-copy">Escolha como mover a exploradora. A opção automática identifica toque e teclado.</p>
+    <span class="maze-setting-label">Forma de controlar</span>
+    <div class="maze-control-picker" role="group" aria-label="Modo de controle"><button type="button" data-control-mode="auto" aria-pressed="true">◉ Automático</button><button type="button" data-control-mode="keys" aria-pressed="false">⌨ Teclas</button><button type="button" data-control-mode="touch" aria-pressed="false">☝ Toque</button></div>
+    <label class="maze-volume-setting"><span><strong>Volume dos efeitos</strong><output data-sfx-output>100%</output></span><input type="range" min="0" max="100" step="1" value="100" data-sfx-volume aria-label="Volume dos efeitos sonoros"></label>
+    <p class="maze-dialog-note">As preferências ficam salvas neste aparelho e podem ser alteradas depois.</p>
+    <button class="button button-primary maze-dialog-done" type="button" data-settings-close>PRONTO</button>
+  </dialog>
+
+  <dialog class="maze-dialog maze-exit-dialog" data-exit-dialog aria-labelledby="maze-exit-title">
+    <form method="dialog"><button class="maze-dialog-close" aria-label="Fechar confirmação" value="cancel">×</button></form>
+    <p class="maze-kicker">CONFIRMAÇÃO</p><h2 id="maze-exit-title">Sair da exploração?</h2><p class="maze-dialog-copy">O progresso deste percurso não será salvo. Quer voltar ao menu do jogo?</p>
+    <div class="maze-dialog-actions"><button class="button button-secondary" type="button" data-exit-cancel>CONTINUAR</button><button class="button button-primary" type="button" data-exit-confirm>SIM, SAIR</button></div>
+  </dialog>
+
+  <footer class="site-footer"><div class="footer-inner"><div><p><strong>CV GAMES © 2026</strong></p><p>Jogos online e downloads</p></div><nav class="footer-nav" aria-label="Navegação do rodapé"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central Gamer</a><a href="../../sobre.html">Sobre</a><a href="../../contato.html">Contato</a><a href="../../privacidade.html">Privacidade</a><a href="../../termos.html">Termos</a><a href="../../perfil.html">Perfil</a></nav></div></footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">CV LABIRINTO: ESTAÇÃO PERDIDA</title>
+  <desc id="desc">Uma estação espacial abandonada, um labirinto iluminado em verde e um pequeno robô de segurança.</desc>
+  <defs>
+    <linearGradient id="space" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset=".58" stop-color="#10253a"/><stop offset="1" stop-color="#102b32"/></linearGradient>
+    <linearGradient id="hall" x2="0" y2="1"><stop stop-color="#294653"/><stop offset="1" stop-color="#142b39"/></linearGradient>
+    <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#427582"/><stop offset="1" stop-color="#203e50"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#5bf0bc" stop-opacity=".28"/><stop offset="1" stop-color="#5bf0bc" stop-opacity="0"/></radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  <rect width="960" height="540" fill="url(#space)"/>
+  <circle cx="736" cy="258" r="242" fill="url(#glow)"/>
+  <path d="M0 68h960M0 472h960M85 0v540M875 0v540" fill="none" stroke="#78c9ce" stroke-opacity=".08" stroke-width="2"/>
+  <path d="M0 116h208l26 26v252l-26 26H0zM960 116H752l-26 26v252l26 26h208z" fill="#0c1a29" stroke="#315365" stroke-width="3"/>
+  <rect x="222" y="93" width="516" height="354" rx="28" fill="url(#hall)" stroke="#477381" stroke-width="4"/>
+  <rect x="247" y="118" width="466" height="304" rx="17" fill="#102631" stroke="#263f4b" stroke-width="3"/>
+  <g fill="none" stroke="url(#wall)" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M277 148h134v52h-73v53h105v-53h78v-52h133"/>
+    <path d="M278 365h84v-54h-59v-58h85v57h94v56h127v-49h77"/>
+    <path d="M463 253v-53m73 53v58m-124 54v-53m205-112v53h-44"/>
+  </g>
+  <g fill="none" stroke="#6cebc4" stroke-linecap="round" opacity=".78">
+    <path d="M277 148h134v52" stroke-width="4"/><path d="M658 365h-77v-49" stroke-width="4"/>
+  </g>
+  <g transform="translate(505 287)">
+    <circle r="47" fill="#55e9b7" opacity=".22" filter="url(#soft)"/>
+    <path d="M-21-20h42a14 14 0 0 1 14 14v31a14 14 0 0 1-14 14h-42a14 14 0 0 1-14-14V-6a14 14 0 0 1 14-14Z" fill="#1a3340" stroke="#82e7cf" stroke-width="4"/>
+    <rect x="-20" y="-10" width="40" height="19" rx="8" fill="#0c1c2a"/>
+    <circle cx="-9" cy="0" r="4" fill="#ff6572"/><circle cx="9" cy="0" r="4" fill="#ff6572"/>
+    <path d="M0-20v-11m-7-1h14" stroke="#9ab5ba" stroke-width="3" stroke-linecap="round"/>
+    <path d="M-13 25v8m26-8v8" stroke="#65d9c2" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(365 253)" fill="#b9ff83" stroke="#ecffca" stroke-width="3">
+    <path d="M0-18 14 0 0 18-14 0z"/><circle r="4" fill="#fff" stroke="none"/>
+  </g>
+  <g transform="translate(621 363)" fill="#b9ff83" stroke="#ecffca" stroke-width="3">
+    <path d="M0-18 14 0 0 18-14 0z"/><circle r="4" fill="#fff" stroke="none"/>
+  </g>
+  <g transform="translate(680 188)">
+    <circle r="23" fill="#0a1a26" stroke="#70e4bb" stroke-width="3"/>
+    <path d="M0-12v24m-12-12h24" stroke="#9affd4" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <text x="50" y="486" fill="#85efd0" font-family="system-ui,Segoe UI,sans-serif" font-size="20" font-weight="800" letter-spacing="5">EXPLORAÇÃO · SETOR 01</text>
+  <text x="48" y="434" fill="#f4f8ff" font-family="system-ui,Segoe UI,sans-serif" font-size="42" font-weight="900" letter-spacing="-2">CV LABIRINTO</text>
+  <text x="50" y="462" fill="#aec6d8" font-family="system-ui,Segoe UI,sans-serif" font-size="18" font-weight="700" letter-spacing="3">ESTAÇÃO PERDIDA</text>
+</svg>
