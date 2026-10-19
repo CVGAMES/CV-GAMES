@@ -80,7 +80,8 @@
     const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(nickname);
     const exclusives = catalog.filter((game) => game.exclusivo === true
       && game.id !== 'cv-dodge'
-      && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed));
+      && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
+      && (game.id !== 'cv-labirinto' || turboProfileAllowed));
     if (!exclusives.length) return;
     const fragment = document.createDocumentFragment();
     exclusives.forEach((game) => fragment.appendChild(createExclusiveCard(game)));

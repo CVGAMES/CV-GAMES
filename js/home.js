@@ -10,14 +10,16 @@
   });
   const orbitalProfileAllowed = profileNickname === 'educvv dev1';
   const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
+  const labyrinthProfileAllowed = turboProfileAllowed;
   const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
     .filter((game) => (game.id !== 'cv-dodge' || orbitalProfileAllowed)
-      && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed));
+      && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
+      && (game.id !== 'cv-labirinto' || labyrinthProfileAllowed));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
-  const ownGamesPriority = ['cv-starfall', 'cv-xadrez', 'cv-damas', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-turbo-circuit', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
-  const filters = { query: '', category: 'todos', favoritesOnly: false };
+  const ownGamesPriority = ['cv-starfall', ...(labyrinthProfileAllowed ? ['cv-labirinto'] : []), 'cv-xadrez', 'cv-damas', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-turbo-circuit', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
+  const filters = { category: 'todos', favoritesOnly: false };
 
   const getFavorites = () => {
     try {
@@ -62,6 +64,7 @@
     card.className = 'game-card';
     card.dataset.gameId = game.id;
     card.dataset.category = game.categoryKey;
+    if (game.imageFit === 'contain') card.dataset.imageFit = 'contain';
     card.innerHTML = `
       <div class="card-cover">
         <img src="${game.image}" alt="Capa de ${game.title}" loading="lazy">
@@ -74,7 +77,7 @@
         <p class="card-meta">${game.category}</p>
         <div class="stars" aria-label="Avaliação visual: ${game.rating} de 5 estrelas">${ratingStars(game.rating)}</div>
         ${localVisits > 0 ? `<p class="card-local-stats">🎮 ${localVisits} ${localStatsLabel}</p>` : ''}
-        <a class="button button-primary" href="${game.href}"${game.externalPortal === true ? ' target="_blank" rel="noopener noreferrer"' : ''} data-play-game-id="${game.id}">${game.externalPortal === true ? 'Abrir site ↗' : 'Jogar'}</a>
+        <a class="button button-primary" href="${game.href}"${game.externalPortal === true ? ' target="_blank" rel="noopener noreferrer"' : ''}${game.externalWarning === true ? ' data-external-warning="true"' : ''} data-play-game-id="${game.id}">${game.externalPortal === true ? 'Abrir site ↗' : 'Jogar'}</a>
       </div>
     `;
 
@@ -121,7 +124,42 @@
 
   // A seleção editorial mantém a seção útil antes do primeiro acesso local.
   const fallbackPopularGames = catalog.filter((game) => game.popular);
-  const featuredPriority = ['cv-starfall', 'wasm-arcade', 'cv-quadrados', 'cv-xadrez', 'cv-damas'];
+  const featuredPriority = ['cv-starfall', 'gx-launcher', 'cv-labirinto', 'cv-quadrados', 'cv-xadrez', 'cv-damas', 'bad-ice-cream', 'fireboy-watergirl', 'drive-mad', 'moto-x3m', 'geometry-jump'];
+
+  const setupGxAnnouncement = () => {
+    const dialog = document.querySelector('[data-gx-announcement]');
+    if (!dialog) return;
+
+    const storageKey = 'cv-games-gx-launcher-announcement-v5';
+    try {
+      if (localStorage.getItem(storageKey) === 'seen') return;
+    } catch {
+      // Se o navegador bloquear armazenamento, o anúncio ainda pode ser fechado nesta visita.
+    }
+
+    const closeDialog = () => {
+      if (typeof dialog.close === 'function' && dialog.open) dialog.close();
+      else dialog.removeAttribute('open');
+    };
+
+    dialog.querySelectorAll('[data-gx-close]').forEach((button) => button.addEventListener('click', closeDialog));
+    dialog.querySelector('[data-gx-visit]')?.addEventListener('click', closeDialog);
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) closeDialog();
+    });
+
+    const showAnnouncement = () => {
+      try {
+        if (typeof dialog.showModal === 'function') dialog.showModal();
+        else dialog.setAttribute('open', '');
+        localStorage.setItem(storageKey, 'seen');
+      } catch {
+        dialog.setAttribute('open', '');
+      }
+    };
+
+    window.setTimeout(showAnnouncement, 550);
+  };
 
   const getFeaturedGames = () => {
     const featured = catalog.filter((game) => game.featured);
@@ -176,11 +214,9 @@
   };
 
   const getFilteredGames = () => {
-    const normalizedQuery = normalizeText(filters.query);
     const games = catalog.filter((game) => {
-      const matchesSearch = !normalizedQuery || normalizeText(getSearchableText(game)).includes(normalizedQuery);
       const matchesFavorite = !filters.favoritesOnly || favorites.has(game.id);
-      return matchesSearch && matchesCategory(game) && matchesFavorite;
+      return matchesCategory(game) && matchesFavorite;
     });
     if (filters.favoritesOnly) {
       const priority = new Map(ownGamesPriority.map((id, index) => [id, index]));
@@ -191,7 +227,7 @@
     return games;
   };
 
-  const hasActiveFilters = () => Boolean(normalizeText(filters.query) || filters.category !== 'todos' || filters.favoritesOnly);
+  const hasActiveFilters = () => Boolean(filters.category !== 'todos' || filters.favoritesOnly);
 
   const refreshFavoriteControls = () => {
     document.querySelectorAll('[data-favorite-id]').forEach((button) => {
@@ -234,12 +270,6 @@
       resetButton.hidden = !active;
     }
 
-    const status = document.querySelector('[data-search-status]');
-    if (status) {
-      status.textContent = active
-        ? 'Filtros ativos. Os resultados são atualizados automaticamente.'
-        : 'Pesquise por nome, categoria, descrição ou tags.';
-    }
   };
 
   const applyFilters = () => {
@@ -250,11 +280,18 @@
   };
 
   const clearFilters = () => {
-    filters.query = '';
     filters.category = 'todos';
     filters.favoritesOnly = false;
     const input = document.querySelector('[data-game-search]');
     if (input) input.value = '';
+    if (input) input.setAttribute('aria-expanded', 'false');
+    const suggestions = document.querySelector('[data-search-results]');
+    if (suggestions) {
+      suggestions.hidden = true;
+      suggestions.replaceChildren();
+    }
+    const searchStatus = document.querySelector('[data-search-status]');
+    if (searchStatus) searchStatus.textContent = 'Pesquise por nome, categoria, descrição ou tags.';
     applyFilters();
   };
 
@@ -277,10 +314,146 @@
 
   const prepareSearch = () => {
     const input = document.querySelector('[data-game-search]');
-    if (!input) return;
+    const resultsPanel = document.querySelector('[data-search-results]');
+    const status = document.querySelector('[data-search-status]');
+    if (!input || !resultsPanel) return;
+
+    const closeResults = () => {
+      resultsPanel.hidden = true;
+      input.setAttribute('aria-expanded', 'false');
+    };
+
+    const createSearchResult = (game) => {
+      const result = document.createElement('a');
+      result.className = 'search-result';
+      result.href = game.href;
+      result.dataset.playGameId = game.id;
+      result.setAttribute('role', 'option');
+      result.setAttribute('aria-label', `${game.title}, ${game.category}${game.externalPortal === true ? ', abre em outra aba' : ''}${game.externalWarning === true ? ', mostra aviso de site externo antes de abrir' : ''}`);
+      if (game.externalWarning === true) result.dataset.externalWarning = 'true';
+      if (game.externalPortal === true) {
+        result.target = '_blank';
+        result.rel = 'noopener noreferrer';
+      }
+
+      const cover = document.createElement('img');
+      cover.src = game.image;
+      cover.alt = '';
+      cover.loading = 'lazy';
+      cover.addEventListener('error', () => {
+        const fallback = document.createElement('span');
+        fallback.className = 'search-result-cover-fallback';
+        fallback.setAttribute('aria-hidden', 'true');
+        fallback.textContent = game.fallback || '🎮';
+        cover.replaceWith(fallback);
+      }, { once: true });
+
+      const copy = document.createElement('span');
+      copy.className = 'search-result-copy';
+      const title = document.createElement('strong');
+      title.textContent = game.title;
+      const category = document.createElement('span');
+      category.textContent = game.category;
+      copy.append(title, category);
+      result.append(cover, copy);
+
+      if (game.externalPortal === true) {
+        const externalMark = document.createElement('span');
+        externalMark.className = 'search-result-external';
+        externalMark.setAttribute('aria-hidden', 'true');
+        externalMark.textContent = '↗';
+        result.append(externalMark);
+      }
+      return result;
+    };
+
+    const renderSearchResults = () => {
+      const rawQuery = input.value.trim();
+      const query = normalizeText(rawQuery);
+      if (!query) {
+        closeResults();
+        resultsPanel.replaceChildren();
+        if (status) status.textContent = 'Pesquise por nome, categoria, descrição ou tags.';
+        return;
+      }
+
+      const matches = catalog
+        .filter((game) => normalizeText(getSearchableText(game)).includes(query))
+        .sort((a, b) => {
+          const titleA = normalizeText(a.title);
+          const titleB = normalizeText(b.title);
+          const score = (title) => title === query ? 0 : title.startsWith(query) ? 1 : title.includes(query) ? 2 : 3;
+          return score(titleA) - score(titleB);
+        });
+      const visibleMatches = matches.slice(0, 10);
+      resultsPanel.replaceChildren();
+
+      if (visibleMatches.length) {
+        visibleMatches.forEach((game) => resultsPanel.appendChild(createSearchResult(game)));
+        if (status) {
+          status.textContent = matches.length > visibleMatches.length
+            ? `Mostrando ${visibleMatches.length} de ${matches.length} jogos. Digite mais para refinar.`
+            : `${matches.length} ${matches.length === 1 ? 'jogo encontrado' : 'jogos encontrados'}. Selecione para abrir.`;
+        }
+      } else {
+        const empty = document.createElement('p');
+        empty.className = 'search-results-empty';
+        empty.textContent = 'Nenhum jogo encontrado. Tente outro nome ou categoria.';
+        resultsPanel.appendChild(empty);
+        if (status) status.textContent = 'Nenhum resultado para essa pesquisa.';
+      }
+
+      resultsPanel.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    };
+
     input.addEventListener('input', () => {
-      filters.query = input.value;
-      applyFilters();
+      renderSearchResults();
+    });
+    input.addEventListener('focus', () => {
+      if (input.value.trim()) renderSearchResults();
+    });
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !resultsPanel.hidden) {
+        closeResults();
+        return;
+      }
+      if (event.key === 'ArrowDown' && !resultsPanel.hidden) {
+        const firstResult = resultsPanel.querySelector('.search-result');
+        if (firstResult) {
+          event.preventDefault();
+          firstResult.focus();
+        }
+      }
+    });
+    resultsPanel.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeResults();
+        input.focus();
+        return;
+      }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      const items = [...resultsPanel.querySelectorAll('.search-result')];
+      const currentIndex = items.indexOf(document.activeElement);
+      if (event.key === 'ArrowUp' && currentIndex <= 0) {
+        event.preventDefault();
+        input.focus();
+      } else {
+        const nextIndex = event.key === 'ArrowDown'
+          ? Math.min(items.length - 1, currentIndex + 1)
+          : Math.max(0, currentIndex - 1);
+        if (items[nextIndex]) {
+          event.preventDefault();
+          items[nextIndex].focus();
+        }
+      }
+    });
+    resultsPanel.addEventListener('click', (event) => {
+      if (event.target.closest('.search-result')) closeResults();
+    });
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.search-control')) closeResults();
     });
   };
 
@@ -342,6 +515,19 @@
         return;
       }
 
+      const guardedExternalLink = event.target.closest('[data-external-warning="true"]');
+      if (guardedExternalLink) {
+        event.preventDefault();
+        const warningDialog = document.querySelector('[data-external-warning-dialog]');
+        const continueLink = warningDialog?.querySelector('[data-warning-continue]');
+        if (!warningDialog || !continueLink) return;
+        continueLink.href = guardedExternalLink.href;
+        continueLink.dataset.playGameId = guardedExternalLink.dataset.playGameId;
+        if (typeof warningDialog.showModal === 'function') warningDialog.showModal();
+        else warningDialog.setAttribute('open', '');
+        return;
+      }
+
       const playLink = event.target.closest('[data-play-game-id]');
       if (playLink) {
         if (typeof stats?.registerAccess === 'function'
@@ -358,6 +544,13 @@
       }
 
       if (event.target.closest('[data-clear-filters]')) clearFilters();
+    });
+
+    const externalWarningDialog = document.querySelector('[data-external-warning-dialog]');
+    externalWarningDialog?.querySelectorAll('[data-warning-close]').forEach((button) => button.addEventListener('click', () => externalWarningDialog.close()));
+    externalWarningDialog?.querySelector('[data-warning-continue]')?.addEventListener('click', () => externalWarningDialog.close());
+    externalWarningDialog?.addEventListener('click', (event) => {
+      if (event.target === externalWarningDialog) externalWarningDialog.close();
     });
 
     if (typeof stats?.storageKey === 'string') {
@@ -408,6 +601,7 @@
     prepareCategories();
     prepareFavorites();
     applyFilters();
+    setupGxAnnouncement();
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
