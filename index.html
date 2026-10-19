@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Jogue online no CV GAMES: explore jogos leves, downloads e jogos exclusivos como CV TURBO CIRCUIT, CV NEON BREAKER, CV STARFALL, CV XADREZ, CV DAMAS, CV JOGO DA VELHA e CV QUADRADOS.">
+  <meta name="description" content="Jogue online no CV GAMES: explore jogos leves, downloads e jogos exclusivos como CV STARFALL, CV NEON BREAKER, CV XADREZ, CV DAMAS, CV JOGO DA VELHA e CV QUADRADOS.">
   <meta property="og:title" content="CV GAMES — Jogos Online e Downloads">
   <meta property="og:description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES.">
   <meta property="og:type" content="website">
@@ -102,10 +102,13 @@
 
     <section class="search-section" aria-label="Pesquisar jogos">
       <div class="container">
-        <label class="search-box" for="pesquisa-jogos">
-          <span aria-hidden="true">🔎</span>
-          <input id="pesquisa-jogos" type="search" data-game-search placeholder="Pesquisar jogos..." autocomplete="off" aria-describedby="status-pesquisa">
-        </label>
+        <div class="search-control">
+          <label class="search-box" for="pesquisa-jogos">
+            <span aria-hidden="true">🔎</span>
+            <input id="pesquisa-jogos" type="search" data-game-search role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="resultados-pesquisa-jogos" placeholder="Pesquisar jogos..." autocomplete="off" aria-describedby="status-pesquisa">
+          </label>
+          <div class="search-results" id="resultados-pesquisa-jogos" data-search-results role="listbox" aria-label="Jogos encontrados" hidden></div>
+        </div>
         <p class="search-status" id="status-pesquisa" data-search-status aria-live="polite"></p>
       </div>
     </section>
@@ -221,6 +224,40 @@
       </div>
     </section>
   </main>
+
+  <dialog class="gx-announcement" data-gx-announcement aria-labelledby="gx-announcement-title" aria-describedby="gx-announcement-description">
+    <div class="gx-announcement-panel">
+      <button class="gx-announcement-close" type="button" data-gx-close aria-label="Fechar anúncio">×</button>
+      <div class="gx-announcement-preview">
+        <img src="img/gx-launcher-announcement.jpg" alt="Anúncio do Minecraft 26.3 e do bioma Mottled Forest" data-gx-poster>
+      </div>
+      <div class="gx-announcement-content">
+        <p class="eyebrow">Novo portal externo</p>
+        <h2 id="gx-announcement-title">Minecraft - GX Launcher</h2>
+        <p id="gx-announcement-description">Uma nova aventura de blocos chegou ao catálogo. Acesse o GX Launcher e confira Minecraft 26.3 direto no navegador.</p>
+        <div class="gx-version-chip"><span aria-hidden="true">⛏️</span> Minecraft <strong>26.3</strong></div>
+        <div class="gx-announcement-actions">
+          <a class="button button-primary" href="https://gx-launcher.github.io/" target="_blank" rel="noopener noreferrer" data-gx-visit>Jogar agora ↗</a>
+          <button class="button button-secondary" type="button" data-gx-close>Continuar no CV GAMES</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="external-warning" data-external-warning-dialog aria-labelledby="external-warning-title" aria-describedby="external-warning-description">
+    <div class="external-warning-content">
+      <button class="gx-announcement-close" type="button" data-warning-close aria-label="Fechar aviso">×</button>
+      <span class="external-warning-icon" aria-hidden="true">!</span>
+      <p class="eyebrow">Aviso de site externo</p>
+      <h2 id="external-warning-title">Você está saindo do CV GAMES</h2>
+      <p id="external-warning-description">O WASM Arcade é um site independente. Ele pode exibir anúncios que não são controlados pelo CV GAMES, inclusive propagandas de apostas ou conteúdo adulto.</p>
+      <p class="external-warning-note">Se não quiser continuar para o site externo, volte ao CV GAMES.</p>
+      <div class="external-warning-actions">
+        <button class="button button-secondary" type="button" data-warning-close>Voltar para CV GAMES</button>
+        <a class="button button-primary" href="https://wasmarcade.com/" target="_blank" rel="noopener noreferrer" data-warning-continue>Continuar para o WASM Arcade ↗</a>
+      </div>
+    </div>
+  </dialog>
 
   <footer class="site-footer">
     <div class="footer-inner">

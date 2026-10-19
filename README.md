@@ -6,7 +6,13 @@
 
 🌐 **Site:** [cvgames.com.br](https://cvgames.com.br/)  
 🕹️ **Jogos:** [Explorar o catálogo](https://cvgames.com.br/#jogos)  
-✨ **Novidades:** [Atualizações do site](https://cvgames.com.br/novidades.html)
+✨ **Novidades:** [Atualizações do site](https://cvgames.com.br/novidades.html)  
+📚 **Arquivo de novidades:** [Atualizações anteriores](https://cvgames.com.br/novidades-2.html)
+
+### Atualizações públicas — 19/10/2026
+
+- **WASM Arcade:** novo portal externo de jogos de arcade na área Todos os jogos.
+- **Minecraft - GX Launcher:** acesso ao Minecraft 26.3 pelo GX Launcher, agora como a única opção de Minecraft no catálogo.
 
 ## Sobre o projeto
 
@@ -15,6 +21,7 @@ O CV GAMES foi desenvolvido para tornar fácil descobrir e jogar diretamente no 
 ### Jogos autorais
 
 - **CV STARFALL** — ação espacial com naves, habilidades, ondas e chefes.
+- **CV LABIRINTO: ESTAÇÃO PERDIDA** — exploração de uma estação tomada por robôs, com labirintos, cartões de acesso e limite de tempo.
 - **CV NEON BREAKER** — arcade de blocos com fases e habilidades.
 - **CV XADREZ** e **CV DAMAS** — jogos de tabuleiro para duas pessoas no mesmo dispositivo.
 - **CV QUADRADOS** e **CV JOGO DA VELHA** — desafios locais para dois jogadores.
@@ -53,6 +60,7 @@ O site é uma aplicação estática feita com **HTML, CSS e JavaScript**, sem et
 | `emuladores.html` | Seletor e informações dos emuladores |
 | `baixar.html` | Área de downloads |
 | `novidades.html` | Registro público das atualizações |
+| `novidades-2.html` | Arquivo das atualizações anteriores |
 
 ## Executar localmente
 
