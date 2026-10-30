@@ -70,6 +70,7 @@
   }
   const detectedMobileDevice = detectMobileDevice();
   const mobileEntityScale = .82;
+  const particleLimit = () => state.performanceMode === 'light' ? 110 : state.mobileSizing ? 240 : Infinity;
   const state = {
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
     score: 0, best: readBest(), bestCompletedWave: readBestWave(), wave: 1, lives: 3, maxLives: 6, shields: 0, tempShields: 0, invulnerable: 0, elapsed: 0,
@@ -486,7 +487,8 @@
   function resize() {
     const rect = canvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
-    state.dpr = Math.min(window.devicePixelRatio || 1, state.performanceMode === 'light' ? 1 : 2);
+    const dprLimit = state.performanceMode === 'light' ? 1 : state.mobileSizing ? 1.35 : 2;
+    state.dpr = Math.min(window.devicePixelRatio || 1, dprLimit);
     canvas.width = Math.round(rect.width * state.dpr);
     canvas.height = Math.round(rect.height * state.dpr);
     ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
@@ -751,8 +753,8 @@
   function burst(x, y, color, count = 12, power = 100) {
     const lightMode = state.performanceMode === 'light';
     const particleCount = lightMode ? Math.ceil(count * .45) : count;
-    const particleLimit = lightMode ? 110 : Infinity;
-    for (let i = 0; i < particleCount && state.particles.length < particleLimit; i++) {
+    const maxParticles = particleLimit();
+    for (let i = 0; i < particleCount && state.particles.length < maxParticles; i++) {
       const angle = visualRandomUnit() * Math.PI * 2; const speed = visualRandom(power * .25, power);
       state.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: visualRandom(.22, .62), maxLife: .62, r: mobileSize(visualRandom(1.5, 3.5)), color });
     }
@@ -1485,7 +1487,7 @@
           burst(effect.x, effect.y, markedBySaurion ? '#eaffb2' : '#9dff79', markedBySaurion ? 14 : 10, markedBySaurion ? 130 : 105);
           burst(effect.x, effect.y, '#e9ffd0', 5, 72);
         }
-        if (visualRandomUnit() < dt * 16 && (state.performanceMode !== 'light' || state.particles.length < 110)) state.particles.push({ x: effect.x + visualRandom(-12, 12), y: effect.y + visualRandom(-12, 12), vx: visualRandom(-32, 32), vy: visualRandom(-32, 32), life: .34, maxLife: .34, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#d4ff72' : '#50e884' });
+        if (state.particles.length < particleLimit() && visualRandomUnit() < dt * 16) state.particles.push({ x: effect.x + visualRandom(-12, 12), y: effect.y + visualRandom(-12, 12), vx: visualRandom(-32, 32), vy: visualRandom(-32, 32), life: .34, maxLife: .34, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#d4ff72' : '#50e884' });
         if (effect.x < -100 || effect.x > state.width + 100 || effect.y < -100 || effect.y > state.height + 100) effect.life = 0;
       } else if (effect.type === 'blade') {
         effect.turnTimer -= dt;
@@ -1520,11 +1522,11 @@
             burst(effect.x, effect.y, '#fff4c7', 10, 125); burst(effect.x, effect.y, '#ffc86e', 8, 100);
           }
         }
-        if (visualRandomUnit() < dt * (state.performanceMode === 'light' ? 7 : 22) && (state.performanceMode !== 'light' || state.particles.length < 110)) state.particles.push({ x: effect.x, y: effect.y, vx: visualRandom(-30, 30), vy: visualRandom(-30, 30), life: .28, maxLife: .28, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#fff7d5' : '#ffc86e' });
+        if (state.particles.length < particleLimit() && visualRandomUnit() < dt * (state.performanceMode === 'light' ? 7 : 22)) state.particles.push({ x: effect.x, y: effect.y, vx: visualRandom(-30, 30), vy: visualRandom(-30, 30), life: .28, maxLife: .28, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#fff7d5' : '#ffc86e' });
       } else if (effect.type === 'singularity-shot') {
         effect.x += effect.vx * dt; effect.y += effect.vy * dt;
         if (effect.x < 12 || effect.x > state.width - 12 || effect.y < 12 || effect.y > state.height - 12) { effect.x = clamp(effect.x, 12, state.width - 12); effect.y = clamp(effect.y, 12, state.height - 12); effect.life = 0; }
-        if (visualRandomUnit() < dt * (state.performanceMode === 'light' ? 9 : 28) && (state.performanceMode !== 'light' || state.particles.length < 110)) state.particles.push({ x: effect.x + visualRandom(-5, 5), y: effect.y + visualRandom(-5, 5), vx: visualRandom(-55, 55), vy: visualRandom(-55, 55), life: .38, maxLife: .38, r: mobileSize(visualRandom(1.5, 3)), color: visualRandomUnit() < .5 ? '#8ef6ff' : '#c19cff' });
+        if (state.particles.length < particleLimit() && visualRandomUnit() < dt * (state.performanceMode === 'light' ? 9 : 28)) state.particles.push({ x: effect.x + visualRandom(-5, 5), y: effect.y + visualRandom(-5, 5), vx: visualRandom(-55, 55), vy: visualRandom(-55, 55), life: .38, maxLife: .38, r: mobileSize(visualRandom(1.5, 3)), color: visualRandomUnit() < .5 ? '#8ef6ff' : '#c19cff' });
         const hit = state.enemies.find((enemy) => !enemy.dead && distance(effect, enemy) < enemy.r + mobileSize(13));
         if (hit) { damageEnemy(hit, 24 * state.abilityPower, true); effect.life = 0; }
         if (effect.life <= 0) {
@@ -1580,6 +1582,8 @@
     state.pickups = state.pickups.filter(p => !p.dead);
     for (const p of state.particles) { p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .985; p.vy *= .985; p.life -= dt; }
     state.particles = state.particles.filter(p => p.life > 0);
+    const maxParticles = particleLimit();
+    if (state.particles.length > maxParticles) state.particles.splice(0, state.particles.length - maxParticles);
     if (state.mode === 'playing' && state.waveKills >= state.enemiesRequired && state.enemies.length === 0 && (state.miniBossSpawned || state.miniBossTimer <= 0)) openUpgrade();
     if (Math.floor(state.elapsed) !== Math.floor(state.elapsed - dt)) updateHud();
     updateAbilityButton();
@@ -2296,6 +2300,8 @@
   window.addEventListener('cv-games-profile-change', updateAdminToolsUI);
   function refreshDeviceSizing() {
     state.mobileSizing = detectMobileDevice();
+    const maxParticles = particleLimit();
+    if (state.particles.length > maxParticles) state.particles.splice(0, state.particles.length - maxParticles);
     updateDeviceTypeUI();
     resize();
   }
@@ -2307,7 +2313,8 @@
     if (!['normal', 'light'].includes(mode) || mode === state.performanceMode) return;
     state.performanceMode = mode;
     try { localStorage.setItem(performanceModeKey, mode); } catch { /* Preferência vale para a sessão. */ }
-    if (mode === 'light' && state.particles.length > 110) state.particles = state.particles.slice(-110);
+    const maxParticles = particleLimit();
+    if (state.particles.length > maxParticles) state.particles.splice(0, state.particles.length - maxParticles);
     updatePerformanceModeUI();
     resize();
     if (ui.missionSetupModal?.hidden && ui.settingsModal?.hidden) toast(mode === 'light' ? 'MODO LEVE ATIVADO' : 'MODO NORMAL ATIVADO');
@@ -2489,6 +2496,10 @@
   window.addEventListener('keyup', (event) => { state.keys.delete(event.code); });
   window.addEventListener('blur', () => { state.keys.clear(); state.pointer.active = false; releaseAnalog(); if (state.mode === 'playing' && state.eclipsePhase !== 'cinematic') pauseGame(); });
   document.addEventListener('visibilitychange', () => {
+    if (document.hidden && state.mode === 'playing' && state.eclipsePhase !== 'cinematic') {
+      pauseGame();
+      ui.status.textContent = 'Missão pausada ao sair da página.';
+    }
     if (!document.hidden && state.eclipsePhase === 'cinematic' && ui.eclipseVideo?.paused) ui.eclipseVideo.play()?.catch?.(() => {});
   });
   canvas.addEventListener('pointerdown', (event) => {

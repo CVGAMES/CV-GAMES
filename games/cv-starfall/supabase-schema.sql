@@ -1,6 +1,8 @@
 -- Placar de teste do CV STARFALL: uma melhor partida por apelido autorizado.
 -- No momento, somente "educvv" está permitido. Acrescente os outros quatro nomes
 -- à restrição e ao arquivo leaderboard-config.js quando o dono os informar.
+-- ATENÇÃO: a checagem de apelido não comprova identidade enquanto o perfil do site for local.
+-- Use este esquema apenas para teste; para um ranking público confiável, exija Auth ou um backend.
 
 create table if not exists public.starfall_scores (
   nickname text primary key check (nickname = lower(btrim(nickname)) and nickname in ('educvv')),

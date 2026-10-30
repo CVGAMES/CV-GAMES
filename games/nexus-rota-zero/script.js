@@ -2551,9 +2551,11 @@ let canvasHeight = 0;
 let canvasDpr = 1;
 let ambientParticles = [];
 let burstParticles = [];
+let ambientFrameId = 0;
 
 function resizeCanvas() {
-  canvasDpr = Math.min(1.5, window.devicePixelRatio || 1);
+  const isSmallTouchScreen = window.matchMedia?.("(pointer: coarse)").matches;
+  canvasDpr = Math.min(isSmallTouchScreen ? 1.1 : 1.5, window.devicePixelRatio || 1);
   canvasWidth = window.innerWidth;
   canvasHeight = window.innerHeight;
   ambientCanvas.width = Math.floor(canvasWidth * canvasDpr);
@@ -2561,7 +2563,7 @@ function resizeCanvas() {
   ambientCanvas.style.width = canvasWidth + "px";
   ambientCanvas.style.height = canvasHeight + "px";
   ambientContext.setTransform(canvasDpr, 0, 0, canvasDpr, 0, 0);
-  const count = canvasWidth < 650 ? 28 : 55;
+  const count = isSmallTouchScreen ? 18 : canvasWidth < 650 ? 28 : 55;
   ambientParticles = Array.from({ length: count }, () => ({
     x: Math.random() * canvasWidth,
     y: Math.random() * canvasHeight,
@@ -2590,33 +2592,70 @@ function sparkBurst(x, y, color, count) {
 
 let lastCanvasFrame = performance.now();
 function drawCanvas(now) {
+  ambientFrameId = 0;
+  if (document.hidden || profile.settings.reducedMotion) {
+    ambientContext.clearRect(0, 0, canvasWidth, canvasHeight);
+    return;
+  }
   const dt = Math.min(0.035, (now - lastCanvasFrame) / 1000);
   lastCanvasFrame = now;
   ambientContext.clearRect(0, 0, canvasWidth, canvasHeight);
-  if (!profile.settings.reducedMotion && !document.hidden) {
-    ambientParticles.forEach((particle) => {
-      particle.y -= particle.speed * dt;
-      if (particle.y < -4) {
-        particle.y = canvasHeight + 4;
-        particle.x = Math.random() * canvasWidth;
-      }
-      ambientContext.fillStyle = "rgba(91,225,255," + particle.alpha + ")";
-      ambientContext.fillRect(particle.x, particle.y, particle.size, particle.size * 3);
-    });
-    for (let i = burstParticles.length - 1; i >= 0; i -= 1) {
-      const particle = burstParticles[i];
-      particle.life -= dt;
-      particle.vy += 210 * dt;
-      particle.x += particle.vx * dt;
-      particle.y += particle.vy * dt;
-      ambientContext.globalAlpha = Math.max(0, particle.life / particle.maxLife);
-      ambientContext.fillStyle = particle.color;
-      ambientContext.fillRect(particle.x, particle.y, particle.size * 2.5, particle.size);
-      if (particle.life <= 0) burstParticles.splice(i, 1);
+  ambientParticles.forEach((particle) => {
+    particle.y -= particle.speed * dt;
+    if (particle.y < -4) {
+      particle.y = canvasHeight + 4;
+      particle.x = Math.random() * canvasWidth;
     }
-    ambientContext.globalAlpha = 1;
+    ambientContext.fillStyle = "rgba(91,225,255," + particle.alpha + ")";
+    ambientContext.fillRect(particle.x, particle.y, particle.size, particle.size * 3);
+  });
+  for (let i = burstParticles.length - 1; i >= 0; i -= 1) {
+    const particle = burstParticles[i];
+    particle.life -= dt;
+    particle.vy += 210 * dt;
+    particle.x += particle.vx * dt;
+    particle.y += particle.vy * dt;
+    ambientContext.globalAlpha = Math.max(0, particle.life / particle.maxLife);
+    ambientContext.fillStyle = particle.color;
+    ambientContext.fillRect(particle.x, particle.y, particle.size * 2.5, particle.size);
+    if (particle.life <= 0) burstParticles.splice(i, 1);
   }
-  requestAnimationFrame(drawCanvas);
+  ambientContext.globalAlpha = 1;
+  scheduleAmbientCanvas();
+}
+
+function scheduleAmbientCanvas() {
+  if (ambientFrameId || document.hidden || profile.settings.reducedMotion) return;
+  ambientFrameId = requestAnimationFrame(drawCanvas);
+}
+
+function stopAmbientCanvas() {
+  if (ambientFrameId) cancelAnimationFrame(ambientFrameId);
+  ambientFrameId = 0;
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) stopAmbientCanvas();
+  else {
+    lastCanvasFrame = performance.now();
+    scheduleAmbientCanvas();
+  }
+});
+
+window.addEventListener("resize", () => {
+  resizeCanvas();
+  lastCanvasFrame = performance.now();
+  scheduleAmbientCanvas();
+}, { passive: true });
+
+function syncAmbientCanvasPreference() {
+  if (profile.settings.reducedMotion) {
+    stopAmbientCanvas();
+    ambientContext.clearRect(0, 0, canvasWidth, canvasHeight);
+  } else {
+    lastCanvasFrame = performance.now();
+    scheduleAmbientCanvas();
+  }
 }
 
 function syncSettingsUI() {
@@ -2680,7 +2719,7 @@ function init() {
   unlockAchievements(true);
   updateContinueButton();
   resizeCanvas();
-  requestAnimationFrame(drawCanvas);
+  scheduleAmbientCanvas();
   validateGraph();
 
   const unlockMusic = () => {
@@ -2720,6 +2759,7 @@ function init() {
     profile.settings.reducedMotion = !profile.settings.reducedMotion;
     saveProfile();
     syncSettingsUI();
+    syncAmbientCanvasPreference();
     toast(profile.settings.reducedMotion ? "Efeitos intensos reduzidos." : "Efeitos completos ativados.");
   });
   $("btnAchievements").addEventListener("click", () => {

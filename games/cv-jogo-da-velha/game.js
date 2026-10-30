@@ -9,20 +9,21 @@
   const scoreKey = 'cv-jogo-da-velha-scores-v1';
   const winLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   const ui = {
-    start:$('[data-start-local]'), turnCard:$('[data-live-turn]'), turnSymbol:$('[data-turn-symbol]'), turnLabel:$('[data-turn-label]'),
+    start:$('[data-start-local]'), startComputer:$('[data-start-computer]'), turnCard:$('[data-live-turn]'), turnSymbol:$('[data-turn-symbol]'), turnLabel:$('[data-turn-label]'),
     statusCard:$('[data-status-card]'), statusMark:$('[data-status-mark]'), status:$('[data-game-status]'), statusDetail:$('[data-status-detail]'),
     undo:$('[data-undo]'), resetScores:$('[data-reset-scores]'), newRound:$('[data-new-round]'), roundLabel:$('[data-round-label]'),
-    xScore:$('[data-x-score]'), oScore:$('[data-o-score]'), drawScore:$('[data-draw-score]'), xState:$('[data-x-state]'), oState:$('[data-o-state]'),
+    xScore:$('[data-x-score]'), oScore:$('[data-o-score]'), drawScore:$('[data-draw-score]'), xName:$('[data-x-name]'), oName:$('[data-o-name]'), xState:$('[data-x-state]'), oState:$('[data-o-state]'),
     moveCount:$('[data-move-count]'), moveList:$('[data-move-list]'), favorite:$('[data-game-favorite]'),
     resultOverlay:$('[data-result-overlay]'), resultTitle:$('[data-result-title]'), resultScore:$('[data-result-score]'),
     resultBreakdown:$('[data-result-breakdown]'), resultNextRound:$('[data-result-next-round]')
   };
   const state = {
     board:Array(9).fill(null), current:'x', starter:'x', started:false, outcome:null,
-    winningCells:[], history:[], undoStack:[], focusSquare:4,
+    mode:'local', winningCells:[], history:[], undoStack:[], focusSquare:4,
     scores:readScores()
   };
   const cells = [];
+  let computerTimer = 0;
 
   function readScores() {
     try {
@@ -30,14 +31,25 @@
       return {
         x:Number.isSafeInteger(saved.x) && saved.x >= 0 ? saved.x : 0,
         o:Number.isSafeInteger(saved.o) && saved.o >= 0 ? saved.o : 0,
-        draws:Number.isSafeInteger(saved.draws) && saved.draws >= 0 ? saved.draws : 0
+        draws:Number.isSafeInteger(saved.draws) && saved.draws >= 0 ? saved.draws : 0,
+        cpuX:Number.isSafeInteger(saved.cpuX) && saved.cpuX >= 0 ? saved.cpuX : 0,
+        cpuO:Number.isSafeInteger(saved.cpuO) && saved.cpuO >= 0 ? saved.cpuO : 0,
+        cpuDraws:Number.isSafeInteger(saved.cpuDraws) && saved.cpuDraws >= 0 ? saved.cpuDraws : 0
       };
-    } catch { return { x:0, o:0, draws:0 }; }
+    } catch { return { x:0, o:0, draws:0, cpuX:0, cpuO:0, cpuDraws:0 }; }
   }
   function saveScores() {
     try { localStorage.setItem(scoreKey,JSON.stringify(state.scores)); } catch { /* O placar continua disponível nesta partida. */ }
   }
-  function playerName(player) { return player === 'x' ? 'X' : 'O'; }
+  function playerName(player) {
+    if (state.mode === 'computer') return player === 'x' ? 'Você' : 'Computador';
+    return player === 'x' ? 'X' : 'O';
+  }
+  function modeScores() {
+    return state.mode === 'computer'
+      ? { x:state.scores.cpuX, o:state.scores.cpuO, draws:state.scores.cpuDraws }
+      : { x:state.scores.x, o:state.scores.o, draws:state.scores.draws };
+  }
   function cellName(index) {
     const row = Math.floor(index / 3);
     const col = index % 3;
@@ -80,22 +92,25 @@
       mark.textContent = value === 'x' ? '×' : value === 'o' ? '○' : '';
       mark.className = `ttt-mark${value ? ` ttt-mark-${value}` : ''}`;
       button.classList.toggle('is-winner',state.winningCells.includes(index));
-      button.disabled = !state.started || Boolean(value);
+      button.disabled = !state.started || Boolean(value) || (state.mode === 'computer' && state.current === 'o' && !state.outcome);
       button.tabIndex = index === state.focusSquare ? 0 : -1;
       button.setAttribute('aria-label',`Casa ${cellName(index)}, ${value ? `marcada com ${playerName(value)}` : 'vazia'}`);
     });
   }
   function renderPlayers() {
     const finished = Boolean(state.outcome);
+    ui.xName.textContent = state.mode === 'computer' ? 'Você · X' : 'Jogador X';
+    ui.oName.textContent = state.mode === 'computer' ? 'Computador · O' : 'Jogador O';
     for (const player of ['x','o']) {
       const card = $(`[data-player-card="${player}"]`);
       card.classList.toggle('is-active',state.started && !finished && state.current === player);
       const label = player === 'x' ? ui.xState : ui.oState;
-      label.textContent = !state.started ? 'Aguardando a partida' : finished ? state.outcome.type === 'win' && state.outcome.winner === player ? 'Venceu esta rodada' : 'Rodada encerrada' : state.current === player ? 'Sua vez de jogar' : 'Esperando a vez';
+      label.textContent = !state.started ? 'Aguardando a partida' : finished ? state.outcome.type === 'win' && state.outcome.winner === player ? 'Venceu esta rodada' : 'Rodada encerrada' : state.current === player ? state.mode === 'computer' && player === 'o' ? 'Pensando…' : 'Sua vez de jogar' : 'Esperando a vez';
     }
-    ui.xScore.textContent = String(state.scores.x);
-    ui.oScore.textContent = String(state.scores.o);
-    ui.drawScore.textContent = String(state.scores.draws);
+    const scores = modeScores();
+    ui.xScore.textContent = String(scores.x);
+    ui.oScore.textContent = String(scores.o);
+    ui.drawScore.textContent = String(scores.draws);
   }
   function renderHistory() {
     ui.moveCount.textContent = `${state.history.length} ${state.history.length === 1 ? 'jogada' : 'jogadas'}`;
@@ -125,11 +140,11 @@
       ui.statusMark.textContent = '✦';
       ui.turnCard.dataset.player = 'x';
       ui.turnSymbol.textContent = '×';
-      ui.turnLabel.textContent = 'Jogador X';
+      ui.turnLabel.textContent = state.mode === 'computer' ? 'Você · X' : 'Jogador X';
     } else if (state.outcome?.type === 'win') {
       const winner = state.outcome.winner;
       ui.statusCard.dataset.result = winner;
-      ui.status.textContent = `Jogador ${playerName(winner)} venceu!`;
+      ui.status.textContent = state.mode === 'computer' ? `${playerName(winner)} venceu!` : `Jogador ${playerName(winner)} venceu!`;
       ui.statusDetail.textContent = 'Três em linha. Comece outra rodada para continuar a disputa.';
       ui.statusMark.textContent = winner === 'x' ? '×' : '○';
       ui.turnCard.dataset.player = 'finished';
@@ -144,26 +159,27 @@
       ui.turnSymbol.textContent = '½';
       ui.turnLabel.textContent = 'Rodada empatada';
     } else {
-      ui.status.textContent = `Vez do jogador ${playerName(state.current)}`;
-      ui.statusDetail.textContent = `${state.board.filter(Boolean).length ? 'Escolha uma casa vazia para continuar.' : `Jogador ${playerName(state.current)} começa esta rodada.`}`;
+      ui.status.textContent = state.mode === 'computer' && state.current === 'o' ? 'O computador está pensando…' : state.mode === 'computer' ? 'Sua vez de jogar' : `Vez do jogador ${playerName(state.current)}`;
+      ui.statusDetail.textContent = `${state.board.filter(Boolean).length ? state.mode === 'computer' && state.current === 'o' ? 'O computador está escolhendo uma casa.' : 'Escolha uma casa vazia para continuar.' : `${playerName(state.current)} começa esta rodada.`}`;
       ui.statusMark.textContent = state.current === 'x' ? '×' : '○';
       ui.turnCard.dataset.player = state.current;
       ui.turnSymbol.textContent = state.current === 'x' ? '×' : '○';
-      ui.turnLabel.textContent = `Jogador ${playerName(state.current)}`;
+      ui.turnLabel.textContent = state.mode === 'computer' ? playerName(state.current) : `Jogador ${playerName(state.current)}`;
     }
     ui.undo.disabled = state.undoStack.length === 0;
     ui.newRound.textContent = state.outcome ? '＋ Próxima rodada' : '＋ Nova rodada';
-    const completedRounds = state.scores.x + state.scores.o + state.scores.draws;
+    const scores = modeScores();
+    const completedRounds = scores.x + scores.o + scores.draws;
     ui.roundLabel.textContent = `Rodada ${Math.max(1,completedRounds + (state.outcome ? 0 : 1))} · ${playerName(state.starter)} começa`;
     ui.resultOverlay.hidden = !state.outcome;
     if (state.outcome?.type === 'win') {
-      ui.resultTitle.textContent = `Jogador ${playerName(state.outcome.winner)} ganhou!`;
+      ui.resultTitle.textContent = state.mode === 'computer' ? `${playerName(state.outcome.winner)} ganhou!` : `Jogador ${playerName(state.outcome.winner)} ganhou!`;
       ui.resultScore.textContent = `Venceu esta rodada com três símbolos em linha.`;
-      ui.resultBreakdown.textContent = `Placar geral: X ${state.scores.x}  ·  O ${state.scores.o}  ·  Empates ${state.scores.draws}`;
+      ui.resultBreakdown.textContent = `Placar geral: ${state.mode === 'computer' ? `Você ${scores.x}  ·  Computador ${scores.o}` : `X ${scores.x}  ·  O ${scores.o}`}  ·  Empates ${scores.draws}`;
     } else if (state.outcome?.type === 'draw') {
       ui.resultTitle.textContent = 'Deu velha!';
       ui.resultScore.textContent = 'Esta rodada terminou empatada.';
-      ui.resultBreakdown.textContent = `Placar geral: X ${state.scores.x}  ·  O ${state.scores.o}  ·  Empates ${state.scores.draws}`;
+      ui.resultBreakdown.textContent = `Placar geral: ${state.mode === 'computer' ? `Você ${scores.x}  ·  Computador ${scores.o}` : `X ${scores.x}  ·  O ${scores.o}`}  ·  Empates ${scores.draws}`;
     }
   }
   function render() {
@@ -173,6 +189,8 @@
     renderHistory();
   }
   function startRound(starter) {
+    window.clearTimeout(computerTimer);
+    computerTimer = 0;
     state.board = Array(9).fill(null);
     state.starter = starter;
     state.current = starter;
@@ -182,17 +200,69 @@
     state.undoStack = [];
     state.focusSquare = 4;
     render();
-    cells[state.focusSquare].focus({ preventScroll:true });
+    if (state.mode === 'computer' && starter === 'o') queueComputerMove();
+    else cells[state.focusSquare].focus({ preventScroll:true });
   }
   function startLocalGame() {
+    state.mode = 'local';
     state.started = true;
     lobby.hidden = true;
     gameView.hidden = false;
     startRound('x');
     if (window.CV_GAMES_STATS?.recordPlay) window.CV_GAMES_STATS.recordPlay(gameId);
   }
-  function playCell(index) {
-    if (!state.started || state.outcome || state.board[index]) return;
+  function startComputerGame() {
+    state.mode = 'computer';
+    state.started = true;
+    lobby.hidden = true;
+    gameView.hidden = false;
+    startRound('x');
+    if (window.CV_GAMES_STATS?.recordPlay) window.CV_GAMES_STATS.recordPlay(gameId);
+  }
+  function boardWinner(board) {
+    for (const line of winLines) {
+      const [a,b,c] = line;
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
+    }
+    return null;
+  }
+  function minimax(board, player, depth) {
+    const winner = boardWinner(board);
+    if (winner === 'o') return 10 - depth;
+    if (winner === 'x') return depth - 10;
+    const open = board.map((value,index) => value ? -1 : index).filter((index) => index >= 0);
+    if (!open.length) return 0;
+    const values = open.map((index) => {
+      board[index] = player;
+      const score = minimax(board,player === 'o' ? 'x' : 'o',depth + 1);
+      board[index] = null;
+      return score;
+    });
+    return player === 'o' ? Math.max(...values) : Math.min(...values);
+  }
+  function chooseComputerMove() {
+    const open = state.board.map((value,index) => value ? -1 : index).filter((index) => index >= 0);
+    const scored = open.map((index) => {
+      state.board[index] = 'o';
+      const score = minimax(state.board,'x',1);
+      state.board[index] = null;
+      return { index, score };
+    });
+    const bestScore = Math.max(...scored.map((entry) => entry.score));
+    const best = scored.filter((entry) => entry.score === bestScore);
+    return best[Math.floor(Math.random() * best.length)]?.index;
+  }
+  function queueComputerMove() {
+    window.clearTimeout(computerTimer);
+    if (!state.started || state.mode !== 'computer' || state.current !== 'o' || state.outcome) return;
+    computerTimer = window.setTimeout(() => {
+      computerTimer = 0;
+      const move = chooseComputerMove();
+      if (Number.isInteger(move)) playCell(move,true);
+    },480);
+  }
+  function playCell(index, fromComputer = false) {
+    if (!state.started || state.outcome || state.board[index] || (state.mode === 'computer' && state.current === 'o' && !fromComputer)) return;
     recordSnapshot();
     const player = state.current;
     state.board[index] = player;
@@ -202,19 +272,21 @@
     if (line) {
       state.outcome = { type:'win', winner:player };
       state.winningCells = line;
-      state.scores[player] += 1;
+      const scoreKey = state.mode === 'computer' ? player === 'x' ? 'cpuX' : 'cpuO' : player;
+      state.scores[scoreKey] += 1;
       saveScores();
       window.CV_GAME_AUDIO?.playTone(player === 'x' ? 620 : 520, .12, 'triangle', .05);
       window.CV_GAME_AUDIO?.playTone(800, .2, 'sine', .04);
     } else if (state.board.every(Boolean)) {
       state.outcome = { type:'draw' };
-      state.scores.draws += 1;
+      state.scores[state.mode === 'computer' ? 'cpuDraws' : 'draws'] += 1;
       saveScores();
       window.CV_GAME_AUDIO?.playTone(320, .16, 'sine', .035);
     } else state.current = player === 'x' ? 'o' : 'x';
     if (!state.outcome) window.CV_GAME_AUDIO?.playTone(player === 'x' ? 480 : 360, .065, 'sine', .035);
     render();
     if (state.outcome) ui.resultNextRound.focus({ preventScroll:true });
+    else if (state.mode === 'computer' && state.current === 'o') queueComputerMove();
     else cells[index].focus({ preventScroll:true });
   }
   function startNextRound() { startRound(state.starter === 'x' ? 'o' : 'x'); }
@@ -226,26 +298,51 @@
     startNextRound();
   }
   function undoMove() {
+    const computerWasWaiting = Boolean(computerTimer);
+    window.clearTimeout(computerTimer);
+    computerTimer = 0;
+    const removeComputerReply = state.mode === 'computer' && !computerWasWaiting && state.history.at(-1)?.player === 'o' && state.history.length > 1;
     const snapshot = state.undoStack.pop();
-    if (!snapshot) return;
-    if (state.outcome?.type === 'win') state.scores[state.outcome.winner] = Math.max(0,state.scores[state.outcome.winner] - 1);
-    if (state.outcome?.type === 'draw') state.scores.draws = Math.max(0,state.scores.draws - 1);
+    if (!snapshot) {
+      if (state.mode === 'computer' && state.current === 'o' && !state.outcome) queueComputerMove();
+      return;
+    }
+    if (state.outcome?.type === 'win') {
+      const scoreKey = state.mode === 'computer' ? state.outcome.winner === 'x' ? 'cpuX' : 'cpuO' : state.outcome.winner;
+      state.scores[scoreKey] = Math.max(0,state.scores[scoreKey] - 1);
+    }
+    if (state.outcome?.type === 'draw') {
+      const scoreKey = state.mode === 'computer' ? 'cpuDraws' : 'draws';
+      state.scores[scoreKey] = Math.max(0,state.scores[scoreKey] - 1);
+    }
     state.board = snapshot.board;
     state.current = snapshot.current;
     state.outcome = snapshot.outcome;
     state.winningCells = snapshot.winningCells;
     state.history = snapshot.history;
     state.focusSquare = snapshot.focusSquare;
+    if (removeComputerReply) {
+      const previous = state.undoStack.pop();
+      if (previous) {
+        state.board = previous.board;
+        state.current = previous.current;
+        state.outcome = previous.outcome;
+        state.winningCells = previous.winningCells;
+        state.history = previous.history;
+        state.focusSquare = previous.focusSquare;
+      }
+    }
     saveScores();
     render();
-    cells[state.focusSquare].focus({ preventScroll:true });
+    if (state.mode === 'computer' && state.current === 'o' && !state.outcome) queueComputerMove();
+    else cells[state.focusSquare].focus({ preventScroll:true });
   }
   async function resetScores() {
     if (!await window.CV_GAMES_DIALOG.confirm({
-      title:'Zerar o placar?', message:'Os pontos de X, O e os empates serão apagados deste dispositivo.',
+      title:'Zerar o placar?', message:'Os placares dos dois modos e os empates serão apagados deste dispositivo.',
       confirmText:'Zerar placar', cancelText:'Manter placar', tone:'danger'
     })) return;
-    state.scores = { x:0, o:0, draws:0 };
+    state.scores = { x:0, o:0, draws:0, cpuX:0, cpuO:0, cpuDraws:0 };
     saveScores();
     renderPlayers();
     renderStatus();
@@ -310,6 +407,7 @@
     }
   });
   ui.start.addEventListener('click',startLocalGame);
+  ui.startComputer.addEventListener('click',startComputerGame);
   ui.undo.addEventListener('click',undoMove);
   ui.resetScores.addEventListener('click',resetScores);
   ui.newRound.addEventListener('click',newRound);

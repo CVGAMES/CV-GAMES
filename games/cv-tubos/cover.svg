@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0a1630"/><stop offset=".58" stop-color="#172e58"/><stop offset="1" stop-color="#10243b"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#66d9ff" stop-opacity=".28"/><stop offset="1" stop-color="#66d9ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="glass" x2="0" y2="1"><stop stop-color="#dffaff" stop-opacity=".17"/><stop offset="1" stop-color="#c3efff" stop-opacity=".055"/></linearGradient>
+    <filter id="shadow" x="-.3" y="-.2" width="1.6" height="1.6"><feDropShadow dx="0" dy="15" stdDeviation="13" flood-color="#020810" flood-opacity=".55"/></filter>
+    <clipPath id="tube1"><path d="M207 135h116v260a58 58 0 0 1-116 0z"/></clipPath>
+    <clipPath id="tube2"><path d="M420 135h116v260a58 58 0 0 1-116 0z"/></clipPath>
+    <clipPath id="tube3"><path d="M633 135h116v260a58 58 0 0 1-116 0z"/></clipPath>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg)"/><circle cx="480" cy="310" r="390" fill="url(#glow)"/>
+  <g fill="#d7f3ff" opacity=".45"><circle cx="112" cy="85" r="2"/><circle cx="828" cy="93" r="2"/><circle cx="760" cy="440" r="2"/><circle cx="177" cy="461" r="2"/><circle cx="486" cy="72" r="1.5"/><circle cx="897" cy="287" r="1.5"/><circle cx="68" cy="302" r="1.5"/></g>
+  <text x="480" y="65" text-anchor="middle" fill="#73dfff" font-family="system-ui,sans-serif" font-size="21" font-weight="900" letter-spacing="5">EXCLUSIVO CV GAMES</text>
+  <text x="480" y="113" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="39" font-weight="900" letter-spacing="1">CORES EM ORDEM</text>
+  <g filter="url(#shadow)">
+    <g clip-path="url(#tube1)"><path fill="#7c4dff" d="M207 135h116v65H207z"/><path fill="#ff4b8a" d="M207 200h116v65H207z"/><path fill="#ffd34e" d="M207 265h116v65H207z"/><path fill="#32d48c" d="M207 330h116v68H207z"/></g>
+    <g clip-path="url(#tube2)"><path fill="#ff4b8a" d="M420 135h116v65H420z"/><path fill="#31c8ff" d="M420 200h116v65H420z"/><path fill="#ff914d" d="M420 265h116v65H420z"/><path fill="#7c4dff" d="M420 330h116v68H420z"/></g>
+    <g clip-path="url(#tube3)"><path fill="#ffd34e" d="M633 135h116v65H633z"/><path fill="#32d48c" d="M633 200h116v65H633z"/><path fill="#31c8ff" d="M633 265h116v65H633z"/><path fill="#ff914d" d="M633 330h116v68H633z"/></g>
+    <g fill="url(#glass)" stroke="#e1f8ff" stroke-width="7"><path d="M207 135h116v260a58 58 0 0 1-116 0z"/><path d="M420 135h116v260a58 58 0 0 1-116 0z"/><path d="M633 135h116v260a58 58 0 0 1-116 0z"/></g>
+    <g fill="none" stroke="#a4eaff" stroke-width="13"><ellipse cx="265" cy="136" rx="58" ry="16"/><ellipse cx="478" cy="136" rx="58" ry="16"/><ellipse cx="691" cy="136" rx="58" ry="16"/></g>
+    <g fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="5" stroke-linecap="round"><path d="M224 163v174"/><path d="M437 163v174"/><path d="M650 163v174"/></g>
+  </g>
+  <rect x="362" y="456" width="236" height="46" rx="23" fill="#142d48" stroke="#52d4ff" stroke-opacity=".5"/><text x="480" y="486" text-anchor="middle" fill="#cdefff" font-family="system-ui,sans-serif" font-size="17" font-weight="800">FASES • DICAS • DESAFIO DIÁRIO</text>
+</svg>

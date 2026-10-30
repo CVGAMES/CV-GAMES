@@ -46,6 +46,7 @@
   let spawnTimer = 0;
   let hoverCell = null;
   let lastFrame = 0;
+  let frameId = 0;
   let lastShotSoundAt = 0;
   let toastTimeout;
   let sessionCounted = false;
@@ -607,6 +608,8 @@
   }
 
   function frame(time) {
+    frameId = 0;
+    if (document.hidden) { lastFrame = 0; return; }
     const delta = lastFrame ? Math.min(.04, (time - lastFrame) / 1000) : 0;
     lastFrame = time;
     if (mode === 'running' && geometry.cell) {
@@ -615,7 +618,7 @@
     }
     if (mode !== 'paused') updateParticles(delta);
     render(time);
-    requestAnimationFrame(frame);
+    frameId = requestAnimationFrame(frame);
   }
 
   function updateHover(event) {
@@ -709,11 +712,20 @@
     if (event.key === 'Escape' && mode === 'paused') setPause();
   });
   document.addEventListener('cv-games-fullscreenchange', () => requestAnimationFrame(layoutCanvas));
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = 0;
+      lastFrame = 0;
+      return;
+    }
+    if (!frameId) frameId = requestAnimationFrame(frame);
+  });
   if ('ResizeObserver' in window) new ResizeObserver(layoutCanvas).observe(canvas.parentElement);
   window.addEventListener('resize', layoutCanvas, { passive: true });
 
   bestWave = readBest();
   prepareSiteControls();
   syncUi();
-  requestAnimationFrame(frame);
+  frameId = requestAnimationFrame(frame);
 })();
