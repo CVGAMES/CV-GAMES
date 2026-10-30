@@ -241,3 +241,36 @@ window.CV_GAMES_CATALOG = [
     rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
   }
 ];
+
+/* O catálogo visível também define quais favoritos entram nos contadores. */
+window.CV_GAMES_GET_VISIBLE_CATALOG = function () {
+  let nickname = '';
+  try {
+    nickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname
+      || JSON.parse(localStorage.getItem('cv-games-profile') || 'null')?.nickname || '')
+      .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+  } catch { /* Sem perfil válido, os jogos de teste ficam ocultos. */ }
+
+  const devProfiles = ['educvv dev1', 'educvv dev'];
+  const canUseDevGames = devProfiles.includes(nickname);
+  const canUseOrbital = nickname === 'educvv dev1';
+  return window.CV_GAMES_CATALOG.filter((game) =>
+    (game.id !== 'cv-dodge' || canUseOrbital)
+    && (game.id !== 'cv-turbo-circuit' || canUseDevGames)
+    && (game.id !== 'cv-labirinto' || canUseDevGames)
+    && (game.id !== 'cv-tubos' || canUseDevGames));
+};
+
+window.CV_GAMES_GET_VISIBLE_FAVORITE_IDS = function () {
+  let saved = [];
+  try {
+    const parsed = JSON.parse(localStorage.getItem('cv-games-favorites') || '[]');
+    if (Array.isArray(parsed)) saved = parsed;
+  } catch { /* Favoritos indisponíveis contam como lista vazia. */ }
+  const visibleIds = new Set(window.CV_GAMES_GET_VISIBLE_CATALOG().map((game) => game.id));
+  return [...new Set(saved.filter((id) => typeof id === 'string' && visibleIds.has(id)))];
+};
+
+window.CV_GAMES_COUNT_VISIBLE_FAVORITES = function () {
+  return window.CV_GAMES_GET_VISIBLE_FAVORITE_IDS().length;
+};
