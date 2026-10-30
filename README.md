@@ -11,6 +11,7 @@
 
 ### Atualizações públicas — outubro de 2026
 
+- **30/10 — CV STARFALL:** ranking Top 5 renovado com destaques para o pódio e relatórios da missão divididos por categoria de melhoria.
 - **30/10 — CV Tubos: Cores em Ordem:** jogo de lógica em fase de testes, disponível apenas nos perfis locais `educvv dev` e `educvv dev1`.
 - **30/10 — CV Jogo da Velha:** modo contra computador com estratégia completa, alternância de quem começa e placares separados por modo.
 - **30/10 — Formulário de feedback:** canal para enviar sugestões e relatar problemas em jogos ou no portal. A mensagem abre como rascunho no Gmail e depende de confirmação pelo visitante.
@@ -42,6 +43,9 @@ Alguns jogos podem estar em desenvolvimento, em teste ou com acesso limitado enq
 - Catálogo pesquisável, filtros por categoria e jogos em destaque.
 - Layout responsivo para celular e computador, com temas claro e escuro.
 - Favoritos, perfil e histórico de jogos salvos localmente no navegador.
+- Login restrito do perfil `educvv` via Supabase Auth; os dados locais do perfil não são sincronizados entre dispositivos.
+- Ranking público do CV STARFALL com gravação restrita à conta autenticada do dono.
+- Naves desbloqueadas, nave equipada e melhor onda do CV STARFALL sincronizadas nessa conta.
 - Formulário de feedback que abre um rascunho no Gmail ou permite copiar o texto; o site não armazena as respostas.
 - Páginas próprias para os jogos CV, com controles e configurações específicos de cada jogo.
 - Central gamer, downloads e páginas informativas.
@@ -61,6 +65,9 @@ O site é uma aplicação estática feita com **HTML, CSS e JavaScript**, sem et
 | `games/` | Páginas, código e recursos dos jogos |
 | `css/` | Estilos do portal e dos jogos |
 | `js/` | Busca, perfil local, estatísticas e interações do site |
+| `js/supabase-config.js` | URL e chave pública do Supabase; nenhum segredo de conta |
+| `js/account-auth.js` | Sessão de autenticação restrita do perfil `educvv` |
+| `games/cv-starfall/AUTH-SETUP.md` | Etapas para criar a conta e ativar as regras seguras do ranking |
 | `img/` | Logos, capas e imagens do portal |
 | `music/` | Músicas usadas em jogos compatíveis |
 | `central.html` | Central gamer e links de utilidade |

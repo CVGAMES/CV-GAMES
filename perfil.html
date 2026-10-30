@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Perfil local do CV GAMES para acompanhar favoritos, histórico e conquistas neste navegador.">
+  <meta name="description" content="Perfil do CV GAMES com dados locais e acesso autenticado ao perfil educvv.">
   <meta name="robots" content="noindex, follow">
   <title>Perfil | CV GAMES</title>
   <link rel="icon" href="img/incon.png" type="image/png">
@@ -22,6 +22,9 @@
   <script src="js/stats.js" defer></script>
   <script src="js/achievements.js" defer></script>
   <script src="js/profile-store.js" defer></script>
+  <script src="js/supabase-config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/account-auth.js" defer></script>
   <script src="js/site-dialog.js" defer></script>
   <script src="js/profile.js" defer></script>
 </head>
@@ -52,19 +55,50 @@
 
   <main id="conteudo" class="profile-main">
     <div class="container">
+      <dialog class="profile-login-dialog" data-owner-login-dialog aria-labelledby="owner-login-title">
+        <div class="profile-login-dialog-card">
+          <button class="profile-login-close" type="button" data-close-owner-login aria-label="Fechar login">×</button>
+          <div data-owner-login-gate>
+            <p class="eyebrow">Acesso restrito</p>
+            <h2 id="owner-login-title">Entrar no perfil</h2>
+            <p>É necessário que sua conta esteja autorizada no aplicativo para continuar.</p>
+            <button class="button button-primary" type="button" data-continue-owner-login>Continuar para o login</button>
+          </div>
+          <form class="profile-account-form" data-owner-login-form hidden>
+            <p class="eyebrow">Conta autorizada</p>
+            <h2>Fazer login</h2>
+            <label for="owner-account-email">E-mail</label>
+            <input id="owner-account-email" type="email" autocomplete="username" required>
+            <label for="owner-account-password">Senha</label>
+            <input id="owner-account-password" name="password" type="password" autocomplete="current-password" required>
+            <button class="button button-primary" type="submit">Entrar</button>
+            <p class="form-status" data-owner-login-status aria-live="polite"></p>
+          </form>
+        </div>
+      </dialog>
+      <div data-profile-dashboard>
       <section class="profile-hero" aria-labelledby="profile-title">
         <div class="profile-identity">
-          <div class="profile-avatar" data-profile-avatar aria-hidden="true">🎮</div>
+          <div class="profile-avatar" data-profile-avatar>
+            <span data-profile-avatar-emoji aria-hidden="true">🎮</span>
+            <img src="img/foto%20de%20perfil%20educvv.jpg" alt="Foto de perfil do educvv" data-profile-owner-avatar hidden>
+          </div>
           <div>
-            <p class="eyebrow">Perfil local</p>
+            <p class="eyebrow" data-profile-type>Perfil local</p>
             <h1 id="profile-title" data-profile-name>Jogador</h1>
             <p class="profile-subtitle">Acompanhe seu progresso neste navegador.</p>
           </div>
         </div>
-        <button class="button button-secondary" type="button" data-edit-profile aria-expanded="false" aria-controls="editor-perfil">Editar perfil</button>
+        <div class="profile-hero-actions">
+          <div class="profile-account-control" data-owner-account>
+            <button class="button button-secondary profile-login-trigger" type="button" data-open-owner-login>Fazer login</button>
+            <button class="button button-secondary" type="button" data-owner-logout hidden>Sair da conta</button>
+          </div>
+          <button class="button button-secondary" type="button" data-edit-profile aria-expanded="false" aria-controls="editor-perfil">Editar perfil</button>
+        </div>
       </section>
 
-      <p class="profile-privacy">🔒 Seus dados de perfil, favoritos, histórico e conquistas ficam salvos apenas neste navegador.</p>
+        <p class="profile-privacy">🔒 Favoritos, histórico, estatísticas e conquistas continuam locais neste aparelho. A conta educvv também sincroniza as naves desbloqueadas e equipadas do CV STARFALL.</p>
 
       <section class="profile-editor-panel" id="editor-perfil" data-profile-editor hidden aria-labelledby="editor-title">
         <div class="profile-section-heading">
@@ -163,6 +197,7 @@
         </div>
         <button class="catalog-reset profile-reset-button" type="button" data-reset-profile>Redefinir perfil</button>
       </section>
+      </div>
     </div>
   </main>
 
