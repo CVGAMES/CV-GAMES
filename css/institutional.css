@@ -175,6 +175,26 @@
 .contact-topic strong { display: block; color: var(--text); }
 .contact-topic span { display: block; margin-top: .3rem; color: var(--muted); font-size: .9rem; }
 
+.feedback-form { display: grid; gap: 1rem; margin-top: 1.15rem; }
+.feedback-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.feedback-field { display: grid; min-width: 0; gap: .45rem; color: var(--text); font-size: .92rem; font-weight: 800; }
+.feedback-field > span small { color: var(--muted); font-size: .8rem; font-weight: 600; }
+.feedback-field > span strong { color: var(--primary); }
+.feedback-field input,
+.feedback-field select,
+.feedback-field textarea { width: 100%; min-height: 2.9rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--bg-soft); padding: .72rem .8rem; color: var(--text); font: inherit; font-size: .95rem; }
+.feedback-field textarea { min-height: 8.5rem; resize: vertical; line-height: 1.5; }
+.feedback-field input::placeholder,
+.feedback-field textarea::placeholder { color: var(--muted); opacity: .8; }
+.feedback-field input:focus-visible,
+.feedback-field select:focus-visible,
+.feedback-field textarea:focus-visible { outline: 3px solid color-mix(in srgb, var(--primary) 72%, white); outline-offset: 2px; border-color: var(--primary); }
+.feedback-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+.feedback-actions .button { min-width: min(100%, 12rem); }
+.feedback-status { min-height: 1.4rem; margin: -.45rem 0 0; color: var(--primary); font-size: .9rem; font-weight: 750; }
+.feedback-privacy { margin: -.2rem 0 0; color: var(--muted); font-size: .85rem; line-height: 1.55; }
+.feedback-privacy a { color: var(--primary); }
+
 .legal-section h2 { font-size: clamp(1.2rem, 2vw, 1.45rem); }
 .legal-section h3 { margin-top: 1.35rem; font-size: 1rem; }
 .legal-section h3 + p { margin-top: .45rem; }
@@ -187,7 +207,8 @@
 
 @media (max-width: 720px) {
   .exclusive-game-grid,
-  .contact-topics { grid-template-columns: 1fr; }
+  .contact-topics,
+  .feedback-form-grid { grid-template-columns: 1fr; }
   .updates-pagination { align-items: stretch; flex-direction: column; }
   .updates-page-link { justify-content: center; }
 }

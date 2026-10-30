@@ -10,7 +10,7 @@ window.CV_GAMES_CATALOG = [
     id: 'tuxocide', title: 'Tuxocide', category: 'Ação', categoryKey: 'acao',
     description: 'Jogo de ação online com Tux.', tags: ['acao', 'online'],
     type: 'Jogo online', platform: 'Navegador', href: 'tuxocide.html', image: 'CV GAMES/tuxocide/favicon_xm7QEs1.png', fallback: '🎮',
-    rating: 5, addedAt: '2026-01-15', featured: true, recent: true, popular: false, pcFraco: false, multiplayer: false
+    rating: 5, addedAt: '2026-01-15', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false
   },
   {
     id: 'super-mario', title: 'Super Mario', category: 'Aventura', categoryKey: 'aventura',
@@ -52,7 +52,7 @@ window.CV_GAMES_CATALOG = [
     id: 'slow-roads', title: 'Slow Roads', category: 'Corrida', categoryKey: 'corrida',
     description: 'Dirija por estradas abertas em uma experiência de corrida.', tags: ['corrida', 'carro', 'online'],
     type: 'Jogo online', platform: 'Navegador', href: 'slowroads.html', image: 'CV GAMES/slosrids/slowroads_hero_1.jpg', fallback: '🏎️',
-    rating: 4, addedAt: '2026-01-15', featured: false, recent: true, popular: true, pcFraco: false, multiplayer: false
+    rating: 4, addedAt: '2026-01-15', featured: false, recent: false, popular: true, pcFraco: false, multiplayer: false
   },
   {
     id: 'fnf', title: "Friday Night Funkin'", category: 'Arcade', categoryKey: 'arcade',
@@ -124,19 +124,19 @@ window.CV_GAMES_CATALOG = [
     id: 'eugenes-life', title: "Eugene's Life", category: 'Aventura', categoryKey: 'aventura',
     description: 'Aventura online protagonizada por Eugene.', tags: ['aventura', 'online'],
     type: 'Jogo online', href: 'https://poppyplaytimegames.github.io/play/eugenes-life.html', image: 'CV GAMES/eugenes/maxresdefault.jpg', fallback: '🌟',
-    rating: 4, addedAt: '2026-01-15', featured: false, recent: true, popular: false, pcFraco: false, multiplayer: false
+    rating: 4, addedAt: '2026-01-15', featured: false, recent: false, popular: false, pcFraco: false, multiplayer: false
   },
   {
     id: 'we-become', title: 'We Become What We Behold', category: 'Puzzle', categoryKey: 'puzzle',
     description: 'Experiência interativa de escolhas e observação.', tags: ['puzzle', 'interativo', 'online', 'leve'],
     type: 'Jogo online', href: 'https://webecomewhatwebehold.gitlab.io/#', image: 'CV GAMES/we become/header.jpg', fallback: '📺',
-    rating: 4, addedAt: '2026-01-15', featured: false, recent: true, popular: false, pcFraco: true, multiplayer: false
+    rating: 4, addedAt: '2026-01-15', featured: false, recent: false, popular: false, pcFraco: true, multiplayer: false
   },
   {
     id: 'among-us', title: 'Among Us', category: 'Multiplayer', categoryKey: 'multiplayer',
     description: 'Descubra o impostor em partidas com outras pessoas.', tags: ['multiplayer', 'social', 'online'],
     type: 'Jogo online', href: 'https://freezenova-unblocked.github.io/projects/among-us/index.html', image: 'CV GAMES/among us/apps.14626.13589262686196899.12354b81-d410-4255-b6aa-9f9a68a694ae.jpg', fallback: '👨🚀',
-    rating: 5, addedAt: '2026-01-15', featured: true, recent: true, popular: true, pcFraco: false, multiplayer: true
+    rating: 5, addedAt: '2026-01-15', featured: true, recent: false, popular: true, pcFraco: false, multiplayer: true
   },
   {
     id: 'fireboy-watergirl', title: 'Fireboy and Watergirl', category: 'Aventura', categoryKey: 'aventura',
@@ -166,13 +166,13 @@ window.CV_GAMES_CATALOG = [
     id: 'cv-dodge', title: 'CV DEFESA ORBITAL', category: 'Estratégia', categoryKey: 'estrategia',
     description: 'Construa torres, evolua sua defesa e proteja o núcleo de ondas de inimigos neste jogo de estratégia original do CV GAMES.', tags: ['estrategia', 'defesa de torres', 'tower defense', 'ondas', 'chefes', 'cv defesa orbital', 'cv games'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-dodge/index.html', image: 'games/cv-dodge/cover.svg', fallback: '✦',
-    rating: 5, addedAt: '2026-08-20', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
+    rating: 5, addedAt: '2026-08-20', featured: true, recent: false, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
     id: 'cv-neon-breaker', title: 'CV NEON BREAKER', category: 'Arcade', categoryKey: 'arcade',
     description: 'Destrua blocos, mantenha a esfera em jogo e avance pelas fases neste arcade original do CV GAMES.', tags: ['arcade', 'blocos', 'neon', 'cv neon breaker', 'cv games', 'leve'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-neon-breaker/index.html', image: 'games/cv-neon-breaker/cover.svg', fallback: '🧱',
-    rating: 5, addedAt: '2026-08-21', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
+    rating: 5, addedAt: '2026-08-21', featured: true, recent: false, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
     id: 'cv-turbo-circuit', title: 'CV TURBO CIRCUIT', category: 'Corrida', categoryKey: 'corrida',
@@ -184,7 +184,7 @@ window.CV_GAMES_CATALOG = [
     id: 'wasm-arcade', title: 'WASM Arcade', category: 'Arcade', categoryKey: 'arcade',
     description: 'Portal externo com jogos de arcade, clássicos retrô e experiências 3D para jogar no navegador.', tags: ['wasm arcade', 'arcade', 'jogos online', 'classicos', 'retro', 'flash', 'jogos 3d'],
     type: 'Portal externo', platform: 'Navegador', href: 'https://wasmarcade.com/', image: 'img/wasm-arcade-cover.png', fallback: '🕹️',
-    rating: 5, addedAt: '2026-10-14', featured: false, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true, externalWarning: true
+    rating: 5, addedAt: '2026-10-14', featured: false, recent: true, popular: false, pcFraco: false, multiplayer: false, externalPortal: true, externalWarning: true
   },
   {
     id: 'nexus-rota-zero', title: 'NEXUS: Rota Zero', category: 'Aventura', categoryKey: 'aventura',
@@ -221,6 +221,12 @@ window.CV_GAMES_CATALOG = [
     description: 'Desafie outra pessoa no mesmo dispositivo com capturas obrigatórias, jogadas em sequência e coroação das peças.', tags: ['damas', 'checkers', 'estrategia', 'tabuleiro', '2 jogadores', 'multiplayer local', 'cv damas'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-damas/index.html', image: 'games/cv-damas/cover.svg', fallback: '●',
     rating: 5, addedAt: '2026-10-05', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
+  },
+  {
+    id: 'cv-tubos', title: 'CV TUBOS: CORES EM ORDEM', category: 'Puzzle', categoryKey: 'puzzle',
+    description: 'Organize as cores nos tubos, avance por fases, use dicas e tente o desafio diário.', tags: ['cv tubos', 'cores em ordem', 'water sort', 'puzzle', 'logica', 'desafio diario', 'cv games'],
+    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-tubos/index.html', image: 'games/cv-tubos/cover.svg', fallback: '🧪',
+    rating: 5, addedAt: '2026-10-30', featured: false, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
     id: 'cv-jogo-da-velha', title: 'CV JOGO DA VELHA', category: 'Puzzle', categoryKey: 'puzzle',
