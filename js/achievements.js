@@ -157,7 +157,17 @@
     }
   };
 
-  const getCatalog = () => Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
+  const getCatalog = () => {
+    const catalog = Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
+    let nickname = '';
+    try {
+      nickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname
+        || JSON.parse(localStorage.getItem('cv-games-profile') || 'null')?.nickname || '')
+        .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+    } catch { /* Sem perfil válido, jogos de teste ficam ocultos. */ }
+    const tubesAllowed = ['educvv dev1', 'educvv dev'].includes(nickname);
+    return catalog.filter((game) => game.id !== 'cv-tubos' || tubesAllowed);
+  };
 
   const getFavoriteIds = (availableIds) => {
     try {

@@ -1,7 +1,13 @@
 (function () {
   'use strict';
 
-  const catalog = Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
+  let savedNickname = '';
+  try { savedNickname = JSON.parse(localStorage.getItem('cv-games-profile') || 'null')?.nickname || ''; } catch {}
+  const profileNickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || savedNickname)
+    .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+  const tubesProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
+  const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
+    .filter((item) => item.id !== 'cv-tubos' || tubesProfileAllowed);
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
@@ -188,7 +194,7 @@
       button.textContent = isFavorite ? '♥ Favoritado' : '♡ Favoritar';
     });
     const count = document.querySelector('[data-favorite-count]');
-    if (count) count.textContent = String(favorites.size);
+    if (count) count.textContent = String(catalog.reduce((total, item) => total + Number(favorites.has(item.id)), 0));
   };
 
   const prepareGameFrame = () => {

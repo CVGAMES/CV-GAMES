@@ -81,7 +81,8 @@
     const exclusives = catalog.filter((game) => game.exclusivo === true
       && game.id !== 'cv-dodge'
       && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
-      && (game.id !== 'cv-labirinto' || turboProfileAllowed));
+      && (game.id !== 'cv-labirinto' || turboProfileAllowed)
+      && (game.id !== 'cv-tubos' || turboProfileAllowed));
     if (!exclusives.length) return;
     const fragment = document.createDocumentFragment();
     exclusives.forEach((game) => fragment.appendChild(createExclusiveCard(game)));

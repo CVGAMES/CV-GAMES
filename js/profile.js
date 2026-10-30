@@ -5,7 +5,8 @@
     .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
   const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
   const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
-    .filter((game) => game.id !== 'cv-turbo-circuit' || turboProfileAllowed);
+    .filter((game) => (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
+      && (game.id !== 'cv-tubos' || turboProfileAllowed));
   const stats = window.CV_GAMES_STATS;
   const achievements = window.CV_GAMES_ACHIEVEMENTS;
   const profileStore = window.CV_GAMES_PROFILE;

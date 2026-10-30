@@ -11,10 +11,12 @@
   const orbitalProfileAllowed = profileNickname === 'educvv dev1';
   const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
   const labyrinthProfileAllowed = turboProfileAllowed;
+  const tubesProfileAllowed = turboProfileAllowed;
   const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
     .filter((game) => (game.id !== 'cv-dodge' || orbitalProfileAllowed)
       && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
-      && (game.id !== 'cv-labirinto' || labyrinthProfileAllowed));
+      && (game.id !== 'cv-labirinto' || labyrinthProfileAllowed)
+      && (game.id !== 'cv-tubos' || tubesProfileAllowed));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
@@ -82,6 +84,7 @@
     `;
 
     const image = card.querySelector('img');
+    image.decoding = 'async';
     image.addEventListener('error', () => {
       const fallback = document.createElement('div');
       fallback.className = 'cover-fallback';
@@ -126,11 +129,11 @@
   const fallbackPopularGames = catalog.filter((game) => game.popular);
   const featuredPriority = ['cv-starfall', 'gx-launcher', 'cv-labirinto', 'cv-quadrados', 'cv-xadrez', 'cv-damas', 'bad-ice-cream', 'fireboy-watergirl', 'drive-mad', 'moto-x3m', 'geometry-jump'];
 
-  const setupGxAnnouncement = () => {
-    const dialog = document.querySelector('[data-gx-announcement]');
+  const setupNewsInvitation = () => {
+    const dialog = document.querySelector('[data-news-invitation]');
     if (!dialog) return;
 
-    const storageKey = 'cv-games-gx-launcher-announcement-v5';
+    const storageKey = 'cv-games-news-invitation-v1';
     try {
       if (localStorage.getItem(storageKey) === 'seen') return;
     } catch {
@@ -142,23 +145,23 @@
       else dialog.removeAttribute('open');
     };
 
-    dialog.querySelectorAll('[data-gx-close]').forEach((button) => button.addEventListener('click', closeDialog));
-    dialog.querySelector('[data-gx-visit]')?.addEventListener('click', closeDialog);
+    dialog.querySelectorAll('[data-news-close]').forEach((button) => button.addEventListener('click', closeDialog));
+    dialog.querySelector('[data-news-visit]')?.addEventListener('click', closeDialog);
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) closeDialog();
     });
 
-    const showAnnouncement = () => {
+    const showInvitation = () => {
       try {
         if (typeof dialog.showModal === 'function') dialog.showModal();
         else dialog.setAttribute('open', '');
-        localStorage.setItem(storageKey, 'seen');
       } catch {
         dialog.setAttribute('open', '');
       }
+      try { localStorage.setItem(storageKey, 'seen'); } catch { /* Continua valendo até sair desta visita. */ }
     };
 
-    window.setTimeout(showAnnouncement, 550);
+    window.setTimeout(showInvitation, 550);
   };
 
   const getFeaturedGames = () => {
@@ -501,7 +504,10 @@
     saveFavorites();
 
     renderGames('featured-games', getFeaturedGames());
-    renderGames('recent-games', catalog.filter((game) => game.recent));
+    const recentGames = catalog
+      .filter((game) => game.recent)
+      .sort((a, b) => String(b.addedAt || '').localeCompare(String(a.addedAt || '')));
+    renderGames('recent-games', recentGames);
     renderStatisticsSections();
 
     document.addEventListener('click', (event) => {
@@ -601,7 +607,7 @@
     prepareCategories();
     prepareFavorites();
     applyFilters();
-    setupGxAnnouncement();
+    setupNewsInvitation();
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
