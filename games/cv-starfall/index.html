@@ -13,7 +13,7 @@
   <title>CV STARFALL — Jogo Exclusivo | CV GAMES</title><link rel="canonical" href="https://cvgames.com.br/games/cv-starfall/"><link rel="icon" href="../../img/incon.png" type="image/png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV STARFALL","url":"https://cvgames.com.br/games/cv-starfall/","image":"https://cvgames.com.br/games/cv-starfall/cover.svg","description":"Arcade espacial de sobrevivência com ondas, melhorias e chefes.","genre":"Arcade, Ação","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
-  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css"><script src="../../data/jogos.js" defer></script><script src="../../js/profile-store.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="leaderboard-config.js" defer></script><script src="game.js" defer></script>
+  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="../../js/supabase-config.js" defer></script><script src="../../js/account-auth.js" defer></script><script src="../../data/jogos.js" defer></script><script src="../../js/profile-store.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="leaderboard-config.js" defer></script><script src="game.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="cv-starfall-page">
@@ -50,8 +50,18 @@
     <section class="starfall-leaderboard" aria-labelledby="starfall-rank-title">
       <div class="starfall-leaderboard-heading"><div><p class="starfall-kicker">PLACAR DE PILOTOS</p><h2 id="starfall-rank-title">TOP 5 da galáxia</h2></div><span data-rank-status role="status">Recordes do piloto</span></div>
       <ol class="starfall-rank-list" data-rank-list></ol>
-      <p class="starfall-rank-note">Os recordes são associados ao apelido salvo no Perfil do CV GAMES. O ranking global precisa da conexão com o serviço online.</p>
+      <p class="starfall-rank-note">Os pilotos são ordenados pela onda alcançada. Selecione <strong>Ver detalhes</strong> para conferir a nave, o resultado e as melhorias da missão.</p>
     </section>
+    <dialog class="starfall-rank-dialog" data-rank-dialog aria-labelledby="starfall-rank-dialog-title" aria-describedby="starfall-rank-dialog-summary">
+      <section class="starfall-rank-dialog-card">
+        <button class="starfall-modal-close" type="button" data-close-rank-dialog aria-label="Fechar detalhes do recorde">×</button>
+        <p class="starfall-kicker" data-rank-dialog-kicker>RELATÓRIO DE PILOTO</p>
+        <h2 id="starfall-rank-dialog-title" data-rank-dialog-title>Recorde</h2>
+        <p id="starfall-rank-dialog-summary" class="starfall-rank-dialog-summary" data-rank-dialog-summary></p>
+        <div class="starfall-rank-detail-overview" data-rank-detail-overview></div>
+        <div class="starfall-rank-detail-sections" data-rank-detail-sections></div>
+      </section>
+    </dialog>
     <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-starfall-after-game" aria-hidden="true"></div>
   </div></main>
   <footer class="site-footer"><div class="footer-inner"><div><p><strong>CV GAMES © 2026</strong></p><p>Jogos online e downloads</p></div><nav class="footer-nav" aria-label="Navegação do rodapé"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central Gamer</a><a href="../../sobre.html">Sobre</a><a href="../../contato.html">Contato</a><a href="../../privacidade.html">Privacidade</a><a href="../../termos.html">Termos</a><a href="../../perfil.html">Perfil</a></nav></div></footer>

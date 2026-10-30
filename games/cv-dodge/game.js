@@ -651,7 +651,7 @@
     const count = button.querySelector('[data-favorite-count]');
     if (icon) icon.textContent = isFavorite ? '♥' : '♡';
     if (label) label.textContent = isFavorite ? 'Favoritado' : 'Favoritar';
-    if (count) count.textContent = String(favorites.size);
+    if (count) count.textContent = String(window.CV_GAMES_COUNT_VISIBLE_FAVORITES?.() ?? favorites.size);
   }
 
   function setTheme(theme) {

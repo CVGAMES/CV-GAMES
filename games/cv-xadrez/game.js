@@ -414,7 +414,7 @@
     ui.favorite.title = active ? 'Remover dos favoritos' : 'Adicionar aos favoritos';
     if (icon) icon.textContent = active ? '♥' : '♡';
     if (label) label.textContent = active ? 'Favoritado' : 'Favoritar';
-    if (count) count.textContent = String(favorites.size);
+    if (count) count.textContent = String(window.CV_GAMES_COUNT_VISIBLE_FAVORITES?.() ?? favorites.size);
   }
   function toggleFavorite() {
     const favorites = readFavorites();
