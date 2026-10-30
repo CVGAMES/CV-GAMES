@@ -12,11 +12,13 @@
   const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
   const labyrinthProfileAllowed = turboProfileAllowed;
   const tubesProfileAllowed = turboProfileAllowed;
-  const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
-    .filter((game) => (game.id !== 'cv-dodge' || orbitalProfileAllowed)
-      && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
-      && (game.id !== 'cv-labirinto' || labyrinthProfileAllowed)
-      && (game.id !== 'cv-tubos' || tubesProfileAllowed));
+  const catalog = typeof window.CV_GAMES_GET_VISIBLE_CATALOG === 'function'
+    ? window.CV_GAMES_GET_VISIBLE_CATALOG()
+    : (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
+      .filter((game) => (game.id !== 'cv-dodge' || orbitalProfileAllowed)
+        && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
+        && (game.id !== 'cv-labirinto' || labyrinthProfileAllowed)
+        && (game.id !== 'cv-tubos' || tubesProfileAllowed));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';

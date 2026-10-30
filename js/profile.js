@@ -3,16 +3,19 @@
 
   const profileNickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
     .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
-  const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
-  const catalog = (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
-    .filter((game) => (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
-      && (game.id !== 'cv-tubos' || turboProfileAllowed));
+  const catalog = typeof window.CV_GAMES_GET_VISIBLE_CATALOG === 'function'
+    ? window.CV_GAMES_GET_VISIBLE_CATALOG()
+    : (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : []);
   const stats = window.CV_GAMES_STATS;
   const achievements = window.CV_GAMES_ACHIEVEMENTS;
   const profileStore = window.CV_GAMES_PROFILE;
+  const accountAuth = window.CV_GAMES_AUTH;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
   let selectedAvatar = profileStore?.getProfile?.().avatar || '🎮';
+  let ownerSession = null;
+
+  const normalizedNickname = (value) => String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
 
   const createElement = (tagName, className, text) => {
     const element = document.createElement(tagName);
@@ -26,7 +29,31 @@
     if (element) element.textContent = value;
   };
 
+  const refreshOwnerAccount = async () => {
+    try { ownerSession = await accountAuth?.getOwnerSession?.() || null; } catch { ownerSession = null; }
+    const currentProfile = profileStore?.getProfile?.() || { nickname: 'Jogador', avatar: '🎮' };
+    const isOwner = Boolean(ownerSession);
+    const loginButton = document.querySelector('[data-open-owner-login]');
+    const logoutButton = document.querySelector('[data-owner-logout]');
+    const editButton = document.querySelector('[data-edit-profile]');
+    if (loginButton) loginButton.hidden = isOwner;
+    if (logoutButton) { logoutButton.hidden = !isOwner; logoutButton.textContent = 'Sair da conta'; }
+    if (editButton) editButton.hidden = isOwner;
+    if (isOwner && normalizedNickname(currentProfile.nickname) !== 'educvv') {
+      profileStore?.saveProfile?.({ nickname:'educvv', avatar:currentProfile.avatar });
+    } else if (!isOwner && normalizedNickname(currentProfile.nickname) === 'educvv') {
+      profileStore?.saveProfile?.({ nickname:'Jogador', avatar:currentProfile.avatar });
+    }
+    renderProfileIdentity();
+    if (isOwner) setEditorOpen(false);
+    if (isOwner) document.querySelector('[data-owner-login-dialog]')?.close();
+    return isOwner;
+  };
+
   const getFavoriteIds = () => {
+    if (typeof window.CV_GAMES_GET_VISIBLE_FAVORITE_IDS === 'function') {
+      return window.CV_GAMES_GET_VISIBLE_FAVORITE_IDS();
+    }
     try {
       const saved = JSON.parse(localStorage.getItem(favoriteStorageKey) || '[]');
       return Array.isArray(saved) ? [...new Set(saved.filter((id) => typeof id === 'string'))] : [];
@@ -125,7 +152,12 @@
       ? profileStore.getProfile()
       : { nickname: 'Jogador', avatar: '🎮' };
     setText('[data-profile-name]', profile.nickname);
-    setText('[data-profile-avatar]', profile.avatar);
+    setText('[data-profile-type]', ownerSession ? 'Perfil logado' : 'Perfil local');
+    const avatarEmoji = document.querySelector('[data-profile-avatar-emoji]');
+    const ownerAvatar = document.querySelector('[data-profile-owner-avatar]');
+    if (avatarEmoji) { avatarEmoji.textContent = profile.avatar; avatarEmoji.hidden = Boolean(ownerSession); }
+    if (ownerAvatar) ownerAvatar.hidden = !ownerSession;
+    document.querySelector('[data-profile-avatar]')?.classList.toggle('is-account-avatar', Boolean(ownerSession));
     selectedAvatar = profile.avatar;
     return profile;
   };
@@ -135,7 +167,7 @@
       ? profileStore.getProfile()
       : { nickname: 'Jogador', avatar: '🎮' });
     const input = document.querySelector('[data-profile-nickname]');
-    if (input) input.value = currentProfile.nickname;
+    if (input) { input.value = currentProfile.nickname; input.readOnly = Boolean(ownerSession); }
     renderAvatarSelection();
   };
 
@@ -248,10 +280,11 @@
     }));
   };
 
-  const init = () => {
+  const init = async () => {
     renderProfileIdentity();
     renderDashboard();
     prepareMenu();
+    refreshOwnerAccount();
 
     const themeButton = document.querySelector('[data-theme-toggle]');
     setTheme(document.documentElement.dataset.theme || 'dark');
@@ -272,13 +305,71 @@
     document.querySelector('[data-profile-form]')?.addEventListener('submit', (event) => {
       event.preventDefault();
       const input = document.querySelector('[data-profile-nickname]');
+      if (normalizedNickname(input?.value) === 'educvv' && !ownerSession) {
+        setText('[data-profile-status]', 'Esse apelido é protegido. Entre na conta educvv antes de usá-lo.');
+        return;
+      }
       const profile = typeof profileStore?.saveProfile === 'function'
-        ? profileStore.saveProfile({ nickname: input?.value, avatar: selectedAvatar })
+        ? profileStore.saveProfile({ nickname: ownerSession ? 'educvv' : input?.value, avatar: selectedAvatar })
         : { nickname: 'Jogador', avatar: '🎮' };
       renderProfileIdentity();
       setEditorOpen(false);
       setText('[data-profile-status]', `Perfil salvo localmente como ${profile.nickname}.`);
+      refreshOwnerAccount();
     });
+
+    document.querySelector('[data-owner-login-form]')?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const password = form.querySelector('[name="password"]');
+      const submit = form.querySelector('button[type="submit"]');
+      const status = document.querySelector('[data-owner-login-status]');
+      if (!accountAuth?.signIn) { if (status) status.textContent = 'O login não carregou. Atualize a página e tente novamente.'; return; }
+      if (submit) submit.disabled = true;
+      if (status) status.textContent = 'Verificando acesso…';
+      try {
+        ownerSession = await accountAuth.signIn(document.querySelector('#owner-account-email')?.value, password?.value);
+        if (password) password.value = '';
+        const current = profileStore?.getProfile?.() || { avatar:'🎮' };
+        profileStore?.saveProfile?.({ nickname:'educvv', avatar:current.avatar });
+        renderProfileIdentity(); renderDashboard();
+        await refreshOwnerAccount();
+      } catch (error) {
+        if (password) password.value = '';
+        if (status) status.textContent = error?.message === 'Invalid login credentials'
+          ? 'E-mail ou senha incorretos.'
+          : (error?.message || 'Não foi possível entrar. Tente novamente.');
+      } finally { if (submit) submit.disabled = false; }
+    });
+
+    document.querySelector('[data-owner-logout]')?.addEventListener('click', async () => {
+      try {
+        await accountAuth?.signOut?.();
+        ownerSession = null;
+        const current = profileStore?.getProfile?.() || { avatar:'🎮' };
+        if (normalizedNickname(current.nickname) === 'educvv') profileStore?.saveProfile?.({ nickname:'Jogador', avatar:current.avatar });
+        await refreshOwnerAccount();
+      } catch {
+        const logout = document.querySelector('[data-owner-logout]');
+        if (logout) logout.textContent = 'Tente sair novamente';
+      }
+    });
+
+    const loginDialog = document.querySelector('[data-owner-login-dialog]');
+    const loginGate = document.querySelector('[data-owner-login-gate]');
+    const loginForm = document.querySelector('[data-owner-login-form]');
+    document.querySelector('[data-open-owner-login]')?.addEventListener('click', () => {
+      if (loginGate) loginGate.hidden = false;
+      if (loginForm) loginForm.hidden = true;
+      loginDialog?.showModal();
+    });
+    document.querySelector('[data-continue-owner-login]')?.addEventListener('click', () => {
+      if (loginGate) loginGate.hidden = true;
+      if (loginForm) loginForm.hidden = false;
+      loginForm?.querySelector('input[type="email"]')?.focus();
+    });
+    document.querySelectorAll('[data-close-owner-login]').forEach((button) => button.addEventListener('click', () => loginDialog?.close()));
+    loginDialog?.addEventListener('click', (event) => { if (event.target === loginDialog) loginDialog.close(); });
 
     document.querySelector('[data-reset-profile]')?.addEventListener('click', async () => {
       const confirmed = await window.CV_GAMES_DIALOG.confirm({
@@ -288,11 +379,13 @@
       });
       if (!confirmed) return;
       profileStore?.resetProfile?.();
+      if (ownerSession) profileStore?.saveProfile?.({ nickname:'educvv', avatar:'🎮' });
       achievements?.reset?.(catalog);
       renderProfileIdentity();
       setEditorOpen(false);
       renderDashboard();
       setText('[data-profile-status]', 'Perfil e conquistas locais foram redefinidos.');
+      refreshOwnerAccount();
     });
 
     document.addEventListener('click', (event) => {
@@ -308,10 +401,13 @@
     window.addEventListener('cv-games-stats-change', renderDashboard);
     window.addEventListener('cv-games-favorites-change', renderDashboard);
     window.addEventListener('cv-games-achievements-change', renderDashboard);
-    window.addEventListener('cv-games-profile-change', renderProfileIdentity);
+    window.addEventListener('cv-games-profile-change', () => { renderProfileIdentity(); refreshOwnerAccount(); });
+    accountAuth?.client?.auth.onAuthStateChange((event) => {
+      if (['SIGNED_IN', 'SIGNED_OUT', 'TOKEN_REFRESHED'].includes(event)) window.setTimeout(refreshOwnerAccount, 0);
+    });
     window.addEventListener('storage', (event) => {
       if ([favoriteStorageKey, 'cv-games-stats', 'cv-games-achievements'].includes(event.key)) renderDashboard();
-      if (event.key === 'cv-games-profile') renderProfileIdentity();
+      if (event.key === 'cv-games-profile') { renderProfileIdentity(); refreshOwnerAccount(); }
     });
   };
 

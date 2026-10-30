@@ -158,6 +158,9 @@
   };
 
   const getCatalog = () => {
+    if (typeof window.CV_GAMES_GET_VISIBLE_CATALOG === 'function') {
+      return window.CV_GAMES_GET_VISIBLE_CATALOG();
+    }
     const catalog = Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [];
     let nickname = '';
     try {
