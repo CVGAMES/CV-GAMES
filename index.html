@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Jogue online no CV GAMES: explore jogos leves, downloads e jogos exclusivos como CV STARFALL, CV NEON BREAKER, CV XADREZ, CV DAMAS, CV JOGO DA VELHA e CV QUADRADOS.">
+  <meta name="description" content="Jogue online no CV GAMES: explore jogos leves, downloads e jogos exclusivos como CV STARFALL, CV TUBOS, CV NEON BREAKER, CV XADREZ e CV DAMAS.">
   <meta property="og:title" content="CV GAMES — Jogos Online e Downloads">
   <meta property="og:description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES.">
   <meta property="og:type" content="website">
@@ -91,7 +91,7 @@
         <div class="hero-panel">
           <p class="eyebrow">Seu portal para jogar</p>
           <h1 id="hero-title">CV GAMES</h1>
-          <p class="hero-copy"><strong>Jogue, descubra e divirta-se.</strong><br>Uma seleção de jogos online, jogos leves e downloads disponíveis para encontrar sua próxima diversão. Conheça também CV TURBO CIRCUIT, CV NEON BREAKER, CV STARFALL, CV XADREZ, CV DAMAS, CV JOGO DA VELHA e CV QUADRADOS, jogos exclusivos criados para o portal.</p>
+          <p class="hero-copy"><strong>Jogue, descubra e divirta-se.</strong><br>Uma seleção de jogos online, jogos leves e downloads disponíveis para encontrar sua próxima diversão. Conheça também CV TUBOS, CV TURBO CIRCUIT, CV NEON BREAKER, CV STARFALL, CV XADREZ, CV DAMAS, CV JOGO DA VELHA e CV QUADRADOS, jogos exclusivos criados para o portal.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="#jogos">🎮 Explorar Jogos</a>
             <a class="button button-secondary" href="baixar.html">📥 Downloads</a>
@@ -180,7 +180,7 @@
       <div class="container">
         <div class="section-heading">
           <h2 id="titulo-recentes">🆕 Adicionados recentemente</h2>
-          <p>Preparado para ordenar automaticamente por data de adição em uma próxima fase.</p>
+          <p>Os jogos adicionados mais recentemente aparecem primeiro.</p>
         </div>
         <div class="game-grid" id="recent-games" aria-live="polite"></div>
       </div>
@@ -225,20 +225,22 @@
     </section>
   </main>
 
-  <dialog class="gx-announcement" data-gx-announcement aria-labelledby="gx-announcement-title" aria-describedby="gx-announcement-description">
-    <div class="gx-announcement-panel">
-      <button class="gx-announcement-close" type="button" data-gx-close aria-label="Fechar anúncio">×</button>
-      <div class="gx-announcement-preview">
-        <img src="img/gx-launcher-announcement.jpg" alt="Anúncio do Minecraft 26.3 e do bioma Mottled Forest" data-gx-poster>
+  <dialog class="news-invitation" data-news-invitation aria-labelledby="news-invitation-title" aria-describedby="news-invitation-description">
+    <div class="news-invitation-panel">
+      <button class="site-dialog-close" type="button" data-news-close aria-label="Fechar convite">×</button>
+      <div class="news-invitation-preview" aria-hidden="true">
+        <span class="news-preview-kicker">CV GAMES · ATUALIZAÇÕES</span>
+        <div class="news-preview-orbit"><span>🎮</span><i>✦</i><b>✨</b></div>
+        <strong>Tem novidade<br>por aqui.</strong>
+        <div class="news-preview-tags"><span>JOGOS</span><span>MELHORIAS</span><span>IDEIAS NOVAS</span></div>
       </div>
-      <div class="gx-announcement-content">
-        <p class="eyebrow">Novo portal externo</p>
-        <h2 id="gx-announcement-title">Minecraft - GX Launcher</h2>
-        <p id="gx-announcement-description">Uma nova aventura de blocos chegou ao catálogo. Acesse o GX Launcher e confira Minecraft 26.3 direto no navegador.</p>
-        <div class="gx-version-chip"><span aria-hidden="true">⛏️</span> Minecraft <strong>26.3</strong></div>
-        <div class="gx-announcement-actions">
-          <a class="button button-primary" href="https://gx-launcher.github.io/" target="_blank" rel="noopener noreferrer" data-gx-visit>Jogar agora ↗</a>
-          <button class="button button-secondary" type="button" data-gx-close>Continuar no CV GAMES</button>
+      <div class="news-invitation-content">
+        <p class="eyebrow">Novidades do portal</p>
+        <h2 id="news-invitation-title">Quer ver o que mudou?</h2>
+        <p id="news-invitation-description">Confira os jogos, recursos e melhorias mais recentes do CV GAMES em um só lugar.</p>
+        <div class="news-invitation-actions">
+          <a class="button button-primary" href="novidades.html" data-news-visit>Ver novidades →</a>
+          <button class="button button-secondary" type="button" data-news-close>Continuar no CV GAMES</button>
         </div>
       </div>
     </div>
@@ -246,7 +248,7 @@
 
   <dialog class="external-warning" data-external-warning-dialog aria-labelledby="external-warning-title" aria-describedby="external-warning-description">
     <div class="external-warning-content">
-      <button class="gx-announcement-close" type="button" data-warning-close aria-label="Fechar aviso">×</button>
+      <button class="site-dialog-close" type="button" data-warning-close aria-label="Fechar aviso">×</button>
       <span class="external-warning-icon" aria-hidden="true">!</span>
       <p class="eyebrow">Aviso de site externo</p>
       <h2 id="external-warning-title">Você está saindo do CV GAMES</h2>
@@ -273,6 +275,7 @@
         <a href="central.html">Central Gamer</a>
         <a href="sobre.html">Sobre</a>
         <a href="contato.html">Contato</a>
+        <a href="contato.html#feedback">Enviar feedback</a>
         <a href="privacidade.html">Privacidade</a>
         <a href="termos.html">Termos</a>
         <a href="perfil.html">Perfil</a>

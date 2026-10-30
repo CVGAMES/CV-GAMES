@@ -9,10 +9,15 @@
 ✨ **Novidades:** [Atualizações do site](https://cvgames.com.br/novidades.html)  
 📚 **Arquivo de novidades:** [Atualizações anteriores](https://cvgames.com.br/novidades-2.html)
 
-### Atualizações públicas — 19/10/2026
+### Atualizações públicas — outubro de 2026
 
-- **WASM Arcade:** novo portal externo de jogos de arcade na área Todos os jogos.
-- **Minecraft - GX Launcher:** acesso ao Minecraft 26.3 pelo GX Launcher, agora como a única opção de Minecraft no catálogo.
+- **30/10 — CV Tubos: Cores em Ordem:** jogo de lógica em fase de testes, disponível apenas nos perfis locais `educvv dev` e `educvv dev1`.
+- **30/10 — CV Jogo da Velha:** modo contra computador com estratégia completa, alternância de quem começa e placares separados por modo.
+- **30/10 — Formulário de feedback:** canal para enviar sugestões e relatar problemas em jogos ou no portal. A mensagem abre como rascunho no Gmail e depende de confirmação pelo visitante.
+- **30/10 — Ajustes para celular:** cartões mais fáceis de ler e efeitos visuais limitados em jogos para reduzir o trabalho gráfico em aparelhos móveis.
+- **19/10 — 2048:** jogo de lógica incluído no catálogo, aberto pelo site oficial do jogo.
+- **19/10 — Minecraft - GX Launcher:** acesso ao Minecraft 26.3 pelo GX Launcher, agora como a única opção de Minecraft no catálogo.
+- **14/10 — WASM Arcade:** portal externo de jogos de arcade disponível na área Todos os jogos.
 
 ## Sobre o projeto
 
@@ -23,6 +28,7 @@ O CV GAMES foi desenvolvido para tornar fácil descobrir e jogar diretamente no 
 - **CV STARFALL** — ação espacial com naves, habilidades, ondas e chefes.
 - **CV LABIRINTO: ESTAÇÃO PERDIDA** — exploração de uma estação tomada por robôs, com labirintos, cartões de acesso e limite de tempo.
 - **CV NEON BREAKER** — arcade de blocos com fases e habilidades.
+- **CV TUBOS: CORES EM ORDEM** — puzzle de organizar cores, com campanha, desafio diário, dicas e progresso local; acesso de teste restrito aos perfis `educvv dev` e `educvv dev1`.
 - **CV XADREZ** e **CV DAMAS** — jogos de tabuleiro para duas pessoas no mesmo dispositivo.
 - **CV QUADRADOS** e **CV JOGO DA VELHA** — desafios locais para dois jogadores.
 - **CV TURBO CIRCUIT** — corrida vista de cima contra pilotos controlados pelo jogo.
@@ -36,6 +42,7 @@ Alguns jogos podem estar em desenvolvimento, em teste ou com acesso limitado enq
 - Catálogo pesquisável, filtros por categoria e jogos em destaque.
 - Layout responsivo para celular e computador, com temas claro e escuro.
 - Favoritos, perfil e histórico de jogos salvos localmente no navegador.
+- Formulário de feedback que abre um rascunho no Gmail ou permite copiar o texto; o site não armazena as respostas.
 - Páginas próprias para os jogos CV, com controles e configurações específicos de cada jogo.
 - Central gamer, downloads e páginas informativas.
 - Emulador de NES que carrega arquivos compatíveis escolhidos pelo usuário no próprio navegador. O portal não fornece ROMs comerciais.
@@ -78,7 +85,7 @@ O site é publicado pelo **GitHub Pages** e usa o domínio personalizado [cvgame
 
 ## Autoria e conteúdo de terceiros
 
-Os jogos CV listados como autorais, o código e os elementos visuais criados especificamente para eles fazem parte do projeto CV GAMES. O catálogo também contém links para jogos e serviços de terceiros — por exemplo, o **WASM Arcade** — que abrem sites externos e não são propriedade do CV GAMES. Marcas, jogos, bibliotecas e materiais de terceiros pertencem aos respectivos titulares e podem ter termos e licenças próprios.
+Os jogos CV listados como autorais, o código e os elementos visuais criados especificamente para eles fazem parte do projeto CV GAMES. O catálogo também contém links para jogos e serviços de terceiros — por exemplo, o **WASM Arcade**, o **GX Launcher** e o **2048** — que abrem sites externos e não são propriedade do CV GAMES. Marcas, jogos, bibliotecas e materiais de terceiros pertencem aos respectivos titulares e podem ter termos e licenças próprios.
 
 O código do repositório está coberto pela licença [MIT](LICENSE). Essa licença não substitui os termos aplicáveis a conteúdo de terceiros incluído ou referenciado no projeto.
 

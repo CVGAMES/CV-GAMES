@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Canal oficial de contato do CV GAMES para dúvidas, conteúdo, direitos, jogos e downloads.">
+  <meta name="description" content="Envie feedback, sugestões e relatos de problemas ao CV GAMES pelo formulário ou pelo e-mail oficial.">
   <meta property="og:title" content="Contato | CV GAMES">
-  <meta property="og:description" content="Canal oficial de contato do CV GAMES para dúvidas, conteúdo, direitos, jogos e downloads.">
+  <meta property="og:description" content="Envie feedback, sugestões e relatos de problemas ao CV GAMES pelo formulário ou pelo e-mail oficial.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CV GAMES">
   <meta property="og:locale" content="pt_BR">
@@ -14,7 +14,7 @@
   <meta property="og:image:alt" content="Logo do CV GAMES">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Contato | CV GAMES">
-  <meta name="twitter:description" content="Canal oficial de contato do CV GAMES para dúvidas, conteúdo, direitos, jogos e downloads.">
+  <meta name="twitter:description" content="Envie feedback, sugestões e relatos de problemas ao CV GAMES pelo formulário ou pelo e-mail oficial.">
   <meta name="twitter:image" content="https://cvgames.com.br/img/onconee.png">
   <meta name="twitter:image:alt" content="Logo do CV GAMES">
   <title>Contato | CV GAMES</title>
@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/institutional.css">
   <script src="js/institutional.js" defer></script>
+  <script src="js/feedback-form.js" defer></script>
 </head>
 <body class="institutional-page">
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -59,16 +60,81 @@
       <section class="institutional-hero" aria-labelledby="contato-title">
         <p class="eyebrow">Canal oficial</p>
         <h1 id="contato-title">Contato</h1>
-        <p>Use o canal oficial do CV GAMES para assuntos relacionados ao portal.</p>
+        <p>Conte o que você achou, sugira uma melhoria ou relate um problema em um jogo ou em outra parte do portal.</p>
       </section>
 
       <div class="institutional-content">
         <section class="institutional-section" aria-labelledby="canal-title">
           <h2 id="canal-title">Entre em contato</h2>
-          <p>Para dúvidas, problemas com jogos ou downloads, solicitações relacionadas a conteúdo, direitos ou outras questões sobre o CV GAMES, entre em contato pelo nosso canal oficial.</p>
+          <p>Para dúvidas, problemas com jogos ou downloads, solicitações relacionadas a conteúdo, direitos ou outras questões sobre o CV GAMES, use o formulário de feedback ou o e-mail oficial.</p>
           <p><strong>E-mail:</strong></p>
-          <div class="institutional-links"><a class="button button-primary" href="mailto:cvgames.ofc@gmail.com">cvgames.ofc@gmail.com</a></div>
-          <div class="institutional-note"><p>Este é o canal público de contato do CV GAMES. Não há formulário, telefone, endereço ou atendimento em redes sociais publicado pelo site.</p></div>
+          <div class="institutional-links"><a class="button button-primary" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=cvgames.ofc%40gmail.com" target="_blank" rel="noopener noreferrer">Escrever pelo Gmail ↗</a></div>
+          <div class="institutional-note"><p>O formulário abre um rascunho no Gmail para você revisar e enviar. O site não guarda as respostas. Não há telefone ou atendimento em redes sociais publicado pelo CV GAMES.</p></div>
+        </section>
+
+        <section class="institutional-section" id="feedback" aria-labelledby="feedback-title">
+          <h2 id="feedback-title">Enviar feedback</h2>
+          <p>Escolha o jogo ou a área, conte o que aconteceu e diga em qual aparelho estava. Seu e-mail é opcional.</p>
+
+          <form class="feedback-form" data-feedback-form>
+            <div class="feedback-form-grid">
+              <label class="feedback-field" for="feedback-game">
+                <span>Jogo ou área <strong aria-hidden="true">*</strong></span>
+                <select id="feedback-game" name="game" required>
+                  <option value="">Escolha uma opção</option>
+                  <option>CV STARFALL</option>
+                  <option>CV TUBOS: CORES EM ORDEM</option>
+                  <option>CV NEON BREAKER</option>
+                  <option>CV XADREZ</option>
+                  <option>CV DAMAS</option>
+                  <option>Outro jogo do catálogo</option>
+                  <option>Site ou navegação</option>
+                  <option>Downloads ou emuladores</option>
+                </select>
+              </label>
+
+              <label class="feedback-field" for="feedback-type">
+                <span>Tipo de feedback <strong aria-hidden="true">*</strong></span>
+                <select id="feedback-type" name="type" required>
+                  <option value="">Escolha uma opção</option>
+                  <option>Relatar um problema</option>
+                  <option>Sugerir uma melhoria</option>
+                  <option>Desempenho ou lentidão</option>
+                  <option>Comentário ou elogio</option>
+                </select>
+              </label>
+
+              <label class="feedback-field" for="feedback-device">
+                <span>Aparelho <strong aria-hidden="true">*</strong></span>
+                <select id="feedback-device" name="device" required>
+                  <option value="">Escolha uma opção</option>
+                  <option>Celular</option>
+                  <option>Tablet</option>
+                  <option>Computador</option>
+                  <option>TV</option>
+                  <option>Outro</option>
+                </select>
+              </label>
+
+              <label class="feedback-field" for="feedback-browser">
+                <span>Navegador <small>(opcional)</small></span>
+                <input id="feedback-browser" name="browser" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: Chrome, Safari, Firefox">
+              </label>
+            </div>
+
+            <label class="feedback-field" for="feedback-message">
+              <span>Conte o que aconteceu ou sua ideia <strong aria-hidden="true">*</strong></span>
+              <textarea id="feedback-message" name="message" rows="5" minlength="10" maxlength="1500" required placeholder="Se puder, descreva os passos para encontrar o problema ou explique como seria a melhoria."></textarea>
+              <small>De 10 a 1.500 caracteres. Não inclua senhas nem informações pessoais sensíveis.</small>
+            </label>
+
+            <div class="feedback-actions">
+              <button class="button button-primary" type="submit">Abrir rascunho no Gmail</button>
+              <button class="button button-secondary" type="button" data-copy-feedback>Copiar mensagem</button>
+            </div>
+            <p class="feedback-status" data-feedback-status role="status" aria-live="polite"></p>
+            <p class="feedback-privacy">O botão abre o Gmail em outra aba com a mensagem preenchida. Nada é enviado até você clicar em Enviar. Se o Gmail não abrir, use “Copiar mensagem” e envie para <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=cvgames.ofc%40gmail.com" target="_blank" rel="noopener noreferrer">cvgames.ofc@gmail.com</a>.</p>
+          </form>
         </section>
 
         <section class="institutional-section" aria-labelledby="assuntos-title">
@@ -78,7 +144,7 @@
             <div class="contact-topic"><strong>Jogos</strong><span>Dúvidas ou problemas relacionados às páginas do portal.</span></div>
             <div class="contact-topic"><strong>Downloads</strong><span>Informações sobre links listados e disponibilidade externa.</span></div>
             <div class="contact-topic"><strong>Conteúdo e direitos</strong><span>Solicitações relacionadas a conteúdo publicado ou a marcas de terceiros.</span></div>
-            <div class="contact-topic"><strong>Jogos exclusivos</strong><span>Comentários sobre CV STARFALL e CV NEON BREAKER.</span></div>
+            <div class="contact-topic"><strong>Jogos exclusivos</strong><span>Comentários sobre CV STARFALL, CV TUBOS, CV NEON BREAKER e outros jogos do CV GAMES.</span></div>
           </div>
         </section>
 
