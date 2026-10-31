@@ -1,0 +1,167 @@
+html.cv-intro-pending,
+html.cv-intro-pending body { overflow:hidden; }
+
+.brand-splash {
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 45%,rgba(44,145,210,.18),transparent 32rem),
+    radial-gradient(ellipse at 50% 110%,rgba(91,65,190,.14),transparent 34rem),
+    #07111f;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+html.cv-intro-pending .brand-splash {
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+.brand-splash::before,
+.brand-splash::after {
+  position:absolute;
+  width:min(70vw,34rem);
+  aspect-ratio:1;
+  border:1px solid rgba(103,214,255,.1);
+  border-radius:50%;
+  content:"";
+  pointer-events:none;
+}
+
+.brand-splash::after {
+  width:min(52vw,25rem);
+  border-color:rgba(141,117,255,.12);
+  box-shadow:0 0 90px rgba(55,162,226,.08),inset 0 0 70px rgba(89,116,255,.05);
+}
+
+.brand-splash-lockup {
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(.75rem,2.4vw,1.3rem);
+  padding:1.2rem;
+}
+
+.brand-splash-lockup::before {
+  position:absolute;
+  z-index:-1;
+  width:8rem;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:rgba(65,180,244,.24);
+  filter:blur(42px);
+  opacity:0;
+  content:"";
+  animation:brand-splash-glow 1.2s ease-out .08s both;
+}
+
+.brand-splash-lockup img {
+  display:block;
+  width:clamp(3.7rem,11vw,5.3rem);
+  height:clamp(3.7rem,11vw,5.3rem);
+  flex:0 0 auto;
+  border-radius:24%;
+  object-fit:cover;
+  box-shadow:0 12px 34px rgba(36,160,226,.3),0 0 0 1px rgba(255,255,255,.12);
+  opacity:0;
+  transform:scale(.55) rotate(-18deg);
+  animation:brand-splash-logo-in .88s cubic-bezier(.18,.82,.24,1.18) .08s forwards;
+}
+
+.brand-splash-lockup span {
+  display:block;
+  overflow:hidden;
+  color:#f5f8ff;
+  font-size:clamp(1.8rem,6vw,3.2rem);
+  font-weight:1000;
+  letter-spacing:.28em;
+  line-height:1;
+  text-shadow:0 0 30px rgba(103,214,255,.3);
+  white-space:nowrap;
+  clip-path:inset(0 100% 0 0);
+  opacity:0;
+  transform:translateX(1rem);
+  animation:brand-splash-wordmark-in .58s cubic-bezier(.2,.8,.2,1) .55s forwards;
+}
+
+.brand-splash-skip {
+  position:absolute;
+  top:max(1rem,env(safe-area-inset-top));
+  right:max(1rem,env(safe-area-inset-right));
+  display:inline-flex;
+  min-height:2.65rem;
+  align-items:center;
+  gap:.4rem;
+  padding:.45rem .8rem;
+  border:1px solid rgba(190,220,245,.22);
+  border-radius:999px;
+  background:rgba(14,27,47,.76);
+  color:#d8e8f7;
+  font:inherit;
+  font-size:.78rem;
+  font-weight:800;
+  cursor:pointer;
+  backdrop-filter:blur(12px);
+  transition:border-color .16s ease,background .16s ease,transform .16s ease;
+}
+
+.brand-splash-skip:hover,
+.brand-splash-skip:focus-visible {
+  transform:translateY(-1px);
+  border-color:rgba(103,214,255,.7);
+  background:rgba(27,52,87,.9);
+  outline:3px solid rgba(103,214,255,.24);
+  outline-offset:3px;
+}
+
+.brand-splash.is-exiting { animation:brand-splash-exit .42s ease-in forwards; }
+
+@keyframes brand-splash-logo-in {
+  0% { opacity:0; transform:scale(.55) rotate(-18deg); }
+  62% { opacity:1; transform:scale(1.08) rotate(386deg); }
+  100% { opacity:1; transform:scale(1) rotate(360deg); }
+}
+
+@keyframes brand-splash-wordmark-in {
+  from { opacity:0; clip-path:inset(0 100% 0 0); letter-spacing:.28em; transform:translateX(1rem); }
+  to { opacity:1; clip-path:inset(0); letter-spacing:.035em; transform:translateX(0); }
+}
+
+@keyframes brand-splash-glow {
+  0% { opacity:0; transform:scale(.45); }
+  55% { opacity:.9; transform:scale(1.2); }
+  100% { opacity:.45; transform:scale(1); }
+}
+
+@keyframes brand-splash-exit {
+  to { opacity:0; visibility:hidden; }
+}
+
+@media (max-width:480px) {
+  .brand-splash-lockup { gap:.6rem; padding:.65rem; }
+  .brand-splash-lockup span { font-size:clamp(1.6rem,7vw,2.15rem); }
+  .brand-splash-skip { min-height:2.45rem; padding:.4rem .7rem; }
+}
+
+html.cv-intro-reduced .brand-splash-lockup img,
+html.cv-intro-reduced .brand-splash-lockup span,
+html.cv-intro-reduced .brand-splash-lockup::before {
+  opacity:1;
+  transform:none;
+  clip-path:none;
+  animation:none;
+}
+
+html.cv-intro-reduced .brand-splash.is-exiting { animation-duration:.16s; }
+
+@media (prefers-reduced-motion:reduce) {
+  .brand-splash-skip { transition:none; }
+}

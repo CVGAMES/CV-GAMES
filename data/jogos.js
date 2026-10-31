@@ -223,16 +223,22 @@ window.CV_GAMES_CATALOG = [
     rating: 5, addedAt: '2026-10-05', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
   },
   {
+    id: 'cv-jogo-da-velha', title: 'CV JOGO DA VELHA', category: 'Puzzle', categoryKey: 'puzzle',
+    description: 'Desafie outra pessoa no mesmo dispositivo, complete três símbolos em linha e acompanhe o placar.', tags: ['jogo da velha', 'tic tac toe', '2 jogadores', 'multiplayer local', 'estrategia', 'cv jogo da velha'],
+    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-jogo-da-velha/index.html', image: 'games/cv-jogo-da-velha/cover.svg', fallback: '⭕',
+    rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
+  },
+  {
     id: 'cv-tubos', title: 'CV TUBOS: CORES EM ORDEM', category: 'Puzzle', categoryKey: 'puzzle',
     description: 'Organize as cores nos tubos, avance por fases, use dicas e tente o desafio diário.', tags: ['cv tubos', 'cores em ordem', 'water sort', 'puzzle', 'logica', 'desafio diario', 'cv games'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-tubos/index.html', image: 'games/cv-tubos/cover.svg', fallback: '🧪',
     rating: 5, addedAt: '2026-10-30', featured: false, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
-    id: 'cv-jogo-da-velha', title: 'CV JOGO DA VELHA', category: 'Puzzle', categoryKey: 'puzzle',
-    description: 'Desafie outra pessoa no mesmo dispositivo, complete três símbolos em linha e acompanhe o placar.', tags: ['jogo da velha', 'tic tac toe', '2 jogadores', 'multiplayer local', 'estrategia', 'cv jogo da velha'],
-    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-jogo-da-velha/index.html', image: 'games/cv-jogo-da-velha/cover.svg', fallback: '⭕',
-    rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
+    id: 'cv-batalha-naval', title: 'CV BATALHA NAVAL', category: 'Estratégia', categoryKey: 'estrategia',
+    description: 'Posicione sua frota, leia os sinais no oceano e encontre os navios adversários em uma batalha tática.', tags: ['batalha naval', 'navios', 'estrategia', 'tabuleiro', 'contra o computador', 'cv games'],
+    type: 'Jogo online', platform: 'Navegador', href: 'games/cv-batalha-naval/index.html', image: 'games/cv-batalha-naval/cover.svg', fallback: '⚓',
+    rating: 5, addedAt: '2026-10-30', featured: false, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
   },
   {
     id: 'cv-quadrados', title: 'CV QUADRADOS', category: 'Puzzle', categoryKey: 'puzzle',
@@ -258,7 +264,8 @@ window.CV_GAMES_GET_VISIBLE_CATALOG = function () {
     (game.id !== 'cv-dodge' || canUseOrbital)
     && (game.id !== 'cv-turbo-circuit' || canUseDevGames)
     && (game.id !== 'cv-labirinto' || canUseDevGames)
-    && (game.id !== 'cv-tubos' || canUseDevGames));
+    && (game.id !== 'cv-tubos' || canUseDevGames)
+    && (game.id !== 'cv-batalha-naval' || canUseDevGames));
 };
 
 window.CV_GAMES_GET_VISIBLE_FAVORITE_IDS = function () {
