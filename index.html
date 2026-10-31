@@ -40,7 +40,19 @@
       // O tema escuro definido no HTML continua como padrão seguro.
     }
   </script>
+  <script>
+    try {
+      if (sessionStorage.getItem('cv-games-intro-seen') !== '1') {
+        sessionStorage.setItem('cv-games-intro-seen', '1');
+        document.documentElement.classList.add('cv-intro-pending');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('cv-intro-reduced');
+      }
+    } catch {
+      // A abertura não bloqueia o site se o armazenamento da sessão estiver indisponível.
+    }
+  </script>
   <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/brand-splash.css">
   <link rel="stylesheet" href="css/site-dialog.css">
   <script src="data/jogos.js" defer></script>
   <script src="js/profile-store.js" defer></script>
@@ -48,8 +60,17 @@
   <script src="js/achievements.js" defer></script>
   <script src="js/site-dialog.js" defer></script>
   <script src="js/home.js" defer></script>
+  <script src="js/brand-splash.js" defer></script>
 </head>
 <body>
+  <div class="brand-splash" data-brand-splash role="region" aria-label="Abertura do CV GAMES">
+    <div class="brand-splash-lockup">
+      <img src="img/onconee.png" alt="">
+      <span>CV GAMES</span>
+    </div>
+    <button class="brand-splash-skip" type="button" data-brand-splash-skip><span aria-hidden="true">⏭</span><span>Pular abertura</span></button>
+  </div>
+
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
   <header class="site-header" id="inicio">
@@ -91,7 +112,7 @@
         <div class="hero-panel">
           <p class="eyebrow">Seu portal para jogar</p>
           <h1 id="hero-title">CV GAMES</h1>
-          <p class="hero-copy"><strong>Jogue, descubra e divirta-se.</strong><br>Uma seleção de jogos online, jogos leves e downloads disponíveis para encontrar sua próxima diversão. Conheça também CV TUBOS, CV TURBO CIRCUIT, CV NEON BREAKER, CV STARFALL, CV XADREZ, CV DAMAS, CV JOGO DA VELHA e CV QUADRADOS, jogos exclusivos criados para o portal.</p>
+          <p class="hero-copy"><strong>Jogue, descubra e divirta-se.</strong><br>Uma seleção de jogos online, jogos leves e downloads disponíveis para encontrar sua próxima diversão. Conheça também CV NEON BREAKER, CV STARFALL, CV XADREZ, CV DAMAS, CV JOGO DA VELHA e CV QUADRADOS, jogos exclusivos criados para o portal.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="#jogos">🎮 Explorar Jogos</a>
             <a class="button button-secondary" href="baixar.html">📥 Downloads</a>
