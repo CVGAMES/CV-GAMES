@@ -1,0 +1,171 @@
+.naval-page { min-height:100vh; }
+.naval-main { padding:clamp(1rem,3vw,2.4rem) 0 4rem; }
+.naval-back { display:inline-flex; margin-bottom:1rem; color:var(--muted); font-size:.88rem; font-weight:850; text-decoration:none; }
+.naval-back:hover,.naval-back:focus-visible { color:var(--primary); }
+.naval-kicker { margin:0 0 .4rem; color:#83dfe8; font-size:.64rem; font-weight:950; letter-spacing:.16em; }
+.naval-hero,.naval-lobby,.naval-game-view,.naval-board-card,.naval-fleet-panel,.naval-turn-status,.naval-log-card,.naval-access-card { border:1px solid var(--line); border-radius:1.15rem; background:var(--surface); box-shadow:var(--shadow); }
+.naval-hero { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:clamp(1.2rem,3vw,2rem); overflow:hidden; background:radial-gradient(ellipse at 82% 12%,rgba(49,199,216,.22),transparent 43%),radial-gradient(ellipse at 100% 100%,rgba(36,111,174,.16),transparent 48%),var(--surface); }
+.naval-hero h1 { margin:0; font-size:clamp(2.25rem,6vw,4.5rem); letter-spacing:-.07em; line-height:.95; }
+.naval-hero h1 span { display:block; color:#8ce6ed; text-shadow:0 0 30px rgba(76,216,229,.24); }
+.naval-hero>div>p:not(.naval-kicker) { margin:.7rem 0 0; color:var(--muted); }
+.naval-hero-tags { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:1rem; }
+.naval-hero-tags span { padding:.32rem .56rem; border:1px solid rgba(118,203,222,.2); border-radius:999px; background:rgba(31,78,106,.28); color:#c5eaf0; font-size:.66rem; font-weight:800; }
+.naval-hero-mark { color:rgba(107,218,230,.55); font-size:clamp(4rem,12vw,8rem); line-height:1; filter:drop-shadow(0 0 24px rgba(67,199,226,.28)); }
+.naval-lobby { margin-top:1rem; padding:clamp(1rem,3vw,1.7rem); }
+.naval-lobby-copy { max-width:44rem; }
+.naval-lobby-copy h2,.naval-stage-heading h2,.naval-battle-heading h2 { margin:0; font-size:clamp(1.55rem,3.3vw,2.15rem); letter-spacing:-.045em; }
+.naval-lobby-copy>p:last-child,.naval-stage-heading>div>p:last-child { margin:.45rem 0 0; color:var(--muted); line-height:1.55; }
+.naval-mode-grid { display:grid; grid-template-columns:minmax(0,34rem); justify-content:center; gap:.8rem; margin-top:1.1rem; }
+.naval-mode-grid[hidden] { display:none!important; }
+.naval-mode-card { display:flex; min-height:13rem; flex-direction:column; align-items:flex-start; gap:.5rem; padding:1.1rem; border:1px solid rgba(92,210,224,.35); border-radius:1rem; background:linear-gradient(145deg,rgba(27,139,165,.17),var(--bg-soft) 72%); color:var(--text); text-align:left; cursor:pointer; transition:transform .16s ease,border-color .16s ease,background .16s ease; }
+.naval-mode-card:hover,.naval-mode-card:focus-visible { transform:translateY(-2px); border-color:#78e3eb; background:linear-gradient(145deg,rgba(27,139,165,.28),var(--bg-soft) 72%); }
+.naval-mode-icon { font-size:1.45rem; font-weight:900; }
+.naval-mode-tag { color:#8fe8ed; font-size:.59rem; font-weight:950; letter-spacing:.15em; }
+.naval-mode-card>strong { font-size:1.08rem; }
+.naval-mode-card>span:not(.naval-mode-icon):not(.naval-mode-tag) { color:var(--muted); font-size:.84rem; line-height:1.5; }
+.naval-mode-card>b { display:flex; width:100%; justify-content:space-between; margin-top:auto; padding-top:.5rem; color:#8fe8ed; font-size:.84rem; }
+.naval-game-view { margin-top:1rem; padding:clamp(.55rem,1.4vw,1rem); }
+.naval-game-view[hidden],.naval-deploy-stage[hidden],.naval-battle-stage[hidden],.naval-access-card[hidden] { display:none!important; }
+.naval-toolbar { display:flex; align-items:center; justify-content:space-between; gap:.8rem; margin-bottom:.9rem; }
+.naval-live-card { display:flex; min-width:10rem; align-items:center; gap:.62rem; }
+.naval-live-card>span:last-child { display:grid; gap:.1rem; }
+.naval-live-card small,.naval-board-card header small,.naval-fleet-heading small,.naval-log-card>div>small { color:var(--muted); font-size:.54rem; font-weight:950; letter-spacing:.14em; }
+.naval-live-card strong { font-size:.9rem; }
+.naval-live-card em { width:fit-content; padding:.1rem .35rem; border:1px solid rgba(183,164,255,.3); border-radius:999px; background:rgba(150,128,235,.12); color:#c9bcff; font-size:.52rem; font-style:normal; font-weight:900; }
+.naval-live-card em[hidden] { display:none; }
+.naval-live-dot { width:.75rem; flex:0 0 auto; aspect-ratio:1; border-radius:50%; background:#64dce5; box-shadow:0 0 13px rgba(100,220,229,.48); }
+.naval-toolbar-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.38rem; }
+.naval-tool-button,.naval-secondary-button,.naval-text-button,.naval-primary-button { display:inline-flex; min-height:2.55rem; align-items:center; justify-content:center; gap:.38rem; padding:.4rem .72rem; border:1px solid var(--line); border-radius:.7rem; background:var(--bg-soft); color:var(--text); font:inherit; font-size:.74rem; font-weight:850; cursor:pointer; transition:transform .15s ease,border-color .15s ease,background .15s ease; }
+.naval-tool-button:hover,.naval-tool-button:focus-visible,.naval-secondary-button:hover,.naval-secondary-button:focus-visible { transform:translateY(-1px); border-color:#7edfe7; background:var(--surface-hover); }
+.naval-fullscreen-button { border-color:rgba(103,220,228,.38); color:#8fe8ed; }
+.naval-tool-button:disabled,.naval-secondary-button:disabled,.naval-primary-button:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+.naval-stage-heading,.naval-battle-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; margin:.25rem 0 1rem; }
+.naval-ready-counter,.naval-ships-left { flex:0 0 auto; padding:.42rem .7rem; border:1px solid rgba(86,212,221,.28); border-radius:999px; background:rgba(40,143,163,.12); color:#a3edf0; font-size:.68rem; font-weight:900; }
+.naval-deploy-layout { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(17rem,.8fr); align-items:start; gap:clamp(.7rem,1.5vw,1rem); }
+.naval-board-card { min-width:0; padding:clamp(.65rem,1.4vw,1rem); background:radial-gradient(ellipse at 50% 55%,rgba(47,141,175,.1),transparent 64%),var(--bg-soft); }
+.naval-board-card>header { display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.65rem; }
+.naval-board-card header h3,.naval-fleet-heading h3,.naval-log-card h3 { margin:.12rem 0 0; font-size:.95rem; }
+.naval-board-legend { display:inline-flex; align-items:center; gap:.36rem; color:var(--muted); font-size:.62rem; font-weight:750; white-space:nowrap; }
+.naval-board-legend i { width:.62rem; aspect-ratio:1; border:1px solid rgba(111,235,241,.5); border-radius:.17rem; background:#247a95; }
+.naval-board-legend .naval-legend-target { border-color:rgba(255,142,119,.6); background:#c95853; }
+.naval-board-shell { display:grid; width:min(100%,39rem); grid-template-columns:1.05rem minmax(0,1fr); grid-template-rows:1.15rem auto; gap:3px; margin-inline:auto; }
+.naval-axis-corner { display:grid; place-items:center; color:#56738e; font-size:.7rem; }
+.naval-axis { display:grid; color:#86a9c3; font-size:clamp(.49rem,1.3vw,.65rem); font-weight:900; text-align:center; }
+.naval-axis-columns { grid-template-columns:repeat(10,minmax(0,1fr)); align-items:end; }
+.naval-axis-rows { grid-template-rows:repeat(10,minmax(0,1fr)); align-items:center; }
+.naval-grid { display:grid; min-width:0; grid-template-columns:repeat(10,minmax(0,1fr)); gap:2px; aspect-ratio:1; padding:3px; border:1px solid rgba(97,190,211,.25); border-radius:.55rem; background:linear-gradient(145deg,#0a2138,#102d49); box-shadow:inset 0 0 25px rgba(41,129,169,.11); }
+.naval-cell { position:relative; display:grid; min-width:0; aspect-ratio:1; place-items:center; padding:0; border:1px solid rgba(97,192,211,.14); border-radius:clamp(2px,.28rem,.38rem); background:linear-gradient(145deg,rgba(38,104,140,.48),rgba(20,68,103,.58)); color:#dff7fa; font:inherit; font-size:clamp(.5rem,1.5vw,.94rem); font-weight:950; line-height:1; cursor:pointer; transition:background .12s ease,border-color .12s ease,transform .12s ease,box-shadow .12s ease; }
+.naval-cell:hover:not(:disabled),.naval-cell:focus-visible:not(:disabled) { z-index:1; transform:scale(1.08); border-color:#8cecf0; background:#266b87; outline:2px solid rgba(125,232,236,.24); outline-offset:1px; box-shadow:0 0 12px rgba(82,204,218,.23); }
+.naval-cell:disabled { cursor:default; }
+.naval-cell.is-ship { border-color:rgba(130,238,240,.44); background:linear-gradient(145deg,#2a9ab0,#236a88); color:#dffeff; box-shadow:inset 0 0 0 1px rgba(221,255,255,.08); }
+.naval-cell.is-ship.ship-bow { border-left-color:rgba(210,255,255,.76); }
+.naval-cell.is-ship.ship-stern { border-right-color:rgba(210,255,255,.76); }
+.naval-cell.is-miss { border-color:rgba(115,188,220,.22); background:rgba(64,133,175,.16); color:#74c5e4; }
+.naval-cell.is-hit { border-color:rgba(255,153,132,.7); background:radial-gradient(circle,#ffb095 0 13%,#d75455 18% 65%,#782d43 100%); color:#fff4ef; text-shadow:0 1px 4px rgba(0,0,0,.55); animation:naval-hit-pop .2s ease-out; }
+.naval-cell.is-sunk { border-color:rgba(255,122,112,.72); background:linear-gradient(145deg,#682e42,#391d32); color:#ffb6a0; }
+.naval-cell.is-miss::after { display:block; width:22%; aspect-ratio:1; border-radius:50%; background:#72c9e5; box-shadow:0 0 8px rgba(105,204,234,.65); content:""; }
+.naval-board-hint { min-height:1.2em; margin:.55rem 0 0; color:var(--muted); font-size:.64rem; text-align:center; }
+.naval-fleet-panel { display:grid; gap:.75rem; padding:1rem; background:linear-gradient(150deg,rgba(27,78,112,.34),var(--surface) 62%); }
+.naval-fleet-heading { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+.naval-fleet-heading>span { display:grid; width:2.6rem; aspect-ratio:1; place-items:center; border:1px solid rgba(97,203,220,.28); border-radius:.8rem; background:rgba(46,150,177,.12); color:#86e4eb; font-size:1.35rem; }
+.naval-ship-list { display:grid; gap:.42rem; }
+.naval-ship-choice { display:flex; min-width:0; align-items:center; gap:.6rem; padding:.55rem .6rem; border:1px solid var(--line); border-radius:.65rem; background:var(--bg-soft); color:var(--text); text-align:left; cursor:pointer; transition:border-color .14s ease,background .14s ease,transform .14s ease; }
+.naval-ship-choice:hover:not(:disabled),.naval-ship-choice:focus-visible:not(:disabled) { transform:translateY(-1px); border-color:rgba(110,226,233,.65); }
+.naval-ship-choice.is-selected { border-color:rgba(113,228,235,.66); background:rgba(47,151,173,.17); box-shadow:0 0 0 1px rgba(113,228,235,.1); }
+.naval-ship-choice:disabled { cursor:default; opacity:.58; }
+.naval-ship-silhouette { overflow:hidden; color:#89e8ed; font-size:.56rem; letter-spacing:-.28em; white-space:nowrap; }
+.naval-ship-copy { display:grid; min-width:0; gap:.06rem; }
+.naval-ship-copy strong { font-size:.74rem; }
+.naval-ship-copy small { color:var(--muted); font-size:.59rem; }
+.naval-ship-choice em { margin-left:auto; color:var(--muted); font-size:.53rem; font-style:normal; font-weight:800; white-space:nowrap; }
+.naval-ship-choice.is-selected em { color:#a8edf0; }
+.naval-placement-controls { display:grid; grid-template-columns:1fr 1fr; gap:.42rem; }
+.naval-secondary-button { min-width:0; padding-inline:.45rem; font-size:.68rem; }
+.naval-text-button { min-height:2.1rem; grid-column:1/-1; border-color:transparent; background:transparent; color:var(--muted); font-size:.65rem; }
+.naval-text-button:hover,.naval-text-button:focus-visible { color:#ffb3a1; }
+.naval-primary-button { width:100%; min-height:3rem; border-color:rgba(108,224,230,.56); background:linear-gradient(130deg,#64ddea,#30acd0); color:#062033; font-size:.9rem; font-weight:1000; box-shadow:0 8px 22px rgba(42,178,207,.2); }
+.naval-primary-button:hover:not(:disabled),.naval-primary-button:focus-visible:not(:disabled) { transform:translateY(-2px); filter:brightness(1.06); }
+.naval-small-note { margin:0; color:var(--muted); font-size:.62rem; line-height:1.5; text-align:center; }
+.naval-battle-heading { align-items:center; }
+.naval-turn-status { display:flex; align-items:center; gap:.75rem; margin-bottom:.85rem; padding:.75rem .9rem; border-color:rgba(95,212,223,.25); background:linear-gradient(105deg,rgba(27,125,150,.16),var(--surface)); }
+.naval-turn-status[data-turn="computer"] { border-color:rgba(255,147,119,.3); background:linear-gradient(105deg,rgba(157,67,69,.16),var(--surface)); }
+.naval-status-symbol { display:grid; width:2.5rem; flex:0 0 auto; aspect-ratio:1; place-items:center; border:1px solid rgba(105,220,229,.28); border-radius:.7rem; background:rgba(77,184,205,.14); color:#8ce7ee; font-size:1.25rem; }
+.naval-turn-status[data-turn="computer"] .naval-status-symbol { border-color:rgba(255,151,125,.35); background:rgba(204,89,83,.13); color:#ffac91; }
+.naval-turn-status>div { min-width:0; }
+.naval-turn-status>div strong { font-size:.86rem; }
+.naval-turn-status>div p { margin:.1rem 0 0; color:var(--muted); font-size:.68rem; }
+.naval-shot-counter { margin-left:auto; color:#9cc5d7; font-size:.65rem; font-weight:850; white-space:nowrap; }
+.naval-battleboards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:.8rem; }
+.naval-battleboards .naval-board-card { padding:clamp(.55rem,1vw,.9rem); }
+.naval-battleboards .naval-board-shell { width:min(100%,34rem); }
+.naval-log-card { display:grid; grid-template-columns:minmax(9rem,.38fr) minmax(0,1fr); align-items:center; gap:.8rem; margin-top:.8rem; padding:.72rem .9rem; background:var(--bg-soft); }
+.naval-log-card h3 { font-size:.82rem; }
+.naval-log-card ol { display:flex; min-width:0; flex-wrap:wrap; gap:.32rem; margin:0; padding:0; list-style:none; }
+.naval-log-card li { display:flex; align-items:center; gap:.35rem; padding:.28rem .45rem; border:1px solid var(--line); border-radius:.45rem; background:var(--surface); color:var(--muted); font-size:.57rem; }
+.naval-log-card li>span { color:#a1c7d6; font-weight:900; }
+.naval-log-card li strong { font-size:inherit; }
+.naval-log-card li[data-result="hit"],.naval-log-card li[data-result="sunk"] { border-color:rgba(255,145,121,.28); color:#ffc0aa; }
+.naval-log-card li[data-result="miss"] { border-color:rgba(84,176,218,.25); color:#9bd9ee; }
+.naval-log-card li.is-latest { box-shadow:0 0 0 1px rgba(135,216,226,.16); }
+.naval-result-overlay { position:fixed; inset:0; z-index:10000; display:grid; place-items:center; padding:1rem; background:rgba(3,9,17,.74); backdrop-filter:blur(8px); }
+.naval-result-overlay[hidden] { display:none; }
+.naval-result-card { display:grid; width:min(100%,28rem); justify-items:center; gap:.65rem; padding:clamp(1.3rem,4vw,2.1rem); border:1px solid rgba(95,215,225,.38); border-radius:1.25rem; background:radial-gradient(ellipse at 50% 0%,rgba(52,182,203,.18),transparent 60%),var(--surface); box-shadow:0 28px 90px rgba(0,0,0,.5); text-align:center; animation:naval-hit-pop .24s ease-out; }
+.naval-result-mark { display:grid; width:3.2rem; aspect-ratio:1; place-items:center; border:1px solid rgba(103,219,229,.3); border-radius:1rem; background:rgba(57,162,185,.13); color:#91e8ec; font-size:1.7rem; }
+.naval-result-card .naval-kicker { margin:0; }
+.naval-result-card h2 { margin:0; font-size:clamp(1.8rem,6vw,2.5rem); letter-spacing:-.05em; }
+.naval-result-card>p:not(.naval-kicker) { margin:0; color:var(--muted); font-size:.86rem; }
+.naval-result-stats { display:grid; width:100%; grid-template-columns:1fr 1fr; gap:.5rem; margin:.25rem 0; }
+.naval-result-stats span { display:grid; gap:.2rem; padding:.65rem; border:1px solid var(--line); border-radius:.7rem; background:var(--bg-soft); color:var(--muted); font-size:.6rem; }
+.naval-result-stats strong { color:var(--text); font-size:1.25rem; }
+.naval-access-card { margin:clamp(1.2rem,5vw,4rem) auto; max-width:45rem; padding:clamp(1.2rem,3vw,2rem); }
+.naval-access-card>p:first-child { color:#ffbb62; font-size:.67rem; font-weight:950; letter-spacing:.15em; }
+.naval-access-card h1 { margin:.2rem 0 .6rem; }
+.naval-access-card>p { color:var(--muted); }
+.naval-access-card>div { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin-top:1rem; }
+.naval-access-card>div>a:last-child { color:var(--muted); font-size:.82rem; }
+.naval-sr-only { position:absolute!important; width:1px!important; height:1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; clip-path:inset(50%)!important; white-space:nowrap!important; }
+.naval-game-view:fullscreen,.naval-game-view.is-fullscreen-fallback { box-sizing:border-box; width:100vw; height:100vh; height:100dvh; max-height:100dvh; margin:0; overflow:auto; border:0; border-radius:0; background:var(--bg); }
+.naval-game-view.is-fullscreen-fallback { position:fixed; inset:0; z-index:9999; }
+body.has-fullscreen-fallback { overflow:hidden; }
+@keyframes naval-hit-pop { from { opacity:.5; transform:scale(.97); } to { opacity:1; transform:scale(1); } }
+@media (max-width:900px) {
+  .naval-deploy-layout { grid-template-columns:minmax(0,1fr); }
+  .naval-board-shell { width:min(100%,39rem); }
+  .naval-fleet-panel { grid-template-columns:1fr; }
+  .naval-ship-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .naval-placement-controls { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:680px) {
+  .naval-main { padding-bottom:2.5rem; }
+  .naval-hero-mark { font-size:3.4rem; }
+  .naval-hero-tags { gap:.32rem; }
+  .naval-hero-tags span { font-size:.58rem; }
+  .naval-mode-grid { grid-template-columns:1fr; }
+  .naval-mode-card { min-height:11rem; }
+  .naval-toolbar { align-items:flex-start; flex-direction:column; }
+  .naval-toolbar-actions { display:grid; width:100%; grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .naval-tool-button { min-width:0; padding:.35rem .25rem; font-size:.63rem; }
+  .naval-tool-button span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .naval-battleboards { grid-template-columns:1fr; }
+  .naval-battleboards .naval-board-shell { width:min(100%,31rem); }
+  .naval-log-card { grid-template-columns:1fr; gap:.5rem; }
+  .naval-log-card ol { max-height:5rem; overflow:auto; }
+  .naval-stage-heading,.naval-battle-heading { align-items:flex-start; }
+}
+@media (max-width:420px) {
+  .naval-board-card { padding:.45rem; }
+  .naval-board-shell { grid-template-columns:.9rem minmax(0,1fr); gap:2px; }
+  .naval-grid { gap:1px; padding:2px; }
+  .naval-cell { border-radius:2px; font-size:.52rem; }
+  .naval-axis { font-size:.48rem; }
+  .naval-ship-list { grid-template-columns:1fr; }
+  .naval-ready-counter,.naval-ships-left { font-size:.57rem; padding:.35rem .48rem; }
+  .naval-turn-status { align-items:flex-start; gap:.5rem; padding:.6rem; }
+  .naval-status-symbol { width:2.1rem; }
+  .naval-shot-counter { font-size:.56rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .naval-mode-card,.naval-tool-button,.naval-secondary-button,.naval-primary-button,.naval-cell { transition:none; }
+  .naval-cell.is-hit,.naval-result-card { animation:none; }
+  .naval-result-overlay { backdrop-filter:none; }
+}

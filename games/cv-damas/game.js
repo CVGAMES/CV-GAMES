@@ -4,29 +4,39 @@
   const $ = (selector) => document.querySelector(selector);
   const gameId = 'cv-damas';
   const files = 'abcdefgh';
-  const settingsKey = 'cv-games-checkers-settings-v1';
+  const settingsKey = 'cv-games-checkers-settings-v2';
+  const legacySettingsKey = 'cv-games-checkers-settings-v1';
   const favoriteKey = 'cv-games-favorites';
-  const defaultSettings = { rotate:true, showMoves:true, coordinates:true };
+  const defaultSettings = { rotate:false, showMoves:true, coordinates:true };
   const lobby = $('[data-lobby]');
   const gameView = $('[data-game-view]');
+  const modeChoices = $('[data-mode-choices]');
+  const difficultyPicker = $('[data-ai-difficulty-picker]');
+  const lobbyCopy = $('[data-lobby-copy]');
+  const lobbyFootnote = $('[data-lobby-footnote]');
+  const difficultyBack = $('[data-difficulty-back]');
   const boardElement = $('[data-board]');
   const boardStack = $('[data-board-stack]');
   const settingsDialog = $('[data-settings-dialog]');
   const ui = {
-    start:$('[data-start-local]'), turnLabel:$('[data-turn-label]'), turnPanel:$('[data-live-turn]'),
+    start:$('[data-start-local]'), startComputer:$('[data-start-computer]'), turnLabel:$('[data-turn-label]'), turnPanel:$('[data-live-turn]'),
     status:$('[data-game-status]'), statusDetail:$('[data-status-detail]'), statusCard:$('.checkers-status-card'), statusIcon:$('[data-status-icon]'),
     undo:$('[data-undo]'), resign:$('[data-resign]'), newGame:$('[data-new-game]'), settingsOpen:$('[data-settings-open]'), settingsClose:$('[data-settings-close]'),
     moveList:$('[data-move-list]'), moveCount:$('[data-move-count]'), whiteCaptured:$('[data-white-captured]'), blackCaptured:$('[data-black-captured]'),
     whiteMaterial:$('[data-white-material]'), blackMaterial:$('[data-black-material]'), favorite:$('[data-game-favorite]'),
+    aiLevelBadge:$('[data-ai-level-badge]'), whiteName:$('[data-white-name]'), blackName:$('[data-black-name]'),
     resultOverlay:$('[data-result-overlay]'), resultTitle:$('[data-result-title]'), resultDetail:$('[data-result-detail]'), resultNewGame:$('[data-result-new-game]')
   };
 
   const state = {
     board:createInitialBoard(), turn:'w', started:false, selected:null, focusSquare:61,
     legalRoutes:[], continuation:null, pendingMove:null, lastMove:null, moveLog:[], turnNumber:1,
-    undoStack:[], capturedBy:{ w:[], b:[] }, outcome:null, settings:readSettings()
+    undoStack:[], capturedBy:{ w:[], b:[] }, outcome:null, settings:readSettings(),
+    mode:'local', difficulty:window.CV_GAMES_AI_DIFFICULTY?.get(gameId) || 'medium', computerThinking:false, drag:null
   };
   const squareButtons = [];
+  let computerTimer = 0;
+  let suppressNextDragClick = false;
 
   function createInitialBoard() {
     const board = Array(64).fill(null);
@@ -40,8 +50,14 @@
   }
   function readSettings() {
     try {
-      const stored = JSON.parse(localStorage.getItem(settingsKey) || '{}');
-      return Object.fromEntries(Object.keys(defaultSettings).map((key) => [key, typeof stored[key] === 'boolean' ? stored[key] : defaultSettings[key]]));
+      const current = localStorage.getItem(settingsKey);
+      const stored = JSON.parse(current || localStorage.getItem(legacySettingsKey) || '{}');
+      const settings = Object.fromEntries(Object.keys(defaultSettings).map((key) => [key, typeof stored[key] === 'boolean' ? stored[key] : defaultSettings[key]]));
+      if (!current) {
+        settings.rotate = false;
+        localStorage.setItem(settingsKey,JSON.stringify(settings));
+      }
+      return settings;
     } catch { return { ...defaultSettings }; }
   }
   function saveSettings() {
@@ -178,12 +194,16 @@
   function routesForSelection() {
     if (state.continuation) return state.continuation.routes;
     if (state.selected === null) return [];
-    return state.legalRoutes.filter((route) => route.steps[0].from === state.selected);
+    return routesFromSquare(state.selected);
+  }
+  function routesFromSquare(square) {
+    if (state.continuation) return state.selected === square ? state.continuation.routes : [];
+    return state.legalRoutes.filter((route) => route.steps[0].from === square);
   }
   function currentStepIndex() { return state.continuation ? state.continuation.stepIndex : 0; }
 
   function clearSquareDecorations(button) {
-    button.classList.remove('is-selected','is-legal','is-capture','is-last-move');
+    button.classList.remove('is-selected','is-legal','is-capture','is-last-move','is-draggable','is-drag-source','is-drop-target','is-invalid-drop');
     button.querySelectorAll('.square-coordinate').forEach((label) => label.remove());
   }
   function renderCoordinates(button, square, flipped) {
@@ -209,7 +229,7 @@
   }
 
   function renderBoard() {
-    const flipped = state.settings.rotate && state.turn === 'b';
+    const flipped = state.mode === 'local' && state.settings.rotate && state.turn === 'b';
     boardElement.classList.toggle('is-flipped', flipped);
     boardStack.dataset.bottomSide = flipped ? 'black' : 'white';
     const options = routesForSelection();
@@ -226,7 +246,12 @@
     for (let square = 0; square < 64; square += 1) {
       const button = squareButtons[square];
       const piece = state.board[square];
+      button.disabled = !state.started || isFinished() || (state.mode === 'computer' && (state.turn !== 'w' || state.computerThinking));
       clearSquareDecorations(button);
+      const canDrag = state.started && !isFinished() && !state.computerThinking && piece && colorOf(piece) === state.turn && (state.mode !== 'computer' || state.turn === 'w') && routesFromSquare(square).length > 0;
+      if (canDrag) button.classList.add('is-draggable');
+      if (state.drag?.moved && square === state.drag.from) button.classList.add('is-drag-source');
+      if (state.drag?.target === square) button.classList.add(state.drag.targetLegal ? 'is-drop-target' : 'is-invalid-drop');
       const token = button.querySelector('.checkers-piece');
       token.classList.toggle('white', colorOf(piece) === 'w');
       token.classList.toggle('black', colorOf(piece) === 'b');
@@ -261,12 +286,25 @@
   }
 
   function renderSeats() {
+    const difficulty = window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty);
+    if (ui.whiteName) ui.whiteName.textContent = state.mode === 'computer' ? 'Você · Brancas' : 'Brancas';
+    if (ui.blackName) ui.blackName.textContent = state.mode === 'computer' ? 'Computador · Pretas' : 'Pretas';
+    if (ui.aiLevelBadge) {
+      ui.aiLevelBadge.hidden = state.mode !== 'computer';
+      ui.aiLevelBadge.textContent = state.mode === 'computer' ? `IA · ${difficulty?.name || 'Médio'}` : '';
+    }
     for (const color of ['w','b']) {
       const name = color === 'w' ? 'white' : 'black';
       const card = $(`[data-player-card="${name}"]`);
       card.classList.toggle('is-active', state.started && !isFinished() && state.turn === color);
       const text = $(`[data-${name}-state]`);
-      if (text) text.textContent = isFinished() ? 'Partida encerrada' : !state.started ? (color === 'w' ? 'Jogam primeiro' : 'Esperando a vez') : state.turn === color ? 'Sua vez de jogar' : 'Esperando a vez';
+      if (text) {
+        if (isFinished()) text.textContent = 'Partida encerrada';
+        else if (!state.started) text.textContent = color === 'w' ? 'Jogam primeiro' : 'Esperando a vez';
+        else if (state.mode === 'computer' && color === 'b') text.textContent = state.computerThinking ? 'Analisando o tabuleiro…' : 'Adversário virtual';
+        else if (state.mode === 'computer' && color === 'w') text.textContent = state.turn === 'w' ? 'Sua vez de jogar' : 'Aguardando a IA';
+        else text.textContent = state.turn === color ? 'Sua vez de jogar' : 'Esperando a vez';
+      }
     }
     renderCaptured('w', ui.whiteCaptured, ui.whiteMaterial);
     renderCaptured('b', ui.blackCaptured, ui.blackMaterial);
@@ -275,8 +313,8 @@
 
   function renderStatus() {
     ui.statusCard.classList.remove('is-check','is-finished');
-    let title = `Vez das ${sideLower(state.turn)}`;
-    let detail = state.continuation ? 'Continue a captura com a mesma peça.' : state.legalRoutes.some((route) => route.steps[0].captured !== null) ? 'Captura obrigatória: escolha uma peça marcada.' : 'Escolha uma peça para ver seus movimentos.';
+    let title = state.mode === 'computer' && state.turn === 'b' ? (state.computerThinking ? 'O computador está pensando…' : 'Vez do computador') : `Vez das ${sideLower(state.turn)}`;
+    let detail = state.mode === 'computer' && state.turn === 'b' ? `A IA está no nível ${window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty)?.name || 'Médio'}.` : state.continuation ? 'Continue a captura com a mesma peça.' : state.legalRoutes.some((route) => route.steps[0].captured !== null) ? 'Captura obrigatória: escolha uma peça marcada.' : 'Escolha uma peça para ver seus movimentos.';
     let icon = state.turn === 'w' ? '●' : '◉';
     if (state.outcome?.type === 'win') {
       title = `Vitória das ${sideLower(state.outcome.winner)}`;
@@ -292,14 +330,14 @@
     ui.status.textContent = title;
     ui.statusDetail.textContent = detail;
     ui.statusIcon.textContent = icon;
-    ui.turnLabel.textContent = state.started ? (isFinished() ? title : `Vez das ${sideLower(state.turn)}`) : 'Aguardando partida';
+    ui.turnLabel.textContent = state.started ? (isFinished() ? title : state.mode === 'computer' && state.turn === 'b' ? (state.computerThinking ? 'Computador pensando…' : 'Vez do computador') : `Vez das ${sideLower(state.turn)}`) : 'Aguardando partida';
     ui.resultOverlay.hidden = !isFinished();
     if (isFinished()) {
       ui.resultTitle.textContent = state.outcome.winner ? `Vitória das ${sideName(state.outcome.winner)}` : title;
       ui.resultDetail.textContent = detail;
     }
-    ui.undo.disabled = state.undoStack.length === 0;
-    ui.resign.disabled = !state.started || isFinished();
+    ui.undo.disabled = state.undoStack.length === 0 || state.computerThinking;
+    ui.resign.disabled = !state.started || isFinished() || state.computerThinking;
     ui.newGame.disabled = !state.started;
   }
 
@@ -348,6 +386,122 @@
     });
   }
 
+  function applyRouteToBoard(board, route, color) {
+    const next = board.slice();
+    if (!route?.steps?.length) return next;
+    const piece = next[route.steps[0].from];
+    for (const step of route.steps) {
+      next[step.from] = null;
+      if (step.captured !== null) next[step.captured] = null;
+      next[step.to] = piece;
+    }
+    const finalSquare = route.steps[route.steps.length - 1].to;
+    if (piece === 'w' && rowOf(finalSquare) === 0) next[finalSquare] = 'W';
+    else if (piece === 'b' && rowOf(finalSquare) === 7) next[finalSquare] = 'B';
+    return next;
+  }
+
+  function evaluateBoard(board) {
+    let score = 0;
+    for (let square = 0; square < board.length; square += 1) {
+      const piece = board[square];
+      if (!piece) continue;
+      const color = colorOf(piece);
+      const row = rowOf(square);
+      const col = colOf(square);
+      const center = 3.5 - (Math.abs(col - 3.5) + Math.abs(row - 3.5)) / 2;
+      const advancement = color === 'b' ? row : 7 - row;
+      const value = isKing(piece) ? 330 + center * 5 : 100 + advancement * 7 + center * 3;
+      score += color === 'b' ? value : -value;
+    }
+    return score;
+  }
+
+  function routeOrderScore(board, route) {
+    let score = route.steps.filter((step) => step.captured !== null).length * 1000;
+    const piece = board[route.steps[0]?.from];
+    const finalSquare = route.steps[route.steps.length - 1]?.to;
+    if (piece && !isKing(piece) && finalSquare !== undefined && rowOf(finalSquare) === (colorOf(piece) === 'b' ? 7 : 0)) score += 500;
+    return score;
+  }
+
+  function searchBoard(board, color, depth, alpha, beta, ply = 0) {
+    const routes = legalRoutes(board,color);
+    const whiteCount = board.filter((piece) => colorOf(piece) === 'w').length;
+    const blackCount = board.filter((piece) => colorOf(piece) === 'b').length;
+    if (!whiteCount) return -100000 + ply;
+    if (!blackCount) return 100000 - ply;
+    if (!routes.length) return color === 'b' ? -100000 + ply : 100000 - ply;
+    if (depth <= 0) return evaluateBoard(board);
+
+    routes.sort((a,b) => routeOrderScore(board,b) - routeOrderScore(board,a));
+    if (color === 'b') {
+      let best = -Infinity;
+      for (const route of routes) {
+        const score = searchBoard(applyRouteToBoard(board,route,color),'w',depth - 1,alpha,beta,ply + 1);
+        best = Math.max(best,score);
+        alpha = Math.max(alpha,best);
+        if (beta <= alpha) break;
+      }
+      return best;
+    }
+    let best = Infinity;
+    for (const route of routes) {
+      const score = searchBoard(applyRouteToBoard(board,route,color),'b',depth - 1,alpha,beta,ply + 1);
+      best = Math.min(best,score);
+      beta = Math.min(beta,best);
+      if (beta <= alpha) break;
+    }
+    return best;
+  }
+
+  function chooseComputerRoute() {
+    const routes = state.legalRoutes;
+    if (!routes.length) return null;
+    if (state.difficulty === 'easy') return routes[Math.floor(Math.random() * routes.length)];
+    const depth = state.difficulty === 'expert' ? 3 : state.difficulty === 'hard' ? 2 : 1;
+    const ranked = routes.map((route) => ({
+      route,
+      score:searchBoard(applyRouteToBoard(state.board,route,'b'),'w',depth - 1,-Infinity,Infinity,1)
+    })).sort((a,b) => b.score - a.score);
+    if (state.difficulty === 'hard' && ranked.length > 1 && Math.random() < .12) return ranked[1].route;
+    if (state.difficulty === 'medium' && ranked.length > 1 && Math.random() < .2) return ranked[Math.min(1 + Math.floor(Math.random() * Math.min(2,ranked.length - 1)),ranked.length - 1)].route;
+    const bestScore = ranked[0].score;
+    const bestRoutes = ranked.filter((item) => item.score === bestScore);
+    return bestRoutes[Math.floor(Math.random() * bestRoutes.length)].route;
+  }
+
+  function scheduleComputerMove() {
+    const delay = window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty)?.wait || 430;
+    window.clearTimeout(computerTimer);
+    computerTimer = window.setTimeout(() => {
+      computerTimer = 0;
+      if (!state.started || state.mode !== 'computer' || state.turn !== 'b' || isFinished()) return;
+      const route = chooseComputerRoute();
+      if (!route) { state.computerThinking = false; render(); return; }
+      playComputerRoute(route);
+    },delay);
+  }
+
+  function playComputerRoute(route, stepIndex = 0, routeOptions = state.legalRoutes) {
+    if (!state.started || state.mode !== 'computer' || state.turn !== 'b' || isFinished()) return;
+    const chosen = route.steps[stepIndex];
+    if (!chosen) return;
+    const matching = routeOptions.filter((candidate) => {
+      const step = candidate.steps[stepIndex];
+      return step && step.from === chosen.from && step.to === chosen.to && step.captured === chosen.captured;
+    });
+    if (!matching.length) return;
+    executeStep(matching,stepIndex);
+    if (!state.pendingMove || !state.continuation) return;
+    const nextIndex = state.continuation.stepIndex;
+    const nextRoutes = state.continuation.routes;
+    computerTimer = window.setTimeout(() => {
+      computerTimer = 0;
+      playComputerRoute(route,nextIndex,nextRoutes);
+    },140);
+  }
+
   function playTone(frequency, duration, type, volume) {
     window.CV_GAME_AUDIO?.playTone(frequency, duration, type, volume);
   }
@@ -377,13 +531,17 @@
     } else if (!state.legalRoutes.length) {
       state.outcome = { type:'win', winner:move.color, reason:`${sideName(state.turn)} não têm movimentos legais.` };
     }
+    state.computerThinking = state.mode === 'computer' && state.turn === 'b' && !isFinished();
     playTone(move.captured.length ? 245 : 420, move.captured.length ? .12 : .07, move.captured.length ? 'triangle' : 'sine', move.captured.length ? .055 : .035);
     if (promoted) playTone(720, .2, 'triangle', .05);
     render();
     if (isFinished()) {
+      state.computerThinking = false;
+      render();
       playTone(620, .24, 'triangle', .05);
       ui.resultNewGame.focus({ preventScroll:true });
-    } else squareButtons[state.focusSquare].focus({ preventScroll:true });
+    } else if (state.computerThinking) scheduleComputerMove();
+    else squareButtons[state.focusSquare].focus({ preventScroll:true });
   }
 
   function executeStep(routes, stepIndex) {
@@ -419,7 +577,7 @@
   }
 
   function selectSquare(square) {
-    if (!state.started || isFinished()) return;
+    if (!state.started || isFinished() || state.computerThinking || (state.mode === 'computer' && state.turn !== 'w')) return;
     state.focusSquare = square;
     const routes = routesForSelection();
     const stepIndex = currentStepIndex();
@@ -439,7 +597,107 @@
     renderBoard();
   }
 
-  function startLocalGame() {
+  function removeDragGhost(ghost = state.drag?.ghost) {
+    ghost?.remove();
+    squareButtons.forEach((button) => button.classList.remove('is-drag-source','is-drop-target','is-invalid-drop'));
+  }
+
+  function beginPieceDrag(event) {
+    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    const squareButton = event.target.closest('[data-square]');
+    if (!squareButton || !boardElement.contains(squareButton) || !state.started || isFinished() || state.computerThinking) return;
+    const from = Number(squareButton.dataset.square);
+    const piece = state.board[from];
+    if (!piece || colorOf(piece) !== state.turn || (state.mode === 'computer' && state.turn !== 'w') || !routesFromSquare(from).length) return;
+    state.drag = {
+      pointerId:event.pointerId, from, piece, startX:event.clientX, startY:event.clientY,
+      previousSelected:state.selected, previousFocus:state.focusSquare, moved:false,
+      target:null, targetLegal:false, ghost:null
+    };
+    const ghost = document.createElement('span');
+    ghost.className = 'checkers-drag-ghost';
+    ghost.setAttribute('aria-hidden','true');
+    const token = document.createElement('span');
+    token.className = `checkers-piece ${colorOf(piece) === 'w' ? 'white' : 'black'}${isKing(piece) ? ' is-king' : ''}`;
+    token.innerHTML = '<span class="checkers-pip"></span>' + (isKing(piece) ? '<span class="checkers-crown">♛</span>' : '');
+    ghost.append(token);
+    gameView.append(ghost);
+    state.drag.ghost = ghost;
+    ghost.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0) translate(-50%,-50%) scale(.94)`;
+    document.documentElement.classList.add('checkers-piece-grabbing');
+    try { squareButton.setPointerCapture(event.pointerId); } catch { /* O arraste continua sem captura do ponteiro. */ }
+  }
+
+  function movePieceDrag(event) {
+    const drag = state.drag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    if (!drag.moved && Math.hypot(event.clientX - drag.startX,event.clientY - drag.startY) >= 9) {
+      drag.moved = true;
+      state.selected = drag.from;
+      state.focusSquare = drag.from;
+      renderBoard();
+    }
+    drag.ghost.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0) translate(-50%,-50%) scale(.94)`;
+    if (!drag.moved) return;
+    const underPointer = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-square]');
+    const target = underPointer && boardElement.contains(underPointer) ? Number(underPointer.dataset.square) : null;
+    const legal = target !== null && routesForSelection().some((route) => route.steps[currentStepIndex()]?.to === target);
+    if (drag.target !== target || drag.targetLegal !== legal) {
+      if (drag.target !== null) squareButtons[drag.target].classList.remove('is-drop-target','is-invalid-drop');
+      drag.target = target;
+      drag.targetLegal = legal;
+      if (target !== null) squareButtons[target].classList.add(legal ? 'is-drop-target' : 'is-invalid-drop');
+    }
+  }
+
+  function finishPieceDrag(event) {
+    const drag = state.drag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const underPointer = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-square]');
+    const destination = underPointer && boardElement.contains(underPointer) ? Number(underPointer.dataset.square) : null;
+    const moved = drag.moved;
+    const from = drag.from;
+    const legal = moved && destination !== null && routesForSelection().some((route) => route.steps[currentStepIndex()]?.to === destination);
+    state.drag = null;
+    document.documentElement.classList.remove('checkers-piece-grabbing');
+    removeDragGhost(drag.ghost);
+    if (!moved) return;
+
+    suppressNextDragClick = true;
+    window.setTimeout(() => { suppressNextDragClick = false; },0);
+    event.preventDefault();
+    if (legal && destination !== from) {
+      state.selected = from;
+      selectSquare(destination);
+      return;
+    }
+    state.selected = drag.previousSelected;
+    state.focusSquare = drag.previousFocus;
+    renderBoard();
+  }
+
+  function cancelPieceDrag(event) {
+    const drag = state.drag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    state.drag = null;
+    document.documentElement.classList.remove('checkers-piece-grabbing');
+    removeDragGhost(drag.ghost);
+    if (drag.moved) {
+      state.selected = drag.previousSelected;
+      state.focusSquare = drag.previousFocus;
+      renderBoard();
+    }
+  }
+
+  function startGame(mode, difficulty = state.difficulty) {
+    window.clearTimeout(computerTimer);
+    computerTimer = 0;
+    if (state.drag) removeDragGhost(state.drag.ghost);
+    state.drag = null;
+    document.documentElement.classList.remove('checkers-piece-grabbing');
+    state.mode = mode;
+    state.difficulty = difficulty;
+    state.computerThinking = false;
     state.board = createInitialBoard();
     state.turn = 'w';
     state.selected = null;
@@ -460,16 +718,45 @@
     squareButtons[state.focusSquare].focus({ preventScroll:true });
   }
 
+  function startLocalGame() { startGame('local'); }
+  function startComputerGame(difficulty = state.difficulty) { startGame('computer',difficulty); }
+  function startCurrentMode() { state.mode === 'computer' ? startComputerGame(state.difficulty) : startLocalGame(); }
+
+  function openDifficultyPicker() {
+    if (modeChoices) modeChoices.hidden = true;
+    if (lobbyFootnote) lobbyFootnote.hidden = true;
+    if (lobbyCopy) {
+      lobbyCopy.querySelector('h2').textContent = 'Escolha a dificuldade';
+      lobbyCopy.querySelector('p:last-child').textContent = 'Ajuste o desafio antes de enfrentar o computador.';
+    }
+    if (difficultyPicker) difficultyPicker.hidden = false;
+    difficultyPicker?.querySelector('[data-ai-difficulty-range]')?.focus({ preventScroll:true });
+  }
+
+  function closeDifficultyPicker() {
+    if (difficultyPicker) difficultyPicker.hidden = true;
+    if (modeChoices) modeChoices.hidden = false;
+    if (lobbyFootnote) lobbyFootnote.hidden = false;
+    if (lobbyCopy) {
+      lobbyCopy.querySelector('h2').textContent = 'Como quer jogar?';
+      lobbyCopy.querySelector('p:last-child').textContent = 'Jogue no mesmo dispositivo ou desafie o computador. Capturas são obrigatórias e a sequência que captura mais peças tem prioridade.';
+    }
+    ui.startComputer?.focus({ preventScroll:true });
+  }
+
   async function newGame() {
     if ((state.moveLog.length || state.pendingMove) && !await window.CV_GAMES_DIALOG.confirm({
       title:'Começar outra partida?', message:'A partida atual será encerrada e o tabuleiro voltará à posição inicial.',
       confirmText:'Nova partida', cancelText:'Continuar jogando'
     })) return;
-    startLocalGame();
+    startCurrentMode();
   }
 
   function undoMove() {
-    const snapshot = state.undoStack.pop();
+    if (state.computerThinking) return;
+    let snapshot = null;
+    const plies = state.pendingMove ? 1 : state.mode === 'computer' && state.turn === 'w' && state.moveLog.length >= 2 ? 2 : 1;
+    for (let index = 0; index < plies; index += 1) snapshot = state.undoStack.pop() || snapshot;
     if (!snapshot) return;
     state.board = snapshot.board;
     state.turn = snapshot.turn;
@@ -483,13 +770,14 @@
     state.turnNumber = snapshot.turnNumber;
     state.capturedBy = snapshot.capturedBy;
     state.outcome = snapshot.outcome;
+    state.computerThinking = false;
     render();
     squareButtons[state.focusSquare].focus({ preventScroll:true });
   }
 
   async function resign() {
     if (isFinished() || !state.started) return;
-    const current = state.turn;
+    const current = state.mode === 'computer' ? 'w' : state.turn;
     if (!await window.CV_GAMES_DIALOG.confirm({
       title:'Desistir da partida?', message:`As ${sideLower(current)} querem desistir? A vitória será das ${sideLower(opponent(current))}.`,
       confirmText:'Desistir', cancelText:'Continuar jogando', tone:'danger'
@@ -562,9 +850,19 @@
   }
 
   boardElement.addEventListener('click', (event) => {
+    if (suppressNextDragClick) {
+      suppressNextDragClick = false;
+      event.preventDefault();
+      return;
+    }
     const button = event.target.closest('[data-square]');
     if (button) selectSquare(Number(button.dataset.square));
   });
+  boardElement.addEventListener('pointerdown',beginPieceDrag);
+  boardElement.addEventListener('pointermove',movePieceDrag);
+  boardElement.addEventListener('pointerup',finishPieceDrag);
+  boardElement.addEventListener('pointercancel',cancelPieceDrag);
+  boardElement.addEventListener('lostpointercapture',cancelPieceDrag);
   boardElement.addEventListener('keydown', (event) => {
     const button = event.target.closest('[data-square]');
     if (!button || !['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.key)) return;
@@ -585,10 +883,31 @@
   });
 
   ui.start.addEventListener('click', startLocalGame);
+  ui.startComputer?.addEventListener('click',openDifficultyPicker);
+  difficultyBack?.addEventListener('click',closeDifficultyPicker);
+  document.addEventListener('cv-ai-difficulty-start',(event) => {
+    if (event.detail?.gameKey === gameId) startComputerGame(event.detail.difficulty);
+  });
+  document.addEventListener('cv-game-return-to-mode-menu', () => {
+    window.clearTimeout(computerTimer);
+    computerTimer = 0;
+    document.documentElement.classList.remove('checkers-piece-grabbing');
+    if (state.drag) {
+      const ghost = state.drag.ghost;
+      state.drag = null;
+      removeDragGhost(ghost);
+    }
+    closeDifficultyPicker();
+    state.started = false;
+    state.selected = null;
+    state.pendingMove = null;
+    state.continuation = null;
+    state.computerThinking = false;
+  });
   ui.undo.addEventListener('click', undoMove);
   ui.resign.addEventListener('click', resign);
   ui.newGame.addEventListener('click', newGame);
-  ui.resultNewGame.addEventListener('click', startLocalGame);
+  ui.resultNewGame.addEventListener('click', startCurrentMode);
   ui.settingsOpen.addEventListener('click', () => { loadSettings(); if (settingsDialog.showModal) settingsDialog.showModal(); else settingsDialog.setAttribute('open',''); });
   ui.settingsClose.addEventListener('click', () => closeDialog(settingsDialog));
   for (const selector of ['[data-setting-rotate]','[data-setting-moves]','[data-setting-coordinates]']) document.querySelectorAll(selector).forEach((input) => input.addEventListener('change', updateSetting));

@@ -5,6 +5,10 @@
   const boardElement = $('[data-board]');
   const lobby = $('[data-lobby]');
   const gameView = $('[data-game-view]');
+  const modeChoices = $('[data-mode-choices]');
+  const difficultyPicker = $('[data-ai-difficulty-picker]');
+  const lobbyFootnote = $('[data-lobby-footnote]');
+  const difficultyBack = $('[data-difficulty-back]');
   const gameId = 'cv-jogo-da-velha';
   const scoreKey = 'cv-jogo-da-velha-scores-v1';
   const winLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
@@ -14,12 +18,13 @@
     undo:$('[data-undo]'), resetScores:$('[data-reset-scores]'), newRound:$('[data-new-round]'), roundLabel:$('[data-round-label]'),
     xScore:$('[data-x-score]'), oScore:$('[data-o-score]'), drawScore:$('[data-draw-score]'), xName:$('[data-x-name]'), oName:$('[data-o-name]'), xState:$('[data-x-state]'), oState:$('[data-o-state]'),
     moveCount:$('[data-move-count]'), moveList:$('[data-move-list]'), favorite:$('[data-game-favorite]'),
+    aiLevelBadge:$('[data-ai-level-badge]'),
     resultOverlay:$('[data-result-overlay]'), resultTitle:$('[data-result-title]'), resultScore:$('[data-result-score]'),
     resultBreakdown:$('[data-result-breakdown]'), resultNextRound:$('[data-result-next-round]')
   };
   const state = {
     board:Array(9).fill(null), current:'x', starter:'x', started:false, outcome:null,
-    mode:'local', winningCells:[], history:[], undoStack:[], focusSquare:4,
+    mode:'local', difficulty:window.CV_GAMES_AI_DIFFICULTY?.get(gameId) || 'medium', winningCells:[], history:[], undoStack:[], focusSquare:4,
     scores:readScores()
   };
   const cells = [];
@@ -101,6 +106,11 @@
     const finished = Boolean(state.outcome);
     ui.xName.textContent = state.mode === 'computer' ? 'Você · X' : 'Jogador X';
     ui.oName.textContent = state.mode === 'computer' ? 'Computador · O' : 'Jogador O';
+    if (ui.aiLevelBadge) {
+      const details = window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty);
+      ui.aiLevelBadge.hidden = state.mode !== 'computer';
+      ui.aiLevelBadge.textContent = state.mode === 'computer' ? `IA · ${details?.name || 'Médio'}` : '';
+    }
     for (const player of ['x','o']) {
       const card = $(`[data-player-card="${player}"]`);
       card.classList.toggle('is-active',state.started && !finished && state.current === player);
@@ -211,7 +221,20 @@
     startRound('x');
     if (window.CV_GAMES_STATS?.recordPlay) window.CV_GAMES_STATS.recordPlay(gameId);
   }
+  function openDifficultyPicker() {
+    if (modeChoices) modeChoices.hidden = true;
+    if (lobbyFootnote) lobbyFootnote.hidden = true;
+    if (difficultyPicker) difficultyPicker.hidden = false;
+    difficultyPicker?.querySelector('[data-ai-difficulty-range]')?.focus({ preventScroll:true });
+  }
+  function closeDifficultyPicker() {
+    if (difficultyPicker) difficultyPicker.hidden = true;
+    if (modeChoices) modeChoices.hidden = false;
+    if (lobbyFootnote) lobbyFootnote.hidden = false;
+    ui.startComputer?.focus({ preventScroll:true });
+  }
   function startComputerGame() {
+    state.difficulty = window.CV_GAMES_AI_DIFFICULTY?.get(gameId) || 'medium';
     state.mode = 'computer';
     state.started = true;
     lobby.hidden = true;
@@ -240,8 +263,29 @@
     });
     return player === 'o' ? Math.max(...values) : Math.min(...values);
   }
+  function randomMove(moves) { return moves.length ? moves[Math.floor(Math.random() * moves.length)] : undefined; }
+  function findImmediateMove(player, open) {
+    for (const index of open) {
+      state.board[index] = player;
+      const wins = boardWinner(state.board) === player;
+      state.board[index] = null;
+      if (wins) return index;
+    }
+    return undefined;
+  }
   function chooseComputerMove() {
     const open = state.board.map((value,index) => value ? -1 : index).filter((index) => index >= 0);
+    if (!open.length) return undefined;
+    if (state.difficulty === 'easy') return randomMove(open);
+    if (state.difficulty === 'medium') {
+      const winningMove = findImmediateMove('o', open);
+      if (Number.isInteger(winningMove)) return winningMove;
+      const blockingMove = findImmediateMove('x', open);
+      if (Number.isInteger(blockingMove)) return blockingMove;
+      if (open.includes(4)) return 4;
+      const corners = open.filter((index) => [0,2,6,8].includes(index));
+      return randomMove(corners.length ? corners : open);
+    }
     const scored = open.map((index) => {
       state.board[index] = 'o';
       const score = minimax(state.board,'x',1);
@@ -250,6 +294,10 @@
     });
     const bestScore = Math.max(...scored.map((entry) => entry.score));
     const best = scored.filter((entry) => entry.score === bestScore);
+    if (state.difficulty === 'hard' && Math.random() < .22) {
+      const riskyAlternatives = scored.filter((entry) => entry.score < bestScore);
+      if (riskyAlternatives.length) return randomMove(riskyAlternatives.map((entry) => entry.index));
+    }
     return best[Math.floor(Math.random() * best.length)]?.index;
   }
   function queueComputerMove() {
@@ -259,7 +307,7 @@
       computerTimer = 0;
       const move = chooseComputerMove();
       if (Number.isInteger(move)) playCell(move,true);
-    },480);
+    },window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty)?.wait || 430);
   }
   function playCell(index, fromComputer = false) {
     if (!state.started || state.outcome || state.board[index] || (state.mode === 'computer' && state.current === 'o' && !fromComputer)) return;
@@ -407,7 +455,17 @@
     }
   });
   ui.start.addEventListener('click',startLocalGame);
-  ui.startComputer.addEventListener('click',startComputerGame);
+  ui.startComputer.addEventListener('click',openDifficultyPicker);
+  difficultyBack?.addEventListener('click',closeDifficultyPicker);
+  document.addEventListener('cv-ai-difficulty-start', (event) => {
+    if (event.detail?.gameKey === gameId) startComputerGame();
+  });
+  document.addEventListener('cv-game-return-to-mode-menu', () => {
+    window.clearTimeout(computerTimer);
+    computerTimer = 0;
+    state.started = false;
+    closeDifficultyPicker();
+  });
   ui.undo.addEventListener('click',undoMove);
   ui.resetScores.addEventListener('click',resetScores);
   ui.newRound.addEventListener('click',newRound);

@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="Jogue CV DAMAS com outra pessoa no mesmo dispositivo. Capture peças, coroe suas damas e vença a partida.">
+  <meta name="description" content="Jogue CV DAMAS com outra pessoa no mesmo dispositivo ou desafie o computador em quatro níveis. Capture peças, coroe suas damas e vença a partida.">
   <meta property="og:title" content="CV DAMAS — Jogo Exclusivo | CV GAMES">
-  <meta property="og:description" content="Uma partida de damas para duas pessoas no mesmo dispositivo, com captura obrigatória, sequências e coroação.">
+  <meta property="og:description" content="Jogue damas localmente ou desafie o computador em quatro níveis de dificuldade.">
   <meta property="og:type" content="website"><meta property="og:site_name" content="CV GAMES"><meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/games/cv-damas/"><meta property="og:image" content="https://cvgames.com.br/games/cv-damas/cover.svg"><meta property="og:image:alt" content="Capa do jogo CV DAMAS">
-  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="CV DAMAS — Jogo Exclusivo | CV GAMES"><meta name="twitter:description" content="Damas para duas pessoas no mesmo dispositivo."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-damas/cover.svg">
+  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="CV DAMAS — Jogo Exclusivo | CV GAMES"><meta name="twitter:description" content="Damas local ou contra o computador em quatro níveis."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-damas/cover.svg">
   <title>CV DAMAS — Jogo Exclusivo | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/games/cv-damas/">
   <link rel="icon" href="../../img/incon.png" type="image/png">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV DAMAS","url":"https://cvgames.com.br/games/cv-damas/","image":"https://cvgames.com.br/games/cv-damas/cover.svg","description":"Jogo local de damas para duas pessoas com capturas obrigatórias, sequências, coroação e damas de longo alcance.","genre":"Estratégia, Tabuleiro","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV DAMAS","url":"https://cvgames.com.br/games/cv-damas/","image":"https://cvgames.com.br/games/cv-damas/cover.svg","description":"Jogo de damas local para duas pessoas ou contra o computador, com capturas obrigatórias, sequências, coroação e damas de longo alcance.","genre":"Estratégia, Tabuleiro","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
-  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
-  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="game.js" defer></script>
+  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css"><link rel="stylesheet" href="../mode-menu-return.css"><link rel="stylesheet" href="../ai-difficulty.css">
+  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="../ai-difficulty.js" defer></script><script src="game.js" defer></script><script src="../mode-menu-return.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="checkers-page">
@@ -33,17 +33,36 @@
     <section class="checkers-intro"><div><p class="eyebrow">♟ EXCLUSIVO CV GAMES</p><h1>CV <span>DAMAS</span></h1><p>Duas cores. Um tabuleiro. Cada captura muda a partida.</p></div><span class="checkers-intro-mark" aria-hidden="true">◉</span></section>
 
     <section class="checkers-lobby" data-lobby aria-labelledby="lobby-title">
-      <div class="checkers-lobby-copy"><p class="checkers-kicker">ESCOLHA SUA PARTIDA</p><h2 id="lobby-title">Damas para duas pessoas</h2><p>Joguem no mesmo dispositivo. Capturas são obrigatórias e a sequência que captura mais peças tem prioridade. As damas percorrem várias casas pela diagonal.</p></div>
-      <div class="checkers-mode-grid">
+      <div class="checkers-lobby-copy" data-lobby-copy><p class="checkers-kicker">ESCOLHA SUA PARTIDA</p><h2 id="lobby-title">Como quer jogar?</h2><p>Jogue no mesmo dispositivo ou desafie o computador. Capturas são obrigatórias e a sequência que captura mais peças tem prioridade.</p></div>
+      <div class="checkers-mode-grid" data-mode-choices>
         <button class="checkers-mode-card checkers-mode-local" type="button" data-start-local><span class="checkers-mode-icon" aria-hidden="true">● ○</span><span class="checkers-mode-tag">DISPONÍVEL AGORA · 2 JOGADORES</span><strong>Começar partida local</strong><span>Brancas começam. A dama pode se mover por várias casas na diagonal.</span><b>Começar partida <span aria-hidden="true">→</span></b></button>
-        <button class="checkers-mode-card checkers-mode-soon" type="button" disabled><span class="checkers-mode-icon" aria-hidden="true">● ✦</span><span class="checkers-mode-tag">EM BREVE</span><strong>Jogador vs. computador</strong><span>Enfrente um adversário controlado pelo computador.</span><b>Modo em desenvolvimento</b></button>
+        <button class="checkers-mode-card checkers-mode-local checkers-mode-computer" type="button" data-start-computer><span class="checkers-mode-icon" aria-hidden="true">● ✦</span><span class="checkers-mode-tag">ESCOLHA O DESAFIO</span><strong>Você vs. computador</strong><span>Escolha a dificuldade da IA e veja como ela joga antes da partida.</span><b>Escolher dificuldade <span aria-hidden="true">→</span></b></button>
       </div>
+      <p class="checkers-lobby-footnote" data-lobby-footnote>Brancas começam. Se quiser girar o tabuleiro, ative essa opção nas configurações.</p>
+      <section class="cv-ai-difficulty-picker" data-ai-difficulty-picker data-ai-difficulty-key="cv-damas" data-difficulty="medium" hidden aria-labelledby="checkers-ai-heading">
+        <header class="cv-ai-difficulty-heading"><div class="cv-ai-difficulty-heading-copy"><p>PREPARE O DUELO</p><h3 id="checkers-ai-heading">Ajuste o desafio da IA</h3></div><button class="cv-ai-difficulty-back" type="button" data-difficulty-back>← <span>Modos</span></button></header>
+        <div class="cv-ai-difficulty-layout">
+          <section class="cv-ai-difficulty-showcase" data-ai-difficulty-showcase data-difficulty="medium" aria-live="polite">
+            <div class="cv-ai-avatar-ring" aria-hidden="true"><span class="cv-ai-avatar checkers-ai-avatar"><span data-ai-difficulty-face>●</span></span></div>
+            <span class="cv-ai-difficulty-level" data-ai-difficulty-level>NÍVEL 2 / 4</span><h4 class="cv-ai-difficulty-name" data-ai-difficulty-name>MÉDIO</h4><p class="cv-ai-difficulty-summary" data-ai-difficulty-summary>Um desafio equilibrado para treinar e melhorar seus planos.</p>
+          </section>
+          <section class="cv-ai-difficulty-controls" aria-label="Configurações da inteligência artificial">
+            <div class="cv-ai-difficulty-control-heading"><strong>Dificuldade do computador</strong><output class="cv-ai-difficulty-value" data-ai-difficulty-value for="checkers-ai-difficulty">MÉDIO · 2/4</output></div>
+            <label class="checkers-sr-only" for="checkers-ai-difficulty">Escolha entre Fácil, Médio, Difícil e Extra difícil</label><input class="cv-ai-difficulty-range" id="checkers-ai-difficulty" data-ai-difficulty-range type="range" min="0" max="3" step="1" value="1" aria-valuetext="Médio, nível 2 de 4">
+            <div class="cv-ai-difficulty-ticks" aria-hidden="true"><span data-ai-difficulty-tick="0">FÁCIL</span><span data-ai-difficulty-tick="1" aria-current="true">MÉDIO</span><span data-ai-difficulty-tick="2">DIFÍCIL</span><span data-ai-difficulty-tick="3">EXTRA</span></div>
+            <article class="cv-ai-behavior-card"><span class="cv-ai-behavior-icon" aria-hidden="true">●</span><div><strong>Como a IA joga neste nível</strong><p data-ai-difficulty-behavior>Procura capturas e avanço das peças sem calcular muitas respostas.</p></div></article>
+            <button class="cv-ai-difficulty-start" type="button" data-ai-difficulty-start><span aria-hidden="true">▶</span><span data-ai-difficulty-start-label>JOGAR · NÍVEL 2</span></button><small class="cv-ai-difficulty-note">A dificuldade fica salva neste aparelho e pode ser alterada antes de outra partida.</small>
+          </section>
+        </div>
+        <details class="cv-ai-difficulty-help"><summary>O que muda entre os níveis?</summary><ul><li><strong>Fácil:</strong> escolhe lances legais de forma espontânea.</li><li><strong>Médio:</strong> observa capturas e coroações imediatas.</li><li><strong>Difícil:</strong> calcula respostas e pode escolher uma linha menos segura.</li><li><strong>Extra difícil:</strong> analisa sequências mais longas antes de escolher o lance.</li></ul></details>
+      </section>
     </section>
 
-    <section class="checkers-game-view" data-game-view data-fullscreen-root id="checkers-fullscreen" hidden aria-label="Partida de damas local">
+    <section class="checkers-game-view" data-game-view data-fullscreen-root id="checkers-fullscreen" hidden aria-label="Partida de damas">
       <div class="checkers-game-toolbar">
         <div class="checkers-live-turn" data-live-turn><span class="turn-dot" aria-hidden="true"></span><span data-turn-label>Vez das brancas</span></div>
         <div class="checkers-toolbar-actions">
+          <button class="cv-mode-menu-return" type="button" data-mode-menu-return aria-label="Voltar à escolha da partida" title="Voltar à escolha da partida"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4h6v16h-6M10 8l-5 4 5 4M5 12h10"/></svg><span>Voltar à escolha da partida</span></button>
           <button class="checkers-tool-button" type="button" data-undo title="Desfazer última jogada">↶ <span>Desfazer</span></button>
           <button class="checkers-tool-button" type="button" data-resign>⚑ <span>Desistir</span></button>
           <button class="checkers-tool-button" type="button" data-settings-open aria-label="Configurações" title="Configurações">⚙ <span>Configurações</span></button>
@@ -54,16 +73,16 @@
 
       <div class="checkers-play-layout">
         <div class="checkers-board-stack" data-board-stack data-bottom-side="white">
-          <section class="checkers-player-seat" data-player-card="black" aria-label="Jogador das pretas"><span class="seat-piece seat-black" aria-hidden="true">●</span><div class="seat-copy"><strong>Pretas</strong><span data-black-state>Esperando a vez</span></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
+          <section class="checkers-player-seat" data-player-card="black" aria-label="Jogador das pretas"><span class="seat-piece seat-black" aria-hidden="true">●</span><div class="seat-copy"><strong data-black-name>Pretas</strong><span data-black-state>Esperando a vez</span><em class="checkers-ai-level-badge" data-ai-level-badge hidden></em></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
           <div class="checkers-board-wrap"><div class="checkers-board" data-board role="grid" aria-label="Tabuleiro de damas"></div></div>
-          <section class="checkers-player-seat" data-player-card="white" aria-label="Jogador das brancas"><span class="seat-piece seat-white" aria-hidden="true">●</span><div class="seat-copy"><strong>Brancas</strong><span data-white-state>Jogam primeiro</span></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
+          <section class="checkers-player-seat" data-player-card="white" aria-label="Jogador das brancas"><span class="seat-piece seat-white" aria-hidden="true">●</span><div class="seat-copy"><strong data-white-name>Brancas</strong><span data-white-state>Jogam primeiro</span></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
         </div>
 
         <aside class="checkers-sidebar" aria-label="Informações da partida">
           <section class="checkers-status-card"><span class="checkers-status-icon" data-status-icon aria-hidden="true">●</span><div><p class="checkers-kicker">ESTADO DA PARTIDA</p><h2 data-game-status aria-live="polite">Vez das brancas</h2><p data-status-detail>Escolha uma peça para ver seus movimentos.</p></div></section>
           <section class="checkers-side-card checkers-history-card"><div class="checkers-card-heading"><h2>Jogadas</h2><span data-move-count>0 lances</span></div><div class="checkers-move-list" data-move-list aria-live="polite"><p class="checkers-empty-history">A partida começa. Brancas jogam primeiro.</p></div></section>
           <section class="checkers-side-card checkers-captured-summary"><h2>Peças capturadas</h2><div class="checkers-capture-row"><div class="checkers-capture-heading"><strong>Brancas</strong><span data-white-material>—</span></div><div class="captured-pieces" data-white-captured aria-label="Peças capturadas pelas brancas">—</div></div><div class="checkers-capture-row"><div class="checkers-capture-heading"><strong>Pretas</strong><span data-black-material>—</span></div><div class="captured-pieces" data-black-captured aria-label="Peças capturadas pelas pretas">—</div></div></section>
-          <div class="checkers-side-actions"><button class="checkers-new-game" type="button" data-new-game>＋ Nova partida</button><p>Partida local · sem conta · sem conexão</p></div>
+          <div class="checkers-side-actions"><button class="checkers-new-game" type="button" data-new-game>＋ Nova partida</button><p>Jogo no dispositivo · sem conta · sem conexão</p></div>
         </aside>
       </div>
       <div class="checkers-result-overlay" data-result-overlay hidden>
@@ -74,7 +93,7 @@
           <button class="checkers-result-new-game" type="button" data-result-new-game>＋ Próxima partida</button>
         </section>
       </div>
-      <p class="checkers-keyboard-tip">Toque em uma peça e depois em uma casa marcada. Se houver captura, faça uma das sequências mais longas.<span data-hardware-hint> No computador, também pode clicar nas peças.</span></p>
+      <p class="checkers-keyboard-tip">Toque em uma peça e depois em uma casa marcada. Se houver captura, faça uma das sequências mais longas.<span data-hardware-hint> No computador, também pode clicar nas peças. No modo contra o computador, você joga com as brancas.</span></p>
     </section>
     <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-damas-after-game" aria-hidden="true"></div>
   </div></main>
@@ -82,7 +101,7 @@
   <dialog class="checkers-dialog checkers-settings-dialog" data-settings-dialog aria-labelledby="settings-title">
     <form method="dialog"><button class="dialog-close" aria-label="Fechar" value="cancel">×</button></form>
     <p class="checkers-kicker">PREFERÊNCIAS DA PARTIDA</p><h2 id="settings-title">Configurações</h2>
-    <label class="setting-row"><span><strong>Girar tabuleiro a cada jogada</strong><small>Deixa quem está na vez na parte inferior.</small></span><input type="checkbox" data-setting-rotate checked></label>
+    <label class="setting-row"><span><strong>Girar tabuleiro a cada jogada</strong><small>Deixa quem está na vez na parte inferior.</small></span><input type="checkbox" data-setting-rotate></label>
     <label class="setting-row"><span><strong>Mostrar movimentos legais</strong><small>Destaca as casas disponíveis para a peça.</small></span><input type="checkbox" data-setting-moves checked></label>
     <label class="setting-row"><span><strong>Mostrar coordenadas</strong><small>Exibe letras e números nas bordas.</small></span><input type="checkbox" data-setting-coordinates checked></label>
     <button class="button button-primary settings-done" type="button" data-settings-close>Pronto</button>

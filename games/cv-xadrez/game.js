@@ -10,7 +10,13 @@
   const boardStack = $('[data-board-stack]');
   const settingsDialog = $('[data-settings-dialog]');
   const promotionDialog = $('[data-promotion-dialog]');
-  const settingsKey = 'cv-games-chess-settings-v1';
+  const modeChoices = $('[data-mode-choices]');
+  const difficultyPicker = $('[data-ai-difficulty-picker]');
+  const lobbyCopy = $('[data-lobby-copy]');
+  const lobbyFootnote = $('[data-lobby-footnote]');
+  const difficultyBack = $('[data-difficulty-back]');
+  const settingsKey = 'cv-games-chess-settings-v2';
+  const legacySettingsKey = 'cv-games-chess-settings-v1';
   const favoriteKey = 'cv-games-favorites';
   const gameId = 'cv-xadrez';
   const symbols = {
@@ -19,29 +25,41 @@
   };
   const names = { K:'rei', Q:'dama', R:'torre', B:'bispo', N:'cavalo', P:'peão' };
   const materialValues = { Q:9, R:5, B:3, N:3, P:1, K:0 };
-  const defaultSettings = { rotate:true, showMoves:true, coordinates:true };
+  const searchValues = { Q:900, R:500, B:330, N:320, P:100, K:0 };
+  const mateScore = 100000;
+  const defaultSettings = { rotate:false, showMoves:true, coordinates:true };
 
   const ui = {
-    startLocal:$('[data-start-local]'), turnLabel:$('[data-turn-label]'), turnPanel:$('[data-live-turn]'),
+    startLocal:$('[data-start-local]'), startComputer:$('[data-start-computer]'), turnLabel:$('[data-turn-label]'), turnPanel:$('[data-live-turn]'),
     status:$('[data-game-status]'), statusDetail:$('[data-status-detail]'), statusCard:$('.chess-status-card'), statusIcon:$('[data-status-icon]'),
     undo:$('[data-undo]'), drawClaim:$('[data-draw-claim]'), resign:$('[data-resign]'), newGame:$('[data-new-game]'),
     settingsOpen:$('[data-settings-open]'), settingsClose:$('[data-settings-close]'),
     moveList:$('[data-move-list]'), moveCount:$('[data-move-count]'), whiteCaptured:$('[data-white-captured]'), blackCaptured:$('[data-black-captured]'),
     whiteMaterial:$('[data-white-material]'), blackMaterial:$('[data-black-material]'),
-    favorite:$('[data-game-favorite]'),
+    favorite:$('[data-game-favorite]'), aiLevelBadge:$('[data-ai-level-badge]'),
+    whiteName:$('[data-white-name]'), blackName:$('[data-black-name]'),
     resultOverlay:$('[data-result-overlay]'), resultTitle:$('[data-result-title]'), resultDetail:$('[data-result-detail]'), resultNewGame:$('[data-result-new-game]')
   };
   const state = {
     position:Chess.createInitialPosition(), legalMoves:[], selected:null, lastMove:null, outcome:null, focusSquare:60,
     moveLog:[], undoStack:[], repetitions:new Map(), capturedBy:{ w:[], b:[] },
-    settings:readSettings(), promotionMove:null, started:false
+    settings:readSettings(), promotionMove:null, started:false,
+    mode:'local', difficulty:window.CV_GAMES_AI_DIFFICULTY?.get(gameId) || 'medium', computerThinking:false, drag:null
   };
   const squareButtons = [];
+  let computerTimer = 0;
+  let suppressNextDragClick = false;
 
   function readSettings() {
     try {
-      const stored = JSON.parse(localStorage.getItem(settingsKey) || '{}');
-      return { ...defaultSettings, ...Object.fromEntries(Object.keys(defaultSettings).map((key) => [key, typeof stored[key] === 'boolean' ? stored[key] : defaultSettings[key]])) };
+      const current = localStorage.getItem(settingsKey);
+      const stored = JSON.parse(current || localStorage.getItem(legacySettingsKey) || '{}');
+      const settings = { ...defaultSettings, ...Object.fromEntries(Object.keys(defaultSettings).map((key) => [key, typeof stored[key] === 'boolean' ? stored[key] : defaultSettings[key]])) };
+      if (!current) {
+        settings.rotate = false;
+        localStorage.setItem(settingsKey,JSON.stringify(settings));
+      }
+      return settings;
     } catch { return { ...defaultSettings }; }
   }
   function saveSettings() {
@@ -77,7 +95,7 @@
   }
 
   function clearSquareDecorations(button) {
-    button.classList.remove('is-selected','is-legal','is-capture','is-check','is-last-move');
+    button.classList.remove('is-selected','is-legal','is-capture','is-check','is-last-move','is-drag-source','is-drop-target','is-invalid-drop','is-draggable');
     button.querySelectorAll('.square-coordinate').forEach((label) => label.remove());
   }
 
@@ -104,7 +122,7 @@
   }
 
   function renderBoard() {
-    const flipped = state.settings.rotate && state.position.turn === 'b';
+    const flipped = state.mode === 'local' && state.settings.rotate && state.position.turn === 'b';
     boardElement.classList.toggle('is-flipped', flipped);
     boardStack.dataset.bottomSide = flipped ? 'black' : 'white';
     const checkedKing = Chess.isInCheck(state.position) ? state.position.board.findIndex((piece) => piece === `${state.position.turn}K`) : -1;
@@ -118,13 +136,17 @@
     for (let square = 0; square < 64; square += 1) {
       const button = squareButtons[square];
       const piece = pieceAt(state.position, square);
+      button.disabled = !state.started || (state.mode === 'computer' && (state.position.turn !== 'w' || state.computerThinking));
       clearSquareDecorations(button);
+      if (state.started && !isFinished() && !state.computerThinking && piece?.[0] === state.position.turn && (state.mode !== 'computer' || state.position.turn === 'w')) button.classList.add('is-draggable');
       const pieceElement = button.querySelector('.chess-piece');
       pieceElement.textContent = piece ? symbols[piece] : '';
       pieceElement.classList.toggle('white', piece?.[0] === 'w');
       pieceElement.classList.toggle('black', piece?.[0] === 'b');
       button.setAttribute('aria-label', `${Chess.squareName(square)}, ${pieceDescription(piece)}`);
       if (square === state.selected) button.classList.add('is-selected');
+      if (state.drag?.moved && square === state.drag.from) button.classList.add('is-drag-source');
+      if (state.drag?.target === square) button.classList.add('is-drop-target');
       if (state.lastMove && (square === state.lastMove.from || square === state.lastMove.to)) button.classList.add('is-last-move');
       if (square === checkedKing) button.classList.add('is-check');
       const destination = legalDestinations.get(square);
@@ -139,11 +161,23 @@
 
   function renderSeats() {
     const current = state.position.turn;
+    const difficulty = window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty);
+    if (ui.whiteName) ui.whiteName.textContent = state.mode === 'computer' ? 'Você · Brancas' : 'Brancas';
+    if (ui.blackName) ui.blackName.textContent = state.mode === 'computer' ? 'Computador · Pretas' : 'Pretas';
+    if (ui.aiLevelBadge) {
+      ui.aiLevelBadge.hidden = state.mode !== 'computer';
+      ui.aiLevelBadge.textContent = state.mode === 'computer' ? `IA · ${difficulty?.name || 'Médio'}` : '';
+    }
     for (const color of ['w','b']) {
       const card = $(`[data-player-card="${color === 'w' ? 'white' : 'black'}"]`);
       card.classList.toggle('is-active', !isFinished() && current === color);
       const text = $(`[data-${color === 'w' ? 'white' : 'black'}-state]`);
-      if (text) text.textContent = isFinished() ? 'Partida encerrada' : current === color ? 'Sua vez de jogar' : 'Esperando a vez';
+      if (text) {
+        if (isFinished()) text.textContent = 'Partida encerrada';
+        else if (state.mode === 'computer' && color === 'b') text.textContent = state.computerThinking ? 'Analisando o tabuleiro…' : 'Adversário virtual';
+        else if (state.mode === 'computer' && color === 'w') text.textContent = current === 'w' ? 'Sua vez de jogar' : 'Aguardando a IA';
+        else text.textContent = current === color ? 'Sua vez de jogar' : 'Esperando a vez';
+      }
       const capturedElement = color === 'w' ? ui.whiteCaptured : ui.blackCaptured;
       const capturedPieces = [...state.capturedBy[color]].sort((a,b) => materialValues[b[1]] - materialValues[a[1]]);
       if (capturedPieces.length) {
@@ -167,8 +201,8 @@
   function renderStatus() {
     const current = state.position.turn;
     const outcome = state.outcome || {};
-    let title = `Vez das ${colorName(current)}`;
-    let detail = 'Escolha uma peça para ver seus movimentos.';
+    let title = state.mode === 'computer' && current === 'b' ? (state.computerThinking ? 'O computador está pensando…' : 'Vez do computador') : `Vez das ${colorName(current)}`;
+    let detail = state.mode === 'computer' && current === 'b' ? `A IA está no nível ${window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty)?.name || 'Médio'}.` : 'Escolha uma peça para ver seus movimentos.';
     let icon = current === 'w' ? '♙' : '♟';
     ui.statusCard.classList.remove('is-check','is-finished');
     if (outcome.type === 'checkmate') {
@@ -194,7 +228,7 @@
     ui.status.textContent = title;
     ui.statusDetail.textContent = detail;
     ui.statusIcon.textContent = icon;
-    ui.turnLabel.textContent = isFinished() ? title : `Vez das ${colorName(current)}`;
+    ui.turnLabel.textContent = isFinished() ? title : state.mode === 'computer' && current === 'b' ? (state.computerThinking ? 'Computador pensando…' : 'Vez do computador') : `Vez das ${colorName(current)}`;
     ui.resultOverlay.hidden = !isFinished();
     if (isFinished()) {
       ui.resultTitle.textContent = outcome.winner ? `Vitória das ${sideName(outcome.winner)}` : title;
@@ -202,7 +236,7 @@
     }
     ui.drawClaim.disabled = !(outcome.claimable && !isFinished());
     ui.drawClaim.title = outcome.claimable ? 'Reivindicar empate por repetição ou pela regra dos 50 lances' : 'Disponível após uma posição ocorrer três vezes ou 50 lances sem captura ou movimento de peão';
-    ui.undo.disabled = state.undoStack.length === 0;
+    ui.undo.disabled = state.undoStack.length === 0 || state.computerThinking;
   }
 
   function renderHistory() {
@@ -251,8 +285,101 @@
     });
   }
 
-  function playMove(move) {
-    if (isFinished()) return;
+  function evaluatePosition(position) {
+    let score = 0;
+    for (let square = 0; square < 64; square += 1) {
+      const piece = position.board[square];
+      if (!piece) continue;
+      const color = piece[0];
+      const type = piece[1];
+      const row = Chess.rowOf(square);
+      const col = Chess.colOf(square);
+      const center = 3.5 - (Math.abs(row - 3.5) + Math.abs(col - 3.5)) / 2;
+      let positional = 0;
+      if (type === 'P') positional = (color === 'b' ? row - 1 : 6 - row) * 7 + center * 2;
+      else if (type === 'N') positional = center * 8;
+      else if (type === 'B') positional = center * 4;
+      else if (type === 'Q') positional = center * 1.5;
+      const value = searchValues[type] + positional;
+      score += color === 'b' ? value : -value;
+    }
+    if (Chess.isInCheck(position, 'w')) score += 24;
+    if (Chess.isInCheck(position, 'b')) score -= 24;
+    return score;
+  }
+
+  function moveOrderScore(position, move) {
+    const victim = move.captured || position.board[move.to];
+    const attacker = position.board[move.from];
+    let score = victim ? 10 * searchValues[victim[1]] - searchValues[attacker?.[1] || 'P'] : 0;
+    if (move.promotion) score += searchValues[move.promotion] + 700;
+    if (move.castle) score += 25;
+    return score;
+  }
+
+  function searchPosition(position, depth, alpha, beta, ply = 0) {
+    const moves = Chess.getLegalMoves(position);
+    if (!moves.length) {
+      if (!Chess.isInCheck(position)) return 0;
+      return position.turn === 'b' ? -mateScore + ply : mateScore - ply;
+    }
+    if (position.halfmove >= 150 || Chess.isInsufficientMaterial(position)) return 0;
+    if (depth <= 0) return evaluatePosition(position);
+
+    moves.sort((a,b) => moveOrderScore(position,b) - moveOrderScore(position,a));
+    if (position.turn === 'b') {
+      let best = -Infinity;
+      for (const move of moves) {
+        const next = Chess.applyMove(position,move).position;
+        best = Math.max(best,searchPosition(next,depth - 1,alpha,beta,ply + 1));
+        alpha = Math.max(alpha,best);
+        if (beta <= alpha) break;
+      }
+      return best;
+    }
+    let best = Infinity;
+    for (const move of moves) {
+      const next = Chess.applyMove(position,move).position;
+      best = Math.min(best,searchPosition(next,depth - 1,alpha,beta,ply + 1));
+      beta = Math.min(beta,best);
+      if (beta <= alpha) break;
+    }
+    return best;
+  }
+
+  function chooseComputerMove() {
+    const moves = Chess.getLegalMoves(state.position);
+    if (!moves.length) return null;
+    if (state.difficulty === 'easy') return moves[Math.floor(Math.random() * moves.length)];
+
+    const depth = state.difficulty === 'expert' ? 3 : state.difficulty === 'hard' ? 2 : 1;
+    const ranked = moves.map((move) => ({
+      move,
+      score:searchPosition(Chess.applyMove(state.position,move).position,depth - 1,-Infinity,Infinity,1)
+    })).sort((a,b) => b.score - a.score);
+    if (state.difficulty === 'hard' && ranked.length > 1 && Math.random() < .12) return ranked[1].move;
+    if (state.difficulty === 'medium' && ranked.length > 1 && Math.random() < .2) return ranked[Math.min(1 + Math.floor(Math.random() * Math.min(2,ranked.length - 1)),ranked.length - 1)].move;
+    const bestScore = ranked[0].score;
+    const bestMoves = ranked.filter((candidate) => candidate.score === bestScore);
+    return bestMoves[Math.floor(Math.random() * bestMoves.length)].move;
+  }
+
+  function scheduleComputerMove() {
+    const delay = window.CV_GAMES_AI_DIFFICULTY?.getDetails?.(state.difficulty)?.wait || 430;
+    window.clearTimeout(computerTimer);
+    computerTimer = window.setTimeout(() => {
+      computerTimer = 0;
+      if (!state.started || state.mode !== 'computer' || state.position.turn !== 'b' || isFinished()) return;
+      const move = chooseComputerMove();
+      state.computerThinking = false;
+      if (move) playMove(move,true);
+      else render();
+    },delay);
+  }
+
+  function playMove(move, fromComputer = false) {
+    if (!state.started || isFinished()) return;
+    if (state.mode === 'computer' && (fromComputer ? state.position.turn !== 'b' : state.position.turn !== 'w')) return;
     const before = state.position;
     const san = Chess.moveToSan(before, move, state.legalMoves);
     saveSnapshot();
@@ -265,17 +392,21 @@
     const key = currentPositionKey();
     state.repetitions.set(key, (state.repetitions.get(key) || 0) + 1);
     state.selected = null;
+    state.computerThinking = state.mode === 'computer' && state.position.turn === 'b';
     window.CV_GAME_AUDIO?.playTone(result.captured ? 250 : 420, result.captured ? .13 : .075, result.captured ? 'triangle' : 'sine', result.captured ? .055 : .038);
     render();
     if (isFinished()) {
+      state.computerThinking = false;
+      render();
       window.CV_GAME_AUDIO?.playTone(620, .22, 'triangle', .045);
       ui.resultNewGame.focus({ preventScroll:true });
     }
+    else if (state.computerThinking) scheduleComputerMove();
     else squareButtons[state.focusSquare].focus({ preventScroll:true });
   }
 
   function selectSquare(square) {
-    if (isFinished()) return;
+    if (!state.started || isFinished() || state.computerThinking || (state.mode === 'computer' && state.position.turn !== 'w')) return;
     state.focusSquare = square;
     const piece = pieceAt(state.position, square);
     if (state.selected !== null) {
@@ -295,6 +426,90 @@
     renderBoard();
   }
 
+  function removeDragGhost(ghost = state.drag?.ghost) {
+    ghost?.remove();
+    squareButtons.forEach((button) => button.classList.remove('is-drag-source','is-drop-target'));
+  }
+
+  function beginPieceDrag(event) {
+    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    const squareButton = event.target.closest('[data-square]');
+    if (!squareButton || !boardElement.contains(squareButton) || !state.started || isFinished() || state.computerThinking) return;
+    const from = Number(squareButton.dataset.square);
+    const piece = pieceAt(state.position,from);
+    if (!piece || piece[0] !== state.position.turn || (state.mode === 'computer' && state.position.turn !== 'w')) return;
+    state.drag = { pointerId:event.pointerId, from, piece, startX:event.clientX, startY:event.clientY, moved:false, target:null, ghost:null };
+    state.drag.ghost = document.createElement('span');
+    state.drag.ghost.className = `chess-drag-ghost ${piece[0] === 'w' ? 'white' : 'black'}`;
+    state.drag.ghost.textContent = symbols[piece];
+    state.drag.ghost.setAttribute('aria-hidden','true');
+    gameView.append(state.drag.ghost);
+    state.drag.ghost.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0) translate(-50%,-50%) scale(.94)`;
+    document.documentElement.classList.add('chess-piece-grabbing');
+    try { squareButton.setPointerCapture(event.pointerId); } catch { /* O arraste ainda funciona sem captura do ponteiro. */ }
+  }
+
+  function movePieceDrag(event) {
+    const drag = state.drag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    if (!drag.moved) {
+      if (Math.hypot(event.clientX - drag.startX,event.clientY - drag.startY) >= 9) {
+        drag.moved = true;
+        state.selected = drag.from;
+        renderBoard();
+      }
+    }
+    drag.ghost.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0) translate(-50%,-50%) scale(.94)`;
+    if (!drag.moved) return;
+    const underPointer = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-square]');
+    const target = underPointer && boardElement.contains(underPointer) ? Number(underPointer.dataset.square) : null;
+    if (drag.target !== target) {
+      if (drag.target !== null) squareButtons[drag.target].classList.remove('is-drop-target','is-invalid-drop');
+      drag.target = target;
+      if (target !== null) {
+        const legal = state.legalMoves.some((move) => move.from === drag.from && move.to === target);
+        squareButtons[target].classList.add(legal ? 'is-drop-target' : 'is-invalid-drop');
+      }
+    }
+  }
+
+  function finishPieceDrag(event) {
+    const drag = state.drag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const droppedOn = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-square]');
+    const destination = droppedOn && boardElement.contains(droppedOn) ? Number(droppedOn.dataset.square) : null;
+    const moved = drag.moved;
+    const from = drag.from;
+    state.drag = null;
+    document.documentElement.classList.remove('chess-piece-grabbing');
+    removeDragGhost(drag.ghost);
+    if (!moved) return;
+
+    suppressNextDragClick = true;
+    window.setTimeout(() => { suppressNextDragClick = false; },0);
+    event.preventDefault();
+    if (destination !== null && destination !== from && state.legalMoves.some((move) => move.from === from && move.to === destination)) {
+      state.selected = from;
+      selectSquare(destination);
+      return;
+    }
+    state.selected = null;
+    renderBoard();
+  }
+
+  function cancelPieceDrag(event) {
+    if (!state.drag || event.pointerId !== state.drag.pointerId) return;
+    const wasDragging = state.drag.moved;
+    const ghost = state.drag.ghost;
+    state.drag = null;
+    document.documentElement.classList.remove('chess-piece-grabbing');
+    removeDragGhost(ghost);
+    if (wasDragging) {
+      state.selected = null;
+      renderBoard();
+    }
+  }
+
   function showPromotionOptions() {
     const color = state.position.turn;
     document.querySelectorAll('[data-promote]').forEach((button) => {
@@ -312,7 +527,12 @@
     else dialog.removeAttribute('open');
   }
 
-  function startLocalGame() {
+  function startGame(mode, difficulty = state.difficulty) {
+    window.clearTimeout(computerTimer);
+    computerTimer = 0;
+    state.mode = mode;
+    state.difficulty = difficulty;
+    state.computerThinking = false;
     state.position = Chess.createInitialPosition();
     state.selected = null;
     state.lastMove = null;
@@ -330,16 +550,45 @@
     squareButtons[60].focus({ preventScroll:true });
   }
 
+  function startLocalGame() { startGame('local'); }
+  function startComputerGame(difficulty = state.difficulty) { startGame('computer',difficulty); }
+  function startCurrentMode() { state.mode === 'computer' ? startComputerGame(state.difficulty) : startLocalGame(); }
+
+  function openDifficultyPicker() {
+    if (modeChoices) modeChoices.hidden = true;
+    if (lobbyFootnote) lobbyFootnote.hidden = true;
+    if (lobbyCopy) {
+      lobbyCopy.querySelector('h2').textContent = 'Escolha a dificuldade';
+      lobbyCopy.querySelector('p:last-child').textContent = 'Ajuste o desafio antes de enfrentar o computador.';
+    }
+    if (difficultyPicker) difficultyPicker.hidden = false;
+    difficultyPicker?.querySelector('[data-ai-difficulty-range]')?.focus({ preventScroll:true });
+  }
+
+  function closeDifficultyPicker() {
+    if (difficultyPicker) difficultyPicker.hidden = true;
+    if (modeChoices) modeChoices.hidden = false;
+    if (lobbyFootnote) lobbyFootnote.hidden = false;
+    if (lobbyCopy) {
+      lobbyCopy.querySelector('h2').textContent = 'Como quer jogar?';
+      lobbyCopy.querySelector('p:last-child').textContent = 'Reúna outra pessoa e joguem no mesmo dispositivo ou desafie o computador. Escolha o modo para continuar.';
+    }
+    ui.startComputer?.focus({ preventScroll:true });
+  }
+
   async function newGame() {
     if (state.moveLog.length && !await window.CV_GAMES_DIALOG.confirm({
       title:'Começar outra partida?', message:'A partida atual será encerrada e o tabuleiro voltará à posição inicial.',
       confirmText:'Nova partida', cancelText:'Continuar jogando'
     })) return;
-    startLocalGame();
+    startCurrentMode();
   }
 
   function undoMove() {
-    const snapshot = state.undoStack.pop();
+    if (state.computerThinking) return;
+    let snapshot = null;
+    const plies = state.mode === 'computer' && state.position.turn === 'w' && state.moveLog.length >= 2 ? 2 : 1;
+    for (let index = 0; index < plies; index += 1) snapshot = state.undoStack.pop() || snapshot;
     if (!snapshot) return;
     state.position = snapshot.position;
     state.lastMove = snapshot.lastMove;
@@ -349,6 +598,7 @@
     state.outcome = snapshot.outcome;
     state.selected = null;
     state.promotionMove = null;
+    state.computerThinking = false;
     state.focusSquare = state.lastMove?.to ?? 60;
     if (promotionDialog.open) closeDialog(promotionDialog);
     render();
@@ -366,7 +616,7 @@
 
   async function resign() {
     if (isFinished()) return;
-    const current = state.position.turn;
+    const current = state.mode === 'computer' ? 'w' : state.position.turn;
     if (!await window.CV_GAMES_DIALOG.confirm({
       title:'Desistir da partida?',
       message:`As ${colorName(current)} querem desistir? A vitória será das ${colorName(current === 'w' ? 'b' : 'w')}.`,
@@ -438,9 +688,19 @@
   }
 
   boardElement.addEventListener('click',(event) => {
+    if (suppressNextDragClick) {
+      suppressNextDragClick = false;
+      event.preventDefault();
+      return;
+    }
     const squareButton = event.target.closest('[data-square]');
     if (squareButton) selectSquare(Number(squareButton.dataset.square));
   });
+  boardElement.addEventListener('pointerdown',beginPieceDrag);
+  boardElement.addEventListener('pointermove',movePieceDrag);
+  boardElement.addEventListener('pointerup',finishPieceDrag);
+  boardElement.addEventListener('pointercancel',cancelPieceDrag);
+  boardElement.addEventListener('lostpointercapture',cancelPieceDrag);
   boardElement.addEventListener('keydown',(event) => {
     const squareButton = event.target.closest('[data-square]');
     if (!squareButton || !['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.key)) return;
@@ -462,11 +722,31 @@
   });
 
   ui.startLocal.addEventListener('click',startLocalGame);
+  ui.startComputer?.addEventListener('click',openDifficultyPicker);
+  difficultyBack?.addEventListener('click',closeDifficultyPicker);
+  document.addEventListener('cv-ai-difficulty-start',(event) => {
+    if (event.detail?.gameKey === gameId) startComputerGame(event.detail.difficulty);
+  });
+  document.addEventListener('cv-game-return-to-mode-menu', () => {
+    window.clearTimeout(computerTimer);
+    computerTimer = 0;
+    document.documentElement.classList.remove('chess-piece-grabbing');
+    if (state.drag) {
+      const ghost = state.drag.ghost;
+      state.drag = null;
+      removeDragGhost(ghost);
+    }
+    closeDifficultyPicker();
+    state.started = false;
+    state.selected = null;
+    state.promotionMove = null;
+    state.computerThinking = false;
+  });
   ui.undo.addEventListener('click',undoMove);
   ui.drawClaim.addEventListener('click',claimDraw);
   ui.resign.addEventListener('click',resign);
   ui.newGame.addEventListener('click',newGame);
-  ui.resultNewGame.addEventListener('click',startLocalGame);
+  ui.resultNewGame.addEventListener('click',startCurrentMode);
   ui.settingsOpen.addEventListener('click',() => { loadSettingsIntoDialog(); if (settingsDialog.showModal) settingsDialog.showModal(); else settingsDialog.setAttribute('open',''); });
   ui.settingsClose.addEventListener('click',() => closeDialog(settingsDialog));
   for (const selector of ['[data-setting-rotate]','[data-setting-moves]','[data-setting-coordinates]']) document.querySelectorAll(selector).forEach((control) => control.addEventListener('change',(event) => updateSettings(event)));

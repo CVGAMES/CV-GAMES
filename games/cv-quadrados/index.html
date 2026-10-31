@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="Jogue CV QUADRADOS com outra pessoa no mesmo dispositivo. Conecte os pontos, feche quadrados e vença no tabuleiro 5×5.">
+  <meta name="description" content="Jogue CV QUADRADOS com outra pessoa ou contra o computador. Conecte os pontos, feche quadrados e vença no tabuleiro 5×5.">
   <meta property="og:title" content="CV QUADRADOS — Jogo Exclusivo | CV GAMES">
-  <meta property="og:description" content="Um duelo local de estratégia: conecte pontos, complete quadrados e marque mais territórios. A partida é em um tabuleiro 5×5.">
+  <meta property="og:description" content="Um duelo de estratégia: conecte pontos, complete quadrados e vença outra pessoa ou o computador em um tabuleiro 5×5.">
   <meta property="og:type" content="website"><meta property="og:site_name" content="CV GAMES"><meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/games/cv-quadrados/"><meta property="og:image" content="https://cvgames.com.br/games/cv-quadrados/cover.svg"><meta property="og:image:alt" content="Capa do jogo CV QUADRADOS">
-  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="CV QUADRADOS — Jogo Exclusivo | CV GAMES"><meta name="twitter:description" content="Conecte pontos, feche quadrados e dispute o tabuleiro 5×5 com outra pessoa."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-quadrados/cover.svg">
+  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="CV QUADRADOS — Jogo Exclusivo | CV GAMES"><meta name="twitter:description" content="Conecte pontos, feche quadrados e dispute o tabuleiro 5×5 contra outra pessoa ou o computador."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-quadrados/cover.svg">
   <title>CV QUADRADOS — Jogo Exclusivo | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/games/cv-quadrados/">
   <link rel="icon" href="../../img/incon.png" type="image/png">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV QUADRADOS","url":"https://cvgames.com.br/games/cv-quadrados/","image":"https://cvgames.com.br/games/cv-quadrados/cover.svg","description":"Jogo de ligar pontos e completar quadrados para duas pessoas, no mesmo dispositivo.","genre":"Estratégia, Puzzle","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV QUADRADOS","url":"https://cvgames.com.br/games/cv-quadrados/","image":"https://cvgames.com.br/games/cv-quadrados/cover.svg","description":"Jogo de ligar pontos e completar quadrados contra outra pessoa ou o computador.","genre":"Estratégia, Puzzle","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
-  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
-  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="game.js" defer></script>
+  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css"><link rel="stylesheet" href="../mode-menu-return.css"><link rel="stylesheet" href="../ai-difficulty.css">
+  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="../ai-difficulty.js" defer></script><script src="game.js" defer></script><script src="../mode-menu-return.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="squares-page">
@@ -30,21 +30,39 @@
 
   <main class="squares-main" id="conteudo"><div class="container">
     <a class="squares-back" href="../../index.html#jogos">← Voltar para Jogos</a>
-    <section class="squares-intro"><div><p class="eyebrow">✦ EXCLUSIVO CV GAMES</p><h1>CV <span>QUADRADOS</span></h1><p>Trace uma linha. Feche um quadrado. Conquiste o tabuleiro.</p></div><span class="squares-intro-mark" aria-hidden="true">▦</span></section>
+    <section class="squares-intro"><div><p class="eyebrow">✦ EXCLUSIVO CV GAMES</p><h1>CV <span>QUADRADOS</span></h1><p>Trace linhas, feche quadrados e desafie outra pessoa ou o computador.</p></div><span class="squares-intro-mark" aria-hidden="true">▦</span></section>
 
     <section class="squares-lobby" data-lobby aria-labelledby="lobby-title">
-      <div class="squares-lobby-copy"><p class="squares-kicker">ESCOLHA SUA PARTIDA</p><h2>Quem vai jogar?</h2><p>Dispute o tabuleiro com alguém no mesmo computador, celular ou tablet.</p></div>
-      <div class="squares-mode-grid">
+      <div class="squares-lobby-copy" data-lobby-copy><p class="squares-kicker">ESCOLHA SUA PARTIDA</p><h2 id="lobby-title">Quem vai jogar?</h2><p>Dispute o tabuleiro com alguém no mesmo dispositivo ou enfrente o computador.</p></div>
+      <div class="squares-mode-grid" data-mode-choices>
         <button class="squares-mode-card squares-mode-local" type="button" data-start-local><span class="squares-mode-icon" aria-hidden="true"><i>A</i><b>B</b></span><span class="squares-mode-tag">DISPONÍVEL AGORA</span><strong>2 jogadores locais</strong><span>Alterne os lances no mesmo dispositivo. Quem completar um quadrado marca o ponto e joga novamente.</span><b>Começar partida <span aria-hidden="true">→</span></b></button>
-        <button class="squares-mode-card squares-mode-soon" type="button" disabled><span class="squares-mode-icon" aria-hidden="true">✦</span><span class="squares-mode-tag">EM BREVE</span><strong>Jogador vs. computador</strong><span>Enfrente um adversário controlado pelo computador.</span><b>Modo em desenvolvimento</b></button>
+        <button class="squares-mode-card squares-mode-local squares-mode-computer" type="button" data-start-computer><span class="squares-mode-icon" aria-hidden="true">▦ ✦</span><span class="squares-mode-tag">ESCOLHA O DESAFIO</span><strong>Você vs. computador</strong><span>Escolha a dificuldade da IA antes da partida.</span><b>Escolher dificuldade <span aria-hidden="true">→</span></b></button>
       </div>
-      <p class="squares-lobby-footnote">Tabuleiro com 5×5 quadrados. Quando todos estiverem fechados, vence quem tiver conquistado mais.</p>
+      <p class="squares-lobby-footnote" data-lobby-footnote>Tabuleiro com 5×5 quadrados. Quando todos estiverem fechados, vence quem tiver conquistado mais.</p>
+      <section class="cv-ai-difficulty-picker" data-ai-difficulty-picker data-ai-difficulty-key="cv-quadrados" data-difficulty="medium" hidden aria-labelledby="squares-ai-heading">
+        <header class="cv-ai-difficulty-heading"><div class="cv-ai-difficulty-heading-copy"><p>PREPARE O DUELO</p><h3 id="squares-ai-heading">Ajuste o desafio da IA</h3></div><button class="cv-ai-difficulty-back" type="button" data-difficulty-back>← <span>Modos</span></button></header>
+        <div class="cv-ai-difficulty-layout">
+          <section class="cv-ai-difficulty-showcase" data-ai-difficulty-showcase data-difficulty="medium" aria-live="polite">
+            <div class="cv-ai-avatar-ring" aria-hidden="true"><span class="cv-ai-avatar squares-ai-avatar"><span data-ai-difficulty-face>😐</span></span></div>
+            <span class="cv-ai-difficulty-level" data-ai-difficulty-level>NÍVEL 2 / 4</span><h4 class="cv-ai-difficulty-name" data-ai-difficulty-name>MÉDIO</h4><p class="cv-ai-difficulty-summary" data-ai-difficulty-summary>Um desafio equilibrado para treinar e melhorar seus planos.</p>
+          </section>
+          <section class="cv-ai-difficulty-controls" aria-label="Configurações da inteligência artificial">
+            <div class="cv-ai-difficulty-control-heading"><strong>Dificuldade do computador</strong><output class="cv-ai-difficulty-value" data-ai-difficulty-value for="squares-ai-difficulty">MÉDIO · 2/4</output></div>
+            <label class="squares-sr-only" for="squares-ai-difficulty">Escolha entre Fácil, Médio, Difícil e Extra difícil</label><input class="cv-ai-difficulty-range" id="squares-ai-difficulty" data-ai-difficulty-range type="range" min="0" max="3" step="1" value="1" aria-valuetext="Médio, nível 2 de 4">
+            <div class="cv-ai-difficulty-ticks" aria-hidden="true"><span data-ai-difficulty-tick="0">FÁCIL</span><span data-ai-difficulty-tick="1" aria-current="true">MÉDIO</span><span data-ai-difficulty-tick="2">DIFÍCIL</span><span data-ai-difficulty-tick="3">EXTRA</span></div>
+            <article class="cv-ai-behavior-card"><span class="cv-ai-behavior-icon" aria-hidden="true">▦</span><div><strong>Como a IA joga neste nível</strong><p data-ai-difficulty-behavior>Prioriza quadrados e procura linhas seguras.</p></div></article>
+            <button class="cv-ai-difficulty-start" type="button" data-ai-difficulty-start><span aria-hidden="true">▶</span><span data-ai-difficulty-start-label>JOGAR · NÍVEL 2</span></button><small class="cv-ai-difficulty-note">A dificuldade fica salva neste aparelho e pode ser alterada antes de outra partida.</small>
+          </section>
+        </div>
+        <details class="cv-ai-difficulty-help"><summary>O que muda entre os níveis?</summary><ul><li><strong>Fácil:</strong> escolhe linhas de forma espontânea.</li><li><strong>Médio:</strong> procura quadrados para fechar e tenta evitar entregas imediatas.</li><li><strong>Difícil:</strong> considera respostas e cadeias de capturas.</li><li><strong>Extra difícil:</strong> calcula mais jogadas antes de escolher.</li></ul></details>
+      </section>
     </section>
 
     <section class="squares-game-view" data-game-view data-fullscreen-root id="squares-fullscreen" hidden aria-label="Partida de CV QUADRADOS">
       <div class="squares-toolbar">
-        <div class="squares-turn-card" data-live-turn data-player="a"><span class="squares-turn-swatch" data-turn-swatch aria-hidden="true"></span><span><small>VEZ DE JOGAR</small><strong data-turn-label>Jogador Azul</strong></span></div>
+        <div class="squares-turn-card" data-live-turn data-player="a"><span class="squares-turn-swatch" data-turn-swatch aria-hidden="true"></span><span><small>VEZ DE JOGAR</small><strong data-turn-label>Jogador Azul</strong><em class="squares-ai-level-badge" data-ai-level-badge hidden></em></span></div>
         <div class="squares-toolbar-actions">
+          <button class="cv-mode-menu-return" type="button" data-mode-menu-return aria-label="Voltar à escolha da partida" title="Voltar à escolha da partida"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4h6v16h-6M10 8l-5 4 5 4M5 12h10"/></svg><span>Voltar à escolha da partida</span></button>
           <button class="squares-tool-button" type="button" data-undo disabled title="Desfazer última linha">↶ <span>Desfazer</span></button>
           <button class="squares-tool-button" type="button" data-new-game>＋ <span>Nova partida</span></button>
           <div class="cv-game-audio" data-game-audio data-music-src="../../music/CV%20QUADRADOS.mp3"></div>
@@ -55,9 +73,9 @@
       <div class="squares-layout">
         <section class="squares-play-area" aria-label="Tabuleiro e placar">
           <div class="squares-scoreboard" aria-label="Quadrados conquistados">
-            <div class="squares-player-card is-active" data-player-card="a" data-player="a"><span class="squares-player-swatch" aria-hidden="true"></span><span class="squares-player-copy"><strong>Jogador Azul</strong><small data-a-state>Começa primeiro</small></span><b data-a-score>0</b></div>
+            <div class="squares-player-card is-active" data-player-card="a" data-player="a"><span class="squares-player-swatch" aria-hidden="true"></span><span class="squares-player-copy"><strong data-player-name="a">Jogador Azul</strong><small data-a-state>Começa primeiro</small></span><b data-a-score>0</b></div>
             <div class="squares-score-middle"><strong data-boxes-count>0<span>/25</span></strong><small>QUADRADOS</small></div>
-            <div class="squares-player-card" data-player-card="b" data-player="b"><span class="squares-player-swatch" aria-hidden="true"></span><span class="squares-player-copy"><strong>Jogador Coral</strong><small data-b-state>Esperando a vez</small></span><b data-b-score>0</b></div>
+            <div class="squares-player-card" data-player-card="b" data-player="b"><span class="squares-player-swatch" aria-hidden="true"></span><span class="squares-player-copy"><strong data-player-name="b">Jogador Coral</strong><small data-b-state>Esperando a vez</small></span><b data-b-score>0</b></div>
           </div>
           <div class="squares-board-frame"><svg class="squares-board" data-board viewBox="0 0 620 620" role="group" aria-label="Tabuleiro 5 por 5. Use as setas para escolher uma linha e Enter para traçá-la." focusable="false"></svg></div>
           <div class="squares-board-foot"><span><i class="squares-key squares-key-a" aria-hidden="true"></i> Azul</span><span><i class="squares-key squares-key-b" aria-hidden="true"></i> Coral</span><span class="squares-bonus-note" data-bonus-note hidden>Fechou quadrado! Jogue novamente.</span></div>

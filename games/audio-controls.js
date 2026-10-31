@@ -149,6 +149,20 @@
     if (shouldResume) startMusic();
   };
 
+  const pauseForMenu = () => {
+    musicStartPending = false;
+    music.pause();
+    if (specialMusic) {
+      specialMusic.pause();
+      try { specialMusic.currentTime = 0; } catch { /* Pode ainda não haver dados carregados. */ }
+      specialMusic = null;
+    }
+    musicSuppressed = false;
+    resumeBackgroundAfterSpecial = false;
+    sfxChannels.forEach((channels) => channels.forEach((channel) => channel.pause()));
+    updateMusicControl();
+  };
+
   const updateMusicControl = () => {
     music.muted = muted;
     if (specialMusic) specialMusic.muted = muted;
@@ -272,6 +286,7 @@
   window.CV_GAME_AUDIO = {
     playSfx,
     pauseForCutscene,
+    pauseForMenu,
     playSpecialMusic,
     stopSpecialMusic,
     playTone(frequency, duration = 0.08, type = 'sine', level = 0.04) {

@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="Jogue CV XADREZ com outra pessoa no mesmo dispositivo. Regras completas, roque, en passant, promoção, histórico e tabuleiro giratório.">
+  <meta name="description" content="Jogue CV XADREZ com outra pessoa no mesmo dispositivo ou desafie o computador em quatro níveis de dificuldade. Regras completas e histórico da partida.">
   <meta property="og:title" content="CV XADREZ — Jogo Exclusivo | CV GAMES">
-  <meta property="og:description" content="Uma partida de xadrez local para duas pessoas, com regras completas e tabuleiro que gira a cada jogada.">
+  <meta property="og:description" content="Jogue localmente ou desafie o computador em quatro níveis de dificuldade.">
   <meta property="og:type" content="website"><meta property="og:site_name" content="CV GAMES"><meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/games/cv-xadrez/"><meta property="og:image" content="https://cvgames.com.br/games/cv-xadrez/cover.svg"><meta property="og:image:alt" content="Capa do jogo CV XADREZ">
-  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="CV XADREZ — Jogo Exclusivo | CV GAMES"><meta name="twitter:description" content="Xadrez completo para duas pessoas no mesmo dispositivo."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-xadrez/cover.svg">
+  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="CV XADREZ — Jogo Exclusivo | CV GAMES"><meta name="twitter:description" content="Xadrez local ou contra o computador em quatro níveis."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-xadrez/cover.svg">
   <title>CV XADREZ — Jogo Exclusivo | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/games/cv-xadrez/">
   <link rel="icon" href="../../img/incon.png" type="image/png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV XADREZ","url":"https://cvgames.com.br/games/cv-xadrez/","image":"https://cvgames.com.br/games/cv-xadrez/cover.svg","description":"Jogo de xadrez local para duas pessoas com roque, en passant, promoção e regras de empate.","genre":"Estratégia, Tabuleiro","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
-  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
-  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="engine.js" defer></script><script src="game.js" defer></script>
+  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css"><link rel="stylesheet" href="../mode-menu-return.css"><link rel="stylesheet" href="../ai-difficulty.css">
+  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="engine.js" defer></script><script src="../ai-difficulty.js" defer></script><script src="game.js" defer></script><script src="../mode-menu-return.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="chess-page">
@@ -33,17 +33,36 @@
     <section class="chess-intro"><div><p class="eyebrow">♟ EXCLUSIVO CV GAMES</p><h1>CV <span>XADREZ</span></h1><p>Dois jogadores. Um tabuleiro. Cada movimento muda tudo.</p></div><span class="chess-intro-mark" aria-hidden="true">♞</span></section>
 
     <section class="chess-lobby" data-lobby aria-labelledby="lobby-title">
-      <div class="chess-lobby-copy"><p class="chess-kicker">ESCOLHA SUA PARTIDA</p><h2 id="lobby-title">Como quer jogar?</h2><p>Reúna outra pessoa e joguem no mesmo dispositivo. O tabuleiro acompanha quem está na vez.</p></div>
-      <div class="chess-mode-grid">
+      <div class="chess-lobby-copy" data-lobby-copy><p class="chess-kicker">ESCOLHA SUA PARTIDA</p><h2 id="lobby-title">Como quer jogar?</h2><p>Reúna outra pessoa e joguem no mesmo dispositivo ou desafie o computador. Escolha o modo para continuar.</p></div>
+      <div class="chess-mode-grid" data-mode-choices>
         <button class="chess-mode-card chess-mode-local" type="button" data-start-local><span class="chess-mode-icon" aria-hidden="true">♟♙</span><span class="chess-mode-tag">DISPONÍVEL AGORA</span><strong>2 jogadores locais</strong><span>Uma pessoa joga de brancas e outra de pretas, alternando no mesmo computador ou tablet.</span><b>Começar partida <span aria-hidden="true">→</span></b></button>
-        <button class="chess-mode-card chess-mode-soon" type="button" disabled><span class="chess-mode-icon" aria-hidden="true">♙✦</span><span class="chess-mode-tag">EM BREVE</span><strong>Jogador vs. computador</strong><span>Uma partida contra um adversário controlado pelo computador.</span><b>Modo em desenvolvimento</b></button>
+        <button class="chess-mode-card chess-mode-local chess-mode-computer" type="button" data-start-computer><span class="chess-mode-icon" aria-hidden="true">♞✦</span><span class="chess-mode-tag">ESCOLHA O DESAFIO</span><strong>Você vs. computador</strong><span>Escolha a dificuldade da IA e veja como ela joga antes de começar.</span><b>Escolher dificuldade <span aria-hidden="true">→</span></b></button>
       </div>
+      <p class="chess-lobby-footnote" data-lobby-footnote>Brancas começam. No modo local, o tabuleiro acompanha quem está na vez.</p>
+      <section class="cv-ai-difficulty-picker" data-ai-difficulty-picker data-ai-difficulty-key="cv-xadrez" data-difficulty="medium" hidden aria-labelledby="chess-ai-heading">
+        <header class="cv-ai-difficulty-heading"><div class="cv-ai-difficulty-heading-copy"><p>PREPARE O DUELO</p><h3 id="chess-ai-heading">Ajuste o desafio da IA</h3></div><button class="cv-ai-difficulty-back" type="button" data-difficulty-back>← <span>Modos</span></button></header>
+        <div class="cv-ai-difficulty-layout">
+          <section class="cv-ai-difficulty-showcase" data-ai-difficulty-showcase data-difficulty="medium" aria-live="polite">
+            <div class="cv-ai-avatar-ring" aria-hidden="true"><span class="cv-ai-avatar chess-ai-avatar"><span data-ai-difficulty-face>♟</span></span></div>
+            <span class="cv-ai-difficulty-level" data-ai-difficulty-level>NÍVEL 2 / 4</span><h4 class="cv-ai-difficulty-name" data-ai-difficulty-name>MÉDIO</h4><p class="cv-ai-difficulty-summary" data-ai-difficulty-summary>Um desafio equilibrado para treinar e melhorar seus planos.</p>
+          </section>
+          <section class="cv-ai-difficulty-controls" aria-label="Configurações da inteligência artificial">
+            <div class="cv-ai-difficulty-control-heading"><strong>Dificuldade do computador</strong><output class="cv-ai-difficulty-value" data-ai-difficulty-value for="chess-ai-difficulty">MÉDIO · 2/4</output></div>
+            <label class="chess-sr-only" for="chess-ai-difficulty">Escolha entre Fácil, Médio, Difícil e Extra difícil</label><input class="cv-ai-difficulty-range" id="chess-ai-difficulty" data-ai-difficulty-range type="range" min="0" max="3" step="1" value="1" aria-valuetext="Médio, nível 2 de 4">
+            <div class="cv-ai-difficulty-ticks" aria-hidden="true"><span data-ai-difficulty-tick="0">FÁCIL</span><span data-ai-difficulty-tick="1" aria-current="true">MÉDIO</span><span data-ai-difficulty-tick="2">DIFÍCIL</span><span data-ai-difficulty-tick="3">EXTRA</span></div>
+            <article class="cv-ai-behavior-card"><span class="cv-ai-behavior-icon" aria-hidden="true">♟</span><div><strong>Como a IA joga neste nível</strong><p data-ai-difficulty-behavior>Observa capturas e ameaças simples, sem calcular muitas respostas.</p></div></article>
+            <button class="cv-ai-difficulty-start" type="button" data-ai-difficulty-start><span aria-hidden="true">▶</span><span data-ai-difficulty-start-label>JOGAR · NÍVEL 2</span></button><small class="cv-ai-difficulty-note">A dificuldade fica salva neste aparelho e pode ser alterada antes de outra partida.</small>
+          </section>
+        </div>
+        <details class="cv-ai-difficulty-help"><summary>O que muda entre os níveis?</summary><ul><li><strong>Fácil:</strong> lances legais escolhidos de forma espontânea.</li><li><strong>Médio:</strong> procura capturas e respostas imediatas.</li><li><strong>Difícil:</strong> calcula algumas respostas e pode arriscar uma linha.</li><li><strong>Extra difícil:</strong> analisa sequências mais longas e escolhe as melhores respostas encontradas.</li></ul></details>
+      </section>
     </section>
 
-    <section class="chess-game-view" data-game-view data-fullscreen-root id="chess-fullscreen" hidden aria-label="Partida de xadrez local">
+    <section class="chess-game-view" data-game-view data-fullscreen-root id="chess-fullscreen" hidden aria-label="Partida de xadrez">
       <div class="chess-game-toolbar">
         <div class="chess-live-turn" data-live-turn><span class="turn-dot" aria-hidden="true"></span><span data-turn-label>Vez das brancas</span></div>
         <div class="chess-toolbar-actions">
+          <button class="cv-mode-menu-return" type="button" data-mode-menu-return aria-label="Voltar à escolha da partida" title="Voltar à escolha da partida"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4h6v16h-6M10 8l-5 4 5 4M5 12h10"/></svg><span>Voltar à escolha da partida</span></button>
           <button class="chess-tool-button" type="button" data-undo title="Desfazer última jogada">↶ <span>Desfazer</span></button>
           <button class="chess-tool-button" type="button" data-draw-claim disabled title="Disponível após repetição ou 50 lances">½ <span>Reivindicar empate</span></button>
           <button class="chess-tool-button" type="button" data-resign>⚑ <span>Desistir</span></button>
@@ -55,9 +74,9 @@
 
       <div class="chess-play-layout">
         <div class="chess-board-stack" data-board-stack data-bottom-side="white">
-          <section class="chess-player-seat" data-player-card="black" aria-label="Jogador das pretas"><span class="seat-piece seat-black" aria-hidden="true">♚</span><div class="seat-copy"><strong>Pretas</strong><span data-black-state>Esperando a vez</span></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
+          <section class="chess-player-seat" data-player-card="black" aria-label="Jogador das pretas"><span class="seat-piece seat-black" aria-hidden="true">♚</span><div class="seat-copy"><strong data-black-name>Pretas</strong><span data-black-state>Esperando a vez</span><em class="chess-ai-level-badge" data-ai-level-badge hidden></em></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
           <div class="chess-board-wrap"><div class="chess-board" data-board role="grid" aria-label="Tabuleiro de xadrez"></div></div>
-          <section class="chess-player-seat" data-player-card="white" aria-label="Jogador das brancas"><span class="seat-piece seat-white" aria-hidden="true">♔</span><div class="seat-copy"><strong>Brancas</strong><span data-white-state>Jogam primeiro</span></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
+          <section class="chess-player-seat" data-player-card="white" aria-label="Jogador das brancas"><span class="seat-piece seat-white" aria-hidden="true">♔</span><div class="seat-copy"><strong data-white-name>Brancas</strong><span data-white-state>Jogam primeiro</span></div><span class="seat-turn-indicator" aria-hidden="true"></span></section>
         </div>
 
         <aside class="chess-sidebar" aria-label="Informações da partida">
@@ -75,7 +94,7 @@
           <button class="chess-result-new-game" type="button" data-result-new-game>＋ Nova partida</button>
         </section>
       </div>
-      <p class="chess-keyboard-tip">Toque em uma peça para ver os lances legais.<span data-hardware-hint> No computador, clique em uma peça ou use as setas do teclado para navegar.</span></p>
+      <p class="chess-keyboard-tip">Arraste uma peça para uma casa marcada ou toque na peça e depois na casa.<span data-hardware-hint> No computador, também pode clicar nas casas ou usar as setas do teclado para navegar.</span></p>
     </section>
     <div class="ad-slot ad-slot--exclusive-game" data-ad-slot="cv-xadrez-after-game" aria-hidden="true"></div>
   </div></main>
@@ -89,7 +108,7 @@
   <dialog class="chess-dialog chess-settings-dialog" data-settings-dialog aria-labelledby="settings-title">
     <form method="dialog"><button class="dialog-close" aria-label="Fechar" value="cancel">×</button></form>
     <p class="chess-kicker">PREFERÊNCIAS DA PARTIDA</p><h2 id="settings-title">Configurações</h2>
-    <label class="setting-row"><span><strong>Girar tabuleiro a cada jogada</strong><small>Deixa quem está na vez na parte inferior.</small></span><input type="checkbox" data-setting-rotate checked></label>
+    <label class="setting-row"><span><strong>Girar tabuleiro a cada jogada</strong><small>Deixa quem está na vez na parte inferior.</small></span><input type="checkbox" data-setting-rotate></label>
     <label class="setting-row"><span><strong>Mostrar movimentos legais</strong><small>Destaca as casas disponíveis para a peça.</small></span><input type="checkbox" data-setting-moves checked></label>
     <label class="setting-row"><span><strong>Mostrar coordenadas</strong><small>Exibe letras e números nas bordas.</small></span><input type="checkbox" data-setting-coordinates checked></label>
     <button class="button button-primary settings-done" type="button" data-settings-close>Pronto</button>

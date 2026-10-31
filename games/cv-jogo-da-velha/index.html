@@ -15,8 +15,8 @@
   <link rel="icon" href="../../img/incon.png" type="image/png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV JOGO DA VELHA","url":"https://cvgames.com.br/games/cv-jogo-da-velha/","image":"https://cvgames.com.br/games/cv-jogo-da-velha/cover.svg","description":"Jogo da velha para duas pessoas no mesmo dispositivo ou contra o computador.","genre":"Estratégia, Puzzle","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
   <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
-  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css">
-  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="game.js" defer></script>
+  <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="../../css/site-dialog.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css"><link rel="stylesheet" href="../mode-menu-return.css"><link rel="stylesheet" href="../ai-difficulty.css">
+  <script src="../../data/jogos.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../../js/site-dialog.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="../ai-difficulty.js" defer></script><script src="game.js" defer></script><script src="../mode-menu-return.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
 </head>
 <body class="ttt-page">
@@ -34,17 +34,43 @@
 
     <section class="ttt-lobby" data-lobby aria-labelledby="lobby-title">
       <div class="ttt-lobby-copy"><p class="ttt-kicker">ESCOLHA SUA PARTIDA</p><h2 id="lobby-title">Quem vai jogar?</h2><p>Jogue com outra pessoa no mesmo aparelho ou enfrente o computador.</p></div>
-      <div class="ttt-mode-grid">
+      <div class="ttt-mode-grid" data-mode-choices>
         <button class="ttt-mode-card ttt-mode-local" type="button" data-start-local><span class="ttt-mode-icon" aria-hidden="true"><i>×</i><b>○</b></span><span class="ttt-mode-tag">DISPONÍVEL AGORA</span><strong>2 jogadores locais</strong><span>Uma pessoa joga com X e a outra com O. As rodadas alternam quem começa.</span><b>Começar partida <span aria-hidden="true">→</span></b></button>
-        <button class="ttt-mode-card ttt-mode-local" type="button" data-start-computer><span class="ttt-mode-icon" aria-hidden="true">✦</span><span class="ttt-mode-tag">DISPONÍVEL AGORA</span><strong>Você vs. computador</strong><span>Jogue com X contra o computador. O adversário usa estratégia perfeita e as rodadas alternam quem começa.</span><b>Jogar contra o computador <span aria-hidden="true">→</span></b></button>
+        <button class="ttt-mode-card ttt-mode-local" type="button" data-start-computer><span class="ttt-mode-icon" aria-hidden="true">✦</span><span class="ttt-mode-tag">ESCOLHA O DESAFIO</span><strong>Você vs. computador</strong><span>Defina a dificuldade da IA e veja o que muda antes de começar a partida.</span><b>Escolher dificuldade <span aria-hidden="true">→</span></b></button>
       </div>
-      <p class="ttt-lobby-footnote">No modo local, X começa a primeira rodada. Contra o computador, você joga com X e quem começa muda a cada rodada.</p>
+      <section class="cv-ai-difficulty-picker" data-ai-difficulty-picker data-ai-difficulty-key="cv-jogo-da-velha" data-difficulty="medium" hidden aria-labelledby="ttt-ai-heading">
+        <header class="cv-ai-difficulty-heading">
+          <div class="cv-ai-difficulty-heading-copy"><p>PREPARE O DUELO</p><h3 id="ttt-ai-heading">Ajuste o desafio da IA</h3></div>
+          <button class="cv-ai-difficulty-back" type="button" data-difficulty-back>← <span>Modos</span></button>
+        </header>
+        <div class="cv-ai-difficulty-layout">
+          <section class="cv-ai-difficulty-showcase" data-ai-difficulty-showcase data-difficulty="medium" aria-live="polite">
+            <div class="cv-ai-board-preview" aria-hidden="true"><span>×</span><span>○</span><span></span><span>○</span><span>×</span><span></span><span></span><span>×</span><span>○</span></div>
+            <div class="cv-ai-avatar-ring" aria-hidden="true"><span class="cv-ai-avatar"><span data-ai-difficulty-face>😐</span></span></div>
+            <span class="cv-ai-difficulty-level" data-ai-difficulty-level>NÍVEL 2 / 4</span>
+            <h4 class="cv-ai-difficulty-name" data-ai-difficulty-name>MÉDIO</h4>
+            <p class="cv-ai-difficulty-summary" data-ai-difficulty-summary>Um desafio equilibrado para treinar sem exigir que você preveja várias jogadas.</p>
+          </section>
+          <section class="cv-ai-difficulty-controls" aria-label="Configurações da inteligência artificial">
+            <div class="cv-ai-difficulty-control-heading"><strong>Dificuldade do computador</strong><output class="cv-ai-difficulty-value" data-ai-difficulty-value for="ttt-ai-difficulty">MÉDIO · 2/4</output></div>
+            <label class="ttt-sr-only" for="ttt-ai-difficulty">Escolha entre Fácil, Médio, Difícil e Extra difícil</label>
+            <input class="cv-ai-difficulty-range" id="ttt-ai-difficulty" data-ai-difficulty-range type="range" min="0" max="3" step="1" value="1" aria-valuetext="Médio, nível 2 de 4">
+            <div class="cv-ai-difficulty-ticks" aria-hidden="true"><span data-ai-difficulty-tick="0">FÁCIL</span><span data-ai-difficulty-tick="1" aria-current="true">MÉDIO</span><span data-ai-difficulty-tick="2">DIFÍCIL</span><span data-ai-difficulty-tick="3">EXTRA</span></div>
+            <article class="cv-ai-behavior-card"><span class="cv-ai-behavior-icon" aria-hidden="true">♟</span><div><strong>Como a IA joga neste nível</strong><p data-ai-difficulty-behavior>Aproveita uma vitória imediata e tenta bloquear uma ameaça direta. No restante, usa prioridades simples.</p></div></article>
+            <button class="cv-ai-difficulty-start" type="button" data-ai-difficulty-start><span aria-hidden="true">▶</span><span data-ai-difficulty-start-label>JOGAR · NÍVEL 2</span></button>
+            <small class="cv-ai-difficulty-note">A dificuldade fica salva neste aparelho e pode ser alterada antes de outra partida.</small>
+          </section>
+        </div>
+        <details class="cv-ai-difficulty-help"><summary>O que muda entre os níveis?</summary><ul><li><strong>Fácil:</strong> escolhas mais espontâneas, boas para aprender.</li><li><strong>Médio:</strong> ganha quando pode e bloqueia uma ameaça imediata.</li><li><strong>Difícil:</strong> calcula respostas, mas pode arriscar uma jogada.</li><li><strong>Extra difícil:</strong> escolhe a melhor sequência disponível.</li></ul></details>
+      </section>
+      <p class="ttt-lobby-footnote" data-lobby-footnote>No modo local, X começa a primeira rodada. Contra o computador, você joga com X e quem começa muda a cada rodada.</p>
     </section>
 
     <section class="ttt-game-view" data-game-view data-fullscreen-root id="ttt-fullscreen" hidden aria-label="Partida de jogo da velha">
       <div class="ttt-toolbar">
         <div class="ttt-turn-card" data-live-turn data-player="x"><span class="ttt-turn-symbol" data-turn-symbol aria-hidden="true">×</span><span><small>VEZ DE JOGAR</small><strong data-turn-label>Jogador X</strong></span></div>
         <div class="ttt-toolbar-actions">
+          <button class="cv-mode-menu-return" type="button" data-mode-menu-return aria-label="Voltar à escolha da partida" title="Voltar à escolha da partida"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4h6v16h-6M10 8l-5 4 5 4M5 12h10"/></svg><span>Voltar à escolha da partida</span></button>
           <button class="ttt-tool-button" type="button" data-undo disabled title="Desfazer última jogada">↶ <span>Desfazer</span></button>
           <button class="ttt-tool-button" type="button" data-reset-scores title="Zerar o placar">↻ <span>Zerar placar</span></button>
           <div class="cv-game-audio" data-game-audio data-music-src="../../music/CV%20JOGO%20DA%20VELHA.mp3"></div>
@@ -56,7 +82,7 @@
           <div class="ttt-scoreboard" aria-label="Placar da partida">
             <div class="ttt-player-card" data-player-card="x" data-player="x"><span class="ttt-player-symbol" aria-hidden="true">×</span><span class="ttt-player-copy"><strong data-x-name>Jogador X</strong><small data-x-state>Começa primeiro</small></span><b class="ttt-score" data-x-score>0</b></div>
             <div class="ttt-draw-score"><strong data-draw-score>0</strong><small>EMPATES</small></div>
-            <div class="ttt-player-card" data-player-card="o" data-player="o"><span class="ttt-player-symbol" aria-hidden="true">○</span><span class="ttt-player-copy"><strong data-o-name>Jogador O</strong><small data-o-state>Esperando a vez</small></span><b class="ttt-score" data-o-score>0</b></div>
+            <div class="ttt-player-card" data-player-card="o" data-player="o"><span class="ttt-player-symbol" aria-hidden="true">○</span><span class="ttt-player-copy"><strong data-o-name>Jogador O</strong><small data-o-state>Esperando a vez</small><em class="ttt-ai-level-badge" data-ai-level-badge hidden></em></span><b class="ttt-score" data-o-score>0</b></div>
           </div>
           <div class="ttt-board-frame"><div class="ttt-board" data-board role="grid" aria-label="Tabuleiro do jogo da velha"></div></div>
           <div class="ttt-round-actions"><button class="ttt-next-round" type="button" data-new-round>＋ Nova rodada</button><span data-round-label>Rodada 1 · X começa</span></div>
