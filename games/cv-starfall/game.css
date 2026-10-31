@@ -507,3 +507,26 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
   .starfall-game-panel:fullscreen .starfall-secondary-ability-wrap,
   .starfall-game-panel.is-fullscreen-fallback .starfall-secondary-ability-wrap { right:calc(max(.8rem,env(safe-area-inset-right)) + 4.45rem); }
 }
+
+/* Código temporário para liberar o hangar secreto durante os testes. */
+.starfall-secret-dialog { box-sizing:border-box; width:min(30rem,calc(100% - 1rem)); max-width:none; max-height:calc(100dvh - 1rem); padding:0; overflow:visible; border:0; background:transparent; color:#eef5ff; }
+.starfall-secret-dialog[open] { display:grid; place-items:center; }
+.starfall-secret-dialog::backdrop { background:rgba(2,7,16,.82); backdrop-filter:blur(8px); }
+.starfall-secret-dialog-card { box-sizing:border-box; width:100%; max-height:calc(100dvh - 1rem); margin:auto; border-color:rgba(201,158,255,.48); }
+.starfall-secret-label { align-self:flex-start; color:#d8e7fb; font-size:.76rem; font-weight:850; }
+.starfall-secret-input { box-sizing:border-box; width:min(100%,22rem); min-height:3rem; padding:.7rem .85rem; border:1px solid rgba(190,151,255,.42); border-radius:.7rem; background:#0a1427; color:#f4ecff; font:inherit; letter-spacing:.18em; text-align:center; }
+.starfall-secret-input:focus-visible { outline:2px solid #c49aff; outline-offset:2px; }
+.starfall-secret-error { margin:0; color:#ff9d9d; font-size:.75rem; font-weight:750; }
+.starfall-secret-error[hidden] { display:none!important; }
+.starfall-secret-actions { display:flex; width:100%; flex-wrap:wrap; justify-content:center; gap:.55rem; margin-top:.25rem; }
+.starfall-authorized-pilots { display:grid; gap:.65rem; margin-top:1rem; padding:1rem; border:1px solid rgba(131,194,255,.25); border-radius:1rem; background:linear-gradient(145deg,rgba(25,55,88,.48),rgba(9,20,37,.8)); }
+.starfall-authorized-pilots[hidden] { display:none!important; }
+.starfall-authorized-pilots h3 { margin:0; font-size:1rem; }
+.starfall-authorized-pilots p:not(.starfall-kicker) { margin:.25rem 0 0; color:#b9c8dc; font-size:.72rem; }
+.starfall-authorized-pilots .starfall-kicker { margin:0 0 .2rem; }
+.starfall-authorized-pilots ul { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.38rem; margin:0; padding:0; list-style:none; }
+.starfall-authorized-pilots li { padding:.4rem .55rem; border:1px solid rgba(147,188,255,.18); border-radius:.55rem; background:rgba(12,26,47,.76); color:#e7f2ff; font-size:.68rem; font-weight:850; text-align:center; }
+.starfall-authorized-pilots [data-authorized-pilots-status] { min-height:1em; color:#9bc8ef; font-size:.68rem; }
+.starfall-skin-card.is-secret:not(:disabled) { cursor:pointer; }
+.starfall-skin-card.is-secret:not(:disabled):hover,.starfall-skin-card.is-secret:not(:disabled):focus-visible { border-color:rgba(201,158,255,.68); color:#c9bbdc; box-shadow:0 0 16px rgba(160,120,225,.2); }
+@media(max-width:560px) { .starfall-authorized-pilots ul { grid-template-columns:repeat(2,minmax(0,1fr)); } }

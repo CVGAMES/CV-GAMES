@@ -689,6 +689,30 @@
     }
   }
 
+  function enterMatchFullscreen() {
+    if (!gameView || document.fullscreenElement === gameView || document.webkitFullscreenElement === gameView || gameView.classList.contains('is-fullscreen-fallback')) return;
+    const useFallback = () => {
+      gameView.classList.add('is-fullscreen-fallback');
+      document.body.classList.add('has-fullscreen-fallback');
+      const fullscreenButton = $(`[data-fullscreen-button="#${gameView.id}"]`);
+      fullscreenButton?.setAttribute('aria-pressed','true');
+      fullscreenButton?.setAttribute('aria-label','Sair da tela cheia');
+      if (fullscreenButton) fullscreenButton.title = 'Sair da tela cheia';
+      const label = fullscreenButton?.querySelector('[data-fullscreen-label]');
+      if (label) label.textContent = 'Sair da tela cheia';
+      document.dispatchEvent(new Event('cv-games-fullscreenchange'));
+    };
+    try {
+      const request = gameView.requestFullscreen
+        ? gameView.requestFullscreen()
+        : gameView.webkitRequestFullscreen
+          ? gameView.webkitRequestFullscreen()
+          : null;
+      if (!request && !gameView.requestFullscreen && !gameView.webkitRequestFullscreen) useFallback();
+      else if (request && typeof request.catch === 'function') request.catch(useFallback);
+    } catch { useFallback(); }
+  }
+
   function startGame(mode, difficulty = state.difficulty) {
     window.clearTimeout(computerTimer);
     computerTimer = 0;
@@ -714,6 +738,7 @@
     state.started = true;
     lobby.hidden = true;
     gameView.hidden = false;
+    enterMatchFullscreen();
     render();
     squareButtons[state.focusSquare].focus({ preventScroll:true });
   }

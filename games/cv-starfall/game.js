@@ -8,6 +8,8 @@
   const controlModeKey = 'cv-games-cv-starfall-control';
   const performanceModeKey = 'cv-games-cv-starfall-performance';
   const eclipseSkipVideoKey = 'cv-games-cv-starfall-eclipse-skip-video';
+  const secretShipUnlockKey = 'cv-games-cv-starfall-secret-ships-v1';
+  const secretShipPasscode = '12345678';
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
   const favoritesKey = 'cv-games-favorites';
@@ -25,7 +27,7 @@
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'), eclipseCutscene: $('[data-eclipse-cutscene]'), eclipseVideo: $('[data-eclipse-video]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
-    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')), shipModal: $('[data-ship-modal]'), settingsModal: $('[data-settings-modal]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]')
+    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')), shipModal: $('[data-ship-modal]'), settingsModal: $('[data-settings-modal]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
   };
   const skins = [
     { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, shape: 'classic', description: 'Uma explosão ampla atinge todos os inimigos próximos.' },
@@ -35,10 +37,11 @@
     { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, shape: 'blade', unlockWave: 40, description: 'Uma lâmina veloz faz curvas e ricocheteia em várias direções.' },
     { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'Por alguns segundos, reflete projéteis: parte volta pela trajetória e parte mira em quem atacou.' },
     { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral por 4 segundos para atrair disparos diretos.' },
-    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm'], description: 'E: atordoa uma grande área; três garras leves reaparecem a cada 2 segundos por 15 segundos. Q causa dano extra aos alvos marcados.' }
+    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: atordoa uma grande área; três garras leves reaparecem a cada 2 segundos por 15 segundos. Q causa dano extra aos alvos marcados.' }
   ];
   const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
+  let secretShipUnlocks = readSecretShipUnlocks();
   let accountUnlockedShipIds = new Set();
   let accountShipProgressLoaded = false;
   let accountShipWriteChain = Promise.resolve();
@@ -49,7 +52,7 @@
     { id: 'daily-pilot', icon: '📅', title: 'Piloto diário', description: 'Termine um Desafio Diário.', metric: 'dailyRunsFinished', target: 1, unit: 'desafio' },
     { id: 'planet-hopper', icon: '🪐', title: 'Viajante galáctico', description: 'Alcance a onda 15.', metric: 'bestWaveReached', target: 15, unit: 'ondas' },
     { id: 'star-legend', icon: '🌌', title: 'Lenda das estrelas', description: 'Alcance a onda 50.', metric: 'bestWaveReached', target: 50, unit: 'ondas' },
-    { id: 'ability-collector', icon: '✨', title: 'Mestre das naves', description: 'Use a habilidade de cada nave disponível para este perfil.', metric: 'abilityShips', target: profileNickname() === 'adm' ? skins.length : skins.filter((skin) => !skin.secret || skin.allowedProfiles.includes(profileNickname())).length, unit: 'naves' }
+    { id: 'ability-collector', icon: '✨', title: 'Mestre das naves', description: 'Use a habilidade de cada nave disponível para este perfil.', metric: 'abilityShips', target: abilityShipsTarget(), unit: 'naves' }
   ];
   const zones = [
     { name: 'Órbita Azul', colors: ['#07132b', '#111d36'], stars: '190,220,255' },
@@ -150,6 +153,22 @@
   function readBest() { try { return Math.max(0, Number(localStorage.getItem(bestKey)) || 0); } catch { return 0; } }
   function readBestWave() { try { return Math.max(0, Number(localStorage.getItem(bestWaveKey)) || 0); } catch { return 0; } }
   function profileNickname() { return String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); }
+  function normalizeRankNickname(value) { return String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); }
+  function readSecretShipUnlocks() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(secretShipUnlockKey) || '[]');
+      return new Set(Array.isArray(saved) ? saved.filter((id) => id === '*' || skins.some((skin) => skin.secret && skin.id === id)) : []);
+    } catch { return new Set(); }
+  }
+  function hasSecretShipAccess(skin) {
+    return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
+      || secretShipUnlocks.has('*') || secretShipUnlocks.has(skin.id)
+      || accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id);
+  }
+  function displayRankNickname(value) {
+    const nickname = normalizeRankNickname(value);
+    return window.CV_STARFALL_SUPABASE?.displayNicknames?.[nickname] || String(value || 'Piloto');
+  }
   function saoPauloDateKey(date = new Date()) {
     try {
       const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
@@ -275,21 +294,32 @@
     const value = state.achievementProgress?.[definition.metric];
     return definition.metric === 'abilityShips' ? (Array.isArray(value) ? value.length : 0) : Math.max(0, Number(value) || 0);
   }
+  function achievementTarget(definition) { return definition.id === 'ability-collector' ? abilityShipsTarget() : definition.target; }
+  function reconcileAbilityCollectorAchievement() {
+    const definition = starfallAchievements.find((item) => item.id === 'ability-collector');
+    if (!definition || !state.achievementProgress) return;
+    if (achievementValue(definition) < achievementTarget(definition) && state.achievementProgress.unlocked[definition.id]) {
+      delete state.achievementProgress.unlocked[definition.id];
+      saveAchievementProgress();
+    }
+    renderAchievements();
+  }
   function renderAchievements() {
     if (!state.achievementProgress) state.achievementProgress = readAchievementProgress();
-    const unlockedCount = starfallAchievements.filter((item) => achievementValue(item) >= item.target).length;
+    const unlockedCount = starfallAchievements.filter((item) => achievementValue(item) >= achievementTarget(item)).length;
     if (ui.achievementsCount) ui.achievementsCount.textContent = `${unlockedCount}/${starfallAchievements.length}`;
     if (!ui.achievementsList) return;
     ui.achievementsList.replaceChildren();
     starfallAchievements.forEach((definition) => {
-      const value = Math.min(definition.target, achievementValue(definition));
-      const unlocked = value >= definition.target;
+      const target = achievementTarget(definition);
+      const value = Math.min(target, achievementValue(definition));
+      const unlocked = value >= target;
       const card = document.createElement('article'); card.className = 'starfall-achievement' + (unlocked ? ' is-unlocked' : '');
       const icon = document.createElement('span'); icon.className = 'starfall-achievement-icon'; icon.setAttribute('aria-hidden', 'true'); icon.textContent = unlocked ? definition.icon : '🔒';
       const body = document.createElement('span'); body.className = 'starfall-achievement-copy';
       const title = document.createElement('strong'); title.textContent = definition.title;
       const description = document.createElement('small'); description.textContent = definition.description;
-      const progress = document.createElement('span'); progress.className = 'starfall-achievement-progress'; progress.textContent = unlocked ? 'Conquista desbloqueada' : `${value}/${definition.target} ${definition.unit}`;
+      const progress = document.createElement('span'); progress.className = 'starfall-achievement-progress'; progress.textContent = unlocked ? 'Conquista desbloqueada' : `${value}/${target} ${definition.unit}`;
       body.append(title, description, progress); card.append(icon, body); ui.achievementsList.append(card);
     });
   }
@@ -304,7 +334,7 @@
     else if (eventName === 'ship-ability' && skins.some((skin) => skin.id === value) && !progress.abilityShips.includes(value)) progress.abilityShips.push(value);
     else return;
     for (const definition of starfallAchievements) {
-      if (achievementValue(definition) < definition.target || progress.unlocked[definition.id]) continue;
+      if (achievementValue(definition) < achievementTarget(definition) || progress.unlocked[definition.id]) continue;
       const record = Date.now(); progress.unlocked[definition.id] = record;
       window.dispatchEvent(new CustomEvent('cv-games-achievement-unlocked', { detail: { icon: definition.icon, title: definition.title, description: definition.description, unlockedAt: record } }));
     }
@@ -313,6 +343,7 @@
   }
   function isDeveloperProfile() { return ['educvv dev', 'educvv dev1'].includes(profileNickname()); }
   function isAllShipsProfile() { return profileNickname() === 'adm'; }
+  function abilityShipsTarget() { return skins.filter((skin) => !skin.secret || isAllShipsProfile() || hasSecretShipAccess(skin)).length; }
   function isAllUpgradesProfile() { return profileNickname() === 'educvv dev1'; }
   function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge && state.adminNoCooldown; }
   function shipCooldownSummary(skin) {
@@ -323,7 +354,7 @@
   }
   function skinUnlocked(skin) {
     if (isAllShipsProfile()) return true;
-    if (skin.secret) return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname());
+    if (skin.secret) return hasSecretShipAccess(skin);
     if (accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id)) return true;
     return isDeveloperProfile() || !skin.unlockWave || Math.max(readBestWave(), state.bestCompletedWave) >= skin.unlockWave;
   }
@@ -347,7 +378,7 @@
     const result = new Set(['aurora']);
     skins.forEach((skin) => {
       const unlocked = isAllShipsProfile()
-        || (skin.secret ? Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
+        || (skin.secret ? hasSecretShipAccess(skin)
           : isDeveloperProfile() || !skin.unlockWave || bestWave >= skin.unlockWave);
       if (unlocked) result.add(skin.id);
     });
@@ -516,6 +547,41 @@
         : hasDeveloperPerks() ? '∞ CARGAS' : dinoCharges + '/3' + (dinoCharges < 3 ? ' · ' + Math.ceil(qCooldown) + 's' : ' CARGAS');
     }
   }
+  function openSecretShipUnlock() {
+    if (ui.secretUnlockDialog?.showModal) {
+      ui.secretUnlockError.hidden = true;
+      ui.secretUnlockInput.value = '';
+      ui.secretUnlockDialog.showModal();
+      ui.secretUnlockInput.focus();
+      return;
+    }
+    const entered = window.prompt('Digite o código temporário para liberar as naves secretas:');
+    if (entered !== secretShipPasscode) { if (entered !== null) window.alert('Código incorreto.'); return; }
+    secretShipUnlocks = new Set(['*']);
+    try { localStorage.setItem(secretShipUnlockKey, JSON.stringify(['*'])); } catch { /* A liberação vale nesta sessão. */ }
+    renderSkinPicker(); updateEquippedShip(); updateControlUI(); persistAccountShipProgress(); reconcileAbilityCollectorAchievement();
+  }
+  function closeSecretShipUnlock() {
+    if (ui.secretUnlockDialog?.open) ui.secretUnlockDialog.close();
+    if (ui.shipModal && !ui.shipModal.hidden) ui.skinPicker?.querySelector('.starfall-skin-card.is-secret')?.focus();
+  }
+  function submitSecretShipUnlock(event) {
+    event.preventDefault();
+    if (ui.secretUnlockInput.value !== secretShipPasscode) {
+      ui.secretUnlockError.hidden = false;
+      ui.secretUnlockInput.focus();
+      ui.secretUnlockInput.select();
+      return;
+    }
+    secretShipUnlocks = new Set(['*']);
+    try { localStorage.setItem(secretShipUnlockKey, JSON.stringify(['*'])); } catch { /* A liberação vale nesta sessão. */ }
+    ui.secretUnlockInput.value = '';
+    ui.secretUnlockError.hidden = true;
+    ui.secretUnlockDialog.close();
+    renderSkinPicker(); updateEquippedShip(); updateControlUI(); persistAccountShipProgress();
+    reconcileAbilityCollectorAchievement();
+    ui.status.textContent = 'Naves secretas liberadas neste aparelho.';
+  }
   function renderSkinPicker() {
     if (!ui.skinPicker) return;
     ui.skinPicker.replaceChildren();
@@ -524,10 +590,10 @@
         const secretCard = document.createElement('button');
         secretCard.type = 'button';
         secretCard.className = 'starfall-skin-card is-secret';
-        secretCard.disabled = true;
-        secretCard.setAttribute('aria-label', 'Nave desconhecida, conteúdo secreto');
-        secretCard.title = 'Nave desconhecida · secreta';
-        secretCard.innerHTML = '<span class="starfall-skin-icon" aria-hidden="true">?</span><strong>Desconhecido</strong><span>SECRETO</span>';
+        secretCard.setAttribute('aria-label', 'Inserir código para liberar as naves secretas');
+        secretCard.title = 'Naves secretas · inserir código temporário';
+        secretCard.innerHTML = '<span class="starfall-skin-icon" aria-hidden="true">?</span><strong>Desconhecido</strong><span>SECRETO · LIBERAR</span>';
+        secretCard.addEventListener('click', openSecretShipUnlock);
         ui.skinPicker.append(secretCard);
         return;
       }
@@ -2111,9 +2177,46 @@
     return headers;
   }
   function authorizedNickname(session) {
-    const names = window.CV_STARFALL_SUPABASE?.allowedNicknames || ['educvv'];
-    return window.CV_GAMES_AUTH?.isOwner?.(session?.user)
-      && names.map((name) => String(name).trim().toLocaleLowerCase('pt-BR')).includes('educvv') ? 'educvv' : '';
+    const nickname = profileNickname();
+    const names = (window.CV_STARFALL_SUPABASE?.allowedNicknames || ['educvv']).map(normalizeRankNickname);
+    if (!nickname || !names.includes(nickname)) return '';
+    if (nickname === 'educvv') return window.CV_GAMES_AUTH?.isOwner?.(session?.user) ? 'educvv' : '';
+    return nickname;
+  }
+  function renderAuthorizedPilots() {
+    if (!ui.authorizedPilots) return;
+    const visible = isDeveloperProfile();
+    ui.authorizedPilots.hidden = !visible;
+    if (!visible || !ui.authorizedPilotList) return;
+    const names = window.CV_STARFALL_SUPABASE?.rosterNicknames || [];
+    ui.authorizedPilotList.replaceChildren(...names.map((nickname) => {
+      const item = document.createElement('li');
+      item.textContent = nickname;
+      return item;
+    }));
+  }
+  function handleProfileChange() {
+    const selected = currentSkin();
+    if (selected.secret && !hasSecretShipAccess(selected)) {
+      state.selectedSkin = 'aurora';
+      try { localStorage.setItem('cv-games-cv-starfall-skin', 'aurora'); } catch { /* A nave inicial vale nesta sessão. */ }
+    }
+    renderSkinPicker();
+    updateEquippedShip();
+    updateControlUI();
+    renderAuthorizedPilots();
+    updateAdminToolsUI();
+    reconcileAbilityCollectorAchievement();
+  }
+  async function copyAuthorizedPilots() {
+    const names = window.CV_STARFALL_SUPABASE?.rosterNicknames || [];
+    if (!names.length || !ui.authorizedPilotsStatus) return;
+    try {
+      await navigator.clipboard.writeText(names.join('\n'));
+      ui.authorizedPilotsStatus.textContent = 'Lista copiada.';
+    } catch {
+      ui.authorizedPilotsStatus.textContent = 'Selecione os apelidos na lista para copiá-los.';
+    }
   }
   function renderLeaderboard(rows) {
     if (!ui.rankList) return;
@@ -2135,7 +2238,7 @@
       } else rank.textContent = String(position);
 
       const body = document.createElement('div'); body.className = 'starfall-rank-body';
-      const name = document.createElement('strong'); name.className = 'starfall-rank-nickname'; name.textContent = row?.nickname || 'Vaga disponível';
+      const name = document.createElement('strong'); name.className = 'starfall-rank-nickname'; name.textContent = row ? displayRankNickname(row.nickname) : 'Vaga disponível';
       const wave = document.createElement('span'); wave.className = 'starfall-rank-wave'; wave.textContent = row ? `Onda ${Number(row.wave) || 1}` : 'Aguardando piloto';
       body.append(name, wave);
       item.append(rank, body);
@@ -2143,7 +2246,7 @@
       if (row) {
         const inspect = document.createElement('button');
         inspect.type = 'button'; inspect.className = 'starfall-rank-inspect'; inspect.textContent = 'Ver detalhes';
-        inspect.setAttribute('aria-label', `Ver detalhes do recorde de ${row.nickname || 'Piloto'}`);
+        inspect.setAttribute('aria-label', `Ver detalhes do recorde de ${displayRankNickname(row.nickname)}`);
         inspect.addEventListener('click', () => showRankDetails(row, position));
         item.append(inspect);
       }
@@ -2226,7 +2329,7 @@
     const buff = row.buff_summary && typeof row.buff_summary === 'object' ? row.buff_summary : {};
     const value = (key, fallback) => buff[key] === undefined || buff[key] === null || buff[key] === '' ? fallback : buff[key];
     ui.rankDialogKicker.textContent = `RELATÓRIO DE PILOTO · ${position}º LUGAR`;
-    ui.rankDialogTitle.textContent = row.nickname || 'Piloto';
+    ui.rankDialogTitle.textContent = displayRankNickname(row.nickname);
     ui.rankDialogSummary.textContent = `Onda ${Number(row.wave) || 1} · ${Number(row.score || 0).toLocaleString('pt-BR')} pontos · ${formatTime(Number(row.elapsed_seconds) || 0)}`;
     ui.rankDetailOverview.replaceChildren(
       makeRankShipMetric(row),
@@ -2301,14 +2404,17 @@
     const config = supabaseConfig();
     if (!config) { if (ui.rankStatus) ui.rankStatus.textContent = 'Configure o Supabase para publicar recordes'; return; }
     let session = null;
-    try { session = await window.CV_GAMES_AUTH?.getOwnerSession?.(); } catch {
-      if (ui.rankStatus) ui.rankStatus.textContent = 'Não foi possível validar sua sessão agora';
+    try { session = await window.CV_GAMES_AUTH?.getOwnerSession?.() || null; } catch { session = null; }
+    const nickname = authorizedNickname(session);
+    if (!nickname) {
+      if (ui.rankStatus) ui.rankStatus.textContent = profileNickname() === 'educvv'
+        ? 'Entre na conta educvv pelo Perfil para publicar seu recorde.'
+        : 'Este apelido não está autorizado para o placar.';
       return;
     }
-    const nickname = authorizedNickname(session);
-    if (!nickname || !session?.access_token) { if (ui.rankStatus) ui.rankStatus.textContent = 'Entre no Perfil para publicar seu recorde'; return; }
+    if (nickname === 'educvv' && !session?.access_token) { if (ui.rankStatus) ui.rankStatus.textContent = 'Entre na conta educvv pelo Perfil para publicar seu recorde.'; return; }
     const base = config.url.replace(/\/$/, '') + '/rest/v1/starfall_scores';
-    const headers = supabaseHeaders(config, session.access_token);
+    const headers = supabaseHeaders(config, nickname === 'educvv' ? session.access_token : '');
     try {
       const read = await fetch(base + '?select=wave,score&nickname=eq.' + encodeURIComponent(nickname) + '&limit=1', { headers });
       if (!read.ok) throw new Error('Não foi possível consultar o recorde.');
@@ -2322,7 +2428,7 @@
         body: JSON.stringify(run)
       });
       if (!response.ok) throw new Error('Não foi possível salvar o recorde.');
-      if (ui.rankStatus) ui.rankStatus.textContent = 'Recorde de ' + nickname + ' publicado';
+      if (ui.rankStatus) ui.rankStatus.textContent = 'Recorde de ' + displayRankNickname(nickname) + ' publicado';
     } catch {
       if (ui.rankStatus) ui.rankStatus.textContent = 'Não foi possível salvar o recorde';
     }
@@ -2526,7 +2632,7 @@
     updateAdminToolsUI();
     toast(state.adminNoCooldown ? 'HABILIDADES SEM RECARGA' : 'RECARGA DAS HABILIDADES ATIVADA');
   }
-  window.addEventListener('cv-games-profile-change', updateAdminToolsUI);
+  window.addEventListener('cv-games-profile-change', handleProfileChange);
   function refreshDeviceSizing() {
     state.mobileSizing = detectMobileDevice();
     const maxParticles = particleLimit();
@@ -2639,6 +2745,7 @@
     state.challengeDate = '';
     state.dailyBestScore = 0;
     state.randomStreams = null;
+    if (ui.secretUnlockDialog?.open) ui.secretUnlockDialog.close();
     [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal]
       .forEach((modal) => { if (modal) modal.hidden = true; });
     resetGame();
@@ -2696,9 +2803,14 @@
   $('[data-confirm-exit]')?.addEventListener('click', returnToMenu);
   document.querySelectorAll('[data-close-settings]').forEach((button) => button.addEventListener('click', closeSettings));
   document.querySelectorAll('[data-close-ships]').forEach((button) => button.addEventListener('click', closeShips));
+  document.querySelectorAll('[data-secret-unlock-close]').forEach((button) => button.addEventListener('click', closeSecretShipUnlock));
+  ui.secretUnlockForm?.addEventListener('submit', submitSecretShipUnlock);
+  ui.secretUnlockDialog?.addEventListener('click', (event) => { if (event.target === ui.secretUnlockDialog) closeSecretShipUnlock(); });
+  ui.secretUnlockDialog?.addEventListener('cancel', () => { ui.secretUnlockError.hidden = true; });
   document.querySelectorAll('[data-close-achievements]').forEach((button) => button.addEventListener('click', closeAchievements));
   $('[data-close-rank-dialog]')?.addEventListener('click', () => ui.rankDialog?.close());
   ui.rankDialog?.addEventListener('click', (event) => { if (event.target === ui.rankDialog) ui.rankDialog.close(); });
+  ui.copyAuthorizedPilots?.addEventListener('click', copyAuthorizedPilots);
   document.querySelectorAll('[data-close-daily-summary]').forEach((button) => button.addEventListener('click', closeDailySummary));
   ui.dailySummaryStart?.addEventListener('click', () => openMissionSetup(true));
   ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : openMissionSetup());
@@ -2763,5 +2875,5 @@
     if (event === 'SIGNED_IN') window.setTimeout(loadAccountShipProgress, 0);
     if (event === 'SIGNED_OUT') window.setTimeout(clearAccountShipProgress, 0);
   });
-  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress();
+  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress();
 })();

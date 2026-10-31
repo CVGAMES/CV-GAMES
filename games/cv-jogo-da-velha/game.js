@@ -213,11 +213,40 @@
     if (state.mode === 'computer' && starter === 'o') queueComputerMove();
     else cells[state.focusSquare].focus({ preventScroll:true });
   }
+  function enterMatchFullscreen() {
+    if (!gameView || document.fullscreenElement === gameView || gameView.classList.contains('is-fullscreen-fallback')) return;
+    const useFallback = () => {
+      gameView.classList.add('is-fullscreen-fallback');
+      document.body.classList.add('has-fullscreen-fallback');
+      const fullscreenButton = $('[data-fullscreen-button="#ttt-fullscreen"]');
+      fullscreenButton?.setAttribute('aria-pressed','true');
+      fullscreenButton?.setAttribute('aria-label','Sair da tela cheia');
+      if (fullscreenButton) fullscreenButton.title = 'Sair da tela cheia';
+      const fullscreenLabel = fullscreenButton?.querySelector('[data-fullscreen-label]');
+      if (fullscreenLabel) fullscreenLabel.textContent = 'Sair da tela cheia';
+      document.dispatchEvent(new Event('cv-games-fullscreenchange'));
+    };
+    try {
+      const request = gameView.requestFullscreen
+        ? gameView.requestFullscreen()
+        : gameView.webkitRequestFullscreen
+          ? gameView.webkitRequestFullscreen()
+          : null;
+      if (!request && !gameView.requestFullscreen && !gameView.webkitRequestFullscreen) {
+        useFallback();
+      } else if (request && typeof request.catch === 'function') {
+        request.catch(useFallback);
+      }
+    } catch {
+      useFallback();
+    }
+  }
   function startLocalGame() {
     state.mode = 'local';
     state.started = true;
     lobby.hidden = true;
     gameView.hidden = false;
+    enterMatchFullscreen();
     startRound('x');
     if (window.CV_GAMES_STATS?.recordPlay) window.CV_GAMES_STATS.recordPlay(gameId);
   }
@@ -239,6 +268,7 @@
     state.started = true;
     lobby.hidden = true;
     gameView.hidden = false;
+    enterMatchFullscreen();
     startRound('x');
     if (window.CV_GAMES_STATS?.recordPlay) window.CV_GAMES_STATS.recordPlay(gameId);
   }
