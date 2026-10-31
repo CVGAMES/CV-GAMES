@@ -12,17 +12,19 @@
   const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
   const labyrinthProfileAllowed = turboProfileAllowed;
   const tubesProfileAllowed = turboProfileAllowed;
+  const navalProfileAllowed = turboProfileAllowed;
   const catalog = typeof window.CV_GAMES_GET_VISIBLE_CATALOG === 'function'
     ? window.CV_GAMES_GET_VISIBLE_CATALOG()
     : (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
       .filter((game) => (game.id !== 'cv-dodge' || orbitalProfileAllowed)
         && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
         && (game.id !== 'cv-labirinto' || labyrinthProfileAllowed)
-        && (game.id !== 'cv-tubos' || tubesProfileAllowed));
+        && (game.id !== 'cv-tubos' || tubesProfileAllowed)
+        && (game.id !== 'cv-batalha-naval' || navalProfileAllowed));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
-  const ownGamesPriority = ['cv-starfall', ...(labyrinthProfileAllowed ? ['cv-labirinto'] : []), 'cv-xadrez', 'cv-damas', 'cv-quadrados', 'cv-jogo-da-velha', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-turbo-circuit', ...(orbitalProfileAllowed ? ['cv-dodge'] : [])];
+  const ownGamesPriority = ['cv-starfall', ...(labyrinthProfileAllowed ? ['cv-labirinto'] : []), 'cv-xadrez', 'cv-damas', 'cv-jogo-da-velha', 'cv-quadrados', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-turbo-circuit', ...(orbitalProfileAllowed ? ['cv-dodge'] : []), ...(navalProfileAllowed ? ['cv-batalha-naval'] : [])];
   const filters = { category: 'todos', favoritesOnly: false };
 
   const getFavorites = () => {
@@ -129,7 +131,7 @@
 
   // A seleção editorial mantém a seção útil antes do primeiro acesso local.
   const fallbackPopularGames = catalog.filter((game) => game.popular);
-  const featuredPriority = ['cv-starfall', 'gx-launcher', 'cv-labirinto', 'cv-quadrados', 'cv-xadrez', 'cv-damas', 'bad-ice-cream', 'fireboy-watergirl', 'drive-mad', 'moto-x3m', 'geometry-jump'];
+  const featuredPriority = ['cv-starfall', 'gx-launcher', 'cv-labirinto', 'cv-quadrados', 'cv-xadrez', 'cv-damas', 'cv-jogo-da-velha', 'bad-ice-cream', 'fireboy-watergirl', 'drive-mad', 'moto-x3m', 'geometry-jump'];
 
   const setupNewsInvitation = () => {
     const dialog = document.querySelector('[data-news-invitation]');
@@ -163,7 +165,15 @@
       try { localStorage.setItem(storageKey, 'seen'); } catch { /* Continua valendo até sair desta visita. */ }
     };
 
-    window.setTimeout(showInvitation, 550);
+    const queueInvitation = () => {
+      if (document.documentElement.classList.contains('cv-intro-pending')) {
+        document.addEventListener('cv-games-intro-finished', showInvitation, { once:true });
+        return;
+      }
+      showInvitation();
+    };
+
+    window.setTimeout(queueInvitation, 550);
   };
 
   const getFeaturedGames = () => {

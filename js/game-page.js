@@ -8,7 +8,8 @@
   const catalog = typeof window.CV_GAMES_GET_VISIBLE_CATALOG === 'function'
     ? window.CV_GAMES_GET_VISIBLE_CATALOG()
     : (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
-      .filter((item) => item.id !== 'cv-tubos' || ['educvv dev1', 'educvv dev'].includes(profileNickname));
+      .filter((item) => (item.id !== 'cv-tubos' || ['educvv dev1', 'educvv dev'].includes(profileNickname))
+        && (item.id !== 'cv-batalha-naval' || ['educvv dev1', 'educvv dev'].includes(profileNickname)));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';

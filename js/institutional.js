@@ -82,7 +82,8 @@
       && game.id !== 'cv-dodge'
       && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
       && (game.id !== 'cv-labirinto' || turboProfileAllowed)
-      && (game.id !== 'cv-tubos' || turboProfileAllowed));
+      && (game.id !== 'cv-tubos' || turboProfileAllowed)
+      && (game.id !== 'cv-batalha-naval' || turboProfileAllowed));
     if (!exclusives.length) return;
     const fragment = document.createDocumentFragment();
     exclusives.forEach((game) => fragment.appendChild(createExclusiveCard(game)));

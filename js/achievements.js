@@ -169,7 +169,8 @@
         .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
     } catch { /* Sem perfil válido, jogos de teste ficam ocultos. */ }
     const tubesAllowed = ['educvv dev1', 'educvv dev'].includes(nickname);
-    return catalog.filter((game) => game.id !== 'cv-tubos' || tubesAllowed);
+    return catalog.filter((game) => (game.id !== 'cv-tubos' || tubesAllowed)
+      && (game.id !== 'cv-batalha-naval' || tubesAllowed));
   };
 
   const getFavoriteIds = (availableIds) => {
