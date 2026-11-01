@@ -94,7 +94,7 @@
     return Boolean(coarsePointer && !finePointer && hasTouch && (handheldAgent || touchOnly));
   }
   const detectedMobileDevice = detectMobileDevice();
-  const mobileEntityScale = .72;
+  const mobileEntityScale = .66;
   const particleLimit = () => state.performanceMode === 'light' ? 110 : state.mobileSizing ? 240 : Infinity;
   const initialNicknameSettings = readNicknameSettings();
   const state = {
@@ -114,7 +114,7 @@
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
     blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, tempestTideCooldown: 0, tempestTideRadiusBonus: 0, tempestTideForceBonus: 0, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, redshiftPerimeter: null, redshiftPerimeterCooldown: 0, redshiftPerimeterDurationBonus: 0, redshiftPerimeterDamageBonus: 0, redshiftPerimeterRangeBonus: 0, flashTrail: null, flashTrailCooldown: 0, flashTrailDurationBonus: 0, flashTrailDamageBonus: 0, flashTrailDensity: 0, flashTrailContacts: new Set(), eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, eclipseDecoyAI: 0, eclipseDecoyDurationBonus: 0, eclipseDecoyChaos: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: '#7df7e8' },
-    pointer: { active: false, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
+    pointer: { active: false, pointerId: null, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
     waveDamageTaken: false, achievementProgress: null
   };
@@ -4204,8 +4204,22 @@
   ui.dailySummaryStart?.addEventListener('click', () => openMissionSetup(true));
   ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : openMissionSetup());
   ui.pause.addEventListener('click', pauseGame);
-  ui.ability?.addEventListener('click', activateAbility);
-  ui.eclipseQ?.addEventListener('click', activateSecondaryAbility);
+  function bindAbilityControl(button, activate) {
+    if (!button) return;
+    let touchActivationAt = 0;
+    button.addEventListener('pointerdown', (event) => {
+      if (!event.pointerType || event.pointerType === 'mouse') return;
+      event.preventDefault();
+      touchActivationAt = performance.now();
+      activate();
+    }, { passive:false });
+    button.addEventListener('click', (event) => {
+      if (event.detail > 0 && touchActivationAt > 0 && performance.now() - touchActivationAt < 800) return;
+      activate();
+    });
+  }
+  bindAbilityControl(ui.ability, activateAbility);
+  bindAbilityControl(ui.eclipseQ, activateSecondaryAbility);
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
     if (state.eclipsePhase === 'cinematic') { event.preventDefault(); return; }
@@ -4255,7 +4269,7 @@
     }
     if (state.mode !== 'playing' || !['touch', 'analog'].includes(state.controlMode)) return;
     event.preventDefault(); canvas.setPointerCapture(event.pointerId);
-    if (state.controlMode === 'touch') { pointerPosition(event); state.pointer.active = true; return; }
+    if (state.controlMode === 'touch') { pointerPosition(event); state.pointer.pointerId = event.pointerId; state.pointer.active = true; return; }
     const rect = ui.stage.getBoundingClientRect(); const x = event.clientX - rect.left; const y = event.clientY - rect.top;
     state.analog.active = true; state.analog.pointerId = event.pointerId; state.analog.originX = x; state.analog.originY = y;
     ui.joystick.style.left = x + 'px'; ui.joystick.style.top = y + 'px'; ui.joystick.hidden = false; ui.joystick.classList.add('is-active');
@@ -4263,7 +4277,7 @@
   });
   canvas.addEventListener('pointermove', (event) => {
     if (state.damageCounterDragging) { moveDamageCounterWithPointer(event); return; }
-    if (state.pointer.active && state.controlMode === 'touch') pointerPosition(event);
+    if (state.pointer.active && state.controlMode === 'touch' && state.pointer.pointerId === event.pointerId) pointerPosition(event);
   });
   function moveAnalog(event) {
     if (!state.analog.active || state.analog.pointerId !== event.pointerId) return;
@@ -4273,8 +4287,8 @@
     ui.joystickNub.style.left = 'calc(50% + ' + (state.analog.x * max) + 'px)'; ui.joystickNub.style.top = 'calc(50% + ' + (state.analog.y * max) + 'px)';
   }
   canvas.addEventListener('pointermove', moveAnalog);
-  canvas.addEventListener('pointerup', (event) => { state.pointer.active = false; if (state.damageCounterDragging) { state.damageCounterDragging = false; canvas.style.cursor = 'grab'; } if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
-  canvas.addEventListener('pointercancel', (event) => { state.pointer.active = false; if (state.damageCounterDragging) { state.damageCounterDragging = false; canvas.style.cursor = 'grab'; } if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
+  canvas.addEventListener('pointerup', (event) => { if (state.pointer.pointerId === event.pointerId) { state.pointer.active = false; state.pointer.pointerId = null; } if (state.damageCounterDragging) { state.damageCounterDragging = false; canvas.style.cursor = 'grab'; } if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
+  canvas.addEventListener('pointercancel', (event) => { if (state.pointer.pointerId === event.pointerId) { state.pointer.active = false; state.pointer.pointerId = null; } if (state.damageCounterDragging) { state.damageCounterDragging = false; canvas.style.cursor = 'grab'; } if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
   window.addEventListener('resize', resize);
   document.addEventListener('fullscreenchange', resize);
   document.addEventListener('webkitfullscreenchange', resize);
