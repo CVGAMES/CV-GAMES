@@ -26,19 +26,30 @@
   const ui = {
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'), eclipseCutscene: $('[data-eclipse-cutscene]'), eclipseVideo: $('[data-eclipse-video]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
-    zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
-    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')), shipModal: $('[data-ship-modal]'), settingsModal: $('[data-settings-modal]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
+    zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
+    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')), shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
   };
   const skins = [
-    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, shape: 'classic', description: 'Uma explosão ampla atinge todos os inimigos próximos.' },
-    { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 25, shape: 'shield', unlockWave: 10, description: 'Uma barreira absorve três impactos.' },
-    { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 25, shape: 'ring', unlockWave: 20, description: 'Desacelera inimigos e projéteis por alguns segundos.' },
-    { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 34, shape: 'wing', unlockWave: 30, description: 'Dispare uma singularidade que puxa e fere os inimigos próximos.' },
-    { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, shape: 'blade', unlockWave: 40, description: 'Uma lâmina veloz faz curvas e ricocheteia em várias direções.' },
-    { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'Por alguns segundos, reflete projéteis: parte volta pela trajetória e parte mira em quem atacou.' },
-    { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral por 4 segundos para atrair disparos diretos.' },
+    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, cooldownQ: 28, shape: 'classic', description: 'E cria uma explosão ampla. Com Q ativo, a Nova espalha o mesmo dano para os demais inimigos ligados se atingir um deles. Q ativa o Elo Estelar: feixes de luz saltam entre inimigos e atingem o chefe repetidamente.' },
+    { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 25, cooldownQ: 30, shape: 'shield', unlockWave: 10, description: 'E cria uma barreira que absorve três impactos. Q invoca Órbitas Sentinelas: fragmentos orbitais interceptam tiros e os convertem em projéteis teleguiados; os fragmentos intactos são lançados contra inimigos ao final.' },
+    { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 25, cooldownQ: 28, shape: 'ring', unlockWave: 20, description: 'E desacelera inimigos e projéteis. Q cria Ecos do Futuro: os disparos são repetidos com atraso e dano reduzido.' },
+    { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 34, cooldownQ: 28, shape: 'wing', unlockWave: 30, description: 'E dispara um Poço Negro que curva suavemente na direção do movimento da nave. Q libera a Maré Reversa, que causa dano leve, empurra inimigos e desvia tiros próximos; alguns são lançados contra os inimigos. Começa com três cargas, ampliáveis até cinco.' },
+    { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, cooldownQ: 26, shape: 'blade', unlockWave: 40, description: 'E lança uma lâmina que curva e ricocheteia. Q acelera a nave e cria barreiras cortantes pelo trajeto por 5 segundos.' },
+    { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, cooldownQ: 28, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'E reflete projéteis. Q cria um Perímetro de Cerco móvel por 6 segundos; inimigos que cruzam os feixes recebem dano.' },
+    { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral móvel por 4 segundos; ela atrai disparos, tenta desviar e dispara tiros leves e espaçados. Melhorias podem prolongar sua duração.' },
     { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: atordoa uma grande área; três garras leves reaparecem a cada 2 segundos por 15 segundos. Q causa dano extra aos alvos marcados.' }
   ];
+  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Isca Umbral', saurion:'Estouro da Manada' });
+  const shipAbilityDetails = Object.freeze({
+    aurora: { e:'Explosão Nova atinge uma grande área ao redor da nave. Com o Elo Estelar ativo, se a explosão atingir um inimigo ligado, os demais recebem o mesmo dano.', q:'Conecta até três alvos por 5 segundos, com pulsos a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada impacto recebido devolve 50% do dano a cada alvo conectado, inclusive quando o escudo absorve o golpe. Melhorias chegam a 7s, cinco alvos e 2,4 de dano por pulso; a recarga cai de 28s para 22s.' },
+    aegis: { e:'A Barreira Aegis absorve três impactos e protege a nave enquanto estiver ativa.', q:'Três sentinelas orbitam por 6 segundos. Cada uma pode interceptar um tiro comum e convertê-lo em um disparo teleguiado. A nave fica protegida; fragmentos que sobrarem atacam os inimigos ao final. Melhorias chegam a 8s, cinco sentinelas e dano 5; a recarga cai de 30s para 24s.' },
+    chronos: { e:'A Dobra Temporal desacelera os inimigos e seus projéteis para abrir espaço e facilitar a esquiva.', q:'Ecos repetem os disparos da nave após 0,42s. Melhorias aumentam a duração de 4s para 6s e o dano dos ecos de 40% para 70%; a recarga pode cair de 28s para 22s.' },
+    tempest: { e:'O Poço Negro é disparado na direção da nave e curva suavemente conforme ela se move. A singularidade puxa inimigos próximos e causa dano repetido.', q:'A Maré Reversa afasta inimigos, causa dano leve, desvia tiros comuns e redireciona alguns contra os adversários. Também protege a nave por um instante. Começa com três cargas, pode chegar a cinco e recupera uma carga a cada 28s, ou 22s com melhorias.' },
+    flashblade: { e:'O Corte Flash lança uma lâmina veloz que persegue alvos, ricocheteia nas bordas e causa dano ao cruzar os inimigos.', q:'A nave acelera em 2,2× por 5 segundos e deixa barreiras de luz no trajeto. Os rastros duram até 7s, ferem e desviam inimigos a cada contato e destroem tiros que os atingem; melhorias prolongam e fortalecem o efeito.' },
+    redshift: { e:'O Escudo de Retorno reflete projéteis que atingem a nave durante a proteção. Melhorias aumentam duração e dano e reduzem a recarga.', q:'O Perímetro de Cerco acompanha a nave com feixes cortantes. Inimigos que cruzam as linhas recebem dano. Melhorias ampliam a duração de 6s para 8s e podem reduzir a recarga de 28s para 22s.' },
+    eclipse: { e:'A Expansão de Domínio inicia com uma abertura cinematográfica e transforma a arena em um santuário. Os cortes cobrem a área por 10 segundos; a nave fica invulnerável durante o efeito e por alguns segundos ao final.', q:'A Isca Umbral cria uma cópia móvel por cerca de 4 segundos. Ela cruza a arena em velocidade próxima à da nave, um pouco menor; inimigos miram nela enquanto desvia e dispara um tiro leve a cada 0,9 segundo. Esses disparos causam menos dano que os da nave. Melhorias podem prolongar o efeito e melhorar seus desvios.' },
+    saurion: { e:'O Rugido de Garras atordoa uma grande área e marca os inimigos. Três cortes leves reaparecem a cada 2 segundos por 15 segundos; os alvos marcados recebem dano extra do Q.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' }
+  });
   const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
   let secretShipUnlocks = readSecretShipUnlocks();
@@ -80,6 +91,11 @@
   const mobileEntityScale = .82;
   const particleLimit = () => state.performanceMode === 'light' ? 110 : state.mobileSizing ? 240 : Infinity;
   const state = {
+    auroraLink: null, auroraLinkCooldown: 0, auroraLinkDurationBonus: 0, auroraLinkTargetBonus: 0, auroraLinkDamageBonus: 0,
+    shipEWasCooling: false, shipQWasCooling: false, shipQChargeCount: null,
+    aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0,
+    tempestTideCharges: 3, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
+    chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
     score: 0, best: readBest(), bestCompletedWave: readBestWave(), wave: 1, lives: 3, maxLives: 6, shields: 0, tempShields: 0, invulnerable: 0, elapsed: 0,
     shotCooldown: 0, waveGrace: 0, enemySpawn: 0, powerSpawn: 0, waveKills: 0,
@@ -87,8 +103,8 @@
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
     selectedSkin: readSkin(), controlMode: readControlMode(), performanceMode: readPerformanceMode(), mobileSizing: detectedMobileDevice, upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1, adminNoCooldown: false, adminBuffsActive: false,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
-    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
-    player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: '#7df7e8' },
+    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, tempestTideCooldown: 0, tempestTideRadiusBonus: 0, tempestTideForceBonus: 0, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, redshiftPerimeter: null, redshiftPerimeterCooldown: 0, redshiftPerimeterDurationBonus: 0, redshiftPerimeterDamageBonus: 0, redshiftPerimeterRangeBonus: 0, flashTrail: null, flashTrailCooldown: 0, flashTrailDurationBonus: 0, flashTrailDamageBonus: 0, flashTrailDensity: 0, flashTrailContacts: new Set(), eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, eclipseDecoyAI: 0, eclipseDecoyDurationBonus: 0, eclipseDecoyChaos: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
+    player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: '#7df7e8' },
     pointer: { active: false, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
     waveDamageTaken: false, achievementProgress: null
@@ -138,10 +154,38 @@
     ,{ id:'lowHull', icon:'⚑', name:'Protocolo de emergência', description:'Ganha velocidade quando restam duas vidas ou menos.', max:3, available:()=>state.lowHullBoost<3, apply:()=>{state.lowHullBoost+=1;} }
     ,{ id:'lifeSupport', icon:'♥+', name:'Casco reforçado', description:'Aumenta o máximo de vida e recupera uma unidade.', max:3, available:()=>state.maxLives<9, apply:()=>{state.maxLives=Math.min(9,state.maxLives+1);state.lives=Math.min(state.maxLives,state.lives+1);} }
     ,{ id:'gravityWell', icon:'🌀', name:'Poço gravitacional', description:'Amplia e prolonga o buraco negro da Tempestade.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('gravityWell')<3, apply:()=>{state.singularityRadius+=32;state.singularityDuration+=.7;} }
+    ,{ id:'tempestTideRadius', icon:'◉', name:'Maré Ampliada', description:'Aumenta o alcance da Maré Reversa em 30 unidades.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideRadius')<3, apply:()=>{state.tempestTideRadiusBonus=Math.min(90,state.tempestTideRadiusBonus+30);} }
+    ,{ id:'tempestTideForce', icon:'↗', name:'Repulsão Vetorial', description:'Aumenta o impulso que afasta os inimigos. Chefes recebem um empurrão menor.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideForce')<3, apply:()=>{state.tempestTideForceBonus=Math.min(240,state.tempestTideForceBonus+80);} }
+    ,{ id:'tempestTideCapacity', icon:'✦', name:'Reservatório de Maré', description:'Adiciona uma carga à Maré Reversa, até cinco cargas.', max:2, available:()=>currentSkin().id==='tempest'&&state.tempestTideChargeBonus<2, apply:()=>{state.tempestTideChargeBonus=Math.min(2,state.tempestTideChargeBonus+1);state.tempestTideCharges=Math.min(3+state.tempestTideChargeBonus,state.tempestTideCharges+1);} }
+    ,{ id:'tempestTideDamage', icon:'✹', name:'Ruptura de Pressão', description:'Aumenta o dano leve do pulso em 1 por nível. Chefes recebem dano reduzido.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideDamage')<3, apply:()=>{state.tempestTideDamageBonus=Math.min(3,state.tempestTideDamageBonus+1);} }
+    ,{ id:'tempestTideSweep', icon:'〰', name:'Corrente Defletora', description:'Prolonga a curva defensiva e o rastreamento dos projéteis de contra-ataque.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideSweep')<3, apply:()=>{state.tempestTideSweepBonus=Math.min(.36,state.tempestTideSweepBonus+.12);} }
+    ,{ id:'tempestTideCooldown', icon:'⟳', name:'Ressonância de Maré', description:'Reduz em 2 segundos o tempo para recuperar uma carga, de 28 até 22 segundos.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideCooldown')<3, apply:()=>{state.tempestTideCooldown=Math.max(0,state.tempestTideCooldown-2);} }
+    ,{ id:'chronosEchoDuration', icon:'◷', name:'Janela Estendida', description:'Prolonga os Ecos do Futuro em 1 segundo, até 6 segundos.', max:2, available:()=>currentSkin().id==='chronos'&&state.chronosEchoDurationBonus<2, apply:()=>{state.chronosEchoDurationBonus=Math.min(2,state.chronosEchoDurationBonus+1);} }
+    ,{ id:'chronosEchoDamage', icon:'✦', name:'Ressonância Duplicada', description:'Aumenta o dano dos ecos em 10 pontos percentuais, de 40% até 70%.', max:3, available:()=>currentSkin().id==='chronos'&&state.chronosEchoDamageBonus<.3, apply:()=>{state.chronosEchoDamageBonus=Math.min(.3,state.chronosEchoDamageBonus+.1);} }
+    ,{ id:'chronosEchoCooldown', icon:'⟳', name:'Compasso Acelerado', description:'Reduz em 2 segundos a recarga do Q, de 28 até 22 segundos.', max:3, available:()=>currentSkin().id==='chronos'&&upgradeLevel('chronosEchoCooldown')<3, apply:()=>{state.chronosEchoCooldown=Math.max(0,state.chronosEchoCooldown-2);} }
+    ,{ id:'aegisOrbitDuration', icon:'◷', name:'Vigília Prolongada', description:'Prolonga as Órbitas Sentinelas em 1 segundo, até 8 segundos.', max:2, available:()=>currentSkin().id==='aegis'&&state.aegisOrbitDurationBonus<2, apply:()=>{state.aegisOrbitDurationBonus=Math.min(2,state.aegisOrbitDurationBonus+1);} }
+    ,{ id:'aegisOrbitCount', icon:'✦', name:'Fragmentos Extras', description:'Invoca mais um fragmento sentinela, até cinco.', max:2, available:()=>currentSkin().id==='aegis'&&state.aegisOrbitCountBonus<2, apply:()=>{state.aegisOrbitCountBonus=Math.min(2,state.aegisOrbitCountBonus+1);} }
+    ,{ id:'aegisOrbitDamage', icon:'☄', name:'Núcleo de Retorno', description:'Aumenta em 1 o dano dos projéteis convertidos, de 2 até 5.', max:3, available:()=>currentSkin().id==='aegis'&&state.aegisOrbitDamageBonus<3, apply:()=>{state.aegisOrbitDamageBonus=Math.min(3,state.aegisOrbitDamageBonus+1);} }
+    ,{ id:'aegisOrbitCooldown', icon:'⟳', name:'Ciclo Guardião', description:'Reduz em 2 segundos a recarga do Q, de 30 até 24 segundos.', max:3, available:()=>currentSkin().id==='aegis'&&upgradeLevel('aegisOrbitCooldown')<3, apply:()=>{state.aegisOrbitCooldown=Math.max(0,state.aegisOrbitCooldown-2);} }
+    ,{ id:'auroraLinkDuration', icon:'◷', name:'Aurora Duradoura', description:'Prolonga o Elo Estelar em 1 segundo, até 7 segundos.', max:2, available:()=>currentSkin().id==='aurora'&&state.auroraLinkDurationBonus<2, apply:()=>{state.auroraLinkDurationBonus=Math.min(2,state.auroraLinkDurationBonus+1);} }
+    ,{ id:'auroraLinkTargets', icon:'✧', name:'Constelação Ampliada', description:'Adiciona um alvo aos saltos do Elo Estelar, até cinco inimigos.', max:2, available:()=>currentSkin().id==='aurora'&&state.auroraLinkTargetBonus<2, apply:()=>{state.auroraLinkTargetBonus=Math.min(2,state.auroraLinkTargetBonus+1);} }
+    ,{ id:'auroraLinkDamage', icon:'☄', name:'Fótons Intensos', description:'Aumenta em 0,4 o dano de cada pulso do Elo Estelar.', max:3, available:()=>currentSkin().id==='aurora'&&state.auroraLinkDamageBonus<1.2, apply:()=>{state.auroraLinkDamageBonus=Math.min(1.2,state.auroraLinkDamageBonus+.4);} }
+    ,{ id:'auroraLinkCooldown', icon:'⟳', name:'Ressonância Boreal', description:'Reduz em 2 segundos a recarga do Q, de 28 até 22 segundos.', max:3, available:()=>currentSkin().id==='aurora'&&upgradeLevel('auroraLinkCooldown')<3, apply:()=>{state.auroraLinkCooldown=Math.max(0,state.auroraLinkCooldown-2);} }
     ,{ id:'returnCore', icon:'⟲', name:'Núcleo de contra-ataque', description:'Aumenta o dano, prolonga o escudo refletor e reduz sua recarga.', max:4, available:()=>currentSkin().id==='redshift'&&upgradeLevel('returnCore')<4, apply:()=>{state.reflectDamageBonus=Math.min(.9,state.reflectDamageBonus+.23);state.reflectDurationBonus=Math.min(2,state.reflectDurationBonus+.5);state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1.25);} }
+    ,{ id:'redshiftPerimeterDuration', icon:'◷', name:'Cerco Prolongado', description:'Aumenta em 1 segundo a duração do Perímetro de Cerco, até 8 segundos.', max:2, available:()=>currentSkin().id==='redshift'&&state.redshiftPerimeterDurationBonus<2, apply:()=>{state.redshiftPerimeterDurationBonus=Math.min(2,state.redshiftPerimeterDurationBonus+1);} }
+    ,{ id:'redshiftPerimeterDamage', icon:'✹', name:'Fios Cortantes', description:'Aumenta em 1,5 o dano causado quando um inimigo cruza os feixes.', max:3, available:()=>currentSkin().id==='redshift'&&state.redshiftPerimeterDamageBonus<4.5, apply:()=>{state.redshiftPerimeterDamageBonus=Math.min(4.5,state.redshiftPerimeterDamageBonus+1.5);} }
+    ,{ id:'redshiftPerimeterRange', icon:'△', name:'Âncoras Expansivas', description:'Amplia o triângulo do perímetro em 15 unidades por nível.', max:3, available:()=>currentSkin().id==='redshift'&&state.redshiftPerimeterRangeBonus<45, apply:()=>{state.redshiftPerimeterRangeBonus=Math.min(45,state.redshiftPerimeterRangeBonus+15);} }
+    ,{ id:'redshiftPerimeterCooldown', icon:'⟳', name:'Ressonância Rubra', description:'Reduz em 2 segundos a recarga do Q, até 22 segundos.', max:3, available:()=>currentSkin().id==='redshift'&&upgradeLevel('redshiftPerimeterCooldown')<3, apply:()=>{state.redshiftPerimeterCooldown=Math.max(0,state.redshiftPerimeterCooldown-2);} }
+    ,{ id:'flashTrailDuration', icon:'◷', name:'Rastro Persistente', description:'Aumenta em 1 segundo a duração dos rastros, até 7 segundos.', max:2, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDurationBonus<2, apply:()=>{state.flashTrailDurationBonus=Math.min(2,state.flashTrailDurationBonus+1);} }
+    ,{ id:'flashTrailDamage', icon:'✦', name:'Fio Residual', description:'Aumenta em 0,7 o dano de cada corte deixado no caminho.', max:3, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDamageBonus<2.1, apply:()=>{state.flashTrailDamageBonus=Math.min(2.1,state.flashTrailDamageBonus+.7);} }
+    ,{ id:'flashTrailDensity', icon:'〰', name:'Passagem Dupla', description:'Deixa rastros mais próximos e aumenta levemente a largura dos cortes.', max:3, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDensity<3, apply:()=>{state.flashTrailDensity=Math.min(3,state.flashTrailDensity+1);} }
+    ,{ id:'flashTrailCooldown', icon:'⟳', name:'Cadência Vetorial', description:'Reduz em 2 segundos a recarga do Q, até 22 segundos.', max:2, available:()=>currentSkin().id==='flashblade'&&upgradeLevel('flashTrailCooldown')<2, apply:()=>{state.flashTrailCooldown=Math.max(0,state.flashTrailCooldown-2);} }
     ,{ id:'eclipseVeil', icon:'✧', name:'Manto de eclipse', description:'Prolonga a sequência e amplia o alcance dos cortes.', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseVeil')<4, apply:()=>{state.eclipseDurationBonus=Math.min(2.2,state.eclipseDurationBonus+.55);state.eclipseCutBonus=Math.min(36,state.eclipseCutBonus+9);} }
     ,{ id:'eclipseCooldown', icon:'◷', name:'Ressonador do domínio', description:'Reduz a recarga da Eclipse em 1 segundo, até o mínimo de 25 segundos.', max:5, available:()=>currentSkin().id==='eclipse'&&state.abilityBaseCooldown>25, apply:()=>{state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1);state.abilityCooldown=Math.max(0,state.abilityCooldown-1);} }
     ,{ id:'eclipseDamage', icon:'⚔', name:'Fio do domínio', description:'Aumenta o dano de cada corte em 0,25 (até +1,00).', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseDamage')<4, apply:()=>{state.eclipseCutDamage=Math.min(1,state.eclipseCutDamage+.25);} }
+    ,{ id:'eclipseDecoyAI', icon:'◉', name:'Instinto da Isca', description:'A Isca Umbral percebe projéteis mais cedo e desvia com mais agilidade.', max:4, available:()=>currentSkin().id==='eclipse'&&state.eclipseDecoyAI<4, apply:()=>{state.eclipseDecoyAI=Math.min(4,state.eclipseDecoyAI+1);} }
+    ,{ id:'eclipseDecoyDuration', icon:'◷', name:'Eco Persistente', description:'Aumenta em 1 segundo a duração da Isca Umbral, até 6 segundos.', max:2, available:()=>currentSkin().id==='eclipse'&&state.eclipseDecoyDurationBonus<2, apply:()=>{state.eclipseDecoyDurationBonus=Math.min(2,state.eclipseDecoyDurationBonus+1);} }
+    ,{ id:'eclipseDecoyChaos', icon:'⤨', name:'Trajetória Caótica', description:'A Isca Umbral muda de direção com mais frequência e em ângulos mais imprevisíveis.', max:3, available:()=>currentSkin().id==='eclipse'&&state.eclipseDecoyChaos<3, apply:()=>{state.eclipseDecoyChaos=Math.min(3,state.eclipseDecoyChaos+1);} }
     ,{ id:'dinoFangs', icon:'〰', name:'Ressonância jurássica', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=4;state.dinoRoarRangeBonus+=18;} }
     ,{ id:'dinoStampede', icon:'🐾', name:'Manada ancestral', description:'Adiciona um raptor ao Estouro da Manada e fortalece a investida.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=2.5;} }
     ,{ id:'dinoResonance', icon:'◷', name:'Ressonância fóssil', description:'Reduz em 2 segundos o intervalo de recarga entre as cargas de Q, até 24 segundos.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoResonance')<4, apply:()=>{state.dinoStampedeRecharge=Math.max(0,state.dinoStampedeRecharge-2);} }
@@ -349,6 +393,12 @@
   function shipCooldownSummary(skin) {
     if (hasDeveloperPerks()) return 'sem recarga';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q 24s';
+    if (skin.id === 'chronos') return 'E 25s · Q 28s→22s · ecos 40%→70% por 4→6s';
+    if (skin.id === 'aurora') return 'E 25s · Q 28s→22s · 3→5 alvos por 5→7s';
+    if (skin.id === 'aegis') return 'E 25s · Q 30s→24s · 3→5 sentinelas por 6→8s';
+    if (skin.id === 'redshift') return 'E 30s→25s · Q 28s→22s · duração do Q até 8s';
+    if (skin.id === 'flashblade') return 'E 25s · Q 26s→22s · impulso 2,2× · barreiras 7s';
+    if (skin.id === 'tempest') return 'E 34s · Q com 3→5 cargas · recarga de 28s→22s por carga';
     if (skin.id === 'saurion') return 'E ' + skin.cooldown + 's→22s · Q 3 cargas · ' + skin.cooldownQ + 's→24s por carga';
     return 'recarga ' + skin.cooldown + 's';
   }
@@ -453,6 +503,7 @@
       : '<svg class="starfall-equipped-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : '') + '</svg>';
     ui.equippedShip.innerHTML = equippedIcon + '<span><strong>Nave equipada: ' + skin.name + '</strong><small>' + skin.ability + ' · ' + shipCooldownSummary(skin) + '</small></span>';
     updateEclipseSkipOption();
+    updateAbilityButton();
   }
   function readEclipseVideoSkip() {
     try { return localStorage.getItem(eclipseSkipVideoKey) === 'true'; } catch { return false; }
@@ -511,40 +562,94 @@
   }
   function updateAbilityButton() {
     const skin = currentSkin();
+    const showAbility = ['playing', 'paused'].includes(state.mode);
     const ready = state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
     const active = eclipseIntro || eclipseActive;
+    if (ui.abilityWrap) ui.abilityWrap.hidden = !showAbility;
     if (ui.ability) {
+      ui.ability.style.setProperty('--ship-color', skin.color);
+      ui.ability.style.setProperty('--ship-accent', skin.accent);
       ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || (!ready && !active);
       ui.ability.setAttribute('aria-pressed', String(active));
-      ui.ability.textContent = '★';
+      ui.ability.textContent = '✦';
       ui.ability.setAttribute('aria-label', eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
       if (ui.abilityCooldown) ui.abilityCooldown.textContent = eclipseIntro ? 'ABERTURA' : eclipseActive ? 'DOMÍNIO ' + Math.ceil(state.eclipseTime) + 's' : hasDeveloperPerks() ? 'Livre' : ready ? 'Pronta' : Math.ceil(state.abilityCooldown) + 's';
-      ui.ability.title = skin.ability + (hasDeveloperPerks() ? ' · sem recarga: ' : ': ') + skin.description;
+      ui.ability.title = skin.ability + ' · tecla E · ' + (hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
+      const isAurora = skin.id === 'aurora';
+      const isAegis = skin.id === 'aegis';
       const isEclipse = skin.id === 'eclipse';
+      const isChronos = skin.id === 'chronos';
       const isSaurion = skin.id === 'saurion';
-      const showQ = (isEclipse || isSaurion) && ['playing', 'paused'].includes(state.mode);
+      const isRedshift = skin.id === 'redshift';
+      const isFlashblade = skin.id === 'flashblade';
+      const isTempest = skin.id === 'tempest';
+      const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest) && ['playing', 'paused'].includes(state.mode);
+      const auroraLinkTime = auroraLinkDuration();
+      const auroraLinkCooldown = auroraLinkCooldownDuration();
+      const auroraLinkTargets = auroraLinkMaxTargets();
+      const auroraLinkDamage = auroraLinkPulseDamage();
+      const aegisOrbitTime = aegisOrbitDuration();
+      const aegisOrbitCooldown = aegisOrbitCooldownDuration();
+      const aegisOrbitCount = aegisOrbitMaxCount();
+      const aegisOrbitRemaining = state.aegisOrbit ? state.aegisOrbit.fragments.filter(Boolean).length : aegisOrbitCount;
+      const chronosEchoTime = chronosEchoDuration();
+      const chronosEchoCooldown = chronosEchoCooldownDuration();
+      const decoyDuration = 4 + state.eclipseDecoyDurationBonus;
+      const perimeterDuration = 6 + state.redshiftPerimeterDurationBonus;
+      const perimeterCooldown = Math.max(22, 28 - upgradeLevel('redshiftPerimeterCooldown') * 2);
+      const trailDuration = 5 + state.flashTrailDurationBonus;
+      const trailCooldown = Math.max(22, 26 - upgradeLevel('flashTrailCooldown') * 2);
+      const tempestTideCooldown = tempestTideCooldownDuration();
+      const tempestTideCharges = hasDeveloperPerks() ? tempestTideMaxCharges() : state.tempestTideCharges;
+      const tempestTideMax = tempestTideMaxCharges();
       const stampedeRemaining = state.effects.reduce((remaining, effect) => effect.type === 'dino-raptor' ? Math.max(remaining, effect.life) : remaining, 0);
-      const qActive = isEclipse ? Boolean(state.eclipseDecoy && state.eclipseDecoy.life > 0) : isSaurion && stampedeRemaining > 0;
-      const qCooldown = isEclipse ? state.eclipseDecoyCooldown : state.dinoStampedeRecharge;
+      const tideRemaining = state.effects.reduce((remaining, effect) => effect.type === 'tempest-tide' ? Math.max(remaining, effect.life) : remaining, 0);
+      const qActive = isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseDecoy && state.eclipseDecoy.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion && stampedeRemaining > 0;
+      const qCooldown = isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseDecoyCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : state.dinoStampedeRecharge;
       const dinoCharges = hasDeveloperPerks() ? 3 : state.dinoStampedeCharges;
-      const qReady = hasDeveloperPerks() || (isEclipse ? qCooldown <= 0 : dinoCharges > 0);
+      const qReady = hasDeveloperPerks() || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
-      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || (isEclipse && state.eclipsePhase !== 'idle') || (isEclipse && qActive) || !qReady;
-      ui.eclipseQ.textContent = isEclipse ? '◉' : '✦';
+      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade) && qActive) || !qReady;
+      ui.eclipseQ.textContent = isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '◉' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : '✦';
+      ui.eclipseQ.classList.toggle('is-aurora', isAurora);
+      ui.eclipseQ.classList.toggle('is-aegis', isAegis);
+      ui.eclipseQ.classList.toggle('is-chronos', isChronos);
       ui.eclipseQ.classList.toggle('is-saurion', isSaurion);
+      ui.eclipseQ.classList.toggle('is-redshift', isRedshift);
+      ui.eclipseQ.classList.toggle('is-flashblade', isFlashblade);
+      ui.eclipseQ.classList.toggle('is-tempest', isTempest);
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
-      ui.eclipseQ.setAttribute('aria-label', qActive && isEclipse
-        ? 'Isca Umbral ativa por mais ' + Math.ceil(state.eclipseDecoy.life) + ' segundos'
-        : !qReady ? isEclipse ? 'Isca Umbral recarregando: ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
-          : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia por 4 segundos' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes'));
-      ui.eclipseQ.title = isEclipse ? 'Isca Umbral · Q · cópia por 4s · recarga de 24s' : 'Estouro da Manada · 3 cargas · Q · recarga de ' + Math.max(24, skin.cooldownQ - upgradeLevel('dinoResonance') * 2) + 's por carga';
-      if (ui.eclipseQCooldown) ui.eclipseQCooldown.textContent = isEclipse
+      const qLabel = qActive && isAurora ? 'Elo Estelar ativo por mais ' + Math.ceil(state.auroraLink.life) + ' segundos · até ' + auroraLinkTargets + ' alvos por pulso · impactos recebidos devolvem metade do dano aos alvos vinculados'
+        : qActive && isAegis ? 'Órbitas Sentinelas protegem a nave por mais ' + Math.ceil(state.aegisOrbit.life) + ' segundos · ' + aegisOrbitRemaining + ' fragmentos restantes'
+        : qActive && isEclipse ? 'Isca Umbral ativa por mais ' + Math.ceil(state.eclipseDecoy.life) + ' segundos'
+        : qActive && isChronos ? 'Eco do Futuro ativo por mais ' + Math.ceil(state.chronosEcho.life) + ' segundos'
+        : qActive && isRedshift ? 'Perímetro de Cerco ativo por mais ' + Math.ceil(state.redshiftPerimeter.life) + ' segundos'
+          : qActive && isFlashblade ? 'Rastro de Ruptura ativo por mais ' + Math.ceil(state.flashTrail.life) + ' segundos'
+            : qActive && isTempest ? 'Maré Reversa ativa · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas'
+              : !qReady ? isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Isca Umbral recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando; próxima carga em ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
+                : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · devolve metade dos impactos recebidos, inclusive com escudo' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia móvel por ' + decoyDuration + ' segundos; dispara tiros leves e espaçados' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,42s com ' + Math.round((.4 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso rápido e barreiras cortantes por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano leve, empurrão e tiros desviados; alguns atingem inimigos' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
+      ui.eclipseQ.setAttribute('aria-label', qLabel);
+      ui.eclipseQ.title = isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · dano ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · impactos recebidos, inclusive absorvidos pelo escudo, devolvem 50% do dano aos alvos vinculados · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
+        : isAegis ? 'Órbitas Sentinelas · Q · proteção do núcleo · fragmentos intactos atacam ao final · ' + aegisOrbitCount + ' fragmentos · duração ' + aegisOrbitTime + 's · dano convertido ' + (2 + state.aegisOrbitDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + aegisOrbitCooldown + 's'
+        : isEclipse ? 'Isca Umbral · Q · cópia móvel por ' + decoyDuration + 's, rota imprevisível, desvio e disparos leves a cada 0,9s · recarga de 24s'
+        : isChronos ? 'Eco do Futuro · Q · ecos repetem os disparos após 0,42s · duração ' + chronosEchoTime + 's · dano ' + Math.round((.4 + state.chronosEchoDamageBonus) * 100) + '% · recarga de ' + chronosEchoCooldown + 's'
+        : isRedshift ? 'Perímetro de Cerco · Q · ' + perimeterDuration + 's · dano ' + (4 + state.redshiftPerimeterDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + perimeterCooldown + 's'
+          : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,2× · barreiras duram 7s · dano ' + (2 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
+            : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(245 + state.tempestTideRadiusBonus)) + ' · dano leve, empurra, desvia tiros comuns e redireciona alguns contra inimigos · recupera 1 carga a cada ' + tempestTideCooldown + 's'
+              : 'Estouro da Manada · 3 cargas · Q · recarga de ' + Math.max(24, skin.cooldownQ - upgradeLevel('dinoResonance') * 2) + 's por carga';
+      if (ui.eclipseQCooldown) ui.eclipseQCooldown.textContent = isAurora ? qActive ? 'ELO ' + Math.ceil(state.auroraLink.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
+        : isAegis ? qActive ? 'ÓRBITA ' + Math.ceil(state.aegisOrbit.life) + 's · ' + aegisOrbitRemaining : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
+        : isEclipse
         ? qActive ? 'ISCA ' + Math.ceil(state.eclipseDecoy.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
-        : hasDeveloperPerks() ? '∞ CARGAS' : dinoCharges + '/3' + (dinoCharges < 3 ? ' · ' + Math.ceil(qCooldown) + 's' : ' CARGAS');
+        : isChronos ? qActive ? 'ECO ' + Math.ceil(state.chronosEcho.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
+        : isRedshift ? qActive ? 'CERCO ' + Math.ceil(state.redshiftPerimeter.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
+          : isFlashblade ? qActive ? 'RASTRO ' + Math.ceil(state.flashTrail.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
+            : isTempest ? qActive ? 'MARÉ' : hasDeveloperPerks() ? '∞ CARGAS' : tempestTideCharges + '/' + tempestTideMax + (tempestTideCharges < tempestTideMax ? ' · ' + Math.ceil(qCooldown) + 's' : ' CARGAS')
+              : hasDeveloperPerks() ? '∞ CARGAS' : dinoCharges + '/3' + (dinoCharges < 3 ? ' · ' + Math.ceil(qCooldown) + 's' : ' CARGAS');
     }
   }
   function openSecretShipUnlock() {
@@ -582,32 +687,54 @@
     reconcileAbilityCollectorAchievement();
     ui.status.textContent = 'Naves secretas liberadas neste aparelho.';
   }
+  function openShipDetails(skin) {
+    if (!ui.shipDetailsDialog || !ui.shipDetailsList) return;
+    ui.shipDetailsKicker.textContent = skin.secret ? 'NAVE SECRETA · DOSSIÊ DE HABILIDADES' : 'DOSSIÊ DE HABILIDADES';
+    ui.shipDetailsTitle.textContent = skin.name;
+    ui.shipDetailsSummary.textContent = 'Habilidade E: ' + skin.ability + ' · Habilidade Q: ' + secondaryAbilityNames[skin.id];
+    ui.shipDetailsList.replaceChildren();
+    for (const [label, abilityName, copy] of [
+      ['HABILIDADE E', skin.ability, shipAbilityDetails[skin.id].e],
+      ['HABILIDADE Q', secondaryAbilityNames[skin.id], shipAbilityDetails[skin.id].q]
+    ]) {
+      const detail = document.createElement('section'); detail.className = 'starfall-rank-detail-card starfall-ship-detail-card';
+      const kicker = document.createElement('small'); kicker.className = 'starfall-ship-detail-key'; kicker.textContent = label;
+      const heading = document.createElement('h3'); heading.textContent = abilityName;
+      const description = document.createElement('p'); description.textContent = copy;
+      detail.append(kicker, heading, description); ui.shipDetailsList.append(detail);
+    }
+    ui.shipDetailsCooldowns.textContent = 'Recargas e melhorias · ' + shipCooldownSummary(skin);
+    if (typeof ui.shipDetailsDialog.showModal === 'function') ui.shipDetailsDialog.showModal();
+    else ui.shipDetailsDialog.setAttribute('open', '');
+  }
   function renderSkinPicker() {
     if (!ui.skinPicker) return;
     ui.skinPicker.replaceChildren();
     skins.forEach((skin) => {
-      if (skin.secret && !skinUnlocked(skin)) {
-        const secretCard = document.createElement('button');
-        secretCard.type = 'button';
-        secretCard.className = 'starfall-skin-card is-secret';
-        secretCard.setAttribute('aria-label', 'Inserir código para liberar as naves secretas');
-        secretCard.title = 'Naves secretas · inserir código temporário';
-        secretCard.innerHTML = '<span class="starfall-skin-icon" aria-hidden="true">?</span><strong>Desconhecido</strong><span>SECRETO · LIBERAR</span>';
-        secretCard.addEventListener('click', openSecretShipUnlock);
-        ui.skinPicker.append(secretCard);
-        return;
-      }
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'starfall-skin-card' + (skin.id === state.selectedSkin ? ' is-selected' : '');
-      button.setAttribute('aria-pressed', String(skin.id === state.selectedSkin));
-      button.title = skin.description;
       const unlocked = skinUnlocked(skin);
-      button.disabled = !unlocked;
-      button.classList.toggle('is-locked', !unlocked);
-      const icon = skin.shape === 'eclipse' ? '<span class="starfall-skin-icon starfall-eclipse-sprite" aria-hidden="true"></span>' : skin.shape === 'dino' ? '<span class="starfall-skin-icon starfall-dino-icon" aria-hidden="true">🦖</span>' : '<span class="starfall-skin-icon" style="--skin-color:' + skin.color + '" aria-hidden="true">' + (unlocked ? '✦' : '🔒') + '</span>';
-      button.innerHTML = icon + '<strong>' + skin.name + '</strong><span>' + (unlocked ? skin.ability : 'Desbloqueia na onda ' + skin.unlockWave) + '</span><small>' + skin.description + '<br>' + shipCooldownSummary(skin) + '</small>';
-      button.addEventListener('click', () => {
+      const card = document.createElement('article');
+      card.className = 'starfall-skin-card' + (skin.id === state.selectedSkin ? ' is-selected' : '') + (skin.secret ? ' is-secret' : '') + (!unlocked ? ' is-locked' : '');
+      card.style.setProperty('--skin-color', skin.color);
+      const select = document.createElement('button');
+      select.type = 'button';
+      select.className = 'starfall-skin-select';
+      select.setAttribute('aria-pressed', String(skin.id === state.selectedSkin));
+      select.setAttribute('aria-label', unlocked ? (skin.id === state.selectedSkin ? 'Nave equipada: ' : 'Equipar nave ') + skin.name : skin.secret ? 'Abrir desbloqueio da nave secreta ' + skin.name : skin.name + ' · desbloqueia na onda ' + skin.unlockWave);
+      select.disabled = !unlocked && !skin.secret;
+      const icon = document.createElement('span');
+      icon.className = 'starfall-skin-icon' + (skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'dino' ? ' starfall-dino-icon' : '');
+      icon.setAttribute('aria-hidden', 'true');
+      if (skin.shape === 'dino') icon.textContent = '🦖';
+      else if (skin.shape !== 'eclipse') icon.textContent = skin.shape === 'reflector' ? '◈' : '✦';
+      const name = document.createElement('strong'); name.textContent = skin.name;
+      const primary = document.createElement('span'); primary.className = 'starfall-skin-skill'; primary.innerHTML = '<kbd>E</kbd><span>' + skin.ability + '</span>';
+      const secondary = document.createElement('span'); secondary.className = 'starfall-skin-skill'; secondary.innerHTML = '<kbd>Q</kbd><span>' + secondaryAbilityNames[skin.id] + '</span>';
+      const status = document.createElement('small');
+      status.className = 'starfall-skin-status';
+      status.textContent = unlocked ? skin.id === state.selectedSkin ? 'EQUIPADA' : 'EQUIPAR' : skin.secret ? 'SECRETA · LIBERAR' : 'DESBLOQUEIA NA ONDA ' + skin.unlockWave;
+      select.append(icon, name, primary, secondary, status);
+      select.addEventListener('click', () => {
+        if (skin.secret && !skinUnlocked(skin)) { openSecretShipUnlock(); return; }
         if (!skinUnlocked(skin) || state.mode === 'playing' || state.mode === 'upgrade') return;
         state.selectedSkin = skin.id;
         try { localStorage.setItem('cv-games-cv-starfall-skin', skin.id); } catch { /* A escolha vale para esta sessão. */ }
@@ -615,10 +742,15 @@
         updateEquippedShip();
         updateControlUI();
         persistAccountShipProgress();
-        ui.copy.textContent = skin.description;
+        ui.copy.textContent = 'Cada nave tem habilidades especiais. Use E e Q para ativá-las; abra Naves e Habilidades e selecione Ver detalhes para conhecer cada poder.';
         closeShips();
       });
-      ui.skinPicker.append(button);
+      const details = document.createElement('button');
+      details.type = 'button'; details.className = 'starfall-skin-details-trigger'; details.textContent = 'Ver detalhes';
+      details.setAttribute('aria-label', 'Ver detalhes das habilidades da nave ' + skin.name);
+      details.addEventListener('click', () => openShipDetails(skin));
+      card.append(select, details);
+      ui.skinPicker.append(card);
     });
   }
   function makeStars() {
@@ -655,11 +787,16 @@
     state.enemiesRequired = 9; state.bossWave = false; state.bossSpawned = false; state.miniBossTimer = 0; state.miniBossSpawned = false;
     state.bullets = []; state.enemyBullets = []; state.enemies = []; state.particles = []; state.pickups = []; state.effects = [];
     const skin = currentSkin();
-    state.player = { x: state.width / 2, y: state.height * .78, radius: mobileSize(13), speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
+    state.player = { x: state.width / 2, y: state.height * .78, radius: mobileSize(13), speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0; state.adminNoCooldown = isDeveloperProfile(); state.adminBuffsActive = false;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
-    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
+    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.eclipseDecoyAI = 0; state.eclipseDecoyDurationBonus = 0; state.eclipseDecoyChaos = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
+    state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0;
+    state.shipEWasCooling = false; state.shipQWasCooling = false; state.shipQChargeCount = skin.id === 'tempest' ? state.tempestTideCharges : skin.id === 'saurion' ? state.dinoStampedeCharges : null;
+    state.aegisOrbit = null; state.aegisOrbitCooldown = 0; state.aegisOrbitDurationBonus = 0; state.aegisOrbitCountBonus = 0; state.aegisOrbitDamageBonus = 0;
+    state.tempestTideCharges = 3; state.tempestTideChargeBonus = 0; state.tempestTideDamageBonus = 0; state.tempestTideSweepBonus = 0;
+    state.chronosEcho = null; state.chronosEchoQueue = []; state.chronosEchoCooldown = 0; state.chronosEchoDurationBonus = 0; state.chronosEchoDamageBonus = 0;
     if (isAllUpgradesProfile() && !state.dailyChallenge) grantAllUpgrades();
     state.keys.clear(); state.pointer.active = false; releaseAnalog();
     if (ui.runSummary) { ui.runSummary.hidden = true; ui.runSummary.replaceChildren(); }
@@ -933,9 +1070,33 @@
         ? centeredShot / Math.max(.5, (totalShots - 1) / 2) * bossHalfSpread
         : centeredShot * .16);
       const critical = randomUnit('combat') < state.critChance;
-      state.bullets.push({ x: state.player.x + Math.cos(direction) * mobileSize(13), y: state.player.y + Math.sin(direction) * mobileSize(13), vx: Math.cos(direction) * 510, vy: Math.sin(direction) * 510, r: mobileSize(critical ? 5 : 3.5), damage: state.player.damage * (1 + state.endlessDamage) * (critical ? 2 : 1), pierce: state.pierce, hit: [], assistTarget: bossAssist ? target : null, color: critical ? '#ffe38a' : currentSkin().accent });
+      const shot = { x: state.player.x + Math.cos(direction) * mobileSize(13), y: state.player.y + Math.sin(direction) * mobileSize(13), vx: Math.cos(direction) * 510, vy: Math.sin(direction) * 510, r: mobileSize(critical ? 5 : 3.5), damage: state.player.damage * (1 + state.endlessDamage) * (critical ? 2 : 1), pierce: state.pierce, hit: [], assistTarget: bossAssist ? target : null, color: critical ? '#ffe38a' : currentSkin().accent };
+      state.bullets.push(shot);
+      queueChronosEcho(shot);
     }
     tone(420, .035, 'square', .01);
+  }
+  function fireEclipseDecoyAt(decoy, target) {
+    if (!decoy || !target) return;
+    const angle = Math.atan2(target.y - decoy.y, target.x - decoy.x);
+    const speed = mobileSize(455);
+    state.bullets.push({
+      x: decoy.x + Math.cos(angle) * mobileSize(12),
+      y: decoy.y + Math.sin(angle) * mobileSize(12),
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: mobileSize(2.8),
+      damage: Math.max(.25, state.player.damage * .42),
+      pierce: 0,
+      hit: [],
+      color: '#d8bdff',
+      eclipseDecoyShot: true
+    });
+  }
+  function queueChronosEcho(shot) {
+    if (currentSkin().id !== 'chronos' || !state.chronosEcho || state.chronosEcho.life <= 0 || state.chronosEchoQueue.length >= 420) return;
+    const echoBullet = { ...shot, damage: shot.damage * (.4 + state.chronosEchoDamageBonus), color: '#d6c4ff', hit: [], chronosEchoShot: true };
+    state.chronosEchoQueue.push({ delay: .42, bullet: echoBullet });
   }
   function enemyAimTarget() {
     return currentSkin().id === 'eclipse' && state.eclipseDecoy?.life > 0 ? state.eclipseDecoy : state.player;
@@ -998,10 +1159,29 @@
     if (distance(bullet, state.player) < radius + state.player.radius && state.reflectTime <= 0) damagePlayer(bullet.damage || 2);
     state.enemies.forEach((enemy) => { if (!enemy.dead && distance(bullet, enemy) < radius + enemy.r) damageEnemy(enemy, 8 + state.wave * .2, true); });
   }
+  function reflectAuroraLinkDamage(amount) {
+    const ability = state.auroraLink;
+    if (currentSkin().id !== 'aurora' || !ability || ability.life <= 0) return;
+    const linked = ability.targets?.filter((enemy) => enemy && !enemy.dead) || [];
+    if (!linked.length) return;
+    const reflectedDamage = Math.max(.5, amount * .5);
+    for (let index = 0; index < linked.length; index++) {
+      const enemy = linked[index];
+      const x1 = state.player.x; const y1 = state.player.y;
+      const dx = enemy.x - x1; const dy = enemy.y - y1;
+      const length = Math.hypot(dx, dy) || 1;
+      const bend = (index % 2 ? 1 : -1) * Math.min(18, length * .08);
+      damageEnemy(enemy, reflectedDamage, true);
+      state.effects.push({ type: 'aurora-link', x1, y1, x2: enemy.x, y2: enemy.y, cx: (x1 + enemy.x) / 2 - dy / length * bend, cy: (y1 + enemy.y) / 2 + dx / length * bend, life: .3, total: .3, phase: index });
+      state.effects.push({ type: 'aurora-link-node', x: enemy.x, y: enemy.y, life: .3, total: .3, phase: index });
+      burst(enemy.x, enemy.y, '#eafffb', enemy.kind === 'boss' ? 5 : 3, 44);
+    }
+  }
   function damagePlayer(amount = 1) {
-    if (state.eclipsePhase === 'active' || state.invulnerable > 0 || state.mode !== 'playing') return;
+    if (state.eclipsePhase === 'active' || state.invulnerable > 0 || state.mode !== 'playing' || (currentSkin().id === 'aegis' && state.aegisOrbit?.life > 0)) return;
     if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
     let remaining = Math.max(1, Math.floor(amount));
+    reflectAuroraLinkDamage(remaining);
     const tempUsed = Math.min(state.tempShields, remaining); state.tempShields -= tempUsed; remaining -= tempUsed;
     const regularUsed = Math.min(state.shields, remaining); state.shields -= regularUsed; remaining -= regularUsed;
     if (remaining === 0) { state.invulnerable = .82; toast(tempUsed ? 'BARREIRA AEGIS ABSORVEU O IMPACTO' : 'ESCUDO ABSORVEU O IMPACTO'); tone(680, .18, 'triangle', .04); updateHud(); return; }
@@ -1179,16 +1359,115 @@
       }
     }
   }
+  function finishEclipseDecoy() {
+    const decoy = state.eclipseDecoy;
+    if (!decoy) return;
+    state.eclipseDecoy = null;
+    const radius = mobileSize(92);
+    state.effects.push({ type: 'eclipse-decoy-burst', x: decoy.x, y: decoy.y, radius, life: .42, total: .42 });
+    burst(decoy.x, decoy.y, '#bd91ff', 18, 120);
+    burst(decoy.x, decoy.y, '#f2e8ff', 9, 76);
+    for (const enemy of state.enemies) {
+      if (!enemy.dead && distance(enemy, decoy) <= radius + enemy.r * .35) damageEnemy(enemy, 1.6, true);
+    }
+    tone(470, .11, 'triangle', .027);
+    updateAbilityButton();
+  }
+  function eclipseDecoyCruiseSpeed() {
+    const ai = clamp(state.eclipseDecoyAI || 0, 0, 4);
+    const playerSpeed = state.player?.speed || 260;
+    return mobileSize(playerSpeed * .84 + ai * 2);
+  }
+  function updateEclipseDecoy(dt) {
+    const decoy = state.eclipseDecoy;
+    if (!decoy) return;
+    decoy.life = Math.max(0, decoy.life - dt);
+    if (decoy.life <= 0) { finishEclipseDecoy(); return; }
+
+    const ai = clamp(state.eclipseDecoyAI || 0, 0, 4);
+    const margin = Math.min(mobileSize(38), state.width * .12, state.height * .12);
+    const minX = margin; const maxX = Math.max(minX, state.width - margin);
+    const minY = margin; const maxY = Math.max(minY, state.height - margin);
+    const chaos = clamp(state.eclipseDecoyChaos || 0, 0, 3);
+    decoy.turnTimer = Math.max(0, (decoy.turnTimer || 0) - dt);
+    if (decoy.turnTimer <= 0) {
+      const turnRange = 1.3 + chaos * .45;
+      let turn = random(-turnRange, turnRange, 'ability');
+      if (randomUnit('ability') < .12 + chaos * .06) turn += (turn < 0 ? -1 : 1) * random(1.2, 2.35, 'ability');
+      decoy.turnTarget = decoy.heading + turn;
+      decoy.turnTimer = random(.42 - chaos * .045, .94 - chaos * .06, 'ability');
+    }
+    const desiredTurn = Math.atan2(Math.sin(decoy.turnTarget - decoy.heading), Math.cos(decoy.turnTarget - decoy.heading));
+    const turnSpeed = 1.55 + chaos * .24 + ai * .1;
+    decoy.heading += clamp(desiredTurn, -turnSpeed * dt, turnSpeed * dt);
+
+    let dodgeX = 0; let dodgeY = 0;
+    const horizon = .4 + ai * .12;
+    const awareness = mobileSize(60 + ai * 28);
+    for (const bullet of state.enemyBullets) {
+      if (bullet.dead || bullet.reflected) continue;
+      const rx = bullet.x - decoy.x; const ry = bullet.y - decoy.y;
+      const rvx = bullet.vx - decoy.vx; const rvy = bullet.vy - decoy.vy;
+      const relativeSpeedSq = rvx * rvx + rvy * rvy;
+      if (relativeSpeedSq < 1) continue;
+      const impactTime = -(rx * rvx + ry * rvy) / relativeSpeedSq;
+      if (impactTime < 0 || impactTime > horizon) continue;
+      const nearX = rx + rvx * impactTime; const nearY = ry + rvy * impactTime;
+      const closest = Math.hypot(nearX, nearY);
+      const safeDistance = state.player.radius * .82 + bullet.r + mobileSize(8 + ai * 4);
+      const detectDistance = awareness + safeDistance;
+      if (closest >= detectDistance) continue;
+      const weight = clamp((detectDistance - closest) / detectDistance, .12, 1) * (1 - impactTime / (horizon * 1.35));
+      const awayLength = Math.hypot(nearX, nearY) || 1;
+      dodgeX -= nearX / awayLength * weight;
+      dodgeY -= nearY / awayLength * weight;
+    }
+
+    if (decoy.x < minX + awareness * .55) dodgeX += .55;
+    if (decoy.x > maxX - awareness * .55) dodgeX -= .55;
+    if (decoy.y < minY + awareness * .55) dodgeY += .55;
+    if (decoy.y > maxY - awareness * .55) dodgeY -= .55;
+    const dodgeLength = Math.hypot(dodgeX, dodgeY);
+    if (dodgeLength > 0) { dodgeX /= dodgeLength; dodgeY /= dodgeLength; }
+
+    const playerSpeed = state.player?.speed || 260;
+    const roamSpeed = eclipseDecoyCruiseSpeed();
+    const evadeSpeed = mobileSize(playerSpeed * (.12 + ai * .035)) * Math.min(1, dodgeLength);
+    let targetVx = Math.cos(decoy.heading) * roamSpeed + dodgeX * evadeSpeed;
+    let targetVy = Math.sin(decoy.heading) * roamSpeed + dodgeY * evadeSpeed;
+    const targetSpeed = Math.hypot(targetVx, targetVy);
+    const speedLimit = mobileSize(playerSpeed * .92);
+    if (targetSpeed > speedLimit) { targetVx *= speedLimit / targetSpeed; targetVy *= speedLimit / targetSpeed; }
+    const turnRate = (3.4 + ai * 1.25) * dt;
+    decoy.vx += (targetVx - decoy.vx) * Math.min(1, turnRate);
+    decoy.vy += (targetVy - decoy.vy) * Math.min(1, turnRate);
+    decoy.x += decoy.vx * dt;
+    decoy.y += decoy.vy * dt;
+    if (decoy.x < minX || decoy.x > maxX) { decoy.x = clamp(decoy.x, minX, maxX); decoy.vx *= -.78; decoy.heading = Math.atan2(decoy.vy, decoy.vx); decoy.turnTarget = decoy.heading + random(-1.25, 1.25, 'ability'); decoy.turnTimer = random(.16, .38, 'ability'); }
+    if (decoy.y < minY || decoy.y > maxY) { decoy.y = clamp(decoy.y, minY, maxY); decoy.vy *= -.78; decoy.heading = Math.atan2(decoy.vy, decoy.vx); decoy.turnTarget = decoy.heading + random(-1.25, 1.25, 'ability'); decoy.turnTimer = random(.16, .38, 'ability'); }
+    decoy.angle = Math.atan2(decoy.vy, decoy.vx);
+    decoy.fireTimer = Math.max(0, (decoy.fireTimer ?? .35) - dt);
+    if (decoy.fireTimer <= 0) {
+      const target = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(decoy, a) - distance(decoy, b))[0] || null;
+      if (target) {
+        fireEclipseDecoyAt(decoy, target);
+        decoy.fireTimer = .9;
+      } else decoy.fireTimer = .2;
+    }
+  }
   function activateEclipseDecoy() {
     if (currentSkin().id !== 'eclipse' || state.mode !== 'playing' || state.eclipsePhase !== 'idle' || state.eclipseDecoy?.life > 0) return;
     const developerProfile = hasDeveloperPerks();
     if (!developerProfile && state.eclipseDecoyCooldown > 0) return;
     recordAchievementEvent('ship-ability', 'eclipse');
-    state.eclipseDecoy = { x: state.player.x, y: state.player.y, angle: state.player.angle, life: 4, total: 4 };
+    const heading = state.player.angle ?? -Math.PI / 2;
+    const roamSpeed = eclipseDecoyCruiseSpeed();
+    const duration = 4 + state.eclipseDecoyDurationBonus;
+    state.eclipseDecoy = { x: state.player.x, y: state.player.y, angle: heading, heading, turnTarget: heading + random(-1.4, 1.4, 'ability'), turnTimer: random(.18, .52, 'ability'), fireTimer: .35, vx: Math.cos(heading) * roamSpeed, vy: Math.sin(heading) * roamSpeed, life: duration, total: duration };
     state.eclipseDecoyCooldown = developerProfile ? 0 : 24;
     burst(state.player.x, state.player.y, '#bd91ff', 24, 120);
     burst(state.player.x, state.player.y, '#f2e8ff', 9, 70);
-    toast('ISCA UMBRAL · MIRA DESVIADA');
+    toast('ISCA UMBRAL · CÓPIA MÓVEL · ' + duration + 's');
     tone(310, .13, 'sine', .035);
     updateAbilityButton();
   }
@@ -1281,8 +1560,496 @@
     updateAbilityButton();
   }
   function activateSecondaryAbility() {
-    if (currentSkin().id === 'eclipse') activateEclipseDecoy();
+    if (currentSkin().id === 'aurora') activateAuroraLink();
+    else if (currentSkin().id === 'aegis') activateAegisOrbit();
+    else if (currentSkin().id === 'eclipse') activateEclipseDecoy();
+    else if (currentSkin().id === 'chronos') activateChronosEcho();
+    else if (currentSkin().id === 'redshift') activateRedshiftPerimeter();
+    else if (currentSkin().id === 'flashblade') activateFlashTrail();
     else if (currentSkin().id === 'saurion') activateDinoStampede();
+    else if (currentSkin().id === 'tempest') activateTempestTide();
+  }
+  function auroraLinkDuration() { return Math.min(7, 5 + state.auroraLinkDurationBonus); }
+  function auroraLinkMaxTargets() { return Math.min(5, 3 + state.auroraLinkTargetBonus); }
+  function auroraLinkPulseDamage() { return 1.2 + state.auroraLinkDamageBonus; }
+  function auroraLinkCooldownDuration() { return Math.max(22, 28 - upgradeLevel('auroraLinkCooldown') * 2); }
+  function auroraLinkChain() {
+    const first = nearestEnemy();
+    if (!first) return [];
+    const chain = [first];
+    const reach = Math.max(mobileSize(230), state.width * .34);
+    while (chain.length < auroraLinkMaxTargets()) {
+      const from = chain[chain.length - 1];
+      const next = state.enemies.filter((enemy) => !enemy.dead && !chain.includes(enemy))
+        .map((enemy) => ({ enemy, gap: distance(from, enemy) }))
+        .filter((entry) => entry.gap <= reach)
+        .sort((a, b) => a.gap - b.gap)[0]?.enemy;
+      if (!next) break;
+      chain.push(next);
+    }
+    return chain;
+  }
+  function emitAuroraLinkPulse() {
+    const chain = auroraLinkChain();
+    if (state.auroraLink) state.auroraLink.targets = chain;
+    if (!chain.length) return;
+    for (let index = 0; index < chain.length; index++) {
+      const enemy = chain[index];
+      if (enemy.dead) continue;
+      const bossScale = enemy.kind === 'boss' ? .72 : 1;
+      damageEnemy(enemy, auroraLinkPulseDamage() * state.abilityPower * bossScale, true);
+      state.effects.push({ type: 'aurora-link-node', x: enemy.x, y: enemy.y, life: .25, total: .25, phase: index });
+      burst(enemy.x, enemy.y, index % 2 ? '#bffff5' : '#7df7e8', enemy.kind === 'boss' ? 5 : 3, 48);
+      if (index > 0) {
+        const from = chain[index - 1];
+        const dx = enemy.x - from.x; const dy = enemy.y - from.y;
+        const bend = ((index % 2) ? 1 : -1) * Math.min(22, Math.hypot(dx, dy) * .12);
+        state.effects.push({ type: 'aurora-link', x1: from.x, y1: from.y, x2: enemy.x, y2: enemy.y, cx: (from.x + enemy.x) / 2 - dy / (Math.hypot(dx, dy) || 1) * bend, cy: (from.y + enemy.y) / 2 + dx / (Math.hypot(dx, dy) || 1) * bend, life: .34, total: .34, phase: index });
+      }
+    }
+    tone(740, .06, 'sine', .014);
+  }
+  function activateAuroraLink() {
+    if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraLink?.life > 0) return;
+    const developerProfile = hasDeveloperPerks();
+    if (!developerProfile && state.auroraLinkCooldown > 0) return;
+    const duration = auroraLinkDuration();
+    state.auroraLink = { life: duration, total: duration, pulseTimer: .08, targets: auroraLinkChain() };
+    state.auroraLinkCooldown = developerProfile ? 0 : auroraLinkCooldownDuration();
+    state.effects.push({ type: 'aurora-link-start', x: state.player.x, y: state.player.y, life: .5, total: .5, phase: 0 });
+    state.effects.push({ type: 'aurora-link-wave', x: state.player.x, y: state.player.y, radius: Math.hypot(state.width, state.height) * 1.08, life: 1.12, total: 1.12, phase: 0 });
+    burst(state.player.x, state.player.y, '#7df7e8', 16, 92);
+    burst(state.player.x, state.player.y, '#bffff5', 8, 68);
+    recordAchievementEvent('ship-ability', 'aurora');
+    toast('ELO ESTELAR · ATÉ ' + auroraLinkMaxTargets() + ' ALVOS');
+    tone(610, .17, 'sine', .035);
+    updateAbilityButton();
+  }
+  function advanceAuroraLink(dt) {
+    if (hasDeveloperPerks()) state.auroraLinkCooldown = 0;
+    else state.auroraLinkCooldown = Math.max(0, state.auroraLinkCooldown - dt);
+    if (!state.auroraLink) return;
+    state.auroraLink.life = Math.max(0, state.auroraLink.life - dt);
+    state.auroraLink.pulseTimer -= dt;
+    while (state.auroraLink && state.auroraLink.life > 0 && state.auroraLink.pulseTimer <= 0) {
+      emitAuroraLinkPulse();
+      state.auroraLink.pulseTimer += .78;
+    }
+    if (state.auroraLink?.life <= 0) {
+      state.auroraLink = null;
+      updateAbilityButton();
+    }
+  }
+  function shipRechargeIcon(which, skin = currentSkin()) {
+    if (which !== 'q') return '✦';
+    return ({ aurora:'✴', aegis:'⬡', eclipse:'◉', chronos:'◷', tempest:'↗', flashblade:'✧', redshift:'△', saurion:'✦' })[skin.id] || '✦';
+  }
+  function shipQRechargeState(skin = currentSkin()) {
+    if (skin.id === 'aurora') return { cooldown: state.auroraLinkCooldown, charges: null };
+    if (skin.id === 'aegis') return { cooldown: state.aegisOrbitCooldown, charges: null };
+    if (skin.id === 'eclipse') return { cooldown: state.eclipseDecoyCooldown, charges: null };
+    if (skin.id === 'chronos') return { cooldown: state.chronosEchoCooldown, charges: null };
+    if (skin.id === 'tempest') return { cooldown: state.tempestTideCooldown, charges: state.tempestTideCharges };
+    if (skin.id === 'flashblade') return { cooldown: state.flashTrailCooldown, charges: null };
+    if (skin.id === 'redshift') return { cooldown: state.redshiftPerimeterCooldown, charges: null };
+    if (skin.id === 'saurion') return { cooldown: state.dinoStampedeRecharge, charges: state.dinoStampedeCharges };
+    return { cooldown: 0, charges: null };
+  }
+  function showShipRechargeFlash(which, iconOffsetX = 0, skin = currentSkin()) {
+    state.effects.push({ type: 'skill-ready', icon: shipRechargeIcon(which, skin), iconOffsetX, color: skin.color, followShip: true, x: state.player.x, y: state.player.y, life: 1.15, total: 1.15 });
+    burst(state.player.x, state.player.y, currentSkin().color, 10, 74);
+    burst(state.player.x, state.player.y, '#effffb', 5, 48);
+  }
+  function checkShipRechargeReadiness() {
+    const skin = currentSkin();
+    const qState = shipQRechargeState(skin);
+    if (hasDeveloperPerks()) {
+      state.shipEWasCooling = false;
+      state.shipQWasCooling = false;
+      state.shipQChargeCount = qState.charges;
+      return;
+    }
+    if (state.mode !== 'playing') return;
+    const eCooling = state.abilityCooldown > 0;
+    const qCooling = qState.cooldown > 0;
+    const eReadyNow = state.shipEWasCooling && !eCooling;
+    const qReadyNow = qState.charges == null
+      ? state.shipQWasCooling && !qCooling
+      : state.shipQChargeCount != null && qState.charges > state.shipQChargeCount;
+    const simultaneous = eReadyNow && qReadyNow;
+    if (eReadyNow) showShipRechargeFlash('e', simultaneous ? -13 : 0, skin);
+    if (qReadyNow) showShipRechargeFlash('q', simultaneous ? 13 : 0, skin);
+    state.shipEWasCooling = eCooling;
+    state.shipQWasCooling = qCooling;
+    state.shipQChargeCount = qState.charges;
+  }
+  function aegisOrbitDuration() { return Math.min(8, 6 + state.aegisOrbitDurationBonus); }
+  function aegisOrbitMaxCount() { return Math.min(5, 3 + state.aegisOrbitCountBonus); }
+  function aegisOrbitCooldownDuration() { return Math.max(24, 30 - upgradeLevel('aegisOrbitCooldown') * 2); }
+  function aegisOrbitPoints(orbit = state.aegisOrbit) {
+    if (!orbit || !state.player) return [];
+    const count = orbit.fragments.length;
+    const radius = state.player.radius + mobileSize(22);
+    return orbit.fragments.map((active, index) => ({
+      active,
+      index,
+      x: state.player.x + Math.cos(orbit.angle + index * Math.PI * 2 / count) * radius,
+      y: state.player.y + Math.sin(orbit.angle + index * Math.PI * 2 / count) * radius
+    }));
+  }
+  function activateAegisOrbit() {
+    if (currentSkin().id !== 'aegis' || state.mode !== 'playing' || state.aegisOrbit?.life > 0) return;
+    const developerProfile = hasDeveloperPerks();
+    if (!developerProfile && state.aegisOrbitCooldown > 0) return;
+    const duration = aegisOrbitDuration();
+    const count = aegisOrbitMaxCount();
+    state.aegisOrbit = { life: duration, total: duration, angle: -Math.PI / 2, fragments: Array.from({ length: count }, () => true) };
+    state.aegisOrbitCooldown = developerProfile ? 0 : aegisOrbitCooldownDuration();
+    state.effects.push({ type: 'aegis-orbit-start', x: state.player.x, y: state.player.y, life: .48, total: .48 });
+    burst(state.player.x, state.player.y, '#72bdff', 15, 86);
+    burst(state.player.x, state.player.y, '#e8f8ff', 7, 62);
+    recordAchievementEvent('ship-ability', 'aegis');
+    toast('ÓRBITAS SENTINELAS · ' + count + ' FRAGMENTOS · ' + duration + 's');
+    tone(480, .18, 'triangle', .04);
+    updateAbilityButton();
+  }
+  function advanceAegisOrbit(dt) {
+    if (hasDeveloperPerks()) state.aegisOrbitCooldown = 0;
+    else state.aegisOrbitCooldown = Math.max(0, state.aegisOrbitCooldown - dt);
+    if (!state.aegisOrbit) return;
+    const orbit = state.aegisOrbit;
+    orbit.life = Math.max(0, orbit.life - dt);
+    orbit.angle += dt * 2.35;
+    if (orbit.life <= 0) {
+      const remaining = aegisOrbitPoints(orbit).filter((point) => point.active);
+      for (const point of remaining) {
+        state.effects.push({ type: 'aegis-orbit-release', x: point.x, y: point.y, life: .36, total: .36 });
+        launchAegisSentinel(point);
+      }
+      if (remaining.length) {
+        tone(560, .16, 'triangle', .03);
+        toast('SENTINELAS REMANESCENTES · ATAQUE FINAL');
+      }
+      state.aegisOrbit = null;
+      updateAbilityButton();
+    }
+  }
+  function launchAegisSentinel(point) {
+    const target = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(point, a) - distance(point, b))[0] || null;
+    if (!target) return false;
+    const angle = Math.atan2(target.y - point.y, target.x - point.x);
+    const speed = 485;
+    state.bullets.push({ x: point.x, y: point.y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, r: mobileSize(4.5), damage: (2 + state.aegisOrbitDamageBonus) * state.abilityPower, pierce: 0, hit: [], assistTarget: target, color: '#a8e5ff', aegisSentinelShot: true });
+    return true;
+  }
+  function interceptWithAegisOrbit(bullet) {
+    if (currentSkin().id !== 'aegis' || !state.aegisOrbit || bullet.dead || bullet.explosive || bullet.reflected) return false;
+    const orbit = state.aegisOrbit;
+    const orbitRadius = state.player.radius + mobileSize(22);
+    let point = null;
+    let nearestDistance = bullet.r + mobileSize(8);
+    for (let index = 0; index < orbit.fragments.length; index++) {
+      if (!orbit.fragments[index]) continue;
+      const angle = orbit.angle + index * Math.PI * 2 / orbit.fragments.length;
+      const x = state.player.x + Math.cos(angle) * orbitRadius;
+      const y = state.player.y + Math.sin(angle) * orbitRadius;
+      const gap = Math.hypot(bullet.x - x, bullet.y - y);
+      if (gap < nearestDistance) { nearestDistance = gap; point = { index, x, y }; }
+    }
+    if (!point) return false;
+    orbit.fragments[point.index] = false;
+    bullet.dead = true;
+    burst(point.x, point.y, '#a8e5ff', 10, 88);
+    burst(point.x, point.y, '#f4fcff', 4, 50);
+    state.effects.push({ type: 'aegis-orbit-intercept', x: point.x, y: point.y, life: .34, total: .34 });
+    launchAegisSentinel(point);
+    tone(690, .055, 'sine', .016);
+    updateAbilityButton();
+    return true;
+  }
+  function chronosEchoDuration() { return Math.min(6, 4 + state.chronosEchoDurationBonus); }
+  function chronosEchoCooldownDuration() { return Math.max(22, 28 - upgradeLevel('chronosEchoCooldown') * 2); }
+  function activateChronosEcho() {
+    if (currentSkin().id !== 'chronos' || state.mode !== 'playing' || state.chronosEcho?.life > 0) return;
+    const developerProfile = hasDeveloperPerks();
+    if (!developerProfile && state.chronosEchoCooldown > 0) return;
+    const duration = chronosEchoDuration();
+    state.chronosEcho = { life: duration, total: duration };
+    state.chronosEchoCooldown = developerProfile ? 0 : chronosEchoCooldownDuration();
+    state.effects.push({ type: 'chronos-echo-start', x: state.player.x, y: state.player.y, life: .58, total: .58, phase: random(0, Math.PI * 2, 'ability') });
+    burst(state.player.x, state.player.y, '#c897ff', 18, 95);
+    burst(state.player.x, state.player.y, '#efd5ff', 9, 72);
+    recordAchievementEvent('ship-ability', 'chronos');
+    toast('ECO DO FUTURO · DISPAROS DUPLICADOS POR ' + duration + 's');
+    tone(520, .2, 'sine', .04);
+    updateAbilityButton();
+  }
+  function advanceChronosEcho(dt) {
+    if (hasDeveloperPerks()) state.chronosEchoCooldown = 0;
+    else state.chronosEchoCooldown = Math.max(0, state.chronosEchoCooldown - dt);
+    if (state.chronosEcho) {
+      state.chronosEcho.life = Math.max(0, state.chronosEcho.life - dt);
+      if (state.chronosEcho.life <= 0) state.chronosEcho = null;
+    }
+    const pending = [];
+    for (const echo of state.chronosEchoQueue) {
+      echo.delay -= dt;
+      if (echo.delay <= 0) {
+        state.bullets.push(echo.bullet);
+        state.effects.push({ type: 'chronos-echo-flash', x: echo.bullet.x, y: echo.bullet.y, life: .24, total: .24 });
+      } else pending.push(echo);
+    }
+    state.chronosEchoQueue = pending;
+  }
+  function tempestTideCooldownDuration() {
+    return Math.max(22, 28 - upgradeLevel('tempestTideCooldown') * 2);
+  }
+  function tempestTideMaxCharges() { return 3 + state.tempestTideChargeBonus; }
+  function advanceTempestTideRecharge(dt) {
+    const maxCharges = tempestTideMaxCharges();
+    if (hasDeveloperPerks()) { state.tempestTideCharges = maxCharges; state.tempestTideCooldown = 0; return; }
+    state.tempestTideCharges = clamp(state.tempestTideCharges, 0, maxCharges);
+    if (state.tempestTideCharges >= maxCharges) { state.tempestTideCooldown = 0; return; }
+    state.tempestTideCooldown = Math.max(0, state.tempestTideCooldown - dt);
+    if (state.tempestTideCooldown <= 0) {
+      state.tempestTideCharges = Math.min(maxCharges, state.tempestTideCharges + 1);
+      state.tempestTideCooldown = state.tempestTideCharges < maxCharges ? tempestTideCooldownDuration() : 0;
+    }
+  }
+  function sweepTempestBullet(bullet, center) {
+    if (!bullet || bullet.dead || bullet.reflected || bullet.explosive) return false;
+    const dx = bullet.x - center.x; const dy = bullet.y - center.y;
+    const d = Math.hypot(dx, dy);
+    const awayAngle = d > .001 ? Math.atan2(dy, dx) : Math.atan2(-bullet.vy, -bullet.vx);
+    const cross = dx * bullet.vy - dy * bullet.vx;
+    const side = cross >= 0 ? 1 : -1;
+    const duration = .48 + state.tempestTideSweepBonus;
+    const targets = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(bullet, a) - distance(bullet, b));
+    if (targets.length && randomUnit('ability') < .28) {
+      bullet.reflected = true;
+      bullet.reflectLife = 1.8 + state.tempestTideSweepBonus;
+      bullet.tempestTideTargeted = true;
+      bullet.tempestTideTarget = targets[0];
+      bullet.damage = clamp(Math.max(1.45, (bullet.damage || 1) * .62 + state.tempestTideDamageBonus * .2), 1.45, 3.2);
+      bullet.color = '#b6f7ff';
+      bullet.r = mobileSize(clamp(bullet.r || 5, 4, 7));
+      bullet.explosive = false; bullet.exploded = false; bullet.fuse = null; bullet.blastRadius = 0; bullet.bounces = 0;
+      return true;
+    }
+    bullet.tempestTideSweep = { targetAngle: awayAngle + side * .42, time: duration, total: duration };
+    return true;
+  }
+  function activateTempestTide() {
+    if (currentSkin().id !== 'tempest' || state.mode !== 'playing') return;
+    const developerProfile = hasDeveloperPerks();
+    const maxCharges = tempestTideMaxCharges();
+    if (!developerProfile && state.tempestTideCharges <= 0) return;
+    const radius = mobileSize(245 + state.tempestTideRadiusBonus);
+    const center = { x: state.player.x, y: state.player.y };
+    if (developerProfile) { state.tempestTideCharges = maxCharges; state.tempestTideCooldown = 0; }
+    else {
+      const wasFull = state.tempestTideCharges >= maxCharges;
+      state.tempestTideCharges = Math.max(0, state.tempestTideCharges - 1);
+      if (wasFull) state.tempestTideCooldown = tempestTideCooldownDuration();
+    }
+    state.invulnerable = Math.max(state.invulnerable, .28);
+    state.effects.push({ type: 'tempest-tide', x: center.x, y: center.y, radius, life: .68, total: .68, phase: random(0, Math.PI * 2, 'ability') });
+    let deflectedShots = 0; let counterShots = 0;
+    for (const bullet of state.enemyBullets) {
+      if (Math.hypot(bullet.x - center.x, bullet.y - center.y) <= radius + bullet.r && sweepTempestBullet(bullet, center)) {
+        deflectedShots++;
+        if (bullet.tempestTideTargeted) counterShots++;
+      }
+    }
+    let affectedEnemies = 0;
+    for (const enemy of state.enemies) {
+      if (enemy.dead) continue;
+      const dx = enemy.x - center.x; const dy = enemy.y - center.y;
+      const d = Math.hypot(dx, dy);
+      if (d > radius + enemy.r) continue;
+      const boss = enemy.kind === 'boss' && !enemy.isMiniBoss;
+      const miniBoss = enemy.kind === 'boss' && enemy.isMiniBoss;
+      const damageScale = boss ? .35 : miniBoss ? .68 : 1;
+      damageEnemy(enemy, (2.4 + state.tempestTideDamageBonus) * damageScale * state.abilityPower, true);
+      affectedEnemies++;
+      burst(enemy.x, enemy.y, '#d5dcff', boss ? 5 : 4, boss ? 54 : 70);
+      if (enemy.dead) continue;
+      const angle = d > .001 ? Math.atan2(dy, dx) : random(0, Math.PI * 2, 'ability');
+      const baseImpulse = boss ? 210 : miniBoss ? 360 : 540;
+      const forceScale = boss ? .38 : miniBoss ? .68 : 1;
+      const speed = baseImpulse + state.tempestTideForceBonus * forceScale;
+      const edgeFactor = clamp(1.12 - d / (radius + enemy.r), .58, 1.12);
+      const duration = boss ? .36 : .48;
+      enemy.tempestRepulse = {
+        vx: Math.cos(angle) * speed * edgeFactor,
+        vy: Math.sin(angle) * speed * edgeFactor,
+        spin: random(-1.5, 1.5, 'ability'), time: duration, total: duration
+      };
+      burst(enemy.x, enemy.y, '#87aaff', boss ? 7 : 5, boss ? 70 : 96);
+    }
+    burst(center.x, center.y, '#87aaff', 22, 135);
+    burst(center.x, center.y, '#d5dcff', 12, 92);
+    recordAchievementEvent('ship-ability', 'tempest');
+    toast('MARÉ REVERSA · ' + deflectedShots + ' TIROS · ' + counterShots + ' CONTRA-ATAQUES');
+    tone(220, .24, 'sine', .045);
+    updateAbilityButton();
+  }
+  function flashTrailCooldownDuration() {
+    return Math.max(22, 26 - upgradeLevel('flashTrailCooldown') * 2);
+  }
+  function activateFlashTrail() {
+    if (currentSkin().id !== 'flashblade' || state.mode !== 'playing' || state.flashTrail?.life > 0) return;
+    const developerProfile = hasDeveloperPerks();
+    if (!developerProfile && state.flashTrailCooldown > 0) return;
+    const duration = 5 + state.flashTrailDurationBonus;
+    state.flashTrail = { life: duration, total: duration, lastX: state.player.x, lastY: state.player.y, recordTimer: 0 };
+    state.flashTrailCooldown = developerProfile ? 0 : flashTrailCooldownDuration();
+    state.flashTrailContacts = new Set();
+    recordAchievementEvent('ship-ability', 'flashblade');
+    burst(state.player.x, state.player.y, '#ffc86e', 18, 115);
+    burst(state.player.x, state.player.y, '#fff0b4', 8, 74);
+    toast('RASTRO DE RUPTURA · IMPULSO 2,2× · ' + duration + 's');
+    tone(690, .1, 'triangle', .035);
+    updateAbilityButton();
+  }
+  function updateFlashTrail(dt) {
+    const field = state.flashTrail;
+    if (!field) return;
+    field.life = Math.max(0, field.life - dt);
+    field.recordTimer -= dt;
+    const moved = Math.hypot(state.player.x - field.lastX, state.player.y - field.lastY);
+    if (field.life > 0 && field.recordTimer <= 0) {
+      const density = state.flashTrailDensity;
+      if (moved >= mobileSize(8)) {
+        state.effects.push({
+          type: 'flash-trail', x1: field.lastX, y1: field.lastY, x2: state.player.x, y2: state.player.y,
+          width: mobileSize(3.3 + density * .65), damage: (2 + state.flashTrailDamageBonus) * state.abilityPower,
+          life: 7, total: 7, phase: random(0, Math.PI * 2, 'ability')
+        });
+      }
+      field.lastX = state.player.x; field.lastY = state.player.y;
+      field.recordTimer = Math.max(.13, .22 - density * .03);
+    }
+    if (field.life <= 0) { state.flashTrail = null; updateAbilityButton(); }
+  }
+  function redshiftPerimeterCooldownDuration() {
+    return Math.max(22, 28 - upgradeLevel('redshiftPerimeterCooldown') * 2);
+  }
+  function redshiftPerimeterVertices(field = state.redshiftPerimeter) {
+    if (!field) return [];
+    const radius = mobileSize(135 + state.redshiftPerimeterRangeBonus);
+    return [0, 1, 2].map((index) => {
+      const angle = field.rotation - Math.PI / 2 + index * Math.PI * 2 / 3;
+      return { x: state.player.x + Math.cos(angle) * radius, y: state.player.y + Math.sin(angle) * radius };
+    });
+  }
+  function distanceToSegment(point, start, end) {
+    const dx = end.x - start.x; const dy = end.y - start.y;
+    const lengthSquared = dx * dx + dy * dy;
+    const t = lengthSquared ? clamp(((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared, 0, 1) : 0;
+    return Math.hypot(point.x - (start.x + t * dx), point.y - (start.y + t * dy));
+  }
+  function steerEffectVector(effect, targetAngle, turnRate, dt) {
+    const speed = Math.hypot(effect.vx, effect.vy);
+    if (speed < .001) return;
+    const currentAngle = Math.atan2(effect.vy, effect.vx);
+    const difference = Math.atan2(Math.sin(targetAngle - currentAngle), Math.cos(targetAngle - currentAngle));
+    const nextAngle = currentAngle + clamp(difference, -turnRate * dt, turnRate * dt);
+    effect.vx = Math.cos(nextAngle) * speed;
+    effect.vy = Math.sin(nextAngle) * speed;
+    effect.angle = nextAngle;
+  }
+  function deflectEnemyFromFlashTrail(enemy, effect) {
+    const dx = effect.x2 - effect.x1; const dy = effect.y2 - effect.y1;
+    const length = Math.hypot(dx, dy) || 1;
+    let nx = -dy / length; let ny = dx / length;
+    const midX = (effect.x1 + effect.x2) / 2; const midY = (effect.y1 + effect.y2) / 2;
+    if ((enemy.x - midX) * nx + (enemy.y - midY) * ny < 0) { nx *= -1; ny *= -1; }
+    const tx = dx / length; const ty = dy / length;
+    const slide = random(-82, 82, 'ability');
+    const duration = random(.42, .58, 'ability');
+    enemy.flashTrailDisorient = {
+      time: duration, total: duration,
+      vx: nx * 250 + tx * slide, vy: ny * 250 + ty * slide,
+      turn: random(-.72, .72, 'ability'), spin: random(-1.15, 1.15, 'ability')
+    };
+  }
+  function destroyEnemyShotAtFlashTrail(bullet) {
+    if (!bullet || bullet.dead || bullet.reflected) return false;
+    const barrier = state.effects.find((effect) => effect.type === 'flash-trail' && effect.life > 0
+      && distanceToSegment(bullet, { x: effect.x1, y: effect.y1 }, { x: effect.x2, y: effect.y2 }) <= bullet.r + effect.width);
+    if (!barrier) return false;
+    bullet.dead = true;
+    burst(bullet.x, bullet.y, '#ffc86e', 4, 52);
+    burst(bullet.x, bullet.y, '#fff5d3', 2, 38);
+    return true;
+  }
+  function activateRedshiftPerimeter() {
+    if (currentSkin().id !== 'redshift' || state.mode !== 'playing' || state.redshiftPerimeter?.life > 0) return;
+    const developerProfile = hasDeveloperPerks();
+    if (!developerProfile && state.redshiftPerimeterCooldown > 0) return;
+    const duration = 6 + state.redshiftPerimeterDurationBonus;
+    state.redshiftPerimeter = { life: duration, total: duration, rotation: random(0, Math.PI * 2, 'ability'), hitCooldowns: [] };
+    state.redshiftPerimeterCooldown = developerProfile ? 0 : redshiftPerimeterCooldownDuration();
+    recordAchievementEvent('ship-ability', 'redshift');
+    burst(state.player.x, state.player.y, '#d83a2e', 22, 125);
+    burst(state.player.x, state.player.y, '#ffd06a', 10, 82);
+    toast('PERÍMETRO DE CERCO · ' + duration + 's');
+    tone(190, .16, 'sawtooth', .035);
+    updateAbilityButton();
+  }
+  function updateRedshiftPerimeter(dt) {
+    const field = state.redshiftPerimeter;
+    if (!field || currentSkin().id !== 'redshift') return;
+    field.life = Math.max(0, field.life - dt);
+    if (field.life <= 0) { state.redshiftPerimeter = null; updateAbilityButton(); return; }
+    field.rotation += dt * .48;
+    for (const hit of field.hitCooldowns) hit.time -= dt;
+    field.hitCooldowns = field.hitCooldowns.filter((hit) => hit.time > 0 && !hit.enemy.dead);
+    const vertices = redshiftPerimeterVertices(field);
+    const beamReach = mobileSize(9);
+    for (const enemy of state.enemies) {
+      if (enemy.dead || field.hitCooldowns.some((hit) => hit.enemy === enemy)) continue;
+      let nearestBeam = Infinity;
+      for (let index = 0; index < vertices.length; index++) {
+        nearestBeam = Math.min(nearestBeam, distanceToSegment(enemy, vertices[index], vertices[(index + 1) % vertices.length]));
+      }
+      if (nearestBeam > enemy.r * .7 + beamReach) continue;
+      damageEnemy(enemy, (4 + state.redshiftPerimeterDamageBonus) * state.abilityPower, true);
+      field.hitCooldowns.push({ enemy, time: .72 });
+      burst(enemy.x, enemy.y, '#d83a2e', 7, 88);
+      burst(enemy.x, enemy.y, '#ffd06a', 4, 64);
+    }
+  }
+  function damageAuroraNova(radius) {
+    const enemies = state.enemies.filter((enemy) => !enemy.dead);
+    const hits = [];
+    for (const enemy of enemies) {
+      const gap = distance(state.player, enemy);
+      if (gap < radius + enemy.r) hits.push({ enemy, damage: (33 + Math.max(0, radius - gap) * .1) * state.abilityPower });
+    }
+    const ability = state.auroraLink;
+    const linked = ability?.life > 0 ? (ability.targets || []).filter((enemy) => enemy && !enemy.dead) : [];
+    const linkedSet = new Set(linked);
+    const hitSet = new Set(hits.map((hit) => hit.enemy));
+    const source = hits.filter((hit) => linkedSet.has(hit.enemy)).sort((a, b) => b.damage - a.damage)[0] || null;
+    const sharedDamage = source?.damage || 0;
+    for (const hit of hits) {
+      const damage = linkedSet.has(hit.enemy) ? Math.max(hit.damage, sharedDamage) : hit.damage;
+      damageEnemy(hit.enemy, damage, true);
+    }
+    if (source && sharedDamage > 0) {
+      for (let index = 0; index < linked.length; index++) {
+        const target = linked[index];
+        if (target === source.enemy || target.dead) continue;
+        if (!hitSet.has(target)) damageEnemy(target, sharedDamage, true);
+        const dx = target.x - source.enemy.x; const dy = target.y - source.enemy.y;
+        const length = Math.hypot(dx, dy) || 1;
+        const bend = (index % 2 ? 1 : -1) * Math.min(20, length * .08);
+        state.effects.push({ type: 'aurora-link', x1: source.enemy.x, y1: source.enemy.y, x2: target.x, y2: target.y, cx: (source.enemy.x + target.x) / 2 - dy / length * bend, cy: (source.enemy.y + target.y) / 2 + dx / length * bend, life: .48, total: .48, phase: index });
+        state.effects.push({ type: 'aurora-link-node', x: target.x, y: target.y, life: .36, total: .36, phase: index });
+      }
+    }
   }
   function activateAbility() {
     const developerProfile = hasDeveloperPerks();
@@ -1299,14 +2066,14 @@
     } else if (skin.id === 'aurora') {
       const radius = mobileSize(285);
       state.effects.push({ type: 'nova', x: state.player.x, y: state.player.y, radius: 0, maxRadius: radius, life: .95, total: .95 });
-      state.enemies.slice().forEach((enemy) => { const d = distance(state.player, enemy); if (d < radius + enemy.r) damageEnemy(enemy, (33 + Math.max(0, radius - d) * .1) * state.abilityPower, true); });
+      damageAuroraNova(radius);
       burst(state.player.x, state.player.y, skin.color, 76, 310); burst(state.player.x, state.player.y, '#ffffff', 28, 190); toast('EXPLOSÃO NOVA');
     } else if (skin.id === 'flashblade') {
       const angle = state.player.angle || -Math.PI / 2;
       state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 730, vy: Math.sin(angle) * 730, angle, turnTimer: .12, life: 9.4, total: 9.4, bounces: 0, damage: 14 * state.abilityPower, hitCooldowns: [], trail: [{ x: state.player.x, y: state.player.y }] });
       burst(state.player.x, state.player.y, skin.color, 34, 195); toast('CORTE FLASH · TRAJETÓRIA INSTÁVEL');
     } else if (skin.id === 'tempest') {
-      const angle = state.player.angle || -Math.PI / 2;
+      const angle = state.player.moveAngle ?? state.player.angle ?? -Math.PI / 2;
       state.effects.push({ type: 'singularity-shot', x: state.player.x + Math.cos(angle) * 18, y: state.player.y + Math.sin(angle) * 18, vx: Math.cos(angle) * 470, vy: Math.sin(angle) * 470, angle, life: .72, total: .72 });
       toast('SINGULARIDADE DISPARADA');
     } else if (skin.id === 'chronos') {
@@ -1361,11 +2128,14 @@
     state.powerSpawn -= dt;
     state.abilityCooldown = Math.max(0, state.abilityCooldown - dt);
     state.eclipseDecoyCooldown = Math.max(0, state.eclipseDecoyCooldown - dt);
+    state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - dt);
+    state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - dt);
+    advanceTempestTideRecharge(dt);
     advanceDinoStampedeRecharge(dt);
-    if (state.eclipseDecoy) {
-      state.eclipseDecoy.life = Math.max(0, state.eclipseDecoy.life - dt);
-      if (state.eclipseDecoy.life <= 0) state.eclipseDecoy = null;
-    }
+    advanceAuroraLink(dt);
+      advanceAegisOrbit(dt);
+    updateEclipseDecoy(dt);
+    advanceChronosEcho(dt);
     state.slowTime = Math.max(0, state.slowTime - dt);
     state.reflectTime = Math.max(0, state.reflectTime - dt);
     state.eclipseTime = Math.max(0, state.eclipseTime - dt);
@@ -1395,13 +2165,17 @@
     if (dx !== 0 || dy !== 0) {
       // Quantiza a direção do movimento em oito ângulos de 45 graus.
       const eighthTurn = Math.PI / 4;
+      state.player.moveAngle = Math.atan2(dy, dx);
       state.player.angle = Math.round(Math.atan2(dy, dx) / eighthTurn) * eighthTurn;
     }
     const norm = Math.hypot(dx, dy) || 1;
     const hullSpeed = state.lives <= 2 ? 1 + state.lowHullBoost * .12 : 1;
-    const moveSpeed = Math.min(525, state.player.speed + state.endlessSpeed);
+    const flashbladeDash = currentSkin().id === 'flashblade' && state.flashTrail?.life > 0;
+    const normalMoveSpeed = Math.min(525, state.player.speed + state.endlessSpeed);
+    const moveSpeed = normalMoveSpeed * (flashbladeDash ? 2.2 : 1);
     state.player.x = clamp(state.player.x + (dx / norm) * moveSpeed * hullSpeed * dt, 17, state.width - 17);
     state.player.y = clamp(state.player.y + (dy / norm) * moveSpeed * hullSpeed * dt, 17, state.height - 17);
+    updateFlashTrail(dt);
     updateEclipseCuts(dt);
     if (state.eclipsePhase !== 'active' && state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = state.player.fireRate; }
     if (!state.bossWave && state.waveKills < state.enemiesRequired && state.waveGrace <= 0) {
@@ -1440,9 +2214,17 @@
     state.bullets = state.bullets.filter(b => b.x > -20 && b.x < state.width + 20 && b.y > -30 && b.y < state.height + 20);
     const slowFactor = state.slowTime > 0 ? .42 : 1;
     for (const bullet of state.enemyBullets) {
-      if (bullet.dead) continue;
+      if (bullet.dead || destroyEnemyShotAtFlashTrail(bullet)) continue;
       reflectIncomingBullet(bullet);
       if (bullet.reflected) {
+        if (bullet.tempestTideTargeted) {
+          let target = bullet.tempestTideTarget;
+          if (!target || target.dead) {
+            target = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(bullet, a) - distance(bullet, b))[0] || null;
+            bullet.tempestTideTarget = target;
+          }
+          if (target) steerEffectVector(bullet, Math.atan2(target.y - bullet.y, target.x - bullet.x), 4.8, dt);
+        }
         bullet.reflectLife -= dt;
         bullet.x += bullet.vx * dt;
         bullet.y += bullet.vy * dt;
@@ -1455,8 +2237,19 @@
         if (bullet.reflectLife <= 0 || bullet.x < -24 || bullet.x > state.width + 24 || bullet.y < -24 || bullet.y > state.height + 24) bullet.dead = true;
         continue;
       }
+      const tideSweep = bullet.tempestTideSweep;
+      if (tideSweep && tideSweep.time > 0) {
+        tideSweep.time = Math.max(0, tideSweep.time - dt);
+        const speed = Math.hypot(bullet.vx, bullet.vy) || 300;
+        const currentAngle = Math.atan2(bullet.vy, bullet.vx);
+        const difference = Math.atan2(Math.sin(tideSweep.targetAngle - currentAngle), Math.cos(tideSweep.targetAngle - currentAngle));
+        const nextAngle = currentAngle + clamp(difference, -5.2 * dt, 5.2 * dt);
+        bullet.vx = Math.cos(nextAngle) * speed; bullet.vy = Math.sin(nextAngle) * speed;
+        if (tideSweep.time <= 0) bullet.tempestTideSweep = null;
+      }
       if (bullet.fuse != null) { bullet.fuse -= dt * slowFactor; if (bullet.fuse <= 0) { explodeBullet(bullet); continue; } }
       bullet.x += bullet.vx * dt * slowFactor; bullet.y += bullet.vy * dt * slowFactor;
+      if (interceptWithAegisOrbit(bullet)) continue;
       const decoy = state.eclipseDecoy;
       if (decoy && currentSkin().id === 'eclipse' && Math.hypot(bullet.x - decoy.x, bullet.y - decoy.y) < bullet.r + state.player.radius * .9) {
         if (bullet.explosive) explodeBullet(bullet);
@@ -1475,11 +2268,31 @@
         else bullet.dead = true;
       }
     }
+    for (const bullet of state.enemyBullets) {
+      destroyEnemyShotAtFlashTrail(bullet);
+    }
     state.enemyBullets = state.enemyBullets.filter(b => !b.dead);
     for (const enemy of state.enemies) {
       if (enemy.dead) continue;
       const aimTarget = enemyAimTarget();
-      const angle = Math.atan2(aimTarget.y - enemy.y, aimTarget.x - enemy.x);
+      let angle = Math.atan2(aimTarget.y - enemy.y, aimTarget.x - enemy.x);
+      const flashTrailDisorient = enemy.flashTrailDisorient;
+      if (flashTrailDisorient && flashTrailDisorient.time > 0) {
+        flashTrailDisorient.time = Math.max(0, flashTrailDisorient.time - dt);
+        const stagger = flashTrailDisorient.time / flashTrailDisorient.total;
+        angle += flashTrailDisorient.turn * stagger;
+        enemy.x += flashTrailDisorient.vx * dt * stagger;
+        enemy.y += flashTrailDisorient.vy * dt * stagger;
+        enemy.angle += flashTrailDisorient.spin * dt * stagger;
+      } else if (flashTrailDisorient) enemy.flashTrailDisorient = null;
+      const tempestRepulse = enemy.tempestRepulse;
+      if (tempestRepulse && tempestRepulse.time > 0) {
+        tempestRepulse.time = Math.max(0, tempestRepulse.time - dt);
+        const impulse = tempestRepulse.time / tempestRepulse.total;
+        enemy.x = clamp(enemy.x + tempestRepulse.vx * dt * impulse, enemy.r, state.width - enemy.r);
+        enemy.y = clamp(enemy.y + tempestRepulse.vy * dt * impulse, enemy.r, state.height - enemy.r);
+        enemy.angle += tempestRepulse.spin * dt * impulse;
+      } else if (tempestRepulse) enemy.tempestRepulse = null;
       const frozenByEclipse = state.eclipsePhase === 'cinematic';
       enemy.dinoStun = Math.max(0, (enemy.dinoStun || 0) - dt);
       enemy.dinoCutMark = Math.max(0, (enemy.dinoCutMark || 0) - dt);
@@ -1556,12 +2369,13 @@
         }
       }
     }
+    updateRedshiftPerimeter(dt);
     for (const bullet of state.bullets) {
       for (const enemy of state.enemies) {
         if (bullet.dead || enemy.dead || (bullet.hit && bullet.hit.includes(enemy))) continue;
         if (Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.r + enemy.r * .72) {
           damageEnemy(enemy, bullet.damage, false); burst(bullet.x, bullet.y, bullet.color, 4, 56);
-          if (state.blastRadius > 0) state.enemies.forEach((nearby) => { if (nearby !== enemy && !nearby.dead && distance(enemy, nearby) < state.blastRadius + nearby.r) damageEnemy(nearby, bullet.damage * .45, true); });
+          if (state.blastRadius > 0 && !bullet.eclipseDecoyShot) state.enemies.forEach((nearby) => { if (nearby !== enemy && !nearby.dead && distance(enemy, nearby) < state.blastRadius + nearby.r) damageEnemy(nearby, bullet.damage * .45, true); });
           if (bullet.pierce > 0) { bullet.pierce--; bullet.hit = bullet.hit || []; bullet.hit.push(enemy); }
           else bullet.dead = true;
           break;
@@ -1570,7 +2384,7 @@
     }
     state.bullets = state.bullets.filter(b => !b.dead);
     state.enemies = state.enemies.filter(e => !e.dead && e.y > -100 && e.y < state.height + 100 && e.x > -100 && e.x < state.width + 100);
-    for (const bullet of state.enemyBullets) if (!bullet.dead && !bullet.reflected && Math.hypot(bullet.x - state.player.x, bullet.y - state.player.y) < bullet.r + state.player.radius * .7) {
+    for (const bullet of state.enemyBullets) if (!bullet.dead && !bullet.reflected && !(bullet.tempestTideSweep?.time > 0) && Math.hypot(bullet.x - state.player.x, bullet.y - state.player.y) < bullet.r + state.player.radius * .7) {
       if (reflectIncomingBullet(bullet)) continue;
       if (bullet.explosive && state.eclipsePhase !== 'active') explodeBullet(bullet);
       else if (bullet.explosive) { bullet.dead = true; burst(bullet.x, bullet.y, '#d9b9ff', 10, 115); }
@@ -1596,7 +2410,13 @@
         if (pickup.kind === 'repair') { state.lives = Math.min(state.maxLives, state.lives + 1); toast('CASCO REPARADO +1 VIDA'); }
         else if (pickup.kind === 'charge') {
           state.abilityCooldown = Math.max(0, state.abilityCooldown - 8);
+          if (currentSkin().id === 'aurora') state.auroraLinkCooldown = Math.max(0, state.auroraLinkCooldown - 8);
           if (currentSkin().id === 'eclipse') state.eclipseDecoyCooldown = Math.max(0, state.eclipseDecoyCooldown - 8);
+          if (currentSkin().id === 'aegis') state.aegisOrbitCooldown = Math.max(0, state.aegisOrbitCooldown - 8);
+          if (currentSkin().id === 'redshift') state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - 8);
+          if (currentSkin().id === 'flashblade') state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - 8);
+          if (currentSkin().id === 'tempest') { state.tempestTideCooldown = Math.max(0, state.tempestTideCooldown - 8); advanceTempestTideRecharge(0); }
+          if (currentSkin().id === 'chronos') state.chronosEchoCooldown = Math.max(0, state.chronosEchoCooldown - 8);
           if (currentSkin().id === 'saurion') advanceDinoStampedeRecharge(8);
           toast('CARGA DE HABILIDADE −8s');
         }
@@ -1607,9 +2427,22 @@
     }
     state.pickups = state.pickups.filter(p => !p.dead && p.life > 0);
     const activeEffects = [];
+    const previousFlashTrailContacts = state.flashTrailContacts;
+    const currentFlashTrailContacts = new Set();
     for (const effect of state.effects) {
       effect.life -= dt;
-      if (effect.type === 'dino-raptor') {
+      if (effect.type === 'flash-trail' && effect.life > 0) {
+        for (const enemy of state.enemies) {
+          if (enemy.dead || distanceToSegment(enemy, { x: effect.x1, y: effect.y1 }, { x: effect.x2, y: effect.y2 }) > enemy.r * .7 + effect.width) continue;
+          const alreadyInContact = previousFlashTrailContacts.has(enemy) || currentFlashTrailContacts.has(enemy);
+          currentFlashTrailContacts.add(enemy);
+          if (alreadyInContact) continue;
+          damageEnemy(enemy, effect.damage, true);
+          if (!enemy.dead) deflectEnemyFromFlashTrail(enemy, effect);
+          burst(enemy.x, enemy.y, '#ffc86e', 7, 82);
+          burst(enemy.x, enemy.y, '#fff0b4', 4, 54);
+        }
+      } else if (effect.type === 'dino-raptor') {
         if (!effect.target || effect.target.dead || effect.hit.includes(effect.target)) effect.target = nearestDinoTarget(effect.x, effect.y, false, effect.hit);
         if (effect.target) {
           const desiredAngle = Math.atan2(effect.target.y - effect.y, effect.target.x - effect.x);
@@ -1666,6 +2499,7 @@
         }
         if (state.particles.length < particleLimit() && visualRandomUnit() < dt * (state.performanceMode === 'light' ? 7 : 22)) state.particles.push({ x: effect.x, y: effect.y, vx: visualRandom(-30, 30), vy: visualRandom(-30, 30), life: .28, maxLife: .28, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#fff7d5' : '#ffc86e' });
       } else if (effect.type === 'singularity-shot') {
+        steerEffectVector(effect, state.player.moveAngle ?? state.player.angle ?? -Math.PI / 2, 1.18, dt);
         effect.x += effect.vx * dt; effect.y += effect.vy * dt;
         if (effect.x < 12 || effect.x > state.width - 12 || effect.y < 12 || effect.y > state.height - 12) { effect.x = clamp(effect.x, 12, state.width - 12); effect.y = clamp(effect.y, 12, state.height - 12); effect.life = 0; }
         if (state.particles.length < particleLimit() && visualRandomUnit() < dt * (state.performanceMode === 'light' ? 9 : 28)) state.particles.push({ x: effect.x + visualRandom(-5, 5), y: effect.y + visualRandom(-5, 5), vx: visualRandom(-55, 55), vy: visualRandom(-55, 55), life: .38, maxLife: .38, r: mobileSize(visualRandom(1.5, 3)), color: visualRandomUnit() < .5 ? '#8ef6ff' : '#c19cff' });
@@ -1673,7 +2507,7 @@
         if (hit) { damageEnemy(hit, 24 * state.abilityPower, true); effect.life = 0; }
         if (effect.life <= 0) {
           effect.type = 'blackhole'; effect.life = state.singularityDuration; effect.total = state.singularityDuration; effect.radius = mobileSize(state.singularityRadius); effect.damageClock = .2;
-          effect.vx *= .45; effect.vy *= .45; effect.moveTimer = .55;
+          effect.vx *= .45; effect.vy *= .45; effect.targetAngle = Math.atan2(effect.vy, effect.vx); effect.moveTimer = .55;
           burst(effect.x, effect.y, '#b99aff', 34, 210); burst(effect.x, effect.y, '#7df7e8', 20, 130);
           toast('POÇO NEGRO ATIVO');
         }
@@ -1683,13 +2517,17 @@
           const cluster = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(effect, a) - distance(effect, b)).slice(0, 5);
           let targetX = random(20, state.width - 20, 'ability'), targetY = random(20, state.height - 20, 'ability');
           if (cluster.length) { targetX = cluster.reduce((sum, enemy) => sum + enemy.x, 0) / cluster.length; targetY = cluster.reduce((sum, enemy) => sum + enemy.y, 0) / cluster.length; }
-          const desired = Math.atan2(targetY - effect.y, targetX - effect.x) + random(-.5, .5, 'ability');
-          let current = Math.atan2(effect.vy, effect.vx);
-          const turn = Math.atan2(Math.sin(desired - current), Math.cos(desired - current));
-          current += turn * (cluster.length ? .5 : .8);
-          effect.vx = Math.cos(current) * 155; effect.vy = Math.sin(current) * 155;
+          effect.targetAngle = Math.atan2(targetY - effect.y, targetX - effect.x) + random(-.5, .5, 'ability');
           effect.moveTimer = random(.55, .95, 'ability');
         }
+        const currentAngle = Math.atan2(effect.vy, effect.vx);
+        const playerAngle = state.player.moveAngle ?? state.player.angle ?? -Math.PI / 2;
+        const enemyTurn = Math.atan2(Math.sin((effect.targetAngle ?? currentAngle) - currentAngle), Math.cos((effect.targetAngle ?? currentAngle) - currentAngle));
+        const shipTurn = Math.atan2(Math.sin(playerAngle - currentAngle), Math.cos(playerAngle - currentAngle));
+        const curvedTurn = enemyTurn * .58 + shipTurn * .42;
+        const nextAngle = currentAngle + clamp(curvedTurn, -1.25 * dt, 1.25 * dt);
+        const holeSpeed = Math.hypot(effect.vx, effect.vy) || 155;
+        effect.vx = Math.cos(nextAngle) * holeSpeed; effect.vy = Math.sin(nextAngle) * holeSpeed;
         effect.x += effect.vx * dt; effect.y += effect.vy * dt;
         if (effect.x < 18 || effect.x > state.width - 18) { effect.x = clamp(effect.x, 18, state.width - 18); effect.vx *= -1; effect.moveTimer = .18; }
         if (effect.y < 18 || effect.y > state.height - 18) { effect.y = clamp(effect.y, 18, state.height - 18); effect.vy *= -1; effect.moveTimer = .18; }
@@ -1718,6 +2556,7 @@
       } else if (effect.type === 'nova') effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
       if (effect.life > 0) activeEffects.push(effect);
     }
+    state.flashTrailContacts = currentFlashTrailContacts;
     state.effects = activeEffects;
     state.enemies = state.enemies.filter(e => !e.dead);
     state.enemyBullets = state.enemyBullets.filter(b => !b.dead);
@@ -1728,6 +2567,7 @@
     if (state.particles.length > maxParticles) state.particles.splice(0, state.particles.length - maxParticles);
     if (state.mode === 'playing' && state.waveKills >= state.enemiesRequired && state.enemies.length === 0 && (state.miniBossSpawned || state.miniBossTimer <= 0)) openUpgrade();
     if (Math.floor(state.elapsed) !== Math.floor(state.elapsed - dt)) updateHud();
+    checkShipRechargeReadiness();
     updateAbilityButton();
   }
   function drawDinoHeadLocal(size, color, accent, jawOpen, timestamp) {
@@ -1955,6 +2795,52 @@
       ctx.fillStyle = enemy.color; ctx.fillRect(enemy.x - healthWidth / 2, healthY, healthWidth * (enemy.hp / enemy.maxHp), enemy.isMiniBoss ? 3 : 2);
     }
   }
+  function drawAuroraLinkTrails(timestamp) {
+    const ability = state.auroraLink;
+    const targets = ability?.targets?.filter((enemy) => enemy && !enemy.dead) || [];
+    if (!ability || ability.life <= 0 || !targets.length) return;
+    const points = [{ x: state.player.x, y: state.player.y }, ...targets];
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let index = 1; index < points.length; index++) {
+      const from = points[index - 1];
+      const to = points[index];
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const length = Math.hypot(dx, dy) || 1;
+      const bend = Math.sin(timestamp / 520 + index * 1.7) * Math.min(10, length * .025);
+      const cx = (from.x + to.x) / 2 - dy / length * bend;
+      const cy = (from.y + to.y) / 2 + dx / length * bend;
+      const breath = .82 + Math.sin(timestamp / 430 + index) * .12;
+      ctx.globalAlpha = breath * .2;
+      ctx.strokeStyle = '#51d9c9';
+      ctx.lineWidth = mobileSize(4.2);
+      if (state.performanceMode !== 'light') { ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = mobileSize(10); }
+      ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.quadraticCurveTo(cx, cy, to.x, to.y); ctx.stroke();
+      ctx.globalAlpha = breath * .4;
+      ctx.strokeStyle = '#eafffb';
+      ctx.lineWidth = mobileSize(1.15);
+      ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.quadraticCurveTo(cx, cy, to.x, to.y); ctx.stroke();
+      ctx.globalAlpha = breath * .28;
+      ctx.strokeStyle = '#a7fff1';
+      ctx.lineWidth = mobileSize(.8);
+      ctx.setLineDash([mobileSize(2), mobileSize(13)]);
+      ctx.lineDashOffset = -timestamp / 42;
+      ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.quadraticCurveTo(cx, cy, to.x, to.y); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    for (const enemy of targets) {
+      ctx.globalAlpha = .23 + Math.sin(timestamp / 260 + enemy.x * .01) * .04;
+      ctx.strokeStyle = '#bffff5';
+      ctx.lineWidth = mobileSize(1.1);
+      ctx.shadowColor = '#7df7e8';
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(7);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(5), 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.restore();
+  }
   function draw(timestamp) {
     ctx.clearRect(0, 0, state.width, state.height);
     const zone = currentZone();
@@ -1964,13 +2850,23 @@
     for (const pickup of state.pickups) {
       const color = pickup.kind === 'repair' ? '#72ffad' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff'; ctx.save(); ctx.translate(pickup.x, pickup.y); ctx.rotate(pickup.spin); ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(16); ctx.strokeStyle = color; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.moveTo(0, -pickup.r); ctx.lineTo(pickup.r, 0); ctx.lineTo(0, pickup.r); ctx.lineTo(-pickup.r, 0); ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0; ctx.fillStyle = color; ctx.font = 'bold ' + mobileSize(12) + 'px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pickup.kind === 'repair' ? '+' : pickup.kind === 'charge' ? '◷' : '⬡', 0, 0); ctx.restore();
     }
-    for (const b of state.bullets) { ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); }
+    for (const b of state.bullets) {
+      if (b.eclipseDecoyShot || b.chronosEchoShot || b.aegisSentinelShot) { ctx.strokeStyle = b.eclipseDecoyShot ? 'rgba(216,189,255,.68)' : b.aegisSentinelShot ? 'rgba(168,229,255,.82)' : 'rgba(214,196,255,.76)'; ctx.lineWidth = Math.max(1, b.r * .7); ctx.beginPath(); ctx.moveTo(b.x - b.vx * .035, b.y - b.vy * .035); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+      ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 12; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+    }
     ctx.shadowBlur = 0;
-    for (const b of state.enemyBullets) { ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); }
+    for (const b of state.enemyBullets) {
+      const swept = b.tempestTideSweep?.time > 0;
+      ctx.fillStyle = swept ? '#e7eeff' : b.color; ctx.shadowColor = swept || b.tempestTideTargeted ? '#87aaff' : b.color;
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : swept || b.tempestTideTargeted ? 12 : 10;
+      if (b.tempestTideTargeted) { ctx.strokeStyle = '#d9faff'; ctx.lineWidth = Math.max(1, b.r * .55); ctx.beginPath(); ctx.moveTo(b.x - b.vx * .035, b.y - b.vy * .035); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+    }
     ctx.shadowBlur = 0;
     for (const enemy of state.enemies) drawEnemy(enemy);
     for (const p of state.particles) { ctx.globalAlpha = clamp(p.life / p.maxLife, 0, 1); ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
     ctx.globalAlpha = 1;
+    drawAuroraLinkTrails(timestamp);
     const eclipseActive = currentSkin().id === 'eclipse' && state.eclipsePhase === 'active';
     if (eclipseActive) {
       const shrineScale = state.mobileSizing ? .86 : 1;
@@ -1989,7 +2885,149 @@
     }
     for (const effect of state.effects) {
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
-      if (effect.type === 'nova') {
+      if (effect.type === 'skill-ready') {
+        const progress = 1 - alpha;
+        const x = effect.followShip ? state.player.x : effect.x;
+        const y = effect.followShip ? state.player.y : effect.y;
+        const pulse = .82 + Math.sin(timestamp / 58) * .18;
+        const radius = state.player.radius + mobileSize(9 + progress * 32);
+        ctx.save(); ctx.translate(x, y);
+        ctx.globalAlpha = alpha * .34 * pulse; ctx.fillStyle = effect.color;
+        ctx.font = '900 ' + mobileSize(42) + 'px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = effect.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+        ctx.fillText(effect.icon, effect.iconOffsetX || 0, 0);
+        ctx.globalAlpha = alpha * .62 * pulse; ctx.strokeStyle = effect.color;
+        ctx.lineWidth = mobileSize(2.4); ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
+        ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .34; ctx.strokeStyle = '#effffb'; ctx.lineWidth = mobileSize(1.15);
+        ctx.setLineDash([mobileSize(3), mobileSize(7)]); ctx.lineDashOffset = -timestamp / 24;
+        ctx.beginPath(); ctx.arc(0, 0, radius + mobileSize(7), 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        ctx.restore();
+      } else if (effect.type === 'aurora-link-start' || effect.type === 'aurora-link-node') {
+        const progress = 1 - alpha;
+        const radius = mobileSize(effect.type === 'aurora-link-start' ? 16 + progress * 56 : 4 + progress * 20);
+        ctx.save(); ctx.globalAlpha = Math.sin(Math.PI * clamp(progress, 0, 1)) * .82;
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = mobileSize(14); }
+        ctx.strokeStyle = '#eafffb'; ctx.lineWidth = mobileSize(effect.type === 'aurora-link-start' ? 2.5 : 1.8);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha *= .64; ctx.strokeStyle = '#55dccc'; ctx.lineWidth = mobileSize(1.2);
+        ctx.setLineDash([mobileSize(4), mobileSize(7)]); ctx.lineDashOffset = -timestamp * .045 + (effect.phase || 0);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]); ctx.restore();
+      } else if (effect.type === 'aurora-link-wave') {
+        const progress = 1 - alpha;
+        const radius = mobileSize(20) + effect.radius * progress;
+        const spread = mobileSize(42 + progress * 34);
+        const glow = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, radius - spread), effect.x, effect.y, radius);
+        glow.addColorStop(0, 'rgba(125,247,232,0)');
+        glow.addColorStop(.72, 'rgba(125,247,232,0)');
+        glow.addColorStop(.9, 'rgba(125,247,232,.055)');
+        glow.addColorStop(1, 'rgba(234,255,251,0)');
+        ctx.save(); ctx.globalAlpha = Math.sin(Math.PI * progress) * .92;
+        ctx.fillStyle = glow; ctx.fillRect(0, 0, state.width, state.height);
+        ctx.lineWidth = mobileSize(3.2); ctx.strokeStyle = 'rgba(191,255,245,.36)';
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = mobileSize(17); }
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha *= .5; ctx.lineWidth = mobileSize(1.25); ctx.strokeStyle = '#f0fffc'; ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, Math.max(0, radius - mobileSize(12)), 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'aurora-link') {
+        ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.globalAlpha = alpha * .46; ctx.strokeStyle = '#51d9c9'; ctx.lineWidth = mobileSize(5);
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = mobileSize(13); }
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.quadraticCurveTo(effect.cx, effect.cy, effect.x2, effect.y2); ctx.stroke();
+        ctx.globalAlpha = alpha * .94; ctx.strokeStyle = '#edfffb'; ctx.lineWidth = mobileSize(1.7); ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.quadraticCurveTo(effect.cx, effect.cy, effect.x2, effect.y2); ctx.stroke();
+        const spark = (timestamp / 280 + effect.phase * .21) % 1;
+        const inverse = 1 - spark;
+        const sx = inverse * inverse * effect.x1 + 2 * inverse * spark * effect.cx + spark * spark * effect.x2;
+        const sy = inverse * inverse * effect.y1 + 2 * inverse * spark * effect.cy + spark * spark * effect.y2;
+        ctx.globalAlpha = alpha; ctx.fillStyle = '#fff'; ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(11);
+        ctx.beginPath(); ctx.arc(sx, sy, mobileSize(2.4), 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      } else if (effect.type === 'aegis-orbit-start' || effect.type === 'aegis-orbit-intercept' || effect.type === 'aegis-orbit-release') {
+        const progress = 1 - alpha;
+        const isStart = effect.type === 'aegis-orbit-start';
+        const radius = mobileSize(isStart ? 18 + progress * 52 : effect.type === 'aegis-orbit-release' ? 7 + progress * 28 : 5 + progress * 18);
+        ctx.save(); ctx.globalAlpha = Math.sin(Math.PI * clamp(progress, 0, 1)) * (isStart ? .8 : .95);
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#72bdff'; ctx.shadowBlur = mobileSize(14); }
+        ctx.strokeStyle = '#effbff'; ctx.lineWidth = mobileSize(isStart ? 2.8 : 2.1);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha *= .7; ctx.strokeStyle = '#72bdff'; ctx.lineWidth = mobileSize(1.4);
+        ctx.setLineDash([mobileSize(4), mobileSize(6)]); ctx.lineDashOffset = -timestamp * .05;
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]); ctx.restore();
+      } else if (effect.type === 'chronos-echo-start' || effect.type === 'chronos-echo-flash') {
+        const progress = 1 - alpha;
+        const baseRadius = effect.type === 'chronos-echo-start' ? mobileSize(20 + progress * 68) : mobileSize(4 + progress * 18);
+        ctx.save(); ctx.globalAlpha = Math.sin(Math.PI * clamp(progress, 0, 1)) * .82; ctx.lineCap = 'round';
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#c897ff'; ctx.shadowBlur = mobileSize(13); }
+        ctx.strokeStyle = '#efd5ff'; ctx.lineWidth = mobileSize(effect.type === 'chronos-echo-start' ? 2.8 : 1.8);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, baseRadius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha *= .62; ctx.strokeStyle = '#87aaff'; ctx.lineWidth = mobileSize(1.2);
+        ctx.setLineDash([mobileSize(4), mobileSize(7)]); ctx.lineDashOffset = timestamp / -55 + (effect.phase || 0);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, baseRadius * .74, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]); ctx.restore();
+      } else if (effect.type === 'tempest-tide') {
+        const progress = 1 - alpha;
+        const waveRadius = effect.radius * (.1 + progress * .9);
+        const waveAlpha = Math.sin(Math.PI * clamp(progress, 0, 1)) * .88;
+        ctx.save(); ctx.lineCap = 'round';
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#83aaff'; ctx.shadowBlur = mobileSize(20); }
+        for (let ring = 0; ring < 3; ring++) {
+          const radius = waveRadius * (1 - ring * .075);
+          ctx.globalAlpha = waveAlpha * (ring === 0 ? .78 : .48 - ring * .08);
+          ctx.strokeStyle = ring === 1 ? '#e8efff' : ring === 2 ? '#c2d2ff' : '#7fa6ff';
+          ctx.lineWidth = mobileSize(ring === 0 ? 5 : 2.2);
+          ctx.setLineDash(ring === 0 ? [] : [mobileSize(8), mobileSize(13)]);
+          ctx.lineDashOffset = timestamp / (ring === 2 ? 70 : -95) + effect.phase * 10;
+          ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.setLineDash([]); ctx.shadowBlur = 0;
+        const core = clamp(1 - progress * 3.4, 0, 1);
+        ctx.globalAlpha = core * .48; ctx.fillStyle = '#d5e2ff';
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, mobileSize(22 + progress * 30), 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      } else if (effect.type === 'flash-trail') {
+        const fade = clamp(effect.life / effect.total, 0, 1);
+        const visibility = clamp(fade * 3.2, 0, 1);
+        const pulse = .83 + Math.sin(timestamp / 115 + effect.phase) * .17;
+        const dx = effect.x2 - effect.x1; const dy = effect.y2 - effect.y1;
+        ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.globalAlpha = visibility * .26 * pulse; ctx.strokeStyle = '#ff8a21'; ctx.lineWidth = effect.width * 3.2;
+        ctx.shadowColor = '#ffae38'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(22);
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke();
+        ctx.globalAlpha = visibility * .88 * pulse; ctx.strokeStyle = '#ffbf4d'; ctx.lineWidth = effect.width * 1.45;
+        ctx.shadowColor = '#ffd36b'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke();
+        ctx.globalAlpha = visibility * .96; ctx.strokeStyle = '#fff5cf'; ctx.lineWidth = Math.max(mobileSize(1.1), effect.width * .36); ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke();
+        ctx.globalAlpha = visibility * .72 * pulse; ctx.strokeStyle = '#fffbe9'; ctx.lineWidth = Math.max(mobileSize(.7), effect.width * .12);
+        ctx.setLineDash([mobileSize(3), mobileSize(12)]); ctx.lineDashOffset = -timestamp / 38;
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.lineTo(effect.x2, effect.y2); ctx.stroke(); ctx.setLineDash([]);
+        const sparkProgress = (timestamp / 900 + effect.phase) % 1;
+        for (const position of [sparkProgress, 1 - sparkProgress]) {
+          const sx = effect.x1 + dx * position; const sy = effect.y1 + dy * position;
+          ctx.globalAlpha = visibility * .94 * pulse; ctx.fillStyle = '#fff9df';
+          ctx.shadowColor = '#ffc34f'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
+          ctx.beginPath(); ctx.arc(sx, sy, mobileSize(1.7 + pulse * .55), 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.shadowBlur = 0; ctx.globalAlpha = visibility * .9; ctx.fillStyle = '#ffe693';
+        for (const point of [{ x: effect.x1, y: effect.y1 }, { x: effect.x2, y: effect.y2 }]) {
+          ctx.beginPath(); ctx.arc(point.x, point.y, mobileSize(1.8), 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.restore();
+      } else if (effect.type === 'eclipse-decoy-burst') {
+        const progress = 1 - alpha;
+        const radius = effect.radius * (.25 + progress * .75);
+        ctx.save(); ctx.globalAlpha = alpha * (1 - progress * .25);
+        const glow = ctx.createRadialGradient(effect.x, effect.y, 0, effect.x, effect.y, radius);
+        glow.addColorStop(0, 'rgba(244,231,255,.38)'); glow.addColorStop(.42, 'rgba(180,133,255,.2)'); glow.addColorStop(1, 'rgba(180,133,255,0)');
+        ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#e6d4ff'; ctx.lineWidth = mobileSize(4 * alpha + 1); ctx.shadowColor = '#b58aff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = mobileSize(1.5); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .82, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'nova') {
         ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - mobileSize(40)), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = mobileSize(8); ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'dino-roar') {
         const progress = 1 - alpha;
@@ -2093,9 +3131,44 @@
         ctx.globalAlpha = flash; ctx.fillStyle = core; ctx.beginPath(); ctx.arc(0, 0, size * .34, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       } else if (effect.type === 'blade') {
-        ctx.save(); ctx.globalAlpha = Math.min(1, alpha * 1.8); ctx.lineCap = 'round';
-        if (effect.trail.length > 1) { ctx.beginPath(); ctx.moveTo(effect.trail[0].x, effect.trail[0].y); effect.trail.slice(1).forEach((point) => ctx.lineTo(point.x, point.y)); ctx.strokeStyle = 'rgba(255,200,110,.68)'; ctx.shadowColor = '#ffc86e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(22); ctx.lineWidth = mobileSize(8); ctx.stroke(); ctx.strokeStyle = 'rgba(255,248,220,.84)'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(7); ctx.lineWidth = mobileSize(2); ctx.stroke(); }
-        ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.strokeStyle = '#fff'; ctx.shadowColor = '#ffc86e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.lineWidth = mobileSize(8); ctx.beginPath(); ctx.moveTo(-mobileSize(34), 0); ctx.quadraticCurveTo(0, -mobileSize(12), mobileSize(34), 0); ctx.stroke(); ctx.strokeStyle = '#fff1b4'; ctx.lineWidth = mobileSize(3); ctx.beginPath(); ctx.moveTo(-mobileSize(29), 0); ctx.quadraticCurveTo(0, -mobileSize(9), mobileSize(29), 0); ctx.stroke(); ctx.restore();
+        const slashPulse = .84 + Math.sin(timestamp / 72 + effect.angle) * .16;
+        const slashAlpha = Math.min(1, alpha * 1.8);
+        ctx.save(); ctx.globalAlpha = slashAlpha; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        if (effect.trail.length > 1) {
+          const drawBladeTrail = () => {
+            ctx.beginPath(); ctx.moveTo(effect.trail[0].x, effect.trail[0].y);
+            effect.trail.slice(1).forEach((point) => ctx.lineTo(point.x, point.y));
+          };
+          ctx.globalAlpha = slashAlpha * .28 * slashPulse; ctx.strokeStyle = '#ff8a21';
+          ctx.shadowColor = '#ffae38'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
+          ctx.lineWidth = mobileSize(5.5); drawBladeTrail(); ctx.stroke();
+          ctx.globalAlpha = slashAlpha * .86 * slashPulse; ctx.strokeStyle = '#ffc86e';
+          ctx.shadowColor = '#ffd36b'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
+          ctx.lineWidth = mobileSize(2.5); drawBladeTrail(); ctx.stroke();
+          ctx.globalAlpha = slashAlpha * .96; ctx.strokeStyle = '#fff5d3'; ctx.shadowBlur = 0;
+          ctx.lineWidth = mobileSize(1); drawBladeTrail(); ctx.stroke();
+          ctx.globalAlpha = slashAlpha * .72 * slashPulse; ctx.strokeStyle = '#fffbe9';
+          ctx.setLineDash([mobileSize(3), mobileSize(11)]); ctx.lineDashOffset = -timestamp / 35;
+          ctx.lineWidth = mobileSize(.8); drawBladeTrail(); ctx.stroke(); ctx.setLineDash([]);
+          const sparkIndex = Math.floor(timestamp / 42) % effect.trail.length;
+          const spark = effect.trail[sparkIndex];
+          ctx.globalAlpha = slashAlpha * .92; ctx.fillStyle = '#fff9df'; ctx.shadowColor = '#ffc34f';
+          ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
+          ctx.beginPath(); ctx.arc(spark.x, spark.y, mobileSize(2), 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle);
+        ctx.globalAlpha = slashAlpha * .34 * slashPulse; ctx.strokeStyle = '#ff8a21'; ctx.shadowColor = '#ffae38';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(22); ctx.lineWidth = mobileSize(13);
+        ctx.beginPath(); ctx.moveTo(-mobileSize(34), mobileSize(5)); ctx.quadraticCurveTo(0, -mobileSize(15), mobileSize(36), 0); ctx.stroke();
+        ctx.globalAlpha = slashAlpha * .96 * slashPulse; ctx.strokeStyle = '#ffc86e'; ctx.shadowColor = '#ffd36b';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14); ctx.lineWidth = mobileSize(6);
+        ctx.beginPath(); ctx.moveTo(-mobileSize(32), mobileSize(4)); ctx.quadraticCurveTo(0, -mobileSize(13), mobileSize(36), 0); ctx.stroke();
+        ctx.globalAlpha = slashAlpha; ctx.strokeStyle = '#fff7dd'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(2);
+        ctx.beginPath(); ctx.moveTo(-mobileSize(30), mobileSize(3)); ctx.quadraticCurveTo(0, -mobileSize(10), mobileSize(34), 0); ctx.stroke();
+        ctx.globalAlpha = slashAlpha * .86; ctx.fillStyle = '#fff9df'; ctx.shadowColor = '#ffc34f';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+        ctx.beginPath(); ctx.arc(mobileSize(30), 0, mobileSize(2.6 + slashPulse), 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
       } else if (effect.type === 'singularity-shot' || effect.type === 'blackhole') {
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(timestamp / 260);
         const radius = mobileSize(effect.type === 'blackhole' ? 22 + Math.sin(timestamp / 95) * 3 : 13);
@@ -2126,6 +3199,33 @@
         ctx.save(); ctx.globalAlpha = .08 * alpha; ctx.fillStyle = '#c897ff'; ctx.fillRect(0, 0, state.width, state.height); ctx.restore();
       }
     }
+    const perimeter = state.redshiftPerimeter;
+    if (perimeter && currentSkin().id === 'redshift') {
+      const vertices = redshiftPerimeterVertices(perimeter);
+      const fade = clamp(perimeter.life / .55, 0, 1);
+      const pulse = .72 + Math.sin(timestamp / 115) * .12;
+      ctx.save();
+      ctx.globalAlpha = fade * .055;
+      ctx.fillStyle = '#d83a2e';
+      ctx.beginPath(); vertices.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y)); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = fade * pulse; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.shadowColor = '#d83a2e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(16);
+      ctx.strokeStyle = '#631d26'; ctx.lineWidth = mobileSize(8);
+      ctx.beginPath(); vertices.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y)); ctx.closePath(); ctx.stroke();
+      ctx.strokeStyle = '#d83a2e'; ctx.lineWidth = mobileSize(4.2);
+      ctx.beginPath(); vertices.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y)); ctx.closePath(); ctx.stroke();
+      ctx.shadowBlur = 0; ctx.globalAlpha = fade * (.58 + Math.sin(timestamp / 90) * .12);
+      ctx.strokeStyle = '#ffd06a'; ctx.lineWidth = mobileSize(1.35); ctx.setLineDash([mobileSize(10), mobileSize(9)]); ctx.lineDashOffset = -timestamp * .045;
+      ctx.beginPath(); vertices.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y)); ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
+      vertices.forEach((point) => {
+        const anchorPulse = 1 + Math.sin(timestamp / 95 + point.x * .01) * .12;
+        ctx.globalAlpha = fade * .42; ctx.fillStyle = '#ffd06a'; ctx.beginPath(); ctx.arc(point.x, point.y, mobileSize(11 * anchorPulse), 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = fade; ctx.fillStyle = '#d83a2e'; ctx.strokeStyle = '#ffd06a'; ctx.lineWidth = mobileSize(2.2);
+        ctx.beginPath(); ctx.arc(point.x, point.y, mobileSize(6.5 * anchorPulse), 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#fff1c6'; ctx.beginPath(); ctx.arc(point.x, point.y, mobileSize(2), 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.restore();
+    }
     const decoy = state.eclipseDecoy;
     if (decoy && currentSkin().id === 'eclipse') {
       const fade = clamp(decoy.life / .45, 0, 1);
@@ -2139,8 +3239,40 @@
       ctx.restore();
       drawShip(decoy.x, decoy.y, state.player.radius, currentSkin(), decoy.angle, .42 * fade);
     }
+    const chronosEchoActive = currentSkin().id === 'chronos' && state.chronosEcho?.life > 0;
+    if (!eclipseActive && chronosEchoActive && (state.invulnerable <= 0 || Math.floor(timestamp / 90) % 2 === 0)) {
+      const trailOffset = mobileSize(5 + Math.sin(timestamp / 75) * 2.5);
+      drawShip(state.player.x - Math.cos(state.player.angle) * trailOffset, state.player.y - Math.sin(state.player.angle) * trailOffset, state.player.radius * .9, currentSkin(), state.player.angle, .28);
+      if (state.performanceMode !== 'light') drawShip(state.player.x - Math.cos(state.player.angle) * trailOffset * 2, state.player.y - Math.sin(state.player.angle) * trailOffset * 2, state.player.radius * .82, currentSkin(), state.player.angle, .13);
+    }
     if (!eclipseActive && (state.invulnerable <= 0 || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, currentSkin(), state.player.angle);
     if (!eclipseActive && (state.shields || state.tempShields)) { ctx.strokeStyle = `rgba(110,190,255,${.3 + Math.sin(timestamp / 150) * .12})`; ctx.lineWidth = mobileSize(2 + Math.min(3, state.tempShields)); ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + mobileSize(9 + state.tempShields * 2), 0, Math.PI * 2); ctx.stroke(); }
+    const aegisOrbit = currentSkin().id === 'aegis' && state.aegisOrbit?.life > 0 ? state.aegisOrbit : null;
+    if (!eclipseActive && aegisOrbit) {
+      const points = aegisOrbitPoints(aegisOrbit);
+      const fade = clamp(aegisOrbit.life / .5, 0, 1);
+      const orbitRadius = state.player.radius + mobileSize(22);
+      const corePulse = .76 + Math.sin(timestamp / 82) * .12;
+      ctx.save(); ctx.globalAlpha = .11 * corePulse; ctx.fillStyle = '#72bdff';
+      ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + mobileSize(8), 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = .62 * corePulse; ctx.strokeStyle = '#d8f6ff'; ctx.lineWidth = mobileSize(1.6);
+      ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + mobileSize(8), 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+      ctx.save(); ctx.globalAlpha = .2 * fade; ctx.strokeStyle = '#b9e9ff'; ctx.lineWidth = mobileSize(1.2);
+      ctx.setLineDash([mobileSize(3), mobileSize(7)]); ctx.lineDashOffset = -timestamp * .025;
+      ctx.beginPath(); ctx.arc(state.player.x, state.player.y, orbitRadius, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+      for (const point of points) {
+        if (!point.active) continue;
+        const pulse = .9 + Math.sin(timestamp / 105 + point.index) * .1;
+        ctx.globalAlpha = fade * .32; ctx.fillStyle = '#72bdff';
+        ctx.beginPath(); ctx.arc(point.x, point.y, mobileSize(13 * pulse), 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = fade; ctx.shadowColor = '#72bdff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+        ctx.fillStyle = '#d8f6ff'; ctx.strokeStyle = '#72bdff'; ctx.lineWidth = mobileSize(2);
+        ctx.beginPath(); ctx.moveTo(point.x, point.y - mobileSize(8 * pulse)); ctx.lineTo(point.x + mobileSize(6 * pulse), point.y); ctx.lineTo(point.x, point.y + mobileSize(8 * pulse)); ctx.lineTo(point.x - mobileSize(6 * pulse), point.y); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = fade * .9; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(point.x, point.y, mobileSize(1.7), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
     if (!eclipseActive) for (let i = 0; i < state.drones; i++) { const a = timestamp / 800 + i * Math.PI * 2 / state.drones; ctx.fillStyle = '#eafaff'; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12); ctx.beginPath(); ctx.arc(state.player.x + Math.cos(a) * mobileSize(39), state.player.y + Math.sin(a) * mobileSize(39), mobileSize(5), 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; }
   }
   function frame(timestamp) {
@@ -2342,7 +3474,7 @@
     const upgradeCategories = [
       { title:'Canhões e ataque', icon:'✹', ids:['damage','rapid','spread','pierce','critical','volley','bossDamage','blast'] },
       { title:'Defesa da nave', icon:'🛡️', ids:['repair','shield','armor','regen','drone','lifeSupport','salvageHeal'] },
-      { title:'Habilidades especiais', icon:'✦', ids:['cooldown','power','gravityWell','returnCore','eclipseVeil','eclipseCooldown','eclipseDamage','dinoFangs','dinoStampede','dinoResonance'] },
+      { title:'Habilidades especiais', icon:'✦', ids:['cooldown','power','gravityWell','auroraLinkDuration','auroraLinkTargets','auroraLinkDamage','auroraLinkCooldown','aegisOrbitDuration','aegisOrbitCount','aegisOrbitDamage','aegisOrbitCooldown','chronosEchoDuration','chronosEchoDamage','chronosEchoCooldown','tempestTideRadius','tempestTideForce','tempestTideCapacity','tempestTideDamage','tempestTideSweep','tempestTideCooldown','returnCore','redshiftPerimeterDuration','redshiftPerimeterDamage','redshiftPerimeterRange','redshiftPerimeterCooldown','flashTrailDuration','flashTrailDamage','flashTrailDensity','flashTrailCooldown','eclipseVeil','eclipseCooldown','eclipseDamage','eclipseDecoyAI','eclipseDecoyDuration','eclipseDecoyChaos','dinoFangs','dinoStampede','dinoResonance'] },
       { title:'Mobilidade e recursos', icon:'➤', ids:['speed','lowHull','magnet','bounty','endlessDamage','endlessSpeed'] }
     ];
     const detailedUpgrades = Array.isArray(buff.melhorias_detalhadas) ? buff.melhorias_detalhadas : [];
@@ -2437,13 +3569,19 @@
     document.querySelectorAll('[data-control-mode]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.controlMode === state.controlMode)));
     if (ui.joystick && !state.analog.active) ui.joystick.hidden = true;
     const hardwareInputDetected = document.documentElement.classList.contains('cv-hardware-input-detected');
+    const isAurora = currentSkin().id === 'aurora';
+    const isAegis = currentSkin().id === 'aegis';
     const isEclipse = currentSkin().id === 'eclipse';
+    const isChronos = currentSkin().id === 'chronos';
     const isSaurion = currentSkin().id === 'saurion';
-    const abilityInstruction = isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : 'ativa a habilidade';
+    const isRedshift = currentSkin().id === 'redshift';
+    const isFlashblade = currentSkin().id === 'flashblade';
+    const isTempest = currentSkin().id === 'tempest';
+    const abilityInstruction = isAurora ? 'E cria a Explosão Nova · Q encadeia feixes entre inimigos' : isAegis ? 'E absorve impactos · Q converte tiros interceptados em projéteis teleguiados' : isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral móvel' : isChronos ? 'E desacelera o tempo · Q repete os disparos com ecos temporais' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : isRedshift ? 'E reflete projéteis · Q ativa o Perímetro de Cerco' : isFlashblade ? 'E lança o Corte Flash · Q deixa rastros cortantes no trajeto' : isTempest ? 'E guia o Poço Negro suavemente pelo movimento · Q afasta inimigos próximos' : 'ativa a habilidade';
     if (ui.controlHint) ui.controlHint.textContent = state.controlMode === 'keys'
       ? hardwareInputDetected ? 'WASD ou setas movem · ' + abilityInstruction + ' · disparo automático.' : 'Disparo automático · controles configuráveis.'
-      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (isEclipse || isSaurion ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
-        : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.' + (isEclipse || isSaurion ? ' Botões E e Q ativam as habilidades.' : '');
+      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
+        : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.' + (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest ? ' Botões E e Q ativam as habilidades.' : '');
   }
   function createDeviceIndicators() {
     [ui.missionSetupModal, ui.settingsModal].forEach((modal) => {
@@ -2803,6 +3941,8 @@
   $('[data-confirm-exit]')?.addEventListener('click', returnToMenu);
   document.querySelectorAll('[data-close-settings]').forEach((button) => button.addEventListener('click', closeSettings));
   document.querySelectorAll('[data-close-ships]').forEach((button) => button.addEventListener('click', closeShips));
+  $('[data-close-ship-details]')?.addEventListener('click', () => ui.shipDetailsDialog?.close());
+  ui.shipDetailsDialog?.addEventListener('click', (event) => { if (event.target === ui.shipDetailsDialog) ui.shipDetailsDialog.close(); });
   document.querySelectorAll('[data-secret-unlock-close]').forEach((button) => button.addEventListener('click', closeSecretShipUnlock));
   ui.secretUnlockForm?.addEventListener('submit', submitSecretShipUnlock);
   ui.secretUnlockDialog?.addEventListener('click', (event) => { if (event.target === ui.secretUnlockDialog) closeSecretShipUnlock(); });
@@ -2827,6 +3967,7 @@
     if (event.code === 'Escape' && ui.missionSetupModal && !ui.missionSetupModal.hidden) { closeMissionSetup(); return; }
     if (event.code === 'Escape' && ui.exitModal && !ui.exitModal.hidden) { closeExitConfirmation(); return; }
     if (event.code === 'Escape' && ui.settingsModal && !ui.settingsModal.hidden) { closeSettings(); return; }
+    if (event.code === 'Escape' && ui.shipDetailsDialog?.open) { ui.shipDetailsDialog.close(); return; }
     if (event.code === 'Escape' && ui.shipModal && !ui.shipModal.hidden) { closeShips(); return; }
     if (event.code === 'Escape' && ui.achievementsModal && !ui.achievementsModal.hidden) { closeAchievements(); return; }
     if (event.code === 'Escape' && ui.dailySummaryModal && !ui.dailySummaryModal.hidden) { closeDailySummary(); return; }

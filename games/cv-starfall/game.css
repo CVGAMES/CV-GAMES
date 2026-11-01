@@ -475,13 +475,30 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
 }
 
 .starfall-secondary-ability-wrap[hidden] { display:none !important; }
+.starfall-primary-ability-wrap[hidden] { display:none !important; }
 .starfall-secondary-ability { position:relative; border-color:rgba(190,151,255,.62); background:linear-gradient(145deg,rgba(79,52,131,.82),rgba(18,24,50,.95)); color:#f0e5ff; }
 .starfall-secondary-ability::after { content:"Q"; position:absolute; top:-.26rem; right:-.22rem; display:grid; width:1rem; height:1rem; place-items:center; border:1px solid rgba(215,195,255,.65); border-radius:50%; background:#211736; color:#eadcff; font-size:.58rem; font-weight:900; }
 .starfall-secondary-ability[aria-pressed="true"] { border-color:#e4d2ff; background:linear-gradient(145deg,rgba(130,91,194,.95),rgba(37,25,70,.98)); box-shadow:0 0 20px rgba(177,136,255,.42); }
 .starfall-secondary-ability.is-saurion { border-color:rgba(121,255,146,.72); background:linear-gradient(145deg,rgba(35,111,69,.88),rgba(13,39,38,.96)); color:#e2ffd2; }
 .starfall-secondary-ability.is-saurion::after { border-color:rgba(179,255,122,.8); background:#123a2b; color:#eaffb8; }
 .starfall-secondary-ability.is-saurion[aria-pressed="true"] { border-color:#d4ff72; background:linear-gradient(145deg,rgba(66,173,81,.95),rgba(19,77,53,.98)); box-shadow:0 0 20px rgba(86,237,115,.42); }
+.starfall-secondary-ability.is-redshift { border-color:rgba(255,91,70,.78); background:linear-gradient(145deg,rgba(143,36,37,.92),rgba(47,19,27,.98)); color:#ffe3a3; box-shadow:0 0 18px rgba(216,58,46,.28),inset 0 0 12px rgba(255,208,106,.12); }
+.starfall-secondary-ability.is-redshift::after { border-color:rgba(255,208,106,.85); background:#541d24; color:#ffe3a3; }
+.starfall-secondary-ability.is-redshift[aria-pressed="true"] { border-color:#ffd06a; background:linear-gradient(145deg,rgba(194,59,44,.98),rgba(89,27,37,.98)); box-shadow:0 0 22px rgba(216,58,46,.48),inset 0 0 12px rgba(255,208,106,.2); }
+.starfall-secondary-ability.is-flashblade { border-color:rgba(255,200,110,.82); background:linear-gradient(145deg,rgba(150,91,34,.94),rgba(49,34,24,.98)); color:#fff0b4; box-shadow:0 0 18px rgba(255,183,75,.26),inset 0 0 12px rgba(255,239,180,.12); }
+.starfall-secondary-ability.is-flashblade::after { border-color:rgba(255,240,180,.88); background:#63431f; color:#fff0b4; }
+.starfall-secondary-ability.is-flashblade[aria-pressed="true"] { border-color:#fff0b4; background:linear-gradient(145deg,rgba(204,132,45,.98),rgba(105,61,26,.98)); box-shadow:0 0 22px rgba(255,200,110,.46),inset 0 0 12px rgba(255,240,180,.22); }
+.starfall-secondary-ability.is-tempest { border-color:rgba(135,170,255,.82); background:linear-gradient(145deg,rgba(51,82,160,.94),rgba(18,29,64,.98)); color:#d5dcff; box-shadow:0 0 18px rgba(111,151,255,.28),inset 0 0 12px rgba(213,220,255,.12); }
+.starfall-secondary-ability.is-tempest::after { border-color:rgba(213,220,255,.88); background:#283b75; color:#e6edff; }
+.starfall-secondary-ability.is-tempest[aria-pressed="true"] { border-color:#e7edff; background:linear-gradient(145deg,rgba(96,135,224,.98),rgba(35,55,118,.98)); box-shadow:0 0 22px rgba(111,151,255,.5),inset 0 0 12px rgba(228,236,255,.2); }
 .starfall-dino-icon { background:radial-gradient(circle at 35% 30%,#b8ff86,transparent 62%),linear-gradient(145deg,#14663c,#0c302d); color:#d7ff8a; text-shadow:0 0 15px rgba(157,255,115,.7); }
+.starfall-primary-ability,
+body[data-cv-starfall-state="playing"] .starfall-primary-ability { position:relative; border-color:color-mix(in srgb,var(--ship-accent,#9fe9db) 78%,transparent); background:linear-gradient(145deg,color-mix(in srgb,var(--ship-color,#62d7c4) 48%,#12243a),color-mix(in srgb,var(--ship-color,#62d7c4) 32%,#07121e)); color:var(--ship-accent,#d9fff5); box-shadow:0 0 18px color-mix(in srgb,var(--ship-color,#62d7c4) 28%,transparent),inset 0 0 12px color-mix(in srgb,var(--ship-accent,#9fe9db) 13%,transparent); }
+.starfall-primary-ability::after { content:"E"; position:absolute; top:-.26rem; right:-.22rem; display:grid; width:1rem; height:1rem; place-items:center; border:1px solid color-mix(in srgb,var(--ship-accent,#9fe9db) 82%,transparent); border-radius:50%; background:color-mix(in srgb,var(--ship-color,#62d7c4) 34%,#0b1826); color:var(--ship-accent,#d9fff5); font-size:.58rem; font-weight:950; box-shadow:0 0 10px color-mix(in srgb,var(--ship-color,#62d7c4) 38%,transparent); }
+.starfall-primary-ability[aria-pressed="true"],
+body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="true"] { border-color:color-mix(in srgb,var(--ship-accent,#9fe9db) 92%,white); background:linear-gradient(145deg,color-mix(in srgb,var(--ship-color,#62d7c4) 74%,#12243a),color-mix(in srgb,var(--ship-color,#62d7c4) 52%,#07121e)); color:#fff; box-shadow:0 0 22px color-mix(in srgb,var(--ship-color,#62d7c4) 52%,transparent),inset 0 0 12px color-mix(in srgb,var(--ship-accent,#9fe9db) 24%,transparent); }
+.starfall-primary-ability-wrap .starfall-ability-cooldown { color:var(--ship-accent,#b8e9dc); }
+.starfall-ability-cooldown { text-transform:uppercase; }
 
 @media(max-width:700px) {
   .starfall-game-panel:fullscreen .starfall-hud,
@@ -530,3 +547,43 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
 .starfall-skin-card.is-secret:not(:disabled) { cursor:pointer; }
 .starfall-skin-card.is-secret:not(:disabled):hover,.starfall-skin-card.is-secret:not(:disabled):focus-visible { border-color:rgba(201,158,255,.68); color:#c9bbdc; box-shadow:0 0 16px rgba(160,120,225,.2); }
 @media(max-width:560px) { .starfall-authorized-pilots ul { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.starfall-secondary-ability.is-chronos { border-color:rgba(200,151,255,.82); background:linear-gradient(145deg,rgba(95,62,146,.55),rgba(25,20,63,.95)); color:#f5eaff; }
+.starfall-secondary-ability.is-chronos::after { border-color:rgba(239,213,255,.88); background:#3e2c72; color:#efd5ff; }
+.starfall-secondary-ability.is-chronos[aria-pressed="true"] { border-color:#efd5ff; background:linear-gradient(145deg,rgba(143,100,209,.72),rgba(41,31,92,.98)); box-shadow:0 0 22px rgba(200,151,255,.3); }
+.starfall-secondary-ability.is-aegis { border-color:rgba(114,189,255,.86); background:linear-gradient(145deg,rgba(42,113,171,.78),rgba(12,31,62,.97)); color:#e4f8ff; box-shadow:0 0 16px rgba(80,174,255,.2),inset 0 0 12px rgba(201,234,255,.1); }
+.starfall-secondary-ability.is-aegis::after { border-color:rgba(201,234,255,.9); background:#163b64; color:#d8f6ff; }
+.starfall-secondary-ability.is-aegis[aria-pressed="true"] { border-color:#e6fbff; background:linear-gradient(145deg,rgba(89,174,235,.96),rgba(28,74,132,.98)); box-shadow:0 0 22px rgba(114,189,255,.48),inset 0 0 12px rgba(235,250,255,.22); }
+.starfall-secondary-ability.is-aurora { border-color:rgba(125,247,232,.88); background:linear-gradient(145deg,rgba(35,133,132,.78),rgba(12,43,56,.97)); color:#eafffb; box-shadow:0 0 16px rgba(85,220,204,.2),inset 0 0 12px rgba(191,255,245,.1); }
+.starfall-secondary-ability.is-aurora::after { border-color:rgba(191,255,245,.92); background:#164b51; color:#d8fff7; }
+.starfall-secondary-ability.is-aurora[aria-pressed="true"] { border-color:#effffb; background:linear-gradient(145deg,rgba(67,190,176,.96),rgba(21,93,98,.98)); box-shadow:0 0 22px rgba(85,220,204,.48),inset 0 0 12px rgba(235,255,251,.22); }
+
+/* Resumo do hangar com detalhes expansíveis para cada nave. */
+.starfall-skin-picker { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; }
+.starfall-skin-card { display:grid; min-height:0; align-content:start; gap:.42rem; padding:.55rem; border:1px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 32%,rgba(137,182,255,.22)); border-radius:.82rem; background:linear-gradient(145deg,rgba(20,37,63,.94),rgba(8,17,33,.98)); color:#eef5ff; }
+.starfall-skin-card.is-selected { border-color:var(--skin-color,#9fd8ff); box-shadow:0 0 16px color-mix(in srgb,var(--skin-color,#9fd8ff) 22%,transparent); }
+.starfall-skin-card.is-secret { border-color:rgba(190,151,255,.3); background:linear-gradient(145deg,rgba(31,25,49,.94),rgba(9,13,25,.98)); color:#eef5ff; opacity:1; filter:none; }
+.starfall-skin-card.is-locked { opacity:1; cursor:default; filter:none; }
+.starfall-skin-select { display:grid; width:100%; min-width:0; grid-template-columns:2.55rem minmax(0,1fr); align-items:center; gap:.18rem .55rem; padding:.3rem; border:0; border-radius:.55rem; background:transparent; color:inherit; text-align:left; cursor:pointer; }
+.starfall-skin-select:hover:not(:disabled),.starfall-skin-select:focus-visible { background:rgba(255,255,255,.045); outline:2px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 65%,transparent); outline-offset:1px; }
+.starfall-skin-select:disabled { opacity:.66; cursor:not-allowed; }
+.starfall-skin-select .starfall-skin-icon { display:grid; width:2.45rem; height:2.45rem; grid-row:1 / span 4; place-items:center; color:var(--skin-color,#9fd8ff); font-size:1.5rem; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--skin-color,#9fd8ff) 40%,transparent)); }
+.starfall-skin-select .starfall-eclipse-sprite { display:block; background-size:contain; }
+.starfall-skin-select .starfall-dino-icon { font-size:1.7rem; }
+.starfall-skin-card.is-secret .starfall-skin-select .starfall-skin-icon { color:var(--skin-color,#c49aff); font-size:1.5rem; }
+.starfall-skin-card.is-secret .starfall-skin-select .starfall-dino-icon { font-size:1.7rem; }
+.starfall-skin-select strong { overflow:hidden; color:#f3f8ff; font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+.starfall-skin-skill { display:flex; min-width:0; align-items:center; gap:.35rem; color:#bfd1e8; font-size:.65rem; line-height:1.25; }
+.starfall-skin-skill kbd { flex:none; min-width:1.1rem; padding:.08rem .2rem; border:1px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 45%,transparent); border-radius:.3rem; background:color-mix(in srgb,var(--skin-color,#9fd8ff) 12%,#101b2c); color:var(--skin-color,#9fd8ff); font:900 .58rem system-ui; text-align:center; }
+.starfall-skin-skill span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.starfall-skin-status { grid-column:2; color:var(--skin-color,#9fd8ff); font-size:.55rem; font-weight:950; letter-spacing:.08em; }
+.starfall-skin-card.is-locked .starfall-skin-status { color:#e8c985; }
+.starfall-skin-details-trigger { min-height:2rem; width:100%; padding:.3rem .45rem; border:1px solid rgba(114,202,255,.3); border-radius:999px; background:rgba(45,132,187,.12); color:#aee3ff; font:inherit; font-size:.64rem; font-weight:900; cursor:pointer; }
+.starfall-skin-details-trigger:hover,.starfall-skin-details-trigger:focus-visible { border-color:#78d6ff; background:rgba(49,164,220,.24); outline:2px solid rgba(141,220,255,.55); outline-offset:1px; }
+.starfall-ship-details-dialog { width:min(46rem,calc(100% - 1.25rem)); max-height:min(88dvh,48rem); }
+.starfall-ship-details-card { max-height:min(88dvh,48rem); }
+.starfall-ship-detail-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; }
+.starfall-ship-detail-key { color:#8bdfff; font-size:.58rem; font-weight:950; letter-spacing:.12em; }
+.starfall-ship-detail-card h3 { margin:.28rem 0 .45rem; padding-right:2rem; font-size:.92rem; }
+.starfall-ship-detail-card p { margin:0; color:#b8cbe2; font-size:.76rem; line-height:1.58; text-align:left; }
+.starfall-ship-details-cooldowns { margin:0; padding:.65rem .75rem; border:1px solid rgba(139,194,239,.16); border-radius:.7rem; background:rgba(96,160,209,.08); color:#a9c5df; font-size:.68rem; line-height:1.5; }
+@media(max-width:560px) { .starfall-skin-picker { grid-template-columns:1fr; } .starfall-ship-detail-list { grid-template-columns:1fr; } .starfall-ship-details-dialog { max-height:calc(100dvh - 1rem); } .starfall-ship-details-card { max-height:calc(100dvh - 1rem); padding:2.6rem .8rem .85rem; } }
