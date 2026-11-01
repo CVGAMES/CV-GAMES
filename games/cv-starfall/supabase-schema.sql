@@ -6,7 +6,8 @@
 create table if not exists public.starfall_scores (
   nickname text primary key check (nickname = lower(btrim(nickname)) and nickname in (
     'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
-    'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v'
+    'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
+    'geovanagamer099'
   )),
   wave integer not null check (wave > 0),
   score integer not null check (score >= 0),
@@ -22,7 +23,8 @@ alter table public.starfall_scores drop constraint if exists starfall_scores_nic
 alter table public.starfall_scores add constraint starfall_scores_nickname_check
   check (nickname = lower(btrim(nickname)) and nickname in (
     'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
-    'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v'
+    'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
+    'geovanagamer099'
   ));
 
 drop policy if exists "Anyone can read Starfall top scores" on public.starfall_scores;
@@ -36,7 +38,7 @@ create policy "Approved test pilots can add Starfall scores"
   on public.starfall_scores for insert to anon
   with check (nickname in (
     'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v'
+    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099'
   ));
 create policy "Owner account can add Starfall score"
   on public.starfall_scores for insert to authenticated
@@ -49,11 +51,11 @@ create policy "Approved test pilots can improve Starfall scores"
   on public.starfall_scores for update to anon
   using (nickname in (
     'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v'
+    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099'
   ))
   with check (nickname in (
     'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v'
+    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099'
   ));
 create policy "Owner account can improve Starfall score"
   on public.starfall_scores for update to authenticated

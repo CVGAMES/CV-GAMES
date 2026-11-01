@@ -88,7 +88,7 @@
     return Boolean(coarsePointer && !finePointer && hasTouch && (handheldAgent || touchOnly));
   }
   const detectedMobileDevice = detectMobileDevice();
-  const mobileEntityScale = .82;
+  const mobileEntityScale = .72;
   const particleLimit = () => state.performanceMode === 'light' ? 110 : state.mobileSizing ? 240 : Infinity;
   const state = {
     auroraLink: null, auroraLinkCooldown: 0, auroraLinkDurationBonus: 0, auroraLinkTargetBonus: 0, auroraLinkDamageBonus: 0,
@@ -541,6 +541,11 @@
     return String(Math.floor(value / 60)).padStart(2, '0') + ':' + String(value % 60).padStart(2, '0');
   }
   function currentZone() { return zones[Math.floor((state.wave - 1) / 15) % zones.length]; }
+  function colorRgbTriplet(color) {
+    const hex = String(color || '').replace('#', '');
+    if (!/^[\da-f]{6}$/i.test(hex)) return '98,215,196';
+    return [0, 2, 4].map((index) => parseInt(hex.slice(index, index + 2), 16)).join(',');
+  }
   function updateHud() {
     ui.wave.textContent = String(state.wave);
     if (ui.zone) ui.zone.textContent = currentZone().name;
@@ -571,11 +576,20 @@
     if (ui.ability) {
       ui.ability.style.setProperty('--ship-color', skin.color);
       ui.ability.style.setProperty('--ship-accent', skin.accent);
+      ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
+      ui.ability.style.setProperty('--ship-accent-rgb', colorRgbTriplet(skin.accent));
       ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || (!ready && !active);
       ui.ability.setAttribute('aria-pressed', String(active));
       ui.ability.textContent = '✦';
       ui.ability.setAttribute('aria-label', eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
-      if (ui.abilityCooldown) ui.abilityCooldown.textContent = eclipseIntro ? 'ABERTURA' : eclipseActive ? 'DOMÍNIO ' + Math.ceil(state.eclipseTime) + 's' : hasDeveloperPerks() ? 'Livre' : ready ? 'Pronta' : Math.ceil(state.abilityCooldown) + 's';
+      const eCountdown = !hasDeveloperPerks() && state.abilityCooldown > 0
+        ? String(Math.ceil(state.abilityCooldown))
+        : eclipseActive ? String(Math.ceil(state.eclipseTime)) : '';
+      if (ui.abilityCooldown) {
+        ui.abilityCooldown.textContent = eCountdown;
+        ui.abilityCooldown.hidden = !eCountdown;
+      }
+      ui.ability.classList.toggle('is-counting', Boolean(eCountdown));
       ui.ability.title = skin.ability + ' · tecla E · ' + (hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
@@ -587,6 +601,7 @@
       const isRedshift = skin.id === 'redshift';
       const isFlashblade = skin.id === 'flashblade';
       const isTempest = skin.id === 'tempest';
+      ui.eclipseQWrap.style.setProperty('--ship-accent', skin.accent);
       const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest) && ['playing', 'paused'].includes(state.mode);
       const auroraLinkTime = auroraLinkDuration();
       const auroraLinkCooldown = auroraLinkCooldownDuration();
@@ -641,15 +656,22 @@
           : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,2× · barreiras duram 7s · dano ' + (2 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
             : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(245 + state.tempestTideRadiusBonus)) + ' · dano leve, empurra, desvia tiros comuns e redireciona alguns contra inimigos · recupera 1 carga a cada ' + tempestTideCooldown + 's'
               : 'Estouro da Manada · 3 cargas · Q · recarga de ' + Math.max(24, skin.cooldownQ - upgradeLevel('dinoResonance') * 2) + 's por carga';
-      if (ui.eclipseQCooldown) ui.eclipseQCooldown.textContent = isAurora ? qActive ? 'ELO ' + Math.ceil(state.auroraLink.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
-        : isAegis ? qActive ? 'ÓRBITA ' + Math.ceil(state.aegisOrbit.life) + 's · ' + aegisOrbitRemaining : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
-        : isEclipse
-        ? qActive ? 'ISCA ' + Math.ceil(state.eclipseDecoy.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
-        : isChronos ? qActive ? 'ECO ' + Math.ceil(state.chronosEcho.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
-        : isRedshift ? qActive ? 'CERCO ' + Math.ceil(state.redshiftPerimeter.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
-          : isFlashblade ? qActive ? 'RASTRO ' + Math.ceil(state.flashTrail.life) + 's' : hasDeveloperPerks() ? 'Livre' : qReady ? 'Pronta' : Math.ceil(qCooldown) + 's'
-            : isTempest ? qActive ? 'MARÉ' : hasDeveloperPerks() ? '∞ CARGAS' : tempestTideCharges + '/' + tempestTideMax + (tempestTideCharges < tempestTideMax ? ' · ' + Math.ceil(qCooldown) + 's' : ' CARGAS')
-              : hasDeveloperPerks() ? '∞ CARGAS' : dinoCharges + '/3' + (dinoCharges < 3 ? ' · ' + Math.ceil(qCooldown) + 's' : ' CARGAS');
+      const qActiveRemaining = isAurora ? state.auroraLink?.life || 0
+        : isAegis ? state.aegisOrbit?.life || 0
+          : isEclipse ? state.eclipseDecoy?.life || 0
+            : isChronos ? state.chronosEcho?.life || 0
+              : isRedshift ? state.redshiftPerimeter?.life || 0
+                : isFlashblade ? state.flashTrail?.life || 0
+                  : isTempest ? tideRemaining
+                    : isSaurion ? stampedeRemaining : 0;
+      const qCountdown = !hasDeveloperPerks() && qCooldown > 0
+        ? String(Math.ceil(qCooldown))
+        : qActive && qActiveRemaining > 0 ? String(Math.ceil(qActiveRemaining)) : '';
+      if (ui.eclipseQCooldown) {
+        ui.eclipseQCooldown.textContent = qCountdown;
+        ui.eclipseQCooldown.hidden = !qCountdown;
+      }
+      ui.eclipseQ.classList.toggle('is-counting', Boolean(qCountdown));
     }
   }
   function openSecretShipUnlock() {

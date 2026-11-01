@@ -14,6 +14,7 @@
     'ismail s':'ISMAIL S',
     'brendo t':'BRENDO T',
     'adryan v':'ADRYAN V',
+    geovanagamer099:'geovanagamer099',
     cypher:'Cypher',
     nys:'nys',
     educvv:'educvv'
