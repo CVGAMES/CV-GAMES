@@ -395,6 +395,14 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-eclipse-skip span { display:grid; gap:.15rem; }
 .starfall-eclipse-skip strong { font-size:.73rem; }
 .starfall-eclipse-skip small { color:#afc0d8; font-size:.62rem; line-height:1.35; }
+.starfall-damage-counter-option { border-color:rgba(125,247,232,.42); }
+.starfall-damage-counter-option input { accent-color:#55dccc; }
+.starfall-damage-counter-edit-open { width:min(100%,24rem); }
+.starfall-damage-counter-editor[hidden] { display:none !important; }
+.starfall-damage-counter-editor { position:absolute; z-index:9; top:.65rem; left:50%; display:grid; width:min(calc(100% - 1.3rem),30rem); justify-items:center; gap:.5rem; padding:.65rem; border:1px solid rgba(125,247,232,.42); border-radius:.85rem; background:rgba(5,14,26,.88); color:#eafaff; text-align:center; transform:translateX(-50%); pointer-events:none; }
+.starfall-damage-counter-editor p { margin:0; color:#c8d8e6; font-size:.72rem; font-weight:800; }
+.starfall-damage-counter-editor > div { display:flex; flex-wrap:wrap; justify-content:center; gap:.45rem; pointer-events:auto; }
+.starfall-damage-counter-editor button { min-height:2.3rem; padding:.4rem .75rem; font-size:.68rem; }
 
 /* Vida segmentada e leitura de escudo */
 .starfall-health-item { gap:.38rem !important; }

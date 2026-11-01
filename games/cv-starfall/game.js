@@ -8,10 +8,14 @@
   const controlModeKey = 'cv-games-cv-starfall-control';
   const performanceModeKey = 'cv-games-cv-starfall-performance';
   const eclipseSkipVideoKey = 'cv-games-cv-starfall-eclipse-skip-video';
+  const auroraDamageCounterKey = 'cv-games-cv-starfall-aurora-damage-counter';
   const secretShipUnlockKey = 'cv-games-cv-starfall-secret-ships-v1';
   const secretShipPasscode = '12345678';
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
+  const nicknameSettingsPrefix = 'cv-games-cv-starfall-settings-v1:';
+  const defaultDamageCounterPosition = Object.freeze({ x: .89, y: .53 });
+  const defaultNicknameSettings = Object.freeze({ damageCounterEnabled: true, eclipseSkipVideo: false });
   const favoritesKey = 'cv-games-favorites';
   const eclipseSprite = new Image();
   eclipseSprite.src = new URL('eclipse-ship.png', document.baseURI).href;
@@ -27,10 +31,10 @@
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'), eclipseCutscene: $('[data-eclipse-cutscene]'), eclipseVideo: $('[data-eclipse-video]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
-    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')), shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
+    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')), shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'), damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), editDamageCounter: $('[data-edit-damage-counter]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
   };
   const skins = [
-    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, cooldownQ: 28, shape: 'classic', description: 'E cria uma explosão ampla. Com Q ativo, a Nova espalha o mesmo dano para os demais inimigos ligados se atingir um deles. Q ativa o Elo Estelar: feixes de luz saltam entre inimigos e atingem o chefe repetidamente.' },
+    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, cooldownQ: 28, shape: 'classic', description: 'E cria uma explosão ampla. Com Q ativo, a Nova espalha o mesmo dano para os demais inimigos ligados se atingir um deles. Q conecta cinco alvos, ampliáveis até oito; cada vida perdida pela nave causa 2 de dano aos inimigos conectados.' },
     { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 25, cooldownQ: 30, shape: 'shield', unlockWave: 10, description: 'E cria uma barreira que absorve três impactos. Q invoca Órbitas Sentinelas: fragmentos orbitais interceptam tiros e os convertem em projéteis teleguiados; os fragmentos intactos são lançados contra inimigos ao final.' },
     { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 25, cooldownQ: 28, shape: 'ring', unlockWave: 20, description: 'E desacelera inimigos e projéteis. Q cria Ecos do Futuro: os disparos são repetidos com atraso e dano reduzido.' },
     { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 34, cooldownQ: 28, shape: 'wing', unlockWave: 30, description: 'E dispara um Poço Negro que curva suavemente na direção do movimento da nave. Q libera a Maré Reversa, que causa dano leve, empurra inimigos e desvia tiros próximos; alguns são lançados contra os inimigos. Começa com três cargas, ampliáveis até cinco.' },
@@ -41,7 +45,7 @@
   ];
   const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Isca Umbral', saurion:'Estouro da Manada' });
   const shipAbilityDetails = Object.freeze({
-    aurora: { e:'Explosão Nova atinge uma grande área ao redor da nave. Com o Elo Estelar ativo, se a explosão atingir um inimigo ligado, os demais recebem o mesmo dano.', q:'Conecta até três alvos por 5 segundos, com pulsos a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada impacto recebido devolve 50% do dano a cada alvo conectado, inclusive quando o escudo absorve o golpe. Melhorias chegam a 7s, cinco alvos e 2,4 de dano por pulso; a recarga cai de 28s para 22s.' },
+    aurora: { e:'Explosão Nova atinge uma grande área ao redor da nave. Com o Elo Estelar ativo, se a explosão atingir um inimigo ligado, os demais recebem o mesmo dano.', q:'Conecta cinco alvos por 5 segundos, com pulsos a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada vida perdida pela nave durante o Elo causa 2 de dano a cada alvo conectado. Melhorias ampliam a conexão para até oito alvos, prolongam a duração até 7s e aumentam o dano dos pulsos para 2,4; a recarga cai de 28s para 22s.' },
     aegis: { e:'A Barreira Aegis absorve três impactos e protege a nave enquanto estiver ativa.', q:'Três sentinelas orbitam por 6 segundos. Cada uma pode interceptar um tiro comum e convertê-lo em um disparo teleguiado. A nave fica protegida; fragmentos que sobrarem atacam os inimigos ao final. Melhorias chegam a 8s, cinco sentinelas e dano 5; a recarga cai de 30s para 24s.' },
     chronos: { e:'A Dobra Temporal desacelera os inimigos e seus projéteis para abrir espaço e facilitar a esquiva.', q:'Ecos repetem os disparos da nave após 0,42s. Melhorias aumentam a duração de 4s para 6s e o dano dos ecos de 40% para 70%; a recarga pode cair de 28s para 22s.' },
     tempest: { e:'O Poço Negro é disparado na direção da nave e curva suavemente conforme ela se move. A singularidade puxa inimigos próximos e causa dano repetido.', q:'A Maré Reversa afasta inimigos, causa dano leve, desvia tiros comuns e redireciona alguns contra os adversários. Também protege a nave por um instante. Começa com três cargas, pode chegar a cinco e recupera uma carga a cada 28s, ou 22s com melhorias.' },
@@ -56,6 +60,8 @@
   let accountUnlockedShipIds = new Set();
   let accountShipProgressLoaded = false;
   let accountShipWriteChain = Promise.resolve();
+  let settingsSyncChain = Promise.resolve();
+  let settingsMutationRevision = 0;
   const starfallAchievements = [
     { id: 'first-flight', icon: '🚀', title: 'Primeiro voo', description: 'Comece sua primeira missão.', metric: 'missionsStarted', target: 1, unit: 'missão' },
     { id: 'guardian-hunter', icon: '👾', title: 'Caçador de guardiões', description: 'Derrote um chefe principal.', metric: 'bossesDefeated', target: 1, unit: 'chefe' },
@@ -90,8 +96,11 @@
   const detectedMobileDevice = detectMobileDevice();
   const mobileEntityScale = .72;
   const particleLimit = () => state.performanceMode === 'light' ? 110 : state.mobileSizing ? 240 : Infinity;
+  const initialNicknameSettings = readNicknameSettings();
   const state = {
     auroraLink: null, auroraLinkCooldown: 0, auroraLinkDurationBonus: 0, auroraLinkTargetBonus: 0, auroraLinkDamageBonus: 0,
+    damageCounterEnabled: initialNicknameSettings.damageCounterEnabled, damageCounterPosition: initialNicknameSettings.damageCounterPosition, damageCounterTotal: 0, damageCounterLastHit: 0, damageCounterIdle: 0, damageCounterPopups: [], damageCounterEditing: false, damageCounterDragging: false, damageCounterEditStart: null, damageCounterEditorHadMenu: false,
+    eclipseSkipVideoEnabled: initialNicknameSettings.eclipseSkipVideo,
     shipEWasCooling: false, shipQWasCooling: false, shipQChargeCount: null,
     aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0,
     tempestTideCharges: 3, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
@@ -168,7 +177,7 @@
     ,{ id:'aegisOrbitDamage', icon:'☄', name:'Núcleo de Retorno', description:'Aumenta em 1 o dano dos projéteis convertidos, de 2 até 5.', max:3, available:()=>currentSkin().id==='aegis'&&state.aegisOrbitDamageBonus<3, apply:()=>{state.aegisOrbitDamageBonus=Math.min(3,state.aegisOrbitDamageBonus+1);} }
     ,{ id:'aegisOrbitCooldown', icon:'⟳', name:'Ciclo Guardião', description:'Reduz em 2 segundos a recarga do Q, de 30 até 24 segundos.', max:3, available:()=>currentSkin().id==='aegis'&&upgradeLevel('aegisOrbitCooldown')<3, apply:()=>{state.aegisOrbitCooldown=Math.max(0,state.aegisOrbitCooldown-2);} }
     ,{ id:'auroraLinkDuration', icon:'◷', name:'Aurora Duradoura', description:'Prolonga o Elo Estelar em 1 segundo, até 7 segundos.', max:2, available:()=>currentSkin().id==='aurora'&&state.auroraLinkDurationBonus<2, apply:()=>{state.auroraLinkDurationBonus=Math.min(2,state.auroraLinkDurationBonus+1);} }
-    ,{ id:'auroraLinkTargets', icon:'✧', name:'Constelação Ampliada', description:'Adiciona um alvo aos saltos do Elo Estelar, até cinco inimigos.', max:2, available:()=>currentSkin().id==='aurora'&&state.auroraLinkTargetBonus<2, apply:()=>{state.auroraLinkTargetBonus=Math.min(2,state.auroraLinkTargetBonus+1);} }
+    ,{ id:'auroraLinkTargets', icon:'✧', name:'Constelação Ampliada', description:'Adiciona um alvo aos saltos do Elo Estelar, até oito inimigos.', max:3, available:()=>currentSkin().id==='aurora'&&state.auroraLinkTargetBonus<3, apply:()=>{state.auroraLinkTargetBonus=Math.min(3,state.auroraLinkTargetBonus+1);} }
     ,{ id:'auroraLinkDamage', icon:'☄', name:'Fótons Intensos', description:'Aumenta em 0,4 o dano de cada pulso do Elo Estelar.', max:3, available:()=>currentSkin().id==='aurora'&&state.auroraLinkDamageBonus<1.2, apply:()=>{state.auroraLinkDamageBonus=Math.min(1.2,state.auroraLinkDamageBonus+.4);} }
     ,{ id:'auroraLinkCooldown', icon:'⟳', name:'Ressonância Boreal', description:'Reduz em 2 segundos a recarga do Q, de 28 até 22 segundos.', max:3, available:()=>currentSkin().id==='aurora'&&upgradeLevel('auroraLinkCooldown')<3, apply:()=>{state.auroraLinkCooldown=Math.max(0,state.auroraLinkCooldown-2);} }
     ,{ id:'returnCore', icon:'⟲', name:'Núcleo de contra-ataque', description:'Aumenta o dano, prolonga o escudo refletor e reduz sua recarga.', max:4, available:()=>currentSkin().id==='redshift'&&upgradeLevel('returnCore')<4, apply:()=>{state.reflectDamageBonus=Math.min(.9,state.reflectDamageBonus+.23);state.reflectDurationBonus=Math.min(2,state.reflectDurationBonus+.5);state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1.25);} }
@@ -394,7 +403,7 @@
     if (hasDeveloperPerks()) return 'sem recarga';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q 24s';
     if (skin.id === 'chronos') return 'E 25s · Q 28s→22s · ecos 40%→70% por 4→6s';
-    if (skin.id === 'aurora') return 'E 25s · Q 28s→22s · 3→5 alvos por 5→7s';
+    if (skin.id === 'aurora') return 'E 25s · Q 28s→22s · 5→8 alvos por 5→7s';
     if (skin.id === 'aegis') return 'E 25s · Q 30s→24s · 3→5 sentinelas por 6→8s';
     if (skin.id === 'redshift') return 'E 30s→25s · Q 28s→22s · duração do Q até 8s';
     if (skin.id === 'flashblade') return 'E 25s · Q 26s→22s · impulso 2,2× · barreiras 7s';
@@ -505,13 +514,117 @@
     updateEclipseSkipOption();
     updateAbilityButton();
   }
-  function readEclipseVideoSkip() {
-    try { return localStorage.getItem(eclipseSkipVideoKey) === 'true'; } catch { return false; }
+  function normalizeDamageCounterPosition(position) {
+    const rawX = Number(position?.x); const rawY = Number(position?.y);
+    return {
+      x: Math.max(.16, Math.min(.96, Number.isFinite(rawX) && rawX !== 0 ? rawX : defaultDamageCounterPosition.x)),
+      y: Math.max(.12, Math.min(.88, Number.isFinite(rawY) && rawY !== 0 ? rawY : defaultDamageCounterPosition.y))
+    };
+  }
+  function nicknameSettingsStorageKey(nickname = profileNickname()) {
+    return nicknameSettingsPrefix + encodeURIComponent(nickname || 'jogador');
+  }
+  function readNicknameSettings(nickname = profileNickname()) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(nicknameSettingsStorageKey(nickname)) || 'null');
+      if (saved && typeof saved === 'object') return {
+        damageCounterEnabled: typeof saved.damageCounterEnabled === 'boolean' ? saved.damageCounterEnabled : readLegacySetting(auroraDamageCounterKey, defaultNicknameSettings.damageCounterEnabled),
+        eclipseSkipVideo: typeof saved.eclipseSkipVideo === 'boolean' ? saved.eclipseSkipVideo : readLegacySetting(eclipseSkipVideoKey, defaultNicknameSettings.eclipseSkipVideo),
+        damageCounterPosition: normalizeDamageCounterPosition(saved.damageCounterPosition)
+      };
+    } catch { /* Recupera as preferências padrão se o armazenamento local estiver indisponível. */ }
+    const damageCounterEnabled = readLegacySetting(auroraDamageCounterKey, defaultNicknameSettings.damageCounterEnabled);
+    const eclipseSkipVideo = readLegacySetting(eclipseSkipVideoKey, defaultNicknameSettings.eclipseSkipVideo);
+    return { damageCounterEnabled, eclipseSkipVideo, damageCounterPosition: { ...defaultDamageCounterPosition } };
+  }
+  function readLegacySetting(key, fallback) {
+    try {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : value === 'true';
+    } catch { return fallback; }
+  }
+  function writeNicknameSettingsLocally(nickname = profileNickname()) {
+    try {
+      localStorage.setItem(nicknameSettingsStorageKey(nickname), JSON.stringify({
+        damageCounterEnabled: state.damageCounterEnabled,
+        eclipseSkipVideo: state.eclipseSkipVideoEnabled,
+        damageCounterPosition: normalizeDamageCounterPosition(state.damageCounterPosition)
+      }));
+    } catch { /* As escolhas continuam valendo nesta sessão. */ }
+  }
+  function settingsNicknameIsAllowed(nickname) {
+    const names = (window.CV_STARFALL_SUPABASE?.settingsNicknames || window.CV_STARFALL_SUPABASE?.allowedNicknames || []).map(normalizeRankNickname);
+    return Boolean(nickname && names.includes(normalizeRankNickname(nickname)));
+  }
+  function updateSettingsSyncStatus(message) {
+    if (ui.settingsSyncStatus) ui.settingsSyncStatus.textContent = message;
+  }
+  function saveNicknameSettings() {
+    const nickname = profileNickname();
+    const normalizedNickname = normalizeRankNickname(nickname);
+    const revision = ++settingsMutationRevision;
+    const payload = {
+      nickname: normalizedNickname,
+      damage_counter_enabled: state.damageCounterEnabled,
+      damage_counter_x: state.damageCounterPosition.x,
+      damage_counter_y: state.damageCounterPosition.y,
+      eclipse_skip_video: state.eclipseSkipVideoEnabled,
+      updated_at: new Date().toISOString()
+    };
+    writeNicknameSettingsLocally(nickname);
+    if (!settingsNicknameIsAllowed(normalizedNickname) || !window.CV_GAMES_AUTH?.client) {
+      updateSettingsSyncStatus('Preferências salvas neste aparelho.');
+      return Promise.resolve();
+    }
+    updateSettingsSyncStatus('Sincronizando preferências do perfil…');
+    settingsSyncChain = settingsSyncChain.then(async () => {
+      const auth = window.CV_GAMES_AUTH;
+      if (normalizedNickname === 'educvv' && !(await auth.getOwnerSession())?.user?.id) throw new Error('A conta educvv precisa estar conectada.');
+      const { error } = await auth.client.from('starfall_settings').upsert(payload, { onConflict:'nickname' });
+      if (error) throw error;
+      if (profileNickname() === normalizedNickname && settingsMutationRevision === revision) updateSettingsSyncStatus('Preferências sincronizadas para ' + displayRankNickname(normalizedNickname) + '.');
+    }).catch(() => {
+      if (profileNickname() === normalizedNickname && settingsMutationRevision === revision) updateSettingsSyncStatus('Preferências salvas neste aparelho; sincronização indisponível.');
+    });
+    return settingsSyncChain;
+  }
+  async function loadNicknameSettings() {
+    const nickname = profileNickname();
+    const normalizedNickname = normalizeRankNickname(nickname);
+    const revision = settingsMutationRevision;
+    const local = readNicknameSettings(nickname);
+    state.damageCounterEnabled = local.damageCounterEnabled;
+    state.eclipseSkipVideoEnabled = local.eclipseSkipVideo;
+    state.damageCounterPosition = local.damageCounterPosition;
+    updateEclipseSkipOption(); updateAbilityButton();
+    if (state.mode !== 'playing') draw(performance.now());
+    if (!settingsNicknameIsAllowed(normalizedNickname) || !window.CV_GAMES_AUTH?.client) {
+      updateSettingsSyncStatus('Preferências salvas neste aparelho.');
+      return;
+    }
+    try {
+      if (normalizedNickname === 'educvv' && !(await window.CV_GAMES_AUTH.getOwnerSession())?.user?.id) return;
+      const { data, error } = await window.CV_GAMES_AUTH.client.from('starfall_settings')
+        .select('damage_counter_enabled,damage_counter_x,damage_counter_y,eclipse_skip_video')
+        .eq('nickname', normalizedNickname).maybeSingle();
+      if (error) throw error;
+      if (profileNickname() !== normalizedNickname || settingsMutationRevision !== revision) return;
+      if (!data) { saveNicknameSettings(); return; }
+      state.damageCounterEnabled = Boolean(data.damage_counter_enabled);
+      state.eclipseSkipVideoEnabled = Boolean(data.eclipse_skip_video);
+      state.damageCounterPosition = normalizeDamageCounterPosition({ x:data.damage_counter_x, y:data.damage_counter_y });
+      writeNicknameSettingsLocally(nickname);
+      updateEclipseSkipOption(); updateAbilityButton();
+      updateSettingsSyncStatus('Preferências sincronizadas para ' + displayRankNickname(normalizedNickname) + '.');
+      if (state.mode !== 'playing') draw(performance.now());
+    } catch {
+      updateSettingsSyncStatus('Preferências salvas neste aparelho; sincronização indisponível.');
+    }
   }
   function updateEclipseSkipOption() {
     const shouldShow = currentSkin().id === 'eclipse';
     ui.eclipseSkipOptions.forEach((option) => { option.hidden = !shouldShow; });
-    ui.eclipseSkipCheckboxes.forEach((checkbox) => { checkbox.checked = readEclipseVideoSkip(); });
+    ui.eclipseSkipCheckboxes.forEach((checkbox) => { checkbox.checked = state.eclipseSkipVideoEnabled; });
   }
   function releaseAnalog() {
     state.analog.active = false; state.analog.x = 0; state.analog.y = 0; state.analog.pointerId = null;
@@ -567,6 +680,7 @@
   }
   function updateAbilityButton() {
     const skin = currentSkin();
+    if (ui.damageCounterCheckbox) ui.damageCounterCheckbox.checked = state.damageCounterEnabled;
     const showAbility = ['playing', 'paused'].includes(state.mode);
     const ready = state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
@@ -638,7 +752,7 @@
       ui.eclipseQ.classList.toggle('is-flashblade', isFlashblade);
       ui.eclipseQ.classList.toggle('is-tempest', isTempest);
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
-      const qLabel = qActive && isAurora ? 'Elo Estelar ativo por mais ' + Math.ceil(state.auroraLink.life) + ' segundos · até ' + auroraLinkTargets + ' alvos por pulso · impactos recebidos devolvem metade do dano aos alvos vinculados'
+      const qLabel = qActive && isAurora ? 'Elo Estelar ativo por mais ' + Math.ceil(state.auroraLink.life) + ' segundos · até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos vinculados'
         : qActive && isAegis ? 'Órbitas Sentinelas protegem a nave por mais ' + Math.ceil(state.aegisOrbit.life) + ' segundos · ' + aegisOrbitRemaining + ' fragmentos restantes'
         : qActive && isEclipse ? 'Isca Umbral ativa por mais ' + Math.ceil(state.eclipseDecoy.life) + ' segundos'
         : qActive && isChronos ? 'Eco do Futuro ativo por mais ' + Math.ceil(state.chronosEcho.life) + ' segundos'
@@ -646,9 +760,9 @@
           : qActive && isFlashblade ? 'Rastro de Ruptura ativo por mais ' + Math.ceil(state.flashTrail.life) + ' segundos'
             : qActive && isTempest ? 'Maré Reversa ativa · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas'
               : !qReady ? isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Isca Umbral recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando; próxima carga em ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
-                : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · devolve metade dos impactos recebidos, inclusive com escudo' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia móvel por ' + decoyDuration + ' segundos; dispara tiros leves e espaçados' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,42s com ' + Math.round((.4 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso rápido e barreiras cortantes por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano leve, empurrão e tiros desviados; alguns atingem inimigos' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
+                : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia móvel por ' + decoyDuration + ' segundos; dispara tiros leves e espaçados' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,42s com ' + Math.round((.4 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso rápido e barreiras cortantes por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano leve, empurrão e tiros desviados; alguns atingem inimigos' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
-      ui.eclipseQ.title = isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · dano ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · impactos recebidos, inclusive absorvidos pelo escudo, devolvem 50% do dano aos alvos vinculados · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
+      ui.eclipseQ.title = isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · cada vida perdida pela nave causa 2 de dano aos alvos conectados · dano do pulso ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
         : isAegis ? 'Órbitas Sentinelas · Q · proteção do núcleo · fragmentos intactos atacam ao final · ' + aegisOrbitCount + ' fragmentos · duração ' + aegisOrbitTime + 's · dano convertido ' + (2 + state.aegisOrbitDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + aegisOrbitCooldown + 's'
         : isEclipse ? 'Isca Umbral · Q · cópia móvel por ' + decoyDuration + 's, rota imprevisível, desvio e disparos leves a cada 0,9s · recarga de 24s'
         : isChronos ? 'Eco do Futuro · Q · ecos repetem os disparos após 0,42s · duração ' + chronosEchoTime + 's · dano ' + Math.round((.4 + state.chronosEchoDamageBonus) * 100) + '% · recarga de ' + chronosEchoCooldown + 's'
@@ -814,7 +928,7 @@
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
     state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.eclipseDecoyAI = 0; state.eclipseDecoyDurationBonus = 0; state.eclipseDecoyChaos = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
-    state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0;
+    state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0; state.damageCounterTotal = 0; state.damageCounterLastHit = 0; state.damageCounterIdle = 0; state.damageCounterPopups = [];
     state.shipEWasCooling = false; state.shipQWasCooling = false; state.shipQChargeCount = skin.id === 'tempest' ? state.tempestTideCharges : skin.id === 'saurion' ? state.dinoStampedeCharges : null;
     state.aegisOrbit = null; state.aegisOrbitCooldown = 0; state.aegisOrbitDurationBonus = 0; state.aegisOrbitCountBonus = 0; state.aegisOrbitDamageBonus = 0;
     state.tempestTideCharges = 3; state.tempestTideChargeBonus = 0; state.tempestTideDamageBonus = 0; state.tempestTideSweepBonus = 0;
@@ -935,6 +1049,7 @@
   }
   function openUpgrade() {
     const completedWave = state.wave;
+    state.damageCounterTotal = 0; state.damageCounterLastHit = 0; state.damageCounterIdle = 0; state.damageCounterPopups = [];
     if (!state.waveDamageTaken) recordAchievementEvent('clean-wave');
     recordAchievementEvent('wave', completedWave);
     if (state.wave > state.bestCompletedWave) { state.bestCompletedWave = state.wave; saveBestWave(); renderSkinPicker(); persistAccountShipProgress(); }
@@ -1181,19 +1296,20 @@
     if (distance(bullet, state.player) < radius + state.player.radius && state.reflectTime <= 0) damagePlayer(bullet.damage || 2);
     state.enemies.forEach((enemy) => { if (!enemy.dead && distance(bullet, enemy) < radius + enemy.r) damageEnemy(enemy, 8 + state.wave * .2, true); });
   }
-  function reflectAuroraLinkDamage(amount) {
+  function reflectAuroraLinkDamage(livesLost) {
     const ability = state.auroraLink;
-    if (currentSkin().id !== 'aurora' || !ability || ability.life <= 0) return;
+    if (currentSkin().id !== 'aurora' || !ability || ability.life <= 0 || livesLost <= 0) return;
     const linked = ability.targets?.filter((enemy) => enemy && !enemy.dead) || [];
     if (!linked.length) return;
-    const reflectedDamage = Math.max(.5, amount * .5);
+    const reflectedDamage = Math.floor(livesLost) * 2;
     for (let index = 0; index < linked.length; index++) {
       const enemy = linked[index];
       const x1 = state.player.x; const y1 = state.player.y;
       const dx = enemy.x - x1; const dy = enemy.y - y1;
       const length = Math.hypot(dx, dy) || 1;
       const bend = (index % 2 ? 1 : -1) * Math.min(18, length * .08);
-      damageEnemy(enemy, reflectedDamage, true);
+      const damageBeforeBossBonus = enemy.kind === 'boss' ? reflectedDamage / (1 + state.bossDamageBonus) : reflectedDamage;
+      damageEnemy(enemy, damageBeforeBossBonus, true);
       state.effects.push({ type: 'aurora-link', x1, y1, x2: enemy.x, y2: enemy.y, cx: (x1 + enemy.x) / 2 - dy / length * bend, cy: (y1 + enemy.y) / 2 + dx / length * bend, life: .3, total: .3, phase: index });
       state.effects.push({ type: 'aurora-link-node', x: enemy.x, y: enemy.y, life: .3, total: .3, phase: index });
       burst(enemy.x, enemy.y, '#eafffb', enemy.kind === 'boss' ? 5 : 3, 44);
@@ -1203,21 +1319,24 @@
     if (state.eclipsePhase === 'active' || state.invulnerable > 0 || state.mode !== 'playing' || (currentSkin().id === 'aegis' && state.aegisOrbit?.life > 0)) return;
     if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
     let remaining = Math.max(1, Math.floor(amount));
-    reflectAuroraLinkDamage(remaining);
     const tempUsed = Math.min(state.tempShields, remaining); state.tempShields -= tempUsed; remaining -= tempUsed;
     const regularUsed = Math.min(state.shields, remaining); state.shields -= regularUsed; remaining -= regularUsed;
     if (remaining === 0) { state.invulnerable = .82; toast(tempUsed ? 'BARREIRA AEGIS ABSORVEU O IMPACTO' : 'ESCUDO ABSORVEU O IMPACTO'); tone(680, .18, 'triangle', .04); updateHud(); return; }
     if (tempUsed || regularUsed) toast('IMPACTO ROMPEU SEUS ESCUDOS');
     if (state.drones > 0 && state.lives - remaining <= 0) {
+      const livesBeforeSave = state.lives;
       sacrificeDrone();
       state.lives = 1;
+      reflectAuroraLinkDamage(Math.max(0, livesBeforeSave - state.lives));
       state.invulnerable = 1.35;
       burst(state.player.x, state.player.y, currentSkin().color, 24, 170);
       updateHud();
       return;
     }
     state.waveDamageTaken = true;
+    const livesBeforeHit = state.lives;
     state.lives = Math.max(0, state.lives - remaining);
+    reflectAuroraLinkDamage(Math.max(0, livesBeforeHit - state.lives));
     state.invulnerable = 1.35; burst(state.player.x, state.player.y, '#ff6687', 22, 160); tone(120, .23, 'sawtooth', .05); updateHud();
     if (state.lives <= 0) finishGame();
   }
@@ -1279,6 +1398,8 @@
   function damageEnemy(enemy, amount, fromAbility) {
     if (!enemy || enemy.dead) return;
     if (enemy.kind === 'boss') amount *= 1 + state.bossDamageBonus;
+    const appliedDamage = Math.min(Math.max(0, enemy.hp), Math.max(0, amount));
+    recordDamageCounter(appliedDamage, enemy);
     enemy.hp -= amount;
     enemy.hitFlash = .12;
     if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.hp > 0) {
@@ -1291,6 +1412,20 @@
       }
     }
     if (enemy.hp <= 0) defeatEnemy(enemy, fromAbility);
+  }
+  function recordDamageCounter(amount, enemy) {
+    if (!state.damageCounterEnabled || amount <= 0) return;
+    state.damageCounterTotal += amount;
+    state.damageCounterLastHit = amount;
+    state.damageCounterIdle = 0;
+    const offset = state.damageCounterPopups.length;
+    state.damageCounterPopups.push({
+      x: enemy.x + ((offset % 3) - 1) * mobileSize(8),
+      y: enemy.y - enemy.r - Math.floor(offset / 3 % 3) * mobileSize(7),
+      amount,
+      life: .9,
+      total: .9
+    });
   }
   function finishEclipseSpecial() {
     state.eclipsePhase = 'idle';
@@ -1592,7 +1727,7 @@
     else if (currentSkin().id === 'tempest') activateTempestTide();
   }
   function auroraLinkDuration() { return Math.min(7, 5 + state.auroraLinkDurationBonus); }
-  function auroraLinkMaxTargets() { return Math.min(5, 3 + state.auroraLinkTargetBonus); }
+  function auroraLinkMaxTargets() { return Math.min(8, 5 + state.auroraLinkTargetBonus); }
   function auroraLinkPulseDamage() { return 1.2 + state.auroraLinkDamageBonus; }
   function auroraLinkCooldownDuration() { return Math.max(22, 28 - upgradeLevel('auroraLinkCooldown') * 2); }
   function auroraLinkChain() {
@@ -2084,7 +2219,7 @@
     if (skin.id === 'eclipse') {
       const duration = Math.min(10.3, 10 + state.eclipseDurationBonus + Math.max(0, state.abilityPower - 1) * .7);
       state.eclipseTime = duration;
-      startEclipseCinematic(readEclipseVideoSkip());
+      startEclipseCinematic(state.eclipseSkipVideoEnabled);
     } else if (skin.id === 'aurora') {
       const radius = mobileSize(285);
       state.effects.push({ type: 'nova', x: state.player.x, y: state.player.y, radius: 0, maxRadius: radius, life: .95, total: .95 });
@@ -2144,6 +2279,9 @@
   }
   function update(dt) {
     state.elapsed += dt;
+    state.damageCounterIdle = Math.min(3.2, state.damageCounterIdle + dt);
+    for (const popup of state.damageCounterPopups) { popup.life -= dt; popup.y -= mobileSize(22) * dt; }
+    state.damageCounterPopups = state.damageCounterPopups.filter((popup) => popup.life > 0);
     state.invulnerable = Math.max(0, state.invulnerable - dt);
     state.waveGrace = Math.max(0, state.waveGrace - dt);
     state.shotCooldown -= dt;
@@ -3296,6 +3434,56 @@
       ctx.restore();
     }
     if (!eclipseActive) for (let i = 0; i < state.drones; i++) { const a = timestamp / 800 + i * Math.PI * 2 / state.drones; ctx.fillStyle = '#eafaff'; ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12); ctx.beginPath(); ctx.arc(state.player.x + Math.cos(a) * mobileSize(39), state.player.y + Math.sin(a) * mobileSize(39), mobileSize(5), 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; }
+    drawDamageCounter(timestamp);
+  }
+  function drawDamageCounter(timestamp) {
+    const canShow = state.damageCounterEnabled && ['playing', 'paused', 'upgrade'].includes(state.mode) && state.damageCounterTotal > 0;
+    if (!canShow && !state.damageCounterEditing) return;
+    const scale = state.mobileSizing ? .86 : 1;
+    const idle = canShow ? state.damageCounterIdle : 0;
+    const fade = state.damageCounterEditing ? 1 : 1 - clamp((idle - 2) / .85, 0, 1);
+    if (fade <= 0) return;
+    const position = normalizeDamageCounterPosition(state.damageCounterPosition);
+    const x = state.width * position.x;
+    const y = state.height * position.y - Math.min(18 * scale, Math.max(0, idle - 2) * 22 * scale);
+    const number = (value) => new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(value);
+    ctx.save();
+    ctx.globalAlpha = fade;
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(2, mobileSize(3)); ctx.strokeStyle = 'rgba(3, 10, 19, .92)';
+    ctx.font = '900 ' + Math.max(11, 14 * scale) + 'px system-ui';
+    ctx.fillStyle = '#fff4f2';
+    const latest = state.damageCounterLastHit > 0 ? '+' + number(state.damageCounterLastHit) + ' DMG' : state.damageCounterEditing ? 'ARRASTE PARA MOVER' : '';
+    if (latest) { ctx.strokeText(latest, x, y - 24 * scale); ctx.fillText(latest, x, y - 24 * scale); }
+    ctx.font = '800 ' + Math.max(8, 9 * scale) + 'px system-ui';
+    ctx.fillStyle = '#9bb7c6';
+    ctx.strokeText('DANO TOTAL', x, y - 8 * scale);
+    ctx.fillText('DANO TOTAL', x, y - 8 * scale);
+    ctx.font = '950 ' + Math.max(18, 25 * scale) + 'px system-ui';
+    ctx.lineWidth = Math.max(3, mobileSize(4));
+    ctx.fillStyle = '#eafffb';
+    ctx.shadowColor = '#55dccc'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
+    const total = number(state.damageCounterTotal);
+    ctx.strokeText(total, x, y + 13 * scale);
+    ctx.fillText(total, x, y + 13 * scale);
+    ctx.shadowBlur = 0;
+    if (!state.damageCounterEditing) for (const popup of state.damageCounterPopups) {
+      const alpha = clamp(popup.life / popup.total, 0, 1);
+      const rise = (1 - alpha) * mobileSize(20);
+      const label = '+' + number(popup.amount);
+      ctx.globalAlpha = alpha * fade;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = '900 ' + Math.max(10, 14 * scale) + 'px system-ui';
+      ctx.lineWidth = Math.max(2, mobileSize(3)); ctx.strokeStyle = 'rgba(8, 13, 23, .96)';
+      ctx.fillStyle = '#fff4f2';
+      ctx.strokeText(label, popup.x, popup.y - rise);
+      ctx.fillText(label, popup.x, popup.y - rise);
+      ctx.font = '900 ' + Math.max(7, 8 * scale) + 'px system-ui';
+      ctx.fillStyle = '#ff8d91';
+      ctx.strokeText('DMG', popup.x, popup.y - rise + mobileSize(11));
+      ctx.fillText('DMG', popup.x, popup.y - rise + mobileSize(11));
+    }
+    ctx.restore();
   }
   function frame(timestamp) {
     if (state.mode !== 'playing') return;
@@ -3350,6 +3538,7 @@
     }));
   }
   function handleProfileChange() {
+    if (state.damageCounterEditing) finishDamageCounterEdit(false);
     const selected = currentSkin();
     if (selected.secret && !hasSecretShipAccess(selected)) {
       state.selectedSkin = 'aurora';
@@ -3361,6 +3550,7 @@
     renderAuthorizedPilots();
     updateAdminToolsUI();
     reconcileAbilityCollectorAchievement();
+    loadNicknameSettings();
   }
   async function copyAuthorizedPilots() {
     const names = window.CV_STARFALL_SUPABASE?.rosterNicknames || [];
@@ -3925,6 +4115,33 @@
     syncAudioVisibility();
     ui.settingsModal?.querySelector('[data-close-settings]')?.focus();
   }
+  function beginDamageCounterEdit() {
+    state.damageCounterEditStart = { ...state.damageCounterPosition };
+    state.damageCounterEditing = true;
+    state.damageCounterDragging = false;
+    state.damageCounterEditorHadMenu = Boolean(ui.overlay && !ui.overlay.hidden);
+    if (ui.settingsModal) ui.settingsModal.hidden = true;
+    if (state.damageCounterEditorHadMenu && ui.overlay) ui.overlay.hidden = true;
+    if (ui.damageCounterEditor) ui.damageCounterEditor.hidden = false;
+    canvas.style.cursor = 'grab';
+    syncAudioVisibility();
+    draw(performance.now());
+  }
+  function finishDamageCounterEdit(save) {
+    if (!state.damageCounterEditing) return;
+    if (save) {
+      state.damageCounterPosition = normalizeDamageCounterPosition(state.damageCounterPosition);
+      saveNicknameSettings();
+    } else if (state.damageCounterEditStart) state.damageCounterPosition = { ...state.damageCounterEditStart };
+    state.damageCounterEditing = false;
+    state.damageCounterDragging = false;
+    state.damageCounterEditStart = null;
+    if (ui.damageCounterEditor) ui.damageCounterEditor.hidden = true;
+    if (ui.overlay) ui.overlay.hidden = !['intro', 'gameover', 'paused'].includes(state.mode);
+    canvas.style.cursor = '';
+    syncAudioVisibility();
+    draw(performance.now());
+  }
   function closeSettings() { if (ui.settingsModal) ui.settingsModal.hidden = true; syncAudioVisibility(); }
   function openShips() {
     if (!['intro', 'gameover'].includes(state.mode)) return;
@@ -3950,9 +4167,19 @@
   $('[data-open-settings]')?.addEventListener('click', openSettings);
   $('[data-open-ships]')?.addEventListener('click', openShips);
   ui.eclipseSkipCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', () => {
-    try { localStorage.setItem(eclipseSkipVideoKey, String(checkbox.checked)); } catch { /* A preferência vale para esta sessão. */ }
+    state.eclipseSkipVideoEnabled = checkbox.checked;
     ui.eclipseSkipCheckboxes.forEach((item) => { item.checked = checkbox.checked; });
+    saveNicknameSettings();
   }));
+  ui.damageCounterCheckbox?.addEventListener('change', () => {
+    state.damageCounterEnabled = ui.damageCounterCheckbox.checked;
+    if (!state.damageCounterEnabled) state.damageCounterPopups = [];
+    saveNicknameSettings();
+    draw(performance.now());
+  });
+  ui.editDamageCounter?.addEventListener('click', beginDamageCounterEdit);
+  ui.saveDamageCounter?.addEventListener('click', () => finishDamageCounterEdit(true));
+  ui.cancelDamageCounter?.addEventListener('click', () => finishDamageCounterEdit(false));
   $('[data-open-achievements]')?.addEventListener('click', openAchievements);
   ui.dailyStart?.addEventListener('click', () => openMissionSetup(true));
   document.querySelectorAll('[data-close-mission-setup]').forEach((button) => button.addEventListener('click', closeMissionSetup));
@@ -4008,7 +4235,24 @@
     }
     if (!document.hidden && state.eclipsePhase === 'cinematic' && ui.eclipseVideo?.paused) ui.eclipseVideo.play()?.catch?.(() => {});
   });
+  function moveDamageCounterWithPointer(event) {
+    if (!state.damageCounterDragging) return;
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    state.damageCounterPosition = normalizeDamageCounterPosition({ x:(event.clientX - rect.left) / rect.width, y:(event.clientY - rect.top) / rect.height });
+    draw(performance.now());
+  }
   canvas.addEventListener('pointerdown', (event) => {
+    if (state.damageCounterEditing) {
+      const rect = canvas.getBoundingClientRect();
+      const pointX = event.clientX - rect.left; const pointY = event.clientY - rect.top;
+      const counterX = state.width * state.damageCounterPosition.x; const counterY = state.height * state.damageCounterPosition.y;
+      if (pointX >= counterX - 178 && pointX <= counterX + 10 && pointY >= counterY - 49 && pointY <= counterY + 34) {
+        event.preventDefault(); canvas.setPointerCapture(event.pointerId);
+        state.damageCounterDragging = true; canvas.style.cursor = 'grabbing'; moveDamageCounterWithPointer(event);
+      }
+      return;
+    }
     if (state.mode !== 'playing' || !['touch', 'analog'].includes(state.controlMode)) return;
     event.preventDefault(); canvas.setPointerCapture(event.pointerId);
     if (state.controlMode === 'touch') { pointerPosition(event); state.pointer.active = true; return; }
@@ -4017,7 +4261,10 @@
     ui.joystick.style.left = x + 'px'; ui.joystick.style.top = y + 'px'; ui.joystick.hidden = false; ui.joystick.classList.add('is-active');
     moveAnalog(event);
   });
-  canvas.addEventListener('pointermove', (event) => { if (state.pointer.active && state.controlMode === 'touch') pointerPosition(event); });
+  canvas.addEventListener('pointermove', (event) => {
+    if (state.damageCounterDragging) { moveDamageCounterWithPointer(event); return; }
+    if (state.pointer.active && state.controlMode === 'touch') pointerPosition(event);
+  });
   function moveAnalog(event) {
     if (!state.analog.active || state.analog.pointerId !== event.pointerId) return;
     const rect = ui.stage.getBoundingClientRect(); const x = event.clientX - rect.left; const y = event.clientY - rect.top; const max = 54;
@@ -4026,8 +4273,8 @@
     ui.joystickNub.style.left = 'calc(50% + ' + (state.analog.x * max) + 'px)'; ui.joystickNub.style.top = 'calc(50% + ' + (state.analog.y * max) + 'px)';
   }
   canvas.addEventListener('pointermove', moveAnalog);
-  canvas.addEventListener('pointerup', (event) => { state.pointer.active = false; if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
-  canvas.addEventListener('pointercancel', (event) => { state.pointer.active = false; if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
+  canvas.addEventListener('pointerup', (event) => { state.pointer.active = false; if (state.damageCounterDragging) { state.damageCounterDragging = false; canvas.style.cursor = 'grab'; } if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
+  canvas.addEventListener('pointercancel', (event) => { state.pointer.active = false; if (state.damageCounterDragging) { state.damageCounterDragging = false; canvas.style.cursor = 'grab'; } if (state.analog.pointerId === event.pointerId) releaseAnalog(); });
   window.addEventListener('resize', resize);
   document.addEventListener('fullscreenchange', resize);
   document.addEventListener('webkitfullscreenchange', resize);
@@ -4035,8 +4282,8 @@
   state.achievementProgress = readAchievementProgress();
   renderAchievements(); updateDailyChallengeInfo();
   window.CV_GAMES_AUTH?.client?.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_IN') window.setTimeout(loadAccountShipProgress, 0);
-    if (event === 'SIGNED_OUT') window.setTimeout(clearAccountShipProgress, 0);
+    if (event === 'SIGNED_IN') window.setTimeout(() => { loadAccountShipProgress(); loadNicknameSettings(); }, 0);
+    if (event === 'SIGNED_OUT') window.setTimeout(() => { clearAccountShipProgress(); loadNicknameSettings(); }, 0);
   });
-  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress();
+  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); loadNicknameSettings();
 })();

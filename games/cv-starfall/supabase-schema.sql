@@ -87,3 +87,82 @@ create policy "Owner can manage Starfall profile"
 
 revoke all on public.starfall_profiles from anon, authenticated;
 grant select, insert, update on public.starfall_profiles to authenticated;
+
+-- Preferências sincronizadas pelo apelido para os perfis de teste do placar.
+-- Os apelidos de teste não têm login individual; qualquer pessoa que use um
+-- desses apelidos pode alterar suas preferências, como já ocorre no placar.
+create table if not exists public.starfall_settings (
+  nickname text primary key,
+  constraint starfall_settings_nickname_check check (nickname = lower(btrim(nickname)) and nickname in (
+    'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
+    'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
+    'geovanagamer099', 'educvv dev', 'educvv dev1', 'adm'
+  )),
+  damage_counter_enabled boolean not null default true,
+  damage_counter_x real not null default 0.89 check (damage_counter_x between 0.16 and 0.96),
+  damage_counter_y real not null default 0.53 check (damage_counter_y between 0.12 and 0.88),
+  eclipse_skip_video boolean not null default false,
+  updated_at timestamptz not null default now()
+);
+
+-- Mantém a lista atualizada mesmo se a tabela já tiver sido criada anteriormente.
+alter table public.starfall_settings drop constraint if exists starfall_settings_nickname_check;
+alter table public.starfall_settings add constraint starfall_settings_nickname_check
+  check (nickname = lower(btrim(nickname)) and nickname in (
+    'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
+    'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
+    'geovanagamer099', 'educvv dev', 'educvv dev1', 'adm'
+  ));
+alter table public.starfall_settings alter column damage_counter_enabled set default true;
+alter table public.starfall_settings alter column eclipse_skip_video set default false;
+
+alter table public.starfall_settings enable row level security;
+
+drop policy if exists "Anyone can read Starfall settings" on public.starfall_settings;
+create policy "Anyone can read Starfall settings"
+  on public.starfall_settings for select to anon, authenticated using (true);
+
+drop policy if exists "Approved pilots can add Starfall settings" on public.starfall_settings;
+create policy "Approved pilots can add Starfall settings"
+  on public.starfall_settings for insert to anon, authenticated
+  with check (
+    nickname in (
+      'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
+      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099',
+      'educvv dev', 'educvv dev1', 'adm'
+    )
+    or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
+  );
+
+drop policy if exists "Approved pilots can update Starfall settings" on public.starfall_settings;
+create policy "Approved pilots can update Starfall settings"
+  on public.starfall_settings for update to anon, authenticated
+  using (
+    nickname in (
+      'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
+      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099',
+      'educvv dev', 'educvv dev1', 'adm'
+    )
+    or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
+  )
+  with check (
+    nickname in (
+      'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
+      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099',
+      'educvv dev', 'educvv dev1', 'adm'
+    )
+    or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
+  );
+
+revoke all on public.starfall_settings from anon, authenticated;
+grant select, insert, update on public.starfall_settings to anon, authenticated;
+
+-- Padrão inicial para Nys. Se a linha ainda estiver com os valores antigos
+-- do primeiro seed, atualiza uma vez sem sobrescrever preferências já alteradas.
+insert into public.starfall_settings as current_settings (nickname, damage_counter_enabled, eclipse_skip_video)
+values ('nys', true, false)
+on conflict (nickname) do update
+set damage_counter_enabled = true,
+    eclipse_skip_video = false
+where current_settings.damage_counter_enabled = false
+  and current_settings.eclipse_skip_video = true;

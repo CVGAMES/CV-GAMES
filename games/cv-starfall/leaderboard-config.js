@@ -23,6 +23,7 @@
   window.CV_STARFALL_SUPABASE = Object.freeze({
     ...(window.CV_GAMES_SUPABASE || {}),
     allowedNicknames:Object.keys(displayNicknames),
+    settingsNicknames:[...Object.keys(displayNicknames), 'educvv dev', 'educvv dev1', 'adm'],
     displayNicknames,
     rosterNicknames:Object.entries(displayNicknames).filter(([nickname]) => nickname !== 'educvv').map(([,displayName]) => displayName)
   });
