@@ -5,20 +5,28 @@
   const bestKey = 'cv-games-cv-starfall-best';
   const bestWaveKey = 'cv-games-cv-starfall-best-wave';
   const setupCompleteKey = 'cv-games-cv-starfall-setup-complete';
+  const prismAbilityChoiceKey = 'cv-games-cv-starfall-prism-choice';
   const controlModeKey = 'cv-games-cv-starfall-control';
   const performanceModeKey = 'cv-games-cv-starfall-performance';
   const eclipseSkipVideoKey = 'cv-games-cv-starfall-eclipse-skip-video';
   const auroraDamageCounterKey = 'cv-games-cv-starfall-aurora-damage-counter';
   const secretShipUnlockKey = 'cv-games-cv-starfall-secret-ships-v1';
   const secretShipPasscode = '12345678';
+  const prismaShipPasscode = 'cvgames.com.br';
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
   const nicknameSettingsPrefix = 'cv-games-cv-starfall-settings-v1:';
+  const missionCheckpointPrefix = 'cv-games-cv-starfall-checkpoint-v1:';
+  const nicknameRankBestWavePrefix = 'cv-games-cv-starfall-rank-best-wave:';
+  const nicknameCompletedWavePrefix = 'cv-games-cv-starfall-completed-wave:';
+  const nicknameSettingsMigrationKey = 'cv-games-cv-starfall-settings-migrated-v2';
   const defaultDamageCounterPosition = Object.freeze({ x: .89, y: .53 });
   const defaultNicknameSettings = Object.freeze({ damageCounterEnabled: true, eclipseSkipVideo: false });
   const favoritesKey = 'cv-games-favorites';
   const eclipseSprite = new Image();
   eclipseSprite.src = new URL('eclipse-ship.png', document.baseURI).href;
+  const saurionRaptorSprite = new Image();
+  saurionRaptorSprite.src = new URL('saurion-raptor-skill.png', document.baseURI).href;
   const eclipseShrineSprite = new Image();
   eclipseShrineSprite.src = new URL('eclipse-shrine.png', document.baseURI).href;
   const eclipseDomainVideoUrl = new URL('../../CV GAMES/sprite nave sprites/video começo esnpnação de dominio.mp4', document.baseURI).href;
@@ -31,8 +39,21 @@
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'), eclipseCutscene: $('[data-eclipse-cutscene]'), eclipseVideo: $('[data-eclipse-video]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
-    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')), shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'), damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), editDamageCounter: $('[data-edit-damage-counter]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'), dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'), rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
+    skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')),
+    shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'),
+    damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), editDamageCounter: $('[data-edit-damage-counter]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')),
+    deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'),
+    dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'),
+    rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
   };
+  ui.prismWheel = $('[data-prism-wheel]');
+  ui.prismRankNotice = $('[data-prism-rank-notice]');
+  ui.checkpointModal = $('[data-checkpoint-modal]');
+  ui.checkpointSummary = $('[data-checkpoint-summary]');
+  ui.prismAbilityList = $('[data-prism-ability-list]');
+  ui.prismWheelStatus = $('[data-prism-wheel-status]');
+  ui.prismSelectWrap = $('[data-prism-select-wrap]');
+  ui.prismSelect = $('[data-prism-select]');
   const skins = [
     { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, cooldownQ: 28, shape: 'classic', description: 'E cria uma explosão ampla. Com Q ativo, a Nova espalha o mesmo dano para os demais inimigos ligados se atingir um deles. Q conecta cinco alvos, ampliáveis até oito; cada vida perdida pela nave causa 2 de dano aos inimigos conectados.' },
     { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 25, cooldownQ: 30, shape: 'shield', unlockWave: 10, description: 'E cria uma barreira que absorve três impactos. Q invoca Órbitas Sentinelas: fragmentos orbitais interceptam tiros e os convertem em projéteis teleguiados; os fragmentos intactos são lançados contra inimigos ao final.' },
@@ -41,9 +62,10 @@
     { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, cooldownQ: 26, shape: 'blade', unlockWave: 40, description: 'E lança uma lâmina que curva e ricocheteia. Q acelera a nave e cria barreiras cortantes pelo trajeto por 5 segundos.' },
     { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, cooldownQ: 28, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'E reflete projéteis. Q cria um Perímetro de Cerco móvel por 6 segundos; inimigos que cruzam os feixes recebem dano.' },
     { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral móvel por 4 segundos; ela atrai disparos, tenta desviar e dispara tiros leves e espaçados. Melhorias podem prolongar sua duração.' },
-    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: atordoa uma grande área; três garras leves reaparecem a cada 2 segundos por 15 segundos. Q causa dano extra aos alvos marcados.' }
+    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: atordoa uma grande área; três garras leves reaparecem a cada 2 segundos por 15 segundos. Q causa dano extra aos alvos marcados.' },
+    { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' }
   ];
-  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Isca Umbral', saurion:'Estouro da Manada' });
+  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Isca Umbral', saurion:'Estouro da Manada', prisma:'Dobra de Horizonte' });
   const shipAbilityDetails = Object.freeze({
     aurora: { e:'Explosão Nova atinge uma grande área ao redor da nave. Com o Elo Estelar ativo, se a explosão atingir um inimigo ligado, os demais recebem o mesmo dano.', q:'Conecta cinco alvos por 5 segundos, com pulsos a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada vida perdida pela nave durante o Elo causa 2 de dano a cada alvo conectado. Melhorias ampliam a conexão para até oito alvos, prolongam a duração até 7s e aumentam o dano dos pulsos para 2,4; a recarga cai de 28s para 22s.' },
     aegis: { e:'A Barreira Aegis absorve três impactos e protege a nave enquanto estiver ativa.', q:'Três sentinelas orbitam por 6 segundos. Cada uma pode interceptar um tiro comum e convertê-lo em um disparo teleguiado. A nave fica protegida; fragmentos que sobrarem atacam os inimigos ao final. Melhorias chegam a 8s, cinco sentinelas e dano 5; a recarga cai de 30s para 24s.' },
@@ -52,11 +74,13 @@
     flashblade: { e:'O Corte Flash lança uma lâmina veloz que persegue alvos, ricocheteia nas bordas e causa dano ao cruzar os inimigos.', q:'A nave acelera em 2,2× por 5 segundos e deixa barreiras de luz no trajeto. Os rastros duram até 7s, ferem e desviam inimigos a cada contato e destroem tiros que os atingem; melhorias prolongam e fortalecem o efeito.' },
     redshift: { e:'O Escudo de Retorno reflete projéteis que atingem a nave durante a proteção. Melhorias aumentam duração e dano e reduzem a recarga.', q:'O Perímetro de Cerco acompanha a nave com feixes cortantes. Inimigos que cruzam as linhas recebem dano. Melhorias ampliam a duração de 6s para 8s e podem reduzir a recarga de 28s para 22s.' },
     eclipse: { e:'A Expansão de Domínio inicia com uma abertura cinematográfica e transforma a arena em um santuário. Os cortes cobrem a área por 10 segundos; a nave fica invulnerável durante o efeito e por alguns segundos ao final.', q:'A Isca Umbral cria uma cópia móvel por cerca de 4 segundos. Ela cruza a arena em velocidade próxima à da nave, um pouco menor; inimigos miram nela enquanto desvia e dispara um tiro leve a cada 0,9 segundo. Esses disparos causam menos dano que os da nave. Melhorias podem prolongar o efeito e melhorar seus desvios.' },
-    saurion: { e:'O Rugido de Garras atordoa uma grande área e marca os inimigos. Três cortes leves reaparecem a cada 2 segundos por 15 segundos; os alvos marcados recebem dano extra do Q.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' }
+    saurion: { e:'O Rugido de Garras atordoa uma grande área e marca os inimigos. Três cortes leves reaparecem a cada 2 segundos por 15 segundos; os alvos marcados recebem dano extra do Q.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' },
+    prisma: { e:'O Núcleo Prisma concentra luz diante da nave e libera uma onda de impacto. Inimigos próximos recebem dano e são afastados; chefes resistem parcialmente ao empurrão. Melhorias ampliam o raio, o dano e reduzem a recarga. Você também pode escolher outra habilidade no Arquivo de Ecos.', q:'A Dobra de Horizonte grava a posição da nave por 4 segundos. Ative novamente para retornar ao ponto marcado, ganhar proteção breve e liberar uma onda de chegada que causa dano e desorganiza inimigos próximos. Melhorias ampliam a janela até 6 segundos e fortalecem a onda. O espaço Q também pode receber outra habilidade escolhida.' }
   });
-  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8 });
+  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
   let secretShipUnlocks = readSecretShipUnlocks();
+  let pendingSecretShipId = null;
   let accountUnlockedShipIds = new Set();
   let accountShipProgressLoaded = false;
   let accountShipWriteChain = Promise.resolve();
@@ -102,6 +126,7 @@
     damageCounterEnabled: initialNicknameSettings.damageCounterEnabled, damageCounterPosition: initialNicknameSettings.damageCounterPosition, damageCounterTotal: 0, damageCounterLastHit: 0, damageCounterIdle: 0, damageCounterPopups: [], damageCounterEditing: false, damageCounterDragging: false, damageCounterEditStart: null, damageCounterEditorHadMenu: false,
     eclipseSkipVideoEnabled: initialNicknameSettings.eclipseSkipVideo,
     shipEWasCooling: false, shipQWasCooling: false, shipQChargeCount: null,
+    prismAbilityChoices: { e:'aurora:e', q:'aurora:q' }, prismAbilitySlot:'e', prismDispatchSkinId:'', prismDispatchSlot:'', prismQCooldown:0, prismHorizonAnchor:null, prismHorizonWindowBonus:0, prismHorizonDamageBonus:0, prismCoreRangeBonus:0, prismCoreDamageBonus:0, prismCooldownBonus:0, prismWheelWasPlaying:false,
     aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0,
     tempestTideCharges: 3, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
     chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
@@ -110,7 +135,7 @@
     shotCooldown: 0, waveGrace: 0, enemySpawn: 0, powerSpawn: 0, waveKills: 0,
     enemiesRequired: 6, bossWave: false, bossSpawned: false, miniBossTimer: 0, miniBossSpawned: false,
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
-    selectedSkin: readSkin(), controlMode: readControlMode(), performanceMode: readPerformanceMode(), mobileSizing: detectedMobileDevice, upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1, adminNoCooldown: false, adminBuffsActive: false,
+    selectedSkin: readSkin(), controlMode: adaptControlMode(initialNicknameSettings.controlMode), savedControlMode: initialNicknameSettings.controlMode, performanceMode: initialNicknameSettings.performanceMode, preferencesConfigured: initialNicknameSettings.setupComplete, mobileSizing: detectedMobileDevice, upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1, adminNoCooldown: false, adminBuffsActive: false,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
     blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, tempestTideCooldown: 0, tempestTideRadiusBonus: 0, tempestTideForceBonus: 0, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, redshiftPerimeter: null, redshiftPerimeterCooldown: 0, redshiftPerimeterDurationBonus: 0, redshiftPerimeterDamageBonus: 0, redshiftPerimeterRangeBonus: 0, flashTrail: null, flashTrailCooldown: 0, flashTrailDurationBonus: 0, flashTrailDamageBonus: 0, flashTrailDensity: 0, flashTrailContacts: new Set(), eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, eclipseDecoyAI: 0, eclipseDecoyDurationBonus: 0, eclipseDecoyChaos: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: '#7df7e8' },
@@ -118,6 +143,20 @@
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
     waveDamageTaken: false, achievementProgress: null
   };
+  try {
+    const savedPrismChoice = localStorage.getItem(prismAbilityChoiceKey);
+    if (savedPrismChoice) {
+      let parsed; try { parsed = JSON.parse(savedPrismChoice); } catch { parsed = savedPrismChoice; }
+      const valid = (choice) => { const [shipId,key] = String(choice || '').split(':'); return skins.some((skin) => skin.id === shipId) && ['e','q'].includes(key); };
+      if (parsed && typeof parsed === 'object') {
+        if (valid(parsed.e)) state.prismAbilityChoices.e = parsed.e;
+        if (valid(parsed.q)) state.prismAbilityChoices.q = parsed.q;
+      } else {
+        const [shipId,key] = String(parsed || savedPrismChoice).split(':');
+        if (skins.some((skin) => skin.id === shipId) && ['e','q'].includes(key)) state.prismAbilityChoices[key] = shipId + ':' + key;
+      }
+    }
+  } catch { /* A escolha padrão continua disponível. */ }
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
   const mobileSize = (value) => value * (state.mobileSizing ? mobileEntityScale : 1);
   function randomUnit(stream = 'combat') {
@@ -198,6 +237,12 @@
     ,{ id:'dinoFangs', icon:'〰', name:'Ressonância jurássica', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=4;state.dinoRoarRangeBonus+=18;} }
     ,{ id:'dinoStampede', icon:'🐾', name:'Manada ancestral', description:'Adiciona um raptor ao Estouro da Manada e fortalece a investida.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=2.5;} }
     ,{ id:'dinoResonance', icon:'◷', name:'Ressonância fóssil', description:'Reduz em 2 segundos o intervalo de recarga entre as cargas de Q, até 24 segundos.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoResonance')<4, apply:()=>{state.dinoStampedeRecharge=Math.max(0,state.dinoStampedeRecharge-2);} }
+    ,{ id:'prismCoreRange', icon:'◎', name:'Prisma de longo alcance', description:'Amplia o raio do Núcleo Prisma em 35 unidades por nível.', max:3, available:()=>currentSkin().id==='prisma'&&state.prismCoreRangeBonus<105, apply:()=>{state.prismCoreRangeBonus=Math.min(105,state.prismCoreRangeBonus+35);} }
+    ,{ id:'prismCoreDamage', icon:'✧', name:'Refração concentrada', description:'Aumenta em 2 o dano do Núcleo Prisma por nível.', max:4, available:()=>currentSkin().id==='prisma'&&state.prismCoreDamageBonus<8, apply:()=>{state.prismCoreDamageBonus=Math.min(8,state.prismCoreDamageBonus+2);} }
+    ,{ id:'prismHorizonWindow', icon:'⌖', name:'Âncora ampliada', description:'Estende a janela para retornar pela Dobra de Horizonte em 1 segundo, até 6 segundos.', max:2, available:()=>currentSkin().id==='prisma'&&state.prismHorizonWindowBonus<2, apply:()=>{state.prismHorizonWindowBonus=Math.min(2,state.prismHorizonWindowBonus+1);} }
+    ,{ id:'prismHorizonDamage', icon:'✹', name:'Pulso de retorno', description:'Aumenta em 2 o dano da onda liberada ao retornar pela Dobra de Horizonte.', max:3, available:()=>currentSkin().id==='prisma'&&state.prismHorizonDamageBonus<6, apply:()=>{state.prismHorizonDamageBonus=Math.min(6,state.prismHorizonDamageBonus+2);} }
+    ,{ id:'prismCooldown', icon:'⟳', name:'Ressonância real', description:'Reduz em 2 segundos a recarga compartilhada das habilidades escolhidas, até 20 segundos.', max:4, available:()=>currentSkin().id==='prisma'&&state.prismCooldownBonus<4, apply:()=>{state.prismCooldownBonus=Math.min(4,state.prismCooldownBonus+1);state.abilityBaseCooldown=prismCooldownDuration();state.abilityCooldown=Math.min(state.abilityCooldown,state.abilityBaseCooldown);} }
+    ,{ id:'prismResonance', icon:'◇', name:'Espectro refinado', description:'Fortalece em 12% as habilidades próprias e copiadas da Prisma Real, até 36%.', max:3, available:()=>currentSkin().id==='prisma'&&upgradeLevel('prismResonance')<3, apply:()=>{state.abilityPower=Math.min(2.5,state.abilityPower+.12);} }
     ,{ id:'salvageHeal', icon:'✚', name:'Recuperação de destroços', description:'Inimigos destruídos podem liberar energia de reparo.', max:4, available:()=>state.salvageHeal<4, apply:()=>{state.salvageHeal+=1;} }
     ,{ id:'endlessDamage', icon:'✹', name:'Núcleo adaptativo', description:'Reforço repetível com ganho decrescente e limite seguro de dano.', max:0, stack:true, available:()=>state.endlessDamage<1.24, apply:()=>{state.endlessDamage=Math.min(1.25,state.endlessDamage + .11 / (1 + upgradeLevel('endlessDamage') * .14));} }
     ,{ id:'endlessSpeed', icon:'➤', name:'Impulso de longo curso', description:'Aumenta a mobilidade aos poucos, com velocidade máxima controlada.', max:0, stack:true, available:()=>state.endlessSpeed<118, apply:()=>{state.endlessSpeed=Math.min(120,state.endlessSpeed + 8 / (1 + upgradeLevel('endlessSpeed') * .12));} }
@@ -207,6 +252,59 @@
   function readBestWave() { try { return Math.max(0, Number(localStorage.getItem(bestWaveKey)) || 0); } catch { return 0; } }
   function profileNickname() { return String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); }
   function normalizeRankNickname(value) { return String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); }
+  function rankBestWaveKey(nickname = profileNickname()) { return nicknameRankBestWavePrefix + encodeURIComponent(nickname || 'jogador'); }
+  function readNicknameRankBestWave(nickname = profileNickname()) {
+    try { return Math.max(0, Number(localStorage.getItem(rankBestWaveKey(nickname))) || 0); } catch { return 0; }
+  }
+  function saveNicknameRankBestWave(nickname, wave) {
+    const normalized = normalizeRankNickname(nickname);
+    if (!normalized) return;
+    try { localStorage.setItem(rankBestWaveKey(normalized), String(Math.max(readNicknameRankBestWave(normalized), Math.floor(Number(wave) || 0)))); } catch { /* O recorde online continua disponível mesmo sem armazenamento local. */ }
+  }
+  function completedWaveKey(nickname = profileNickname()) { return nicknameCompletedWavePrefix + encodeURIComponent(nickname || 'jogador'); }
+  function readNicknameCompletedWave(nickname = profileNickname()) {
+    try { return Math.max(0, Number(localStorage.getItem(completedWaveKey(nickname))) || 0); } catch { return 0; }
+  }
+  function saveNicknameCompletedWave(nickname, wave) {
+    const normalized = normalizeRankNickname(nickname);
+    if (!normalized) return;
+    try { localStorage.setItem(completedWaveKey(normalized), String(Math.max(readNicknameCompletedWave(normalized), Math.floor(Number(wave) || 0)))); } catch { /* O progresso local principal continua disponível. */ }
+  }
+  function readProfileResumeWave(nickname = profileNickname()) {
+    return Math.max(readNicknameRankBestWave(nickname), readNicknameCompletedWave(nickname));
+  }
+  function missionCheckpointKey(nickname = profileNickname()) { return missionCheckpointPrefix + encodeURIComponent(nickname || 'jogador'); }
+  function readMissionCheckpoint() {
+    try {
+      const checkpoint = JSON.parse(localStorage.getItem(missionCheckpointKey()) || 'null');
+      if (!checkpoint || checkpoint.version !== 1 || !Number.isFinite(Number(checkpoint.wave)) || Number(checkpoint.wave) < 1 || !skins.some((skin) => skin.id === checkpoint.shipId)) return null;
+      return checkpoint;
+    } catch { return null; }
+  }
+  function clearMissionCheckpoint(nickname = profileNickname()) {
+    try { localStorage.removeItem(missionCheckpointKey(nickname)); } catch { /* A missão pode continuar sem armazenamento local. */ }
+  }
+  function saveMissionCheckpoint() {
+    if (state.dailyChallenge || !['playing', 'paused'].includes(state.mode)) return false;
+    const nickname = profileNickname();
+    const previous = readMissionCheckpoint();
+    const bestWave = readProfileResumeWave(nickname);
+    const targetWave = Math.max(1, state.wave, bestWave, Number(previous?.wave) || 0);
+    if (previous && Number(previous.wave) > Math.max(state.wave, bestWave)) return true;
+    const numericState = {};
+    Object.entries(state).forEach(([key, value]) => {
+      if (typeof value === 'number' && Number.isFinite(value) && !['lastTime', 'raf', 'width', 'height', 'dpr'].includes(key)) numericState[key] = value;
+    });
+    const checkpoint = {
+      version:1, nickname:nickname || 'jogador', savedAt:Date.now(), wave:targetWave,
+      bestCompletedWave:Math.max(bestWave, readNicknameCompletedWave(nickname)), score:Math.max(0, state.score), elapsed:Math.max(0, state.elapsed),
+      shipId:currentSkin().id, lastBossType:state.lastBossType, stats:numericState, upgrades:{ ...state.upgrades },
+      player:{ xRatio:state.width ? state.player.x / state.width : .5, yRatio:state.height ? state.player.y / state.height : .78,
+        speed:state.player.speed, damage:state.player.damage, fireRate:state.player.fireRate, spread:state.player.spread,
+        angle:state.player.angle, moveAngle:state.player.moveAngle }
+    };
+    try { localStorage.setItem(missionCheckpointKey(nickname), JSON.stringify(checkpoint)); return true; } catch { return false; }
+  }
   function readSecretShipUnlocks() {
     try {
       const saved = JSON.parse(localStorage.getItem(secretShipUnlockKey) || '[]');
@@ -214,6 +312,8 @@
     } catch { return new Set(); }
   }
   function hasSecretShipAccess(skin) {
+    if (skin.id === 'prisma') return accountShipProgressLoaded || secretShipUnlocks.has('prisma');
+    if (skin.ownerOnly) return accountShipProgressLoaded;
     return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
       || secretShipUnlocks.has('*') || secretShipUnlocks.has(skin.id)
       || accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id);
@@ -401,6 +501,7 @@
   function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge && state.adminNoCooldown; }
   function shipCooldownSummary(skin) {
     if (hasDeveloperPerks()) return 'sem recarga';
+    if (skin.id === 'prisma') return 'E e Q configuráveis no Arquivo de Ecos (G) · recarga própria até 20s · missão fora do placar';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q 24s';
     if (skin.id === 'chronos') return 'E 25s · Q 28s→22s · ecos 40%→70% por 4→6s';
     if (skin.id === 'aurora') return 'E 25s · Q 28s→22s · 5→8 alvos por 5→7s';
@@ -412,6 +513,7 @@
     return 'recarga ' + skin.cooldown + 's';
   }
   function skinUnlocked(skin) {
+    if (skin.ownerOnly) return hasSecretShipAccess(skin);
     if (isAllShipsProfile()) return true;
     if (skin.secret) return hasSecretShipAccess(skin);
     if (accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id)) return true;
@@ -425,18 +527,56 @@
       return skinUnlocked(skin) ? id : 'aurora';
     } catch { return 'aurora'; }
   }
-  function readControlMode() { try { const mode=localStorage.getItem(controlModeKey); return ['keys','touch','analog'].includes(mode)?mode:'keys'; } catch { return 'keys'; } }
+  function defaultControlMode() { return detectedMobileDevice ? 'analog' : 'keys'; }
+  function validControlMode(mode) { return ['keys','touch','analog'].includes(mode); }
+  function adaptControlMode(mode) { return detectedMobileDevice && mode === 'keys' ? 'analog' : validControlMode(mode) ? mode : defaultControlMode(); }
+  function readControlMode() { try { const mode=localStorage.getItem(controlModeKey); return validControlMode(mode)?mode:defaultControlMode(); } catch { return defaultControlMode(); } }
   function readPerformanceMode() { try { return localStorage.getItem(performanceModeKey) === 'light' ? 'light' : 'normal'; } catch { return 'normal'; } }
   function currentSkin() {
+    if (state.prismDispatchSkinId) {
+      const dispatched = skins.find((skin) => skin.id === state.prismDispatchSkinId);
+      if (dispatched) return dispatched;
+    }
     const selected = skins.find((skin) => skin.id === state.selectedSkin);
     return selected && skinUnlocked(selected) ? selected : skins[0];
+  }
+  function prismChoiceParts(choice = state.prismAbilityChoices[state.prismAbilitySlot]) {
+    const [shipId, key] = String(choice || 'aurora:e').split(':');
+    return { shipId: skins.some((skin) => skin.id === shipId) ? shipId : 'aurora', key: key === 'q' ? 'q' : 'e' };
+  }
+  function prismChoiceName(choice = state.prismAbilityChoices[state.prismAbilitySlot]) {
+    const { shipId, key } = prismChoiceParts(choice);
+    const skin = skins.find((item) => item.id === shipId) || skins[0];
+    return key === 'q' ? secondaryAbilityNames[shipId] : skin.ability;
+  }
+  function setPrismChoice(choice, slot = state.prismAbilitySlot) {
+    if (!['e','q'].includes(slot)) return;
+    state.prismAbilityChoices[slot] = choice;
+    try { localStorage.setItem(prismAbilityChoiceKey, JSON.stringify(state.prismAbilityChoices)); } catch { /* As escolhas ficam nesta sessão. */ }
+  }
+  function setPrismAbilitySlot(slot) {
+    if (!['e','q'].includes(slot)) return;
+    state.prismAbilitySlot = slot;
+    document.querySelectorAll('[data-prism-slot]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.prismSlot === slot)));
+  }
+  function abilitySourceIs(id) {
+    if (currentSkin().id === id) return true;
+    return state.selectedSkin === 'prisma' && ['e','q'].some((slot) => prismChoiceParts(state.prismAbilityChoices[slot]).shipId === id);
+  }
+  function shipUpgradeActive(id, key) {
+    if (currentSkin().id === id) return true;
+    if (currentSkin().id !== 'prisma') return false;
+    return ['e','q'].some((slot) => { const choice = prismChoiceParts(state.prismAbilityChoices[slot]); return choice.shipId === id && (!key || choice.key === key); });
+  }
+  function prismCooldownDuration() {
+    return Math.max(18, Math.min(state.abilityBaseCooldown || 28, 28 - state.prismCooldownBonus * 2));
   }
   function saveBest() { try { localStorage.setItem(bestKey, String(state.best)); } catch { /* Recorde mantido nesta sessão. */ } }
   function saveBestWave() { try { localStorage.setItem(bestWaveKey, String(state.bestCompletedWave)); } catch { /* Desbloqueios mantidos nesta sessão. */ } }
   function unlockedShipsAtWave(bestWave) {
     const result = new Set(['aurora']);
     skins.forEach((skin) => {
-      const unlocked = isAllShipsProfile()
+      const unlocked = skin.ownerOnly ? hasSecretShipAccess(skin) : isAllShipsProfile()
         || (skin.secret ? hasSecretShipAccess(skin)
           : isDeveloperProfile() || !skin.unlockWave || bestWave >= skin.unlockWave);
       if (unlocked) result.add(skin.id);
@@ -482,9 +622,10 @@
       if (error) throw error;
       const cloudIds = new Set((data?.unlocked_ships || []).map((code) => shipIdByCode[Number(code)]).filter(Boolean));
       const bestWave = Math.max(readBestWave(), state.bestCompletedWave, Number(data?.best_completed_wave) || 0);
+      saveNicknameCompletedWave('educvv', Number(data?.best_completed_wave) || 0);
       state.bestCompletedWave = bestWave;
-      accountUnlockedShipIds = new Set([...cloudIds, ...unlockedShipsAtWave(bestWave)]);
       accountShipProgressLoaded = true;
+      accountUnlockedShipIds = new Set([...cloudIds, ...unlockedShipsAtWave(bestWave)]);
       const cloudSelected = data ? shipIdByCode[Number(data.selected_ship)] : '';
       const localSelected = state.selectedSkin;
       state.selectedSkin = cloudSelected && accountUnlockedShipIds.has(cloudSelected)
@@ -504,11 +645,12 @@
   function updateEquippedShip() {
     if (!ui.equippedShip) return;
     const skin = currentSkin();
-    const silhouettes = { classic: 'M20 3 L34 35 L20 28 L6 35 Z', blade: 'M20 2 L24 16 L36 33 L20 27 L4 33 L16 16 Z', wing: 'M20 2 L25 16 L37 30 L25 27 L20 38 L15 27 L3 30 L15 16 Z', shield: 'M20 2 L32 17 L29 32 L20 37 L11 32 L8 17 Z', ring: 'M20 3 L34 35 L20 28 L6 35 Z', reflector: 'M20 2 L33 10 L37 23 L28 34 L20 38 L12 34 L3 23 L7 10 Z' };
+    const silhouettes = { classic: 'M20 3 L34 35 L20 28 L6 35 Z', blade: 'M20 2 L24 16 L36 33 L20 27 L4 33 L16 16 Z', wing: 'M20 2 L25 16 L37 30 L25 27 L20 38 L15 27 L3 30 L15 16 Z', shield: 'M20 2 L32 17 L29 32 L20 37 L11 32 L8 17 Z', ring: 'M20 3 L34 35 L20 28 L6 35 Z', reflector: 'M20 2 L33 10 L37 23 L28 34 L20 38 L12 34 L3 23 L7 10 Z', prism: 'M20 2 L34 13 L30 31 L20 38 L10 31 L6 13 Z' };
     ui.equippedShip.style.setProperty('--skin-color', skin.color);
     const equippedIcon = skin.shape === 'eclipse'
       ? '<span class="starfall-equipped-icon starfall-eclipse-sprite" aria-hidden="true"></span>'
-      : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon" aria-hidden="true">🦖</span>'
+      : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon starfall-dino-image-wrap" aria-hidden="true"><img src="saurion-raptor-skill.png" alt=""></span>'
+      : skin.shape === 'prism' ? '<span class="starfall-equipped-icon starfall-prism-icon" aria-hidden="true">◇</span>'
       : '<svg class="starfall-equipped-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : '') + '</svg>';
     ui.equippedShip.innerHTML = equippedIcon + '<span><strong>Nave equipada: ' + skin.name + '</strong><small>' + skin.ability + ' · ' + shipCooldownSummary(skin) + '</small></span>';
     updateEclipseSkipOption();
@@ -524,18 +666,39 @@
   function nicknameSettingsStorageKey(nickname = profileNickname()) {
     return nicknameSettingsPrefix + encodeURIComponent(nickname || 'jogador');
   }
+  function profileSetupStorageKey(nickname = profileNickname()) {
+    return setupCompleteKey + ':' + encodeURIComponent(nickname || 'jogador');
+  }
   function readNicknameSettings(nickname = profileNickname()) {
+    const readProfileSetup = () => {
+      try { return localStorage.getItem(profileSetupStorageKey(nickname)) === 'true'; } catch { return false; }
+    };
+    let saved = null;
     try {
-      const saved = JSON.parse(localStorage.getItem(nicknameSettingsStorageKey(nickname)) || 'null');
-      if (saved && typeof saved === 'object') return {
-        damageCounterEnabled: typeof saved.damageCounterEnabled === 'boolean' ? saved.damageCounterEnabled : readLegacySetting(auroraDamageCounterKey, defaultNicknameSettings.damageCounterEnabled),
-        eclipseSkipVideo: typeof saved.eclipseSkipVideo === 'boolean' ? saved.eclipseSkipVideo : readLegacySetting(eclipseSkipVideoKey, defaultNicknameSettings.eclipseSkipVideo),
-        damageCounterPosition: normalizeDamageCounterPosition(saved.damageCounterPosition)
-      };
+      const parsed = JSON.parse(localStorage.getItem(nicknameSettingsStorageKey(nickname)) || 'null');
+      if (parsed && typeof parsed === 'object') saved = parsed;
     } catch { /* Recupera as preferências padrão se o armazenamento local estiver indisponível. */ }
-    const damageCounterEnabled = readLegacySetting(auroraDamageCounterKey, defaultNicknameSettings.damageCounterEnabled);
-    const eclipseSkipVideo = readLegacySetting(eclipseSkipVideoKey, defaultNicknameSettings.eclipseSkipVideo);
-    return { damageCounterEnabled, eclipseSkipVideo, damageCounterPosition: { ...defaultDamageCounterPosition } };
+    const migrated = {
+      damageCounterEnabled: typeof saved?.damageCounterEnabled === 'boolean' ? saved.damageCounterEnabled : defaultNicknameSettings.damageCounterEnabled,
+      eclipseSkipVideo: typeof saved?.eclipseSkipVideo === 'boolean' ? saved.eclipseSkipVideo : defaultNicknameSettings.eclipseSkipVideo,
+      damageCounterPosition: normalizeDamageCounterPosition(saved?.damageCounterPosition),
+      controlMode: validControlMode(saved?.controlMode) ? saved.controlMode : defaultControlMode(),
+      performanceMode: ['normal','light'].includes(saved?.performanceMode) ? saved.performanceMode : 'normal',
+      setupComplete: typeof saved?.setupComplete === 'boolean' ? saved.setupComplete : readProfileSetup()
+    };
+    try {
+      if (localStorage.getItem(nicknameSettingsMigrationKey) !== 'true') {
+        if (typeof saved?.damageCounterEnabled !== 'boolean') migrated.damageCounterEnabled = readLegacySetting(auroraDamageCounterKey, defaultNicknameSettings.damageCounterEnabled);
+        if (typeof saved?.eclipseSkipVideo !== 'boolean') migrated.eclipseSkipVideo = readLegacySetting(eclipseSkipVideoKey, defaultNicknameSettings.eclipseSkipVideo);
+        if (!validControlMode(saved?.controlMode)) migrated.controlMode = readControlMode();
+        if (!['normal','light'].includes(saved?.performanceMode)) migrated.performanceMode = readPerformanceMode();
+        migrated.setupComplete = migrated.setupComplete || (localStorage.getItem(setupCompleteKey) === 'true'
+          && localStorage.getItem(controlModeKey) !== null && localStorage.getItem(performanceModeKey) !== null);
+        localStorage.setItem(nicknameSettingsStorageKey(nickname), JSON.stringify(migrated));
+        localStorage.setItem(nicknameSettingsMigrationKey, 'true');
+      }
+    } catch { /* As preferências ainda ficam disponíveis na sessão. */ }
+    return migrated;
   }
   function readLegacySetting(key, fallback) {
     try {
@@ -548,8 +711,14 @@
       localStorage.setItem(nicknameSettingsStorageKey(nickname), JSON.stringify({
         damageCounterEnabled: state.damageCounterEnabled,
         eclipseSkipVideo: state.eclipseSkipVideoEnabled,
-        damageCounterPosition: normalizeDamageCounterPosition(state.damageCounterPosition)
+        damageCounterPosition: normalizeDamageCounterPosition(state.damageCounterPosition),
+        controlMode: state.savedControlMode,
+        performanceMode: state.performanceMode,
+        setupComplete: state.preferencesConfigured
       }));
+      localStorage.setItem(controlModeKey, state.controlMode);
+      localStorage.setItem(performanceModeKey, state.performanceMode);
+      localStorage.setItem(profileSetupStorageKey(nickname), String(state.preferencesConfigured));
     } catch { /* As escolhas continuam valendo nesta sessão. */ }
   }
   function settingsNicknameIsAllowed(nickname) {
@@ -569,6 +738,9 @@
       damage_counter_x: state.damageCounterPosition.x,
       damage_counter_y: state.damageCounterPosition.y,
       eclipse_skip_video: state.eclipseSkipVideoEnabled,
+      control_mode: state.savedControlMode,
+      performance_mode: state.performanceMode,
+      setup_complete: state.preferencesConfigured,
       updated_at: new Date().toISOString()
     };
     writeNicknameSettingsLocally(nickname);
@@ -596,7 +768,14 @@
     state.damageCounterEnabled = local.damageCounterEnabled;
     state.eclipseSkipVideoEnabled = local.eclipseSkipVideo;
     state.damageCounterPosition = local.damageCounterPosition;
-    updateEclipseSkipOption(); updateAbilityButton();
+    state.savedControlMode = local.controlMode;
+    state.controlMode = adaptControlMode(local.controlMode);
+    state.performanceMode = local.performanceMode;
+    state.preferencesConfigured = local.setupComplete;
+    updateEclipseSkipOption(); updateAbilityButton(); updateControlUI(); updatePerformanceModeUI();
+    const localParticleLimit = particleLimit();
+    if (state.particles.length > localParticleLimit) state.particles.splice(0, state.particles.length - localParticleLimit);
+    resize();
     if (state.mode !== 'playing') draw(performance.now());
     if (!settingsNicknameIsAllowed(normalizedNickname) || !window.CV_GAMES_AUTH?.client) {
       updateSettingsSyncStatus('Preferências salvas neste aparelho.');
@@ -605,7 +784,7 @@
     try {
       if (normalizedNickname === 'educvv' && !(await window.CV_GAMES_AUTH.getOwnerSession())?.user?.id) return;
       const { data, error } = await window.CV_GAMES_AUTH.client.from('starfall_settings')
-        .select('damage_counter_enabled,damage_counter_x,damage_counter_y,eclipse_skip_video')
+        .select('damage_counter_enabled,damage_counter_x,damage_counter_y,eclipse_skip_video,control_mode,performance_mode,setup_complete')
         .eq('nickname', normalizedNickname).maybeSingle();
       if (error) throw error;
       if (profileNickname() !== normalizedNickname || settingsMutationRevision !== revision) return;
@@ -613,9 +792,15 @@
       state.damageCounterEnabled = Boolean(data.damage_counter_enabled);
       state.eclipseSkipVideoEnabled = Boolean(data.eclipse_skip_video);
       state.damageCounterPosition = normalizeDamageCounterPosition({ x:data.damage_counter_x, y:data.damage_counter_y });
+      state.savedControlMode = validControlMode(data.control_mode) ? data.control_mode : local.controlMode;
+      state.controlMode = adaptControlMode(state.savedControlMode);
+      state.performanceMode = data.performance_mode === 'light' ? 'light' : 'normal';
+      state.preferencesConfigured = Boolean(data.setup_complete || local.setupComplete);
+      const syncPreviouslyConfigured = local.setupComplete && !data.setup_complete;
       writeNicknameSettingsLocally(nickname);
-      updateEclipseSkipOption(); updateAbilityButton();
-      updateSettingsSyncStatus('Preferências sincronizadas para ' + displayRankNickname(normalizedNickname) + '.');
+      updateEclipseSkipOption(); updateAbilityButton(); updateControlUI(); updatePerformanceModeUI(); resize();
+      if (syncPreviouslyConfigured) saveNicknameSettings();
+      else updateSettingsSyncStatus('Preferências sincronizadas para ' + displayRankNickname(normalizedNickname) + '.');
       if (state.mode !== 'playing') draw(performance.now());
     } catch {
       updateSettingsSyncStatus('Preferências salvas neste aparelho; sincronização indisponível.');
@@ -681,6 +866,8 @@
   function updateAbilityButton() {
     const skin = currentSkin();
     if (ui.damageCounterCheckbox) ui.damageCounterCheckbox.checked = state.damageCounterEnabled;
+    if (ui.prismSelectWrap) ui.prismSelectWrap.hidden = skin.id !== 'prisma' || !['playing','paused'].includes(state.mode);
+    if (skin.id === 'prisma') { updatePrismAbilityButton(); return; }
     const showAbility = ['playing', 'paused'].includes(state.mode);
     const ready = state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
@@ -688,6 +875,7 @@
     const active = eclipseIntro || eclipseActive;
     if (ui.abilityWrap) ui.abilityWrap.hidden = !showAbility;
     if (ui.ability) {
+      ui.ability.classList.remove('is-prisma');
       ui.ability.style.setProperty('--ship-color', skin.color);
       ui.ability.style.setProperty('--ship-accent', skin.accent);
       ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
@@ -751,6 +939,7 @@
       ui.eclipseQ.classList.toggle('is-redshift', isRedshift);
       ui.eclipseQ.classList.toggle('is-flashblade', isFlashblade);
       ui.eclipseQ.classList.toggle('is-tempest', isTempest);
+      ui.eclipseQ.classList.remove('is-prisma');
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
       const qLabel = qActive && isAurora ? 'Elo Estelar ativo por mais ' + Math.ceil(state.auroraLink.life) + ' segundos · até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos vinculados'
         : qActive && isAegis ? 'Órbitas Sentinelas protegem a nave por mais ' + Math.ceil(state.aegisOrbit.life) + ' segundos · ' + aegisOrbitRemaining + ' fragmentos restantes'
@@ -788,7 +977,67 @@
       ui.eclipseQ.classList.toggle('is-counting', Boolean(qCountdown));
     }
   }
-  function openSecretShipUnlock() {
+  function prismAbilityGlyph(choice = state.prismAbilityChoices.e) {
+    const { shipId, key } = prismChoiceParts(choice);
+    if (shipId === 'prisma') return key === 'q' ? '⌖' : '✧';
+    const glyphs = { aurora:{ e:'✴', q:'✧' }, aegis:{ e:'⬡', q:'⬡' }, chronos:{ e:'◷', q:'◌' }, tempest:{ e:'◉', q:'↗' }, flashblade:{ e:'✧', q:'〰' }, redshift:{ e:'◈', q:'△' }, eclipse:{ e:'◉', q:'◌' }, saurion:{ e:'〰', q:'🐾' } };
+    return glyphs[shipId]?.[key] || '✧';
+  }
+  function updatePrismAbilityButton() {
+    const show = ['playing', 'paused'].includes(state.mode);
+    const skin = skins.find((item) => item.id === 'prisma');
+    if (ui.abilityWrap) ui.abilityWrap.hidden = !show;
+    if (ui.ability) {
+      const choice = prismChoiceParts(state.prismAbilityChoices.e);
+      const selectedName = prismChoiceName(state.prismAbilityChoices.e);
+      const horizonReturning = choice.key === 'q' && Boolean(state.prismHorizonAnchor?.life > 0);
+      const canUse = state.mode === 'playing' && prismChoiceCanActivate('e');
+      const active = prismChoiceActive('e');
+      const countdown = horizonReturning ? String(Math.ceil(state.prismHorizonAnchor.life)) : !hasDeveloperPerks() && prismSlotCooldown('e') > 0 ? String(Math.ceil(prismSlotCooldown('e'))) : '';
+      ui.ability.style.setProperty('--ship-color', skin.color);
+      ui.ability.style.setProperty('--ship-accent', skin.accent);
+      ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
+      ui.ability.style.setProperty('--ship-accent-rgb', colorRgbTriplet(skin.accent));
+      ui.ability.classList.add('is-prisma');
+      ui.ability.disabled = !canUse;
+      ui.ability.textContent = prismAbilityGlyph();
+      ui.ability.setAttribute('aria-pressed', String(active));
+      ui.ability.setAttribute('aria-label', horizonReturning ? 'Retornar pela Dobra de Horizonte · ' + Math.ceil(state.prismHorizonAnchor.life) + ' segundos restantes' : canUse ? 'Ativar ' + selectedName + ' · tecla E' : selectedName + ' recarregando: ' + Math.ceil(prismSlotCooldown('e')) + ' segundos');
+      if (ui.abilityCooldown) { ui.abilityCooldown.textContent = countdown; ui.abilityCooldown.hidden = !countdown; }
+      ui.ability.classList.toggle('is-counting', Boolean(countdown));
+      ui.ability.title = selectedName + ' · habilidade E · pressione G para escolher.';
+    }
+    if (ui.eclipseQWrap && ui.eclipseQ) {
+      const qChoice = prismChoiceParts(state.prismAbilityChoices.q);
+      const qName = prismChoiceName(state.prismAbilityChoices.q);
+      const qCanUse = state.mode === 'playing' && prismChoiceCanActivate('q');
+      const qActive = prismChoiceActive('q');
+      const qTimer = prismSlotCooldown('q');
+      const qCountdown = !hasDeveloperPerks() && qTimer > 0 ? String(Math.ceil(qTimer)) : '';
+      ui.eclipseQWrap.hidden = !show;
+      ui.eclipseQ.classList.remove('is-aurora','is-aegis','is-chronos','is-saurion','is-redshift','is-flashblade','is-tempest');
+      ui.eclipseQ.classList.add('is-prisma');
+      ui.eclipseQ.textContent = prismAbilityGlyph(state.prismAbilityChoices.q);
+      ui.eclipseQ.disabled = !qCanUse || state.eclipsePhase === 'cinematic';
+      ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
+      ui.eclipseQ.setAttribute('aria-label', qCanUse ? 'Ativar ' + qName + ' · tecla Q' : qName + ' recarregando: ' + Math.ceil(qTimer) + ' segundos');
+      ui.eclipseQ.title = qName + ' · habilidade Q · pressione G para escolher.';
+      if (ui.eclipseQCooldown) { ui.eclipseQCooldown.textContent = qCountdown; ui.eclipseQCooldown.hidden = !qCountdown; }
+      ui.eclipseQ.classList.toggle('is-counting', Boolean(qCountdown));
+    }
+    if (ui.prismSelectWrap) ui.prismSelectWrap.hidden = !show;
+    if (ui.prismSelect) ui.prismSelect.disabled = !show || state.eclipsePhase === 'cinematic';
+  }
+  function openSecretShipUnlock(shipId = null) {
+    pendingSecretShipId = shipId;
+    const prismaUnlock = shipId === 'prisma';
+    const title = $('#secret-unlock-title');
+    const copy = ui.secretUnlockDialog?.querySelector('.starfall-secret-dialog-card > p:nth-of-type(2)');
+    if (title) title.textContent = prismaUnlock ? 'Desbloquear Prisma Real' : 'Desbloquear naves secretas';
+    if (copy) copy.textContent = prismaUnlock
+      ? 'Digite o código para liberar a Prisma Real neste aparelho.'
+      : 'Digite o código temporário para liberar as naves secretas neste aparelho.';
+    if (ui.secretUnlockInput) ui.secretUnlockInput.inputMode = prismaUnlock ? 'text' : 'numeric';
     if (ui.secretUnlockDialog?.showModal) {
       ui.secretUnlockError.hidden = true;
       ui.secretUnlockInput.value = '';
@@ -796,32 +1045,41 @@
       ui.secretUnlockInput.focus();
       return;
     }
-    const entered = window.prompt('Digite o código temporário para liberar as naves secretas:');
-    if (entered !== secretShipPasscode) { if (entered !== null) window.alert('Código incorreto.'); return; }
-    secretShipUnlocks = new Set(['*']);
-    try { localStorage.setItem(secretShipUnlockKey, JSON.stringify(['*'])); } catch { /* A liberação vale nesta sessão. */ }
+    const entered = window.prompt(prismaUnlock ? 'Digite o código para liberar a Prisma Real:' : 'Digite o código temporário para liberar as naves secretas:');
+    const valid = prismaUnlock ? String(entered || '').trim().toLowerCase() === prismaShipPasscode : entered === secretShipPasscode;
+    if (!valid) { if (entered !== null) window.alert('Código incorreto.'); pendingSecretShipId = null; return; }
+    grantSecretShipUnlock(shipId);
+  }
+  function grantSecretShipUnlock(shipId) {
+    if (shipId === 'prisma') secretShipUnlocks.add('prisma');
+    else secretShipUnlocks = new Set(['*']);
+    try { localStorage.setItem(secretShipUnlockKey, JSON.stringify([...secretShipUnlocks])); } catch { /* A liberação vale nesta sessão. */ }
+    pendingSecretShipId = null;
     renderSkinPicker(); updateEquippedShip(); updateControlUI(); persistAccountShipProgress(); reconcileAbilityCollectorAchievement();
   }
   function closeSecretShipUnlock() {
     if (ui.secretUnlockDialog?.open) ui.secretUnlockDialog.close();
+    pendingSecretShipId = null;
     if (ui.shipModal && !ui.shipModal.hidden) ui.skinPicker?.querySelector('.starfall-skin-card.is-secret')?.focus();
   }
   function submitSecretShipUnlock(event) {
     event.preventDefault();
-    if (ui.secretUnlockInput.value !== secretShipPasscode) {
+    const shipId = pendingSecretShipId;
+    const entered = ui.secretUnlockInput.value;
+    const valid = shipId === 'prisma'
+      ? entered.trim().toLowerCase() === prismaShipPasscode
+      : entered === secretShipPasscode;
+    if (!valid) {
       ui.secretUnlockError.hidden = false;
       ui.secretUnlockInput.focus();
       ui.secretUnlockInput.select();
       return;
     }
-    secretShipUnlocks = new Set(['*']);
-    try { localStorage.setItem(secretShipUnlockKey, JSON.stringify(['*'])); } catch { /* A liberação vale nesta sessão. */ }
+    grantSecretShipUnlock(shipId);
     ui.secretUnlockInput.value = '';
     ui.secretUnlockError.hidden = true;
     ui.secretUnlockDialog.close();
-    renderSkinPicker(); updateEquippedShip(); updateControlUI(); persistAccountShipProgress();
-    reconcileAbilityCollectorAchievement();
-    ui.status.textContent = 'Naves secretas liberadas neste aparelho.';
+    ui.status.textContent = shipId === 'prisma' ? 'Prisma Real liberada neste aparelho.' : 'Naves secretas liberadas neste aparelho.';
   }
   function openShipDetails(skin) {
     if (!ui.shipDetailsDialog || !ui.shipDetailsList) return;
@@ -848,6 +1106,7 @@
     ui.skinPicker.replaceChildren();
     skins.forEach((skin) => {
       const unlocked = skinUnlocked(skin);
+      const concealed = Boolean(skin.ownerOnly && !unlocked);
       const card = document.createElement('article');
       card.className = 'starfall-skin-card' + (skin.id === state.selectedSkin ? ' is-selected' : '') + (skin.secret ? ' is-secret' : '') + (!unlocked ? ' is-locked' : '');
       card.style.setProperty('--skin-color', skin.color);
@@ -855,22 +1114,24 @@
       select.type = 'button';
       select.className = 'starfall-skin-select';
       select.setAttribute('aria-pressed', String(skin.id === state.selectedSkin));
-      select.setAttribute('aria-label', unlocked ? (skin.id === state.selectedSkin ? 'Nave equipada: ' : 'Equipar nave ') + skin.name : skin.secret ? 'Abrir desbloqueio da nave secreta ' + skin.name : skin.name + ' · desbloqueia na onda ' + skin.unlockWave);
-      select.disabled = !unlocked && !skin.secret;
+      select.setAttribute('aria-label', concealed ? 'Nave secreta indisponível' : unlocked ? (skin.id === state.selectedSkin ? 'Nave equipada: ' : 'Equipar nave ') + skin.name : skin.secret ? 'Abrir desbloqueio da nave secreta ' + skin.name : skin.name + ' · desbloqueia na onda ' + skin.unlockWave);
+      select.disabled = !unlocked && (!skin.secret || (skin.ownerOnly && skin.id !== 'prisma'));
       const icon = document.createElement('span');
-      icon.className = 'starfall-skin-icon' + (skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'dino' ? ' starfall-dino-icon' : '');
+      icon.className = 'starfall-skin-icon' + (concealed ? ' starfall-prism-icon is-concealed' : skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'dino' ? ' starfall-dino-icon starfall-dino-image-wrap' : skin.shape === 'prism' ? ' starfall-prism-icon' : '');
       icon.setAttribute('aria-hidden', 'true');
-      if (skin.shape === 'dino') icon.textContent = '🦖';
-      else if (skin.shape !== 'eclipse') icon.textContent = skin.shape === 'reflector' ? '◈' : '✦';
-      const name = document.createElement('strong'); name.textContent = skin.name;
-      const primary = document.createElement('span'); primary.className = 'starfall-skin-skill'; primary.innerHTML = '<kbd>E</kbd><span>' + skin.ability + '</span>';
-      const secondary = document.createElement('span'); secondary.className = 'starfall-skin-skill'; secondary.innerHTML = '<kbd>Q</kbd><span>' + secondaryAbilityNames[skin.id] + '</span>';
+      if (concealed) icon.textContent = '?';
+      else if (skin.shape === 'dino') { const image = document.createElement('img'); image.src = 'saurion-raptor-skill.png'; image.alt = ''; icon.append(image); }
+      else if (skin.shape !== 'eclipse') icon.textContent = skin.shape === 'reflector' ? '◈' : skin.shape === 'prism' ? '◇' : '✦';
+      const name = document.createElement('strong'); name.textContent = concealed ? 'NAVE DESCONHECIDA' : skin.name;
+      const primary = document.createElement('span'); primary.className = 'starfall-skin-skill'; primary.innerHTML = '<kbd>E</kbd><span>' + (concealed ? 'SINAL SELADO' : skin.ability) + '</span>';
+      const secondary = document.createElement('span'); secondary.className = 'starfall-skin-skill'; secondary.innerHTML = '<kbd>Q</kbd><span>' + (concealed ? 'SINAL SELADO' : secondaryAbilityNames[skin.id]) + '</span>';
       const status = document.createElement('small');
       status.className = 'starfall-skin-status';
-      status.textContent = unlocked ? skin.id === state.selectedSkin ? 'EQUIPADA' : 'EQUIPAR' : skin.secret ? 'SECRETA · LIBERAR' : 'DESBLOQUEIA NA ONDA ' + skin.unlockWave;
+      status.textContent = concealed ? 'ACESSO RESTRITO' : unlocked ? skin.id === state.selectedSkin ? skin.id === 'prisma' ? 'EQUIPADA · FORA DO PLACAR' : 'EQUIPADA' : 'EQUIPAR' : skin.secret ? 'SECRETA · LIBERAR' : 'DESBLOQUEIA NA ONDA ' + skin.unlockWave;
       select.append(icon, name, primary, secondary, status);
       select.addEventListener('click', () => {
-        if (skin.secret && !skinUnlocked(skin)) { openSecretShipUnlock(); return; }
+        if (skin.ownerOnly && skin.id !== 'prisma' && !skinUnlocked(skin)) return;
+        if (skin.secret && !skinUnlocked(skin)) { openSecretShipUnlock(skin.id); return; }
         if (!skinUnlocked(skin) || state.mode === 'playing' || state.mode === 'upgrade') return;
         state.selectedSkin = skin.id;
         try { localStorage.setItem('cv-games-cv-starfall-skin', skin.id); } catch { /* A escolha vale para esta sessão. */ }
@@ -878,13 +1139,21 @@
         updateEquippedShip();
         updateControlUI();
         persistAccountShipProgress();
-        ui.copy.textContent = 'Cada nave tem habilidades especiais. Use E e Q para ativá-las; abra Naves e Habilidades e selecione Ver detalhes para conhecer cada poder.';
+        ui.copy.textContent = skin.id === 'prisma'
+          ? 'Prisma Real equipada: nave especial de teste. As missões com ela não são enviadas ao Top 10; seus recordes continuam salvos neste aparelho.'
+          : 'Cada nave tem habilidades especiais. Use E e Q para ativá-las; abra Naves e Habilidades e selecione Ver detalhes para conhecer cada poder.';
         closeShips();
+        if (skin.id === 'prisma' && ui.prismRankNotice) {
+          ui.prismRankNotice.hidden = false;
+          syncAudioVisibility();
+          ui.prismRankNotice.querySelector('[data-close-prism-rank-notice]')?.focus();
+        }
       });
       const details = document.createElement('button');
-      details.type = 'button'; details.className = 'starfall-skin-details-trigger'; details.textContent = 'Ver detalhes';
-      details.setAttribute('aria-label', 'Ver detalhes das habilidades da nave ' + skin.name);
-      details.addEventListener('click', () => openShipDetails(skin));
+      details.type = 'button'; details.className = 'starfall-skin-details-trigger'; details.textContent = concealed ? 'Arquivo selado' : 'Ver detalhes';
+      details.disabled = concealed;
+      details.setAttribute('aria-label', concealed ? 'Detalhes da nave secreta indisponíveis' : 'Ver detalhes das habilidades da nave ' + skin.name);
+      details.addEventListener('click', () => { if (!concealed) openShipDetails(skin); });
       card.append(select, details);
       ui.skinPicker.append(card);
     });
@@ -925,6 +1194,7 @@
     const skin = currentSkin();
     state.player = { x: state.width / 2, y: state.height * .78, radius: mobileSize(13), speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0; state.adminNoCooldown = isDeveloperProfile(); state.adminBuffsActive = false;
+    state.prismDispatchSkinId = ''; state.prismDispatchSlot = ''; state.prismQCooldown = 0; state.prismHorizonAnchor = null; state.prismHorizonWindowBonus = 0; state.prismHorizonDamageBonus = 0; state.prismCoreRangeBonus = 0; state.prismCoreDamageBonus = 0; state.prismCooldownBonus = 0;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
     state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.eclipseDecoyAI = 0; state.eclipseDecoyDurationBonus = 0; state.eclipseDecoyChaos = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
@@ -939,6 +1209,38 @@
     renderSkinPicker();
     updateEquippedShip();
     updateHud();
+  }
+  function restoreMissionCheckpoint(checkpoint) {
+    if (!checkpoint) return;
+    const profileBestWave = readProfileResumeWave();
+    const beforeBestWave = Math.max(state.bestCompletedWave, readBestWave(), profileBestWave);
+    Object.entries(checkpoint.stats || {}).forEach(([key, value]) => {
+      if (key in state && typeof state[key] === 'number' && Number.isFinite(Number(value)) && !['width', 'height', 'dpr', 'lastTime', 'raf'].includes(key)) state[key] = Number(value);
+    });
+    state.bestCompletedWave = Math.max(beforeBestWave, Number(checkpoint.bestCompletedWave) || 0);
+    state.wave = Math.max(1, Number(checkpoint.wave) || 1, profileBestWave);
+    state.score = Math.max(0, Number(checkpoint.score) || 0);
+    state.elapsed = Math.max(0, Number(checkpoint.elapsed) || 0);
+    if (typeof checkpoint.lastBossType === 'string') state.lastBossType = checkpoint.lastBossType;
+    state.upgrades = Object.fromEntries(Object.entries(checkpoint.upgrades || {}).filter(([, level]) => Number(level) > 0).map(([id, level]) => [id, Math.floor(Number(level))]));
+    const player = checkpoint.player || {};
+    state.player = {
+      ...state.player,
+      x:clamp((Number(player.xRatio) || .5) * state.width, state.player.radius, state.width - state.player.radius),
+      y:clamp((Number(player.yRatio) || .78) * state.height, state.player.radius, state.height - state.player.radius),
+      speed:Math.max(80, Number(player.speed) || state.player.speed), damage:Math.max(.1, Number(player.damage) || state.player.damage),
+      fireRate:Math.max(.08, Number(player.fireRate) || state.player.fireRate), spread:Math.max(1, Math.floor(Number(player.spread) || state.player.spread)),
+      angle:Number.isFinite(Number(player.angle)) ? Number(player.angle) : state.player.angle,
+      moveAngle:Number.isFinite(Number(player.moveAngle)) ? Number(player.moveAngle) : state.player.moveAngle,
+      color:currentSkin().color, accent:currentSkin().accent, shape:currentSkin().shape
+    };
+    state.auroraLink = null; state.aegisOrbit = null; state.chronosEcho = null; state.chronosEchoQueue = [];
+    state.prismHorizonAnchor = null; state.redshiftPerimeter = null; state.flashTrail = null;
+    state.eclipseDecoy = null; state.eclipsePhase = 'idle'; state.eclipseTime = 0; state.eclipseCutTimer = 0;
+    state.reflectTime = 0; state.reflectContacts = new Set(); state.flashTrailContacts = new Set();
+    state.damageCounterPopups = []; state.damageCounterIdle = 0; state.shipEWasCooling = false; state.shipQWasCooling = false;
+    saveBestWave();
+    renderSkinPicker(); updateEquippedShip(); updateHud();
   }
   function grantAllUpgrades() {
     state.adminBuffsActive = true;
@@ -956,7 +1258,7 @@
     }
     state.lives = state.maxLives;
   }
-  function startGame(dailyChallenge = false) {
+  function startGame(dailyChallenge = false, checkpoint = null) {
     if (!['intro', 'gameover'].includes(state.mode)) return;
     refreshDeviceSizing();
     cancelAnimationFrame(state.raf);
@@ -977,14 +1279,26 @@
       state.randomStreams = null;
       if (state.skinBeforeDaily) { state.selectedSkin = state.skinBeforeDaily; state.skinBeforeDaily = ''; }
     }
+    if (checkpoint && !dailyChallenge) {
+      const savedSkin = skins.find((skin) => skin.id === checkpoint.shipId);
+      if (savedSkin && skinUnlocked(savedSkin)) state.selectedSkin = savedSkin.id;
+    }
     resetGame();
+    if (checkpoint && !dailyChallenge) restoreMissionCheckpoint(checkpoint);
+    else if (!dailyChallenge) clearMissionCheckpoint();
     setMode('playing');
-    ui.status.textContent = state.dailyChallenge ? `Desafio diário de ${formatChallengeDate(state.challengeDate)}. Boa sorte, piloto!` : isAllUpgradesProfile() ? 'Missão iniciada com todos os upgrades disponíveis.' : 'Missão iniciada. Sobreviva à primeira onda!';
-    if (state.dailyChallenge) toast('DESAFIO DIÁRIO · NAVE AURORA');
-    else if (isAllUpgradesProfile()) toast('UPGRADES MÁXIMOS EQUIPADOS');
-    recordAchievementEvent('mission');
-    recordAchievementEvent('wave', state.wave);
-    if (window.CV_GAMES_STATS?.recordPlay) window.CV_GAMES_STATS.recordPlay(gameId);
+    if (checkpoint && !dailyChallenge) {
+      beginNextWave();
+      ui.status.textContent = `Missão retomada na onda ${state.wave}. A onda começa novamente com seus pontos e melhorias guardados.`;
+      toast(`MISSÃO RETOMADA · ONDA ${state.wave}`);
+    } else {
+      ui.status.textContent = state.dailyChallenge ? `Desafio diário de ${formatChallengeDate(state.challengeDate)}. Boa sorte, piloto!` : isAllUpgradesProfile() ? 'Missão iniciada com todos os upgrades disponíveis.' : 'Missão iniciada. Sobreviva à primeira onda!';
+      if (state.dailyChallenge) toast('DESAFIO DIÁRIO · NAVE AURORA');
+      else if (isAllUpgradesProfile()) toast('UPGRADES MÁXIMOS EQUIPADOS');
+      recordAchievementEvent('mission');
+      recordAchievementEvent('wave', state.wave);
+      if (window.CV_GAMES_STATS?.recordPlay) window.CV_GAMES_STATS.recordPlay(gameId);
+    }
     state.lastTime = performance.now();
     state.raf = requestAnimationFrame(frame);
   }
@@ -992,7 +1306,9 @@
     if (state.mode === 'playing') {
       state.keys.clear(); state.pointer.active = false; releaseAnalog();
       setMode('paused'); ui.title.textContent = 'Missão pausada'; ui.copy.textContent = 'Respire fundo. Sua nave está segura por enquanto.';
-      ui.start.textContent = '▶ RETOMAR MISSÃO'; ui.status.textContent = 'Jogo pausado.';
+      ui.start.textContent = '▶ RETOMAR MISSÃO';
+      const saved = saveMissionCheckpoint();
+      ui.status.textContent = state.dailyChallenge ? 'Desafio pausado.' : saved ? 'Missão salva neste aparelho. Você pode retomá-la depois.' : 'Jogo pausado.';
       cancelAnimationFrame(state.raf);
     } else if (state.mode === 'paused') {
       setMode('playing'); ui.status.textContent = 'Missão retomada.'; state.lastTime = performance.now(); state.raf = requestAnimationFrame(frame);
@@ -1000,6 +1316,7 @@
   }
   function finishGame() {
     if (state.mode === 'gameover') return;
+    if (!state.dailyChallenge) clearMissionCheckpoint();
     setMode('gameover');
     const dailyRun = state.dailyChallenge;
     const newRecord = !dailyRun && state.score > state.best;
@@ -1038,6 +1355,8 @@
       updateDailyChallengeInfo();
       if (ui.rankStatus) ui.rankStatus.textContent = result.isRecord ? 'Novo recorde diário local!' : 'Desafio guardado neste dispositivo';
       showDailySummary(run, result);
+    } else if (run.ship_id === 'prisma') {
+      if (ui.rankStatus) ui.rankStatus.textContent = 'Missão com a Prisma Real: não conta para o placar. Seu recorde local foi guardado.';
     } else submitRun(run).then(refreshLeaderboard);
     tone(newRecord ? 520 : 170, .3, newRecord ? 'triangle' : 'sawtooth', .05);
     if (dailyRun && state.skinBeforeDaily) {
@@ -1053,6 +1372,7 @@
     if (!state.waveDamageTaken) recordAchievementEvent('clean-wave');
     recordAchievementEvent('wave', completedWave);
     if (state.wave > state.bestCompletedWave) { state.bestCompletedWave = state.wave; saveBestWave(); renderSkinPicker(); persistAccountShipProgress(); }
+    saveNicknameCompletedWave(profileNickname(), completedWave);
     setMode('upgrade');
     state.wave += 1;
     if (Math.floor((state.wave - 1) / 15) !== Math.floor((state.wave - 2) / 15)) toast('NOVO PLANETA: ' + currentZone().name.toUpperCase());
@@ -1231,12 +1551,12 @@
     });
   }
   function queueChronosEcho(shot) {
-    if (currentSkin().id !== 'chronos' || !state.chronosEcho || state.chronosEcho.life <= 0 || state.chronosEchoQueue.length >= 420) return;
+    if (!abilitySourceIs('chronos') || !state.chronosEcho || state.chronosEcho.life <= 0 || state.chronosEchoQueue.length >= 420) return;
     const echoBullet = { ...shot, damage: shot.damage * (.4 + state.chronosEchoDamageBonus), color: '#d6c4ff', hit: [], chronosEchoShot: true };
     state.chronosEchoQueue.push({ delay: .42, bullet: echoBullet });
   }
   function enemyAimTarget() {
-    return currentSkin().id === 'eclipse' && state.eclipseDecoy?.life > 0 ? state.eclipseDecoy : state.player;
+    return abilitySourceIs('eclipse') && state.eclipseDecoy?.life > 0 ? state.eclipseDecoy : state.player;
   }
   function enemyFire(enemy) {
     const target = enemyAimTarget();
@@ -1298,7 +1618,7 @@
   }
   function reflectAuroraLinkDamage(livesLost) {
     const ability = state.auroraLink;
-    if (currentSkin().id !== 'aurora' || !ability || ability.life <= 0 || livesLost <= 0) return;
+    if (!abilitySourceIs('aurora') || !ability || ability.life <= 0 || livesLost <= 0) return;
     const linked = ability.targets?.filter((enemy) => enemy && !enemy.dead) || [];
     if (!linked.length) return;
     const reflectedDamage = Math.floor(livesLost) * 2;
@@ -1316,7 +1636,7 @@
     }
   }
   function damagePlayer(amount = 1) {
-    if (state.eclipsePhase === 'active' || state.invulnerable > 0 || state.mode !== 'playing' || (currentSkin().id === 'aegis' && state.aegisOrbit?.life > 0)) return;
+    if (state.eclipsePhase === 'active' || state.invulnerable > 0 || state.mode !== 'playing' || (abilitySourceIs('aegis') && state.aegisOrbit?.life > 0)) return;
     if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
     let remaining = Math.max(1, Math.floor(amount));
     const tempUsed = Math.min(state.tempShields, remaining); state.tempShields -= tempUsed; remaining -= tempUsed;
@@ -1537,7 +1857,7 @@
   }
   function updateEclipseDecoy(dt) {
     const decoy = state.eclipseDecoy;
-    if (!decoy) return;
+    if (!decoy || !abilitySourceIs('eclipse')) return;
     decoy.life = Math.max(0, decoy.life - dt);
     if (decoy.life <= 0) { finishEclipseDecoy(); return; }
 
@@ -1629,7 +1949,12 @@
     updateAbilityButton();
   }
   function dinoStampedeCooldownDuration() {
-    return Math.max(24, currentSkin().cooldownQ - upgradeLevel('dinoResonance') * 2);
+    const source = state.selectedSkin === 'prisma' && ['e','q'].some((slot) => {
+      const choice = prismChoiceParts(state.prismAbilityChoices[slot]);
+      return choice.shipId === 'saurion' && choice.key === 'q';
+    })
+      ? skins.find((skin) => skin.id === 'saurion') : currentSkin();
+    return Math.max(24, source.cooldownQ - upgradeLevel('dinoResonance') * 2);
   }
   function advanceDinoStampedeRecharge(seconds) {
     if (hasDeveloperPerks()) { state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; return; }
@@ -1716,7 +2041,236 @@
     tone(125, .28, 'sawtooth', .045);
     updateAbilityButton();
   }
+  function prismAbilityBusy() {
+    return Boolean(state.prismHorizonAnchor?.life > 0 || state.auroraLink?.life > 0 || state.aegisOrbit?.life > 0
+      || state.eclipsePhase === 'cinematic' || state.eclipsePhase === 'active' || state.eclipseDecoy?.life > 0
+      || state.chronosEcho?.life > 0 || state.slowTime > 0 || state.reflectTime > 0
+      || state.redshiftPerimeter?.life > 0 || state.flashTrail?.life > 0
+      || state.effects.some((effect) => effect.life > 0 && ['blade','singularity-shot','tempest-tide','dino-raptor'].includes(effect.type))
+      || state.enemies.some((enemy) => !enemy.dead && enemy.dinoCutMark > 0));
+  }
+  function prismSlotCooldown(slot) {
+    const { shipId, key } = prismChoiceParts(state.prismAbilityChoices[slot]);
+    if (key === 'q' && shipId === 'tempest') return state.tempestTideCharges > 0 ? 0 : state.tempestTideCooldown;
+    if (key === 'q' && shipId === 'saurion') return state.dinoStampedeCharges > 0 ? 0 : state.dinoStampedeRecharge;
+    return slot === 'q' ? state.prismQCooldown : state.abilityCooldown;
+  }
+  function setPrismSlotCooldown(slot, value) {
+    const { shipId, key } = prismChoiceParts(state.prismAbilityChoices[slot]);
+    if (key === 'q' && (shipId === 'tempest' || shipId === 'saurion')) return;
+    if (slot === 'q') state.prismQCooldown = value;
+    else state.abilityCooldown = value;
+  }
+  function prismChoiceActive(slot) {
+    const { shipId, key } = prismChoiceParts(state.prismAbilityChoices[slot]);
+    if (shipId === 'prisma') return key === 'q' ? Boolean(state.prismHorizonAnchor?.life > 0) : state.effects.some((effect) => effect.type === 'prism-core-wave' && effect.life > 0);
+    if (key === 'e') return shipId === 'eclipse' ? ['cinematic','active'].includes(state.eclipsePhase)
+      : shipId === 'aegis' ? state.tempShields > 0
+        : shipId === 'chronos' ? state.slowTime > 0
+          : shipId === 'redshift' ? state.reflectTime > 0 : false;
+    if (shipId === 'aurora') return Boolean(state.auroraLink?.life > 0);
+    if (shipId === 'aegis') return Boolean(state.aegisOrbit?.life > 0);
+    if (shipId === 'eclipse') return Boolean(state.eclipseDecoy?.life > 0);
+    if (shipId === 'chronos') return Boolean(state.chronosEcho?.life > 0);
+    if (shipId === 'redshift') return Boolean(state.redshiftPerimeter?.life > 0);
+    if (shipId === 'flashblade') return Boolean(state.flashTrail?.life > 0);
+    if (shipId === 'tempest') return state.effects.some((effect) => effect.type === 'tempest-tide' && effect.life > 0);
+    if (shipId === 'saurion') return state.effects.some((effect) => effect.type === 'dino-raptor' && effect.life > 0);
+    return false;
+  }
+  function prismChoiceCanActivate(slot = 'e') {
+    if (state.mode !== 'playing') return false;
+    const { shipId, key } = prismChoiceParts(state.prismAbilityChoices[slot]);
+    const returning = shipId === 'prisma' && key === 'q' && state.prismHorizonAnchor?.life > 0;
+    if (returning) return true;
+    if (!hasDeveloperPerks() && prismSlotCooldown(slot) > 0) return false;
+    if (shipId === 'prisma') return true;
+    if (key === 'e') return shipId !== 'eclipse' || state.eclipsePhase === 'idle';
+    if (shipId === 'aurora') return !state.auroraLink?.life;
+    if (shipId === 'aegis') return !state.aegisOrbit?.life;
+    if (shipId === 'eclipse') return !state.eclipseDecoy?.life && state.eclipsePhase === 'idle';
+    if (shipId === 'chronos') return !state.chronosEcho?.life;
+    if (shipId === 'redshift') return !state.redshiftPerimeter?.life;
+    if (shipId === 'flashblade') return !state.flashTrail?.life;
+    if (shipId === 'tempest') return state.tempestTideCharges > 0;
+    if (shipId === 'saurion') return state.dinoStampedeCharges > 0;
+    return true;
+  }
+  function prismChoiceIcon(skin, key) {
+    if (skin.id === 'prisma') return key === 'q' ? '⌖' : '✧';
+    return ({ aurora:{e:'✴',q:'✧'}, aegis:{e:'⬡',q:'⬡'}, chronos:{e:'◷',q:'◌'}, tempest:{e:'◉',q:'↗'}, flashblade:{e:'✧',q:'〰'}, redshift:{e:'◈',q:'△'}, eclipse:{e:'◉',q:'◌'}, saurion:{e:'〰',q:'🐾'} })[skin.id]?.[key] || '✦';
+  }
+  function renderPrismWheel() {
+    if (!ui.prismAbilityList) return;
+    ui.prismAbilityList.replaceChildren();
+    const slot = state.prismAbilitySlot;
+    const selected = state.prismAbilityChoices[slot];
+    const lockedByActivePower = prismAbilityBusy();
+    if (ui.prismWheelStatus) ui.prismWheelStatus.textContent = lockedByActivePower
+      ? 'Uma habilidade está ativa. Aguarde o efeito terminar para alterar suas escolhas.'
+      : 'Escolha o poder do espaço ' + slot.toUpperCase() + '. Depois configure o outro espaço, se quiser.';
+    document.querySelectorAll('[data-prism-slot]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.prismSlot === slot)));
+    skins.forEach((skin) => {
+      const group = document.createElement('section');
+      group.className = 'starfall-prism-ship-group' + (skin.id === 'prisma' ? ' is-native' : '');
+      const heading = document.createElement('h3'); heading.textContent = skin.id === 'prisma' ? 'PRISMA REAL · PODERES PRÓPRIOS' : skin.name;
+      group.append(heading);
+      for (const key of ['e','q']) {
+        const choice = skin.id + ':' + key;
+        const name = key === 'q' ? secondaryAbilityNames[skin.id] : skin.ability;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'starfall-prism-option' + (selected === choice ? ' is-selected' : '');
+        button.style.setProperty('--echo-color', skin.color);
+        button.disabled = lockedByActivePower && selected !== choice;
+        button.setAttribute('aria-pressed', String(selected === choice));
+        button.setAttribute('aria-label', 'Escolher ' + name + ' da nave ' + skin.name + ' para usar com ' + slot.toUpperCase());
+        const glyph = document.createElement('span'); glyph.className = 'starfall-prism-option-glyph'; glyph.textContent = prismChoiceIcon(skin, key);
+        const keys = document.createElement('small'); keys.textContent = key.toUpperCase() + ' · ' + skin.name;
+        const title = document.createElement('strong'); title.textContent = name;
+        button.append(glyph, keys, title);
+        button.addEventListener('click', () => {
+          if (lockedByActivePower && selected !== choice) return;
+          setPrismChoice(choice, slot);
+          renderPrismWheel();
+          updateAbilityButton();
+          toast('HABILIDADE ' + slot.toUpperCase() + ' · ' + name.toLocaleUpperCase('pt-BR'));
+        });
+        group.append(button);
+      }
+      ui.prismAbilityList.append(group);
+    });
+  }
+  function openPrismWheel() {
+    if (!ui.prismWheel || currentSkin().id !== 'prisma' || !['playing','paused'].includes(state.mode)) return;
+    state.prismWheelWasPlaying = state.mode === 'playing';
+    if (state.prismWheelWasPlaying) pauseGame();
+    if (ui.overlay) ui.overlay.hidden = true;
+    renderPrismWheel();
+    ui.prismWheel.hidden = false;
+    syncAudioVisibility();
+    ui.prismWheel.querySelector('[data-close-prism-wheel]')?.focus();
+  }
+  function closePrismWheel() {
+    if (!ui.prismWheel || ui.prismWheel.hidden) return;
+    ui.prismWheel.hidden = true;
+    const resume = state.prismWheelWasPlaying;
+    state.prismWheelWasPlaying = false;
+    if (resume && state.mode === 'paused') {
+      setMode('playing');
+      ui.status.textContent = 'Missão retomada.';
+      state.lastTime = performance.now();
+      state.raf = requestAnimationFrame(frame);
+    } else if (state.mode === 'paused' && ui.overlay) ui.overlay.hidden = false;
+    syncAudioVisibility();
+    updateAbilityButton();
+    ui.prismSelect?.focus({ preventScroll:true });
+  }
+  function prismCopiedEffect(skinId) {
+    const source = skins.find((skin) => skin.id === skinId) || skins[0];
+    state.effects.push({ type:'prism-echo', x:state.player.x, y:state.player.y, color:source.color, life:.58, total:.58 });
+  }
+  function pushPrismPulse(enemy, originX, originY, strength = 1, stun = .3) {
+    const angle = Math.atan2(enemy.y - originY, enemy.x - originX);
+    enemy.tempestRepulse = { time: .42, total: .42, vx: Math.cos(angle) * (185 * strength), vy: Math.sin(angle) * (185 * strength), spin: (enemy.x < originX ? -1 : 1) * 2.1 };
+    enemy.prismStun = Math.max(enemy.prismStun || 0, enemy.kind === 'boss' ? stun * .45 : stun);
+  }
+  function activatePrismCore() {
+    const slot = state.prismDispatchSlot || 'e';
+    if (state.mode !== 'playing' || (!hasDeveloperPerks() && prismSlotCooldown(slot) > 0)) return;
+    const radius = mobileSize(205 + state.prismCoreRangeBonus);
+    setPrismSlotCooldown(slot, hasDeveloperPerks() ? 0 : prismCooldownDuration());
+    state.effects.push({ type:'prism-core-wave', x:state.player.x, y:state.player.y, radius:0, maxRadius:radius, life:.82, total:.82 });
+    state.effects.push({ type:'prism-core-flash', x:state.player.x, y:state.player.y, life:.34, total:.34 });
+    let hitCount = 0;
+    for (const enemy of state.enemies) {
+      const gap = distance(state.player, enemy);
+      if (enemy.dead || gap > radius + enemy.r) continue;
+      const power = 7 + state.prismCoreDamageBonus;
+      damageEnemy(enemy, power * state.abilityPower * (enemy.kind === 'boss' ? .62 : 1), true);
+      pushPrismPulse(enemy, state.player.x, state.player.y, enemy.kind === 'boss' ? .36 : 1, .42);
+      burst(enemy.x, enemy.y, enemy.kind === 'boss' ? '#ffe29a' : '#59e9f2', enemy.kind === 'boss' ? 7 : 4, 90);
+      hitCount++;
+    }
+    burst(state.player.x, state.player.y, '#59e9f2', 38, 230);
+    burst(state.player.x, state.player.y, '#ffe29a', 18, 155);
+    recordAchievementEvent('ship-ability', 'prisma');
+    toast(hitCount ? 'NÚCLEO PRISMA · ' + hitCount + ' ALVOS' : 'NÚCLEO PRISMA · ONDA DE IMPACTO');
+    tone(520, .24, 'sine', .045);
+    updateAbilityButton();
+  }
+  function activatePrismHorizon() {
+    if (state.mode !== 'playing') return;
+    if (state.prismHorizonAnchor?.life > 0) {
+      const anchor = state.prismHorizonAnchor;
+      state.player.x = clamp(anchor.x, state.player.radius + 3, state.width - state.player.radius - 3);
+      state.player.y = clamp(anchor.y, state.player.radius + 3, state.height - state.player.radius - 3);
+      state.prismHorizonAnchor = null;
+      state.invulnerable = Math.max(state.invulnerable, .62);
+      const radius = mobileSize(150);
+      state.effects.push({ type:'prism-return-wave', x:state.player.x, y:state.player.y, radius:0, maxRadius:radius, life:.68, total:.68 });
+      let hitCount = 0;
+      for (const enemy of state.enemies) {
+        if (enemy.dead || distance(state.player, enemy) > radius + enemy.r) continue;
+        damageEnemy(enemy, (4 + state.prismHorizonDamageBonus) * state.abilityPower * (enemy.kind === 'boss' ? .58 : 1), true);
+        pushPrismPulse(enemy, state.player.x, state.player.y, enemy.kind === 'boss' ? .3 : .78, .28);
+        burst(enemy.x, enemy.y, '#ffe29a', 4, 72);
+        hitCount++;
+      }
+      burst(state.player.x, state.player.y, '#59e9f2', 24, 145);
+      burst(state.player.x, state.player.y, '#ffffff', 11, 96);
+      toast('DOBRA DE HORIZONTE · RETORNO' + (hitCount ? ' · ' + hitCount + ' ALVOS' : ''));
+      tone(690, .16, 'triangle', .04);
+      updateAbilityButton();
+      return;
+    }
+    const slot = state.prismDispatchSlot || 'e';
+    if (!hasDeveloperPerks() && prismSlotCooldown(slot) > 0) return;
+    const duration = 4 + state.prismHorizonWindowBonus;
+    state.prismHorizonAnchor = { x:state.player.x, y:state.player.y, life:duration, total:duration };
+    setPrismSlotCooldown(slot, hasDeveloperPerks() ? 0 : prismCooldownDuration());
+    state.effects.push({ type:'prism-anchor-start', x:state.player.x, y:state.player.y, life:.46, total:.46 });
+    burst(state.player.x, state.player.y, '#ffe29a', 13, 84);
+    toast('PONTO DE RETORNO MARCADO · ' + duration + 's');
+    tone(780, .12, 'sine', .035);
+    updateAbilityButton();
+  }
+  function activatePrismAbilityChoice(slot = 'e') {
+    const { shipId, key } = prismChoiceParts(state.prismAbilityChoices[slot]);
+    const isHorizonReturn = shipId === 'prisma' && key === 'q' && state.prismHorizonAnchor?.life > 0;
+    if (!prismChoiceCanActivate(slot)) { updateAbilityButton(); return; }
+    const previousECooldown = state.abilityCooldown;
+    const previousQCooldown = state.prismQCooldown;
+    state.prismDispatchSlot = slot;
+    if (shipId === 'prisma') {
+      if (key === 'q') activatePrismHorizon();
+      else activatePrismCore();
+    } else {
+      state.prismDispatchSkinId = shipId;
+      state.abilityCooldown = 0;
+      if (key === 'e') activateAbility();
+      else {
+        const qCooldownFields = {
+          aurora:'auroraLinkCooldown', aegis:'aegisOrbitCooldown', eclipse:'eclipseDecoyCooldown',
+          chronos:'chronosEchoCooldown', redshift:'redshiftPerimeterCooldown', flashblade:'flashTrailCooldown',
+          tempest:'tempestTideCooldown', saurion:'dinoStampedeRecharge'
+        };
+        const cooldownField = qCooldownFields[shipId];
+        if (cooldownField) state[cooldownField] = 0;
+        activateSecondaryAbility();
+        if (cooldownField && shipId !== 'tempest' && shipId !== 'saurion') state[cooldownField] = 0;
+      }
+      state.prismDispatchSkinId = '';
+      if (slot === 'q') state.abilityCooldown = previousECooldown;
+      if (slot === 'e') state.prismQCooldown = previousQCooldown;
+      if (!hasDeveloperPerks() && !isHorizonReturn) setPrismSlotCooldown(slot, prismCooldownDuration());
+      if (!isHorizonReturn) prismCopiedEffect(shipId);
+    }
+    state.prismDispatchSlot = '';
+    updateAbilityButton();
+  }
   function activateSecondaryAbility() {
+    if (currentSkin().id === 'prisma' && !state.prismDispatchSkinId) { activatePrismAbilityChoice('q'); return; }
     if (currentSkin().id === 'aurora') activateAuroraLink();
     else if (currentSkin().id === 'aegis') activateAegisOrbit();
     else if (currentSkin().id === 'eclipse') activateEclipseDecoy();
@@ -1900,7 +2454,7 @@
     return true;
   }
   function interceptWithAegisOrbit(bullet) {
-    if (currentSkin().id !== 'aegis' || !state.aegisOrbit || bullet.dead || bullet.explosive || bullet.reflected) return false;
+    if (!abilitySourceIs('aegis') || !state.aegisOrbit || bullet.dead || bullet.explosive || bullet.reflected) return false;
     const orbit = state.aegisOrbit;
     const orbitRadius = state.player.radius + mobileSize(22);
     let point = null;
@@ -2142,7 +2696,7 @@
     return true;
   }
   function activateRedshiftPerimeter() {
-    if (currentSkin().id !== 'redshift' || state.mode !== 'playing' || state.redshiftPerimeter?.life > 0) return;
+    if (!abilitySourceIs('redshift') || state.mode !== 'playing' || state.redshiftPerimeter?.life > 0) return;
     const developerProfile = hasDeveloperPerks();
     if (!developerProfile && state.redshiftPerimeterCooldown > 0) return;
     const duration = 6 + state.redshiftPerimeterDurationBonus;
@@ -2157,7 +2711,7 @@
   }
   function updateRedshiftPerimeter(dt) {
     const field = state.redshiftPerimeter;
-    if (!field || currentSkin().id !== 'redshift') return;
+    if (!field || !abilitySourceIs('redshift')) return;
     field.life = Math.max(0, field.life - dt);
     if (field.life <= 0) { state.redshiftPerimeter = null; updateAbilityButton(); return; }
     field.rotation += dt * .48;
@@ -2209,6 +2763,7 @@
     }
   }
   function activateAbility() {
+    if (currentSkin().id === 'prisma' && !state.prismDispatchSkinId) { activatePrismAbilityChoice('e'); return; }
     const developerProfile = hasDeveloperPerks();
     if (state.mode !== 'playing' || (!developerProfile && state.abilityCooldown > 0)) return;
     const skin = currentSkin();
@@ -2287,6 +2842,16 @@
     state.shotCooldown -= dt;
     state.powerSpawn -= dt;
     state.abilityCooldown = Math.max(0, state.abilityCooldown - dt);
+    state.prismQCooldown = Math.max(0, state.prismQCooldown - dt);
+    if (state.prismHorizonAnchor) {
+      state.prismHorizonAnchor.life = Math.max(0, state.prismHorizonAnchor.life - dt);
+      if (state.prismHorizonAnchor.life <= 0) {
+        const expired = state.prismHorizonAnchor;
+        state.prismHorizonAnchor = null;
+        state.effects.push({ type:'prism-anchor-fade', x:expired.x, y:expired.y, life:.42, total:.42 });
+        updateAbilityButton();
+      }
+    }
     state.eclipseDecoyCooldown = Math.max(0, state.eclipseDecoyCooldown - dt);
     state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - dt);
     state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - dt);
@@ -2330,7 +2895,7 @@
     }
     const norm = Math.hypot(dx, dy) || 1;
     const hullSpeed = state.lives <= 2 ? 1 + state.lowHullBoost * .12 : 1;
-    const flashbladeDash = currentSkin().id === 'flashblade' && state.flashTrail?.life > 0;
+    const flashbladeDash = abilitySourceIs('flashblade') && state.flashTrail?.life > 0;
     const normalMoveSpeed = Math.min(525, state.player.speed + state.endlessSpeed);
     const moveSpeed = normalMoveSpeed * (flashbladeDash ? 2.2 : 1);
     state.player.x = clamp(state.player.x + (dx / norm) * moveSpeed * hullSpeed * dt, 17, state.width - 17);
@@ -2411,7 +2976,7 @@
       bullet.x += bullet.vx * dt * slowFactor; bullet.y += bullet.vy * dt * slowFactor;
       if (interceptWithAegisOrbit(bullet)) continue;
       const decoy = state.eclipseDecoy;
-      if (decoy && currentSkin().id === 'eclipse' && Math.hypot(bullet.x - decoy.x, bullet.y - decoy.y) < bullet.r + state.player.radius * .9) {
+      if (decoy && abilitySourceIs('eclipse') && Math.hypot(bullet.x - decoy.x, bullet.y - decoy.y) < bullet.r + state.player.radius * .9) {
         if (bullet.explosive) explodeBullet(bullet);
         else { bullet.dead = true; burst(decoy.x, decoy.y, '#bd91ff', 6, 62); }
         continue;
@@ -2455,6 +3020,7 @@
       } else if (tempestRepulse) enemy.tempestRepulse = null;
       const frozenByEclipse = state.eclipsePhase === 'cinematic';
       enemy.dinoStun = Math.max(0, (enemy.dinoStun || 0) - dt);
+      enemy.prismStun = Math.max(0, (enemy.prismStun || 0) - dt);
       enemy.dinoCutMark = Math.max(0, (enemy.dinoCutMark || 0) - dt);
       if (enemy.dinoCutMark > 0 && (enemy.dinoClawBursts || 0) > 0) {
         enemy.dinoClawTimer = Math.max(0, (enemy.dinoClawTimer || 0) - dt);
@@ -2468,7 +3034,7 @@
           if (enemy.dead) continue;
         }
       }
-      const stunnedByDino = enemy.dinoStun > 0;
+      const stunnedByDino = enemy.dinoStun > 0 || enemy.prismStun > 0;
       if (frozenByEclipse || stunnedByDino) {
         enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
       } else {
@@ -2570,14 +3136,21 @@
         if (pickup.kind === 'repair') { state.lives = Math.min(state.maxLives, state.lives + 1); toast('CASCO REPARADO +1 VIDA'); }
         else if (pickup.kind === 'charge') {
           state.abilityCooldown = Math.max(0, state.abilityCooldown - 8);
-          if (currentSkin().id === 'aurora') state.auroraLinkCooldown = Math.max(0, state.auroraLinkCooldown - 8);
-          if (currentSkin().id === 'eclipse') state.eclipseDecoyCooldown = Math.max(0, state.eclipseDecoyCooldown - 8);
-          if (currentSkin().id === 'aegis') state.aegisOrbitCooldown = Math.max(0, state.aegisOrbitCooldown - 8);
-          if (currentSkin().id === 'redshift') state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - 8);
-          if (currentSkin().id === 'flashblade') state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - 8);
-          if (currentSkin().id === 'tempest') { state.tempestTideCooldown = Math.max(0, state.tempestTideCooldown - 8); advanceTempestTideRecharge(0); }
-          if (currentSkin().id === 'chronos') state.chronosEchoCooldown = Math.max(0, state.chronosEchoCooldown - 8);
-          if (currentSkin().id === 'saurion') advanceDinoStampedeRecharge(8);
+          state.prismQCooldown = Math.max(0, state.prismQCooldown - 8);
+          const selectedSources = currentSkin().id === 'prisma'
+            ? ['e','q'].map((slot) => prismChoiceParts(state.prismAbilityChoices[slot]))
+            : [{ shipId:currentSkin().id, key:'q' }];
+          for (const { shipId, key } of selectedSources) {
+            if (key !== 'q') continue;
+            if (shipId === 'aurora') state.auroraLinkCooldown = Math.max(0, state.auroraLinkCooldown - 8);
+            if (shipId === 'eclipse') state.eclipseDecoyCooldown = Math.max(0, state.eclipseDecoyCooldown - 8);
+            if (shipId === 'aegis') state.aegisOrbitCooldown = Math.max(0, state.aegisOrbitCooldown - 8);
+            if (shipId === 'redshift') state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - 8);
+            if (shipId === 'flashblade') state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - 8);
+            if (shipId === 'tempest') { state.tempestTideCooldown = Math.max(0, state.tempestTideCooldown - 8); advanceTempestTideRecharge(0); }
+            if (shipId === 'chronos') state.chronosEchoCooldown = Math.max(0, state.chronosEchoCooldown - 8);
+            if (shipId === 'saurion') advanceDinoStampedeRecharge(8);
+          }
           toast('CARGA DE HABILIDADE −8s');
         }
         else { state.shields = Math.min(4, state.shields + 1); toast('ESCUDO DE ENERGIA +1'); }
@@ -2713,7 +3286,7 @@
           const dxHole = effect.x - pickup.x; const dyHole = effect.y - pickup.y; const d = Math.hypot(dxHole, dyHole);
           if (d < effect.radius) { const force = (120 + (1 - d / effect.radius) * 210) * dt; pickup.x += dxHole / (d || 1) * force; pickup.y += dyHole / (d || 1) * force; }
         }
-      } else if (effect.type === 'nova') effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
+      } else if (effect.type === 'nova' || effect.type === 'prism-core-wave' || effect.type === 'prism-return-wave') effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
       if (effect.life > 0) activeEffects.push(effect);
     }
     state.flashTrailContacts = currentFlashTrailContacts;
@@ -2877,6 +3450,26 @@
       ctx.restore();
       return;
     }
+    if (ship.shape === 'prism') {
+      const pulse = .84 + Math.sin(performance.now() / 58) * .16;
+      const flame = ctx.createLinearGradient(0, size * .72, 0, size * 2.05);
+      flame.addColorStop(0, 'rgba(255,226,154,.95)'); flame.addColorStop(.34, 'rgba(89,233,242,.78)'); flame.addColorStop(1, 'rgba(89,233,242,0)');
+      ctx.fillStyle = flame; ctx.globalAlpha *= pulse;
+      ctx.beginPath(); ctx.moveTo(-size * .28, size * .62); ctx.lineTo(0, size * (1.95 + pulse * .14)); ctx.lineTo(size * .28, size * .62); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = alpha; ctx.shadowColor = ship.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .8;
+      const hull = ctx.createLinearGradient(-size, -size, size, size);
+      hull.addColorStop(0, '#efffff'); hull.addColorStop(.3, ship.accent); hull.addColorStop(.62, ship.color); hull.addColorStop(1, '#187c9b');
+      ctx.fillStyle = hull; ctx.strokeStyle = '#f5ffff'; ctx.lineWidth = Math.max(1, size * .09);
+      ctx.beginPath(); ctx.moveTo(0, -size * 1.62); ctx.lineTo(size * .48, -size * .42); ctx.lineTo(size * 1.08, size * .58); ctx.lineTo(size * .38, size * .4); ctx.lineTo(0, size * .94); ctx.lineTo(-size * .38, size * .4); ctx.lineTo(-size * 1.08, size * .58); ctx.lineTo(-size * .48, -size * .42); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(255,255,255,.65)';
+      ctx.beginPath(); ctx.moveTo(0, -size * 1.3); ctx.lineTo(size * .23, -size * .36); ctx.lineTo(0, size * .2); ctx.lineTo(-size * .23, -size * .36); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = ship.accent; ctx.lineWidth = Math.max(1, size * .055);
+      ctx.beginPath(); ctx.moveTo(0, -size * 1.22); ctx.lineTo(0, size * .72); ctx.moveTo(-size * .62, -size * .08); ctx.lineTo(0, size * .22); ctx.lineTo(size * .62, -size * .08); ctx.stroke();
+      ctx.fillStyle = '#ffffff'; ctx.shadowColor = ship.accent; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .6;
+      ctx.beginPath(); ctx.arc(0, -size * .06, size * .16, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      return;
+    }
     ctx.shadowColor = ship.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 18; ctx.fillStyle = ship.color; ctx.strokeStyle = ship.accent; ctx.lineWidth = 2;
     ctx.beginPath();
     if (ship.shape === 'blade') {
@@ -2938,6 +3531,13 @@
         ctx.beginPath(); ctx.arc(sx, sy, mobileSize(2), 0, Math.PI * 2); ctx.fill();
       }
       ctx.restore();
+    }
+    if (enemy.prismStun > 0) {
+      ctx.save(); ctx.globalAlpha = .52 + Math.sin(performance.now() / 56 + enemy.y) * .16;
+      ctx.strokeStyle = '#8efaff'; ctx.shadowColor = '#ffe29a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 9;
+      ctx.lineWidth = mobileSize(1.6); ctx.setLineDash([mobileSize(2), mobileSize(5)]);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(11), -performance.now() / 380, Math.PI * 2 - performance.now() / 380); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
     }
     if (enemy.kind === 'boss' && !enemy.isMiniBoss) {
       const barWidth = Math.min(250, state.width * .48); const ratio = clamp(enemy.hp / enemy.maxHp, 0, 1);
@@ -3027,7 +3627,7 @@
     for (const p of state.particles) { ctx.globalAlpha = clamp(p.life / p.maxLife, 0, 1); ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
     ctx.globalAlpha = 1;
     drawAuroraLinkTrails(timestamp);
-    const eclipseActive = currentSkin().id === 'eclipse' && state.eclipsePhase === 'active';
+    const eclipseActive = abilitySourceIs('eclipse') && state.eclipsePhase === 'active';
     if (eclipseActive) {
       const shrineScale = state.mobileSizing ? .86 : 1;
       const shrineSize = Math.min(state.width * .7, state.height * .64) * shrineScale;
@@ -3187,6 +3787,42 @@
         ctx.strokeStyle = '#e6d4ff'; ctx.lineWidth = mobileSize(4 * alpha + 1); ctx.shadowColor = '#b58aff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
         ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
         ctx.strokeStyle = '#fff'; ctx.lineWidth = mobileSize(1.5); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .82, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'prism-echo') {
+        const progress = 1 - alpha;
+        const radius = mobileSize(20 + progress * 58);
+        ctx.save(); ctx.globalAlpha = alpha * .8; ctx.lineWidth = mobileSize(2.2);
+        ctx.strokeStyle = effect.color || '#59e9f2'; ctx.shadowColor = '#59e9f2'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(17);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, -.2 + progress * 1.3, Math.PI * 1.65 + progress * 1.3); ctx.stroke();
+        ctx.strokeStyle = '#ffe29a'; ctx.lineWidth = mobileSize(1.1); ctx.shadowBlur = 0;
+        for (let ray = 0; ray < 4; ray++) {
+          const angle = ray * Math.PI / 2 + progress * .75;
+          const inner = mobileSize(12); const outer = radius + mobileSize(8);
+          ctx.beginPath(); ctx.moveTo(effect.x + Math.cos(angle) * inner, effect.y + Math.sin(angle) * inner); ctx.lineTo(effect.x + Math.cos(angle) * outer, effect.y + Math.sin(angle) * outer); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'prism-core-wave' || effect.type === 'prism-return-wave') {
+        const returning = effect.type === 'prism-return-wave';
+        const progress = 1 - alpha;
+        const radius = effect.radius;
+        ctx.save(); ctx.globalAlpha = Math.sin(Math.PI * Math.min(1, progress * 1.12)) * .82 + alpha * .12;
+        const glow = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, radius - mobileSize(44)), effect.x, effect.y, radius + mobileSize(10));
+        glow.addColorStop(0, 'rgba(89,233,242,0)'); glow.addColorStop(.72, returning ? 'rgba(255,226,154,.04)' : 'rgba(89,233,242,.07)');
+        glow.addColorStop(.93, returning ? 'rgba(255,226,154,.28)' : 'rgba(89,233,242,.25)'); glow.addColorStop(1, 'rgba(255,255,255,.5)');
+        ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(effect.x, effect.y, radius + mobileSize(10), 0, Math.PI * 2); ctx.fill();
+        ctx.lineWidth = mobileSize(returning ? 3.8 : 5); ctx.strokeStyle = returning ? '#ffe29a' : '#59e9f2';
+        ctx.shadowColor = returning ? '#ffe29a' : '#59e9f2'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(22);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha *= .72; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(1.3); ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, Math.max(0, radius - mobileSize(8)), 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'prism-core-flash' || effect.type === 'prism-anchor-start' || effect.type === 'prism-anchor-fade') {
+        const progress = 1 - alpha; const radius = mobileSize(16 + progress * (effect.type === 'prism-core-flash' ? 78 : 42));
+        ctx.save(); ctx.globalAlpha = alpha * (effect.type === 'prism-anchor-fade' ? .55 : .92);
+        ctx.strokeStyle = effect.type === 'prism-anchor-fade' ? '#ffe29a' : '#59e9f2'; ctx.lineWidth = mobileSize(2.2);
+        ctx.shadowColor = '#ffe29a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(1); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, .25, Math.PI * 1.7); ctx.stroke();
+        ctx.restore();
       } else if (effect.type === 'nova') {
         ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - mobileSize(40)), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = mobileSize(8); ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'dino-roar') {
@@ -3232,7 +3868,6 @@
       } else if (effect.type === 'dino-raptor') {
         const progress = 1 - alpha;
         const fade = clamp(Math.min(progress * 9, alpha * 3.2), 0, 1);
-        const jawOpen = .28 + Math.sin(timestamp / 75 + effect.y) * .2;
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle + Math.PI / 2);
         const trail = ctx.createLinearGradient(0, effect.size * .35, 0, effect.size * 3.2);
         trail.addColorStop(0, 'rgba(226,255,157,.7)'); trail.addColorStop(.22, 'rgba(113,255,135,.48)'); trail.addColorStop(.68, 'rgba(49,219,126,.17)'); trail.addColorStop(1, 'rgba(29,177,128,0)');
@@ -3250,7 +3885,19 @@
           ctx.beginPath(); ctx.arc(sx, sy, mobileSize(1.8 + spark * .45), 0, Math.PI * 2); ctx.fill();
         }
         ctx.restore();
-        drawDinoHead(effect.x, effect.y, effect.size, effect.angle, jawOpen, timestamp, fade * .96, { color: '#42d66e', accent: '#d4ff72' });
+        if (saurionRaptorSprite.complete && saurionRaptorSprite.naturalWidth) {
+          const spriteHeight = mobileSize(effect.size * 1.85);
+          const spriteWidth = spriteHeight * saurionRaptorSprite.naturalWidth / saurionRaptorSprite.naturalHeight;
+          const pulse = 1 + Math.sin(timestamp / 72 + effect.y * .02) * .035;
+          ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.globalAlpha = fade * .96;
+          ctx.shadowColor = '#52ff22'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+          ctx.beginPath(); ctx.ellipse(0, 0, spriteWidth * .49, spriteHeight * .48, 0, 0, Math.PI * 2); ctx.clip();
+          ctx.drawImage(saurionRaptorSprite, -spriteWidth * pulse / 2, -spriteHeight * pulse / 2, spriteWidth * pulse, spriteHeight * pulse);
+          ctx.restore();
+        } else {
+          const jawOpen = .28 + Math.sin(timestamp / 75 + effect.y) * .2;
+          drawDinoHead(effect.x, effect.y, effect.size, effect.angle, jawOpen, timestamp, fade * .96, { color: '#42d66e', accent: '#d4ff72' });
+        }
       } else if (effect.type === 'eclipse-intro') {
       } else if (effect.type === 'eclipse-intro') {
         const progress = 1 - alpha; const maxRadius = Math.hypot(state.width, state.height) * .62;
@@ -3360,7 +4007,7 @@
       }
     }
     const perimeter = state.redshiftPerimeter;
-    if (perimeter && currentSkin().id === 'redshift') {
+    if (perimeter && abilitySourceIs('redshift')) {
       const vertices = redshiftPerimeterVertices(perimeter);
       const fade = clamp(perimeter.life / .55, 0, 1);
       const pulse = .72 + Math.sin(timestamp / 115) * .12;
@@ -3386,8 +4033,20 @@
       });
       ctx.restore();
     }
+    const horizonAnchor = state.prismHorizonAnchor;
+    if (horizonAnchor && currentSkin().id === 'prisma') {
+      const pulse = .78 + Math.sin(timestamp / 125) * .12;
+      const radius = mobileSize(13 + Math.sin(timestamp / 180) * 2);
+      ctx.save(); ctx.globalAlpha = .68 * pulse; ctx.lineWidth = mobileSize(1.8);
+      ctx.strokeStyle = '#ffe29a'; ctx.shadowColor = '#59e9f2'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
+      ctx.setLineDash([mobileSize(4), mobileSize(5)]); ctx.lineDashOffset = -timestamp * .025;
+      ctx.beginPath(); ctx.arc(horizonAnchor.x, horizonAnchor.y, radius + mobileSize(6), 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#59e9f2'; ctx.beginPath(); ctx.arc(horizonAnchor.x, horizonAnchor.y, radius * .54, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fff5d4'; ctx.beginPath(); ctx.arc(horizonAnchor.x, horizonAnchor.y, mobileSize(2.4), 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
     const decoy = state.eclipseDecoy;
-    if (decoy && currentSkin().id === 'eclipse') {
+    if (decoy && abilitySourceIs('eclipse')) {
       const fade = clamp(decoy.life / .45, 0, 1);
       const pulse = .34 + Math.sin(timestamp / 100) * .07;
       ctx.save();
@@ -3399,7 +4058,7 @@
       ctx.restore();
       drawShip(decoy.x, decoy.y, state.player.radius, currentSkin(), decoy.angle, .42 * fade);
     }
-    const chronosEchoActive = currentSkin().id === 'chronos' && state.chronosEcho?.life > 0;
+    const chronosEchoActive = abilitySourceIs('chronos') && state.chronosEcho?.life > 0;
     if (!eclipseActive && chronosEchoActive && (state.invulnerable <= 0 || Math.floor(timestamp / 90) % 2 === 0)) {
       const trailOffset = mobileSize(5 + Math.sin(timestamp / 75) * 2.5);
       drawShip(state.player.x - Math.cos(state.player.angle) * trailOffset, state.player.y - Math.sin(state.player.angle) * trailOffset, state.player.radius * .9, currentSkin(), state.player.angle, .28);
@@ -3407,7 +4066,7 @@
     }
     if (!eclipseActive && (state.invulnerable <= 0 || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, currentSkin(), state.player.angle);
     if (!eclipseActive && (state.shields || state.tempShields)) { ctx.strokeStyle = `rgba(110,190,255,${.3 + Math.sin(timestamp / 150) * .12})`; ctx.lineWidth = mobileSize(2 + Math.min(3, state.tempShields)); ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + mobileSize(9 + state.tempShields * 2), 0, Math.PI * 2); ctx.stroke(); }
-    const aegisOrbit = currentSkin().id === 'aegis' && state.aegisOrbit?.life > 0 ? state.aegisOrbit : null;
+    const aegisOrbit = abilitySourceIs('aegis') && state.aegisOrbit?.life > 0 ? state.aegisOrbit : null;
     if (!eclipseActive && aegisOrbit) {
       const points = aegisOrbitPoints(aegisOrbit);
       const fade = clamp(aegisOrbit.life / .5, 0, 1);
@@ -3566,7 +4225,7 @@
     if (!ui.rankList) return;
     ui.rankList.replaceChildren();
     const symbols = ['★', '✦', '✧'];
-    for (let index = 0; index < 5; index += 1) {
+    for (let index = 0; index < 10; index += 1) {
       const row = rows[index];
       const position = index + 1;
       const item = document.createElement('li');
@@ -3574,11 +4233,14 @@
       const rank = document.createElement('strong');
       rank.className = 'starfall-rank-medal';
       rank.setAttribute('role', 'img');
-      rank.setAttribute('aria-label', `${position}º lugar`);
+      rank.setAttribute('aria-label', position === 4 ? '4º lugar, SUB 1' : position === 5 ? '5º lugar, SUB 2' : `${position}º lugar`);
       if (position <= 3) {
         const star = document.createElement('span'); star.className = 'starfall-rank-star'; star.setAttribute('aria-hidden', 'true'); star.textContent = symbols[index];
         const place = document.createElement('small'); place.textContent = String(position);
         rank.append(star, place);
+      } else if (position === 4 || position === 5) {
+        const subrank = document.createElement('span'); subrank.className = 'starfall-rank-subrank'; subrank.textContent = position === 4 ? 'SUB 1' : 'SUB 2';
+        rank.append(subrank);
       } else rank.textContent = String(position);
 
       const body = document.createElement('div'); body.className = 'starfall-rank-body';
@@ -3618,27 +4280,31 @@
       image.src = 'eclipse-ship.png'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
       return image;
     }
-    const svg = makeRankSvgElement('svg', { class:'starfall-rank-ship-model', viewBox:skin.shape === 'dino' ? '0 0 100 120' : '0 0 100 110', 'aria-hidden':'true' });
-    const add = (tag, attributes) => svg.append(makeRankSvgElement(tag, attributes));
     if (skin.shape === 'dino') {
-      add('path', { d:'M34 47 L7 57 L20 82 L38 74 Z M66 47 L93 57 L80 82 L62 74 Z', fill:skin.color, stroke:skin.accent, 'stroke-width':3, 'stroke-linejoin':'round' });
-      add('path', { d:'M50 6 L63 31 L70 71 L62 96 L50 112 L38 96 L30 71 L37 31 Z', fill:skin.color, stroke:skin.accent, 'stroke-width':3, 'stroke-linejoin':'round' });
-      add('path', { d:'M50 16 C64 28 65 43 60 54 Q50 61 40 54 C35 43 36 28 50 16 Z', fill:'#0b3d45', stroke:'#baff8c', 'stroke-width':2 });
-      add('path', { d:'M42 72 L50 59 L58 72 L54 71 L50 78 L46 71 Z M42 82 L50 70 L58 82 L54 81 L50 88 L46 81 Z', fill:'#dcff91', stroke:'#168b56', 'stroke-width':1.5, 'stroke-linejoin':'round' });
-      add('ellipse', { cx:39, cy:47, rx:3.4, ry:2.6, fill:'#e6ff83' });
-      add('ellipse', { cx:61, cy:47, rx:3.4, ry:2.6, fill:'#e6ff83' });
-      add('path', { d:'M43 103 L50 117 L57 103', fill:skin.accent, opacity:.9 });
-      return svg;
+      const image = document.createElement('img');
+      image.className = 'starfall-rank-ship-model starfall-rank-ship-image starfall-rank-saurion-image';
+      image.src = 'saurion-raptor-skill.png'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
+      return image;
     }
+    const svg = makeRankSvgElement('svg', { class:'starfall-rank-ship-model', viewBox:'0 0 100 110', 'aria-hidden':'true' });
+    const add = (tag, attributes) => svg.append(makeRankSvgElement(tag, attributes));
     const hulls = {
       classic:'M50 6 L84 86 L50 68 L16 86 Z',
       blade:'M50 5 L59 37 L88 85 L50 70 L12 85 L41 37 Z',
       wing:'M50 6 L62 36 L90 77 L63 70 L50 98 L37 70 L10 77 L38 36 Z',
       shield:'M50 6 L82 37 L75 79 L50 97 L25 79 L18 37 Z',
       ring:'M50 6 L84 86 L50 68 L16 86 Z',
-      reflector:'M50 5 L72 22 L88 47 L75 78 L60 71 L50 96 L40 71 L25 78 L12 47 L28 22 Z'
+      reflector:'M50 5 L72 22 L88 47 L75 78 L60 71 L50 96 L40 71 L25 78 L12 47 L28 22 Z',
+      prism:'M50 4 L82 25 L74 70 L50 97 L26 70 L18 25 Z'
     };
     add('path', { d:hulls[skin.shape] || hulls.classic, fill:skin.color, stroke:skin.accent, 'stroke-width':3, 'stroke-linejoin':'round' });
+    if (skin.shape === 'prism') {
+      add('path', { d:'M50 10 L68 29 L64 67 L50 83 L36 67 L32 29 Z', fill:'#123749', stroke:'#baffff', 'stroke-width':2, 'stroke-linejoin':'round' });
+      add('path', { d:'M50 12 L50 78 M31 30 L68 30 M35 66 L65 66', fill:'none', stroke:'#ffe29a', 'stroke-width':2, 'stroke-linecap':'round', opacity:.9 });
+      add('path', { d:'M39 84 L50 103 L61 84', fill:'#59e9f2', stroke:'#ffe29a', 'stroke-width':2, 'stroke-linejoin':'round' });
+      add('ellipse', { cx:50, cy:44, rx:5, ry:9, fill:'#f5ffff', opacity:.95 });
+      return svg;
+    }
     add('ellipse', { cx:50, cy:45, rx:8, ry:18, fill:'#f1ffff', opacity:.94 });
     add('path', { d:'M40 76 L50 96 L60 76', fill:skin.accent, opacity:.95 });
     if (skin.shape === 'ring') add('ellipse', { cx:50, cy:55, rx:44, ry:19, fill:'none', stroke:skin.accent, 'stroke-width':2.5, opacity:.85 });
@@ -3734,17 +4400,28 @@
     const config = supabaseConfig();
     if (!config) { if (ui.rankStatus) ui.rankStatus.textContent = 'Aguardando configuração do Supabase'; renderLeaderboard([]); return; }
     try {
-      const url = config.url.replace(/\/$/, '') + '/rest/v1/starfall_scores?select=nickname,wave,score,elapsed_seconds,ship_id,ship_name,buff_summary&order=wave.desc,score.desc&limit=5';
+      const url = config.url.replace(/\/$/, '') + '/rest/v1/starfall_scores?select=nickname,wave,score,elapsed_seconds,ship_id,ship_name,buff_summary&order=wave.desc,score.desc&limit=10';
       const response = await fetch(url, { headers: supabaseHeaders(config) });
       if (!response.ok) throw new Error('Ranking indisponível');
-      renderLeaderboard(await response.json());
-      if (ui.rankStatus) ui.rankStatus.textContent = 'Placar compartilhado';
+      const rows = await response.json();
+      const myRank = rows.find((row) => normalizeRankNickname(row.nickname) === profileNickname());
+      if (myRank) {
+        saveNicknameRankBestWave(profileNickname(), myRank.wave);
+        state.bestCompletedWave = Math.max(state.bestCompletedWave, readNicknameRankBestWave());
+        saveBestWave();
+      }
+      renderLeaderboard(rows);
+    if (ui.rankStatus) ui.rankStatus.textContent = 'Placar compartilhado';
     } catch {
       if (ui.rankStatus) ui.rankStatus.textContent = 'Placar indisponível agora';
       renderLeaderboard([]);
     }
   }
   async function submitRun(run) {
+    if (run?.ship_id === 'prisma') {
+      if (ui.rankStatus) ui.rankStatus.textContent = 'Missão com a Prisma Real: não conta para o placar.';
+      return;
+    }
     const config = supabaseConfig();
     if (!config) { if (ui.rankStatus) ui.rankStatus.textContent = 'Configure o Supabase para publicar recordes'; return; }
     let session = null;
@@ -3763,6 +4440,8 @@
       const read = await fetch(base + '?select=wave,score&nickname=eq.' + encodeURIComponent(nickname) + '&limit=1', { headers });
       if (!read.ok) throw new Error('Não foi possível consultar o recorde.');
       const previous = (await read.json())[0];
+      if (previous) saveNicknameRankBestWave(nickname, previous.wave);
+      saveNicknameRankBestWave(nickname, run.wave);
       const better = !previous || run.wave > previous.wave || (run.wave === previous.wave && run.score > previous.score);
       if (!better) { if (ui.rankStatus) ui.rankStatus.textContent = 'Seu melhor resultado continua no placar'; return; }
       run.nickname = nickname;
@@ -3772,6 +4451,8 @@
         body: JSON.stringify(run)
       });
       if (!response.ok) throw new Error('Não foi possível salvar o recorde.');
+      state.bestCompletedWave = Math.max(state.bestCompletedWave, readNicknameRankBestWave(nickname));
+      saveBestWave();
       if (ui.rankStatus) ui.rankStatus.textContent = 'Recorde de ' + displayRankNickname(nickname) + ' publicado';
     } catch {
       if (ui.rankStatus) ui.rankStatus.textContent = 'Não foi possível salvar o recorde';
@@ -3789,11 +4470,12 @@
     const isRedshift = currentSkin().id === 'redshift';
     const isFlashblade = currentSkin().id === 'flashblade';
     const isTempest = currentSkin().id === 'tempest';
-    const abilityInstruction = isAurora ? 'E cria a Explosão Nova · Q encadeia feixes entre inimigos' : isAegis ? 'E absorve impactos · Q converte tiros interceptados em projéteis teleguiados' : isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral móvel' : isChronos ? 'E desacelera o tempo · Q repete os disparos com ecos temporais' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : isRedshift ? 'E reflete projéteis · Q ativa o Perímetro de Cerco' : isFlashblade ? 'E lança o Corte Flash · Q deixa rastros cortantes no trajeto' : isTempest ? 'E guia o Poço Negro suavemente pelo movimento · Q afasta inimigos próximos' : 'ativa a habilidade';
+    const isPrisma = currentSkin().id === 'prisma';
+    const abilityInstruction = isPrisma ? 'E e Q ativam poderes escolhidos · G abre o Arquivo de Ecos' : isAurora ? 'E cria a Explosão Nova · Q encadeia feixes entre inimigos' : isAegis ? 'E absorve impactos · Q converte tiros interceptados em projéteis teleguiados' : isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral móvel' : isChronos ? 'E desacelera o tempo · Q repete os disparos com ecos temporais' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : isRedshift ? 'E reflete projéteis · Q ativa o Perímetro de Cerco' : isFlashblade ? 'E lança o Corte Flash · Q deixa rastros cortantes no trajeto' : isTempest ? 'E guia o Poço Negro suavemente pelo movimento · Q afasta inimigos próximos' : 'ativa a habilidade';
     if (ui.controlHint) ui.controlHint.textContent = state.controlMode === 'keys'
       ? hardwareInputDetected ? 'WASD ou setas movem · ' + abilityInstruction + ' · disparo automático.' : 'Disparo automático · controles configuráveis.'
-      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
-        : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.' + (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest ? ' Botões E e Q ativam as habilidades.' : '');
+      : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest || isPrisma ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
+        : 'Toque em qualquer ponto da arena e arraste o analógico translúcido · solte para ocultar.' + (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest || isPrisma ? ' Botões E e Q ativam as habilidades.' : '');
   }
   function createDeviceIndicators() {
     [ui.missionSetupModal, ui.settingsModal].forEach((modal) => {
@@ -3997,7 +4679,9 @@
   function setPerformanceMode(mode) {
     if (!['normal', 'light'].includes(mode) || mode === state.performanceMode) return;
     state.performanceMode = mode;
+    if (ui.missionSetupModal?.hidden) state.preferencesConfigured = true;
     try { localStorage.setItem(performanceModeKey, mode); } catch { /* Preferência vale para a sessão. */ }
+    saveNicknameSettings();
     const maxParticles = particleLimit();
     if (state.particles.length > maxParticles) state.particles.splice(0, state.particles.length - maxParticles);
     updatePerformanceModeUI();
@@ -4006,7 +4690,7 @@
   }
   function syncAudioVisibility() {
     if (!ui.audio) return;
-    const modalOpen = [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal]
+    const modalOpen = [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.prismWheel, ui.prismRankNotice, ui.checkpointModal, ui.achievementsModal, ui.dailySummaryModal]
       .some((modal) => modal && !modal.hidden);
     ui.audio.classList.toggle('is-menu-hidden', modalOpen);
     if (modalOpen) {
@@ -4019,15 +4703,7 @@
   function openMissionSetup(dailyChallenge = false) {
     if (!['intro', 'gameover'].includes(state.mode) || !ui.missionSetupModal) return;
     refreshDeviceSizing();
-    try {
-      const alreadyConfigured = localStorage.getItem(setupCompleteKey) === 'true';
-      const preferencesWereSaved = localStorage.getItem(controlModeKey) !== null && localStorage.getItem(performanceModeKey) !== null;
-      if (alreadyConfigured || preferencesWereSaved) {
-        localStorage.setItem(setupCompleteKey, 'true');
-        startGame(dailyChallenge);
-        return;
-      }
-    } catch { /* Se o armazenamento estiver bloqueado, a escolha é mostrada novamente. */ }
+    if (state.preferencesConfigured) { startGame(dailyChallenge); return; }
     state.pendingDailyChallenge = dailyChallenge;
     ui.missionSetupModal.hidden = false;
     syncAudioVisibility();
@@ -4047,16 +4723,96 @@
   function confirmMissionSetup() {
     const dailyChallenge = state.pendingDailyChallenge;
     state.pendingDailyChallenge = false;
-    try { localStorage.setItem(setupCompleteKey, 'true'); } catch { /* A configuração vale durante esta sessão. */ }
+    state.preferencesConfigured = true;
+    saveNicknameSettings();
     if (ui.missionSetupModal) ui.missionSetupModal.hidden = true;
     syncAudioVisibility();
     startGame(dailyChallenge);
   }
+  function openSavedMissionPrompt(checkpoint) {
+    if (!ui.checkpointModal) { startGame(false, checkpoint); return; }
+    checkpoint.wave = Math.max(Number(checkpoint.wave) || 1, readProfileResumeWave());
+    const ship = skins.find((item) => item.id === checkpoint.shipId) || skins[0];
+    if (ui.checkpointSummary) ui.checkpointSummary.textContent = `Onda ${checkpoint.wave} · ${formatTime(checkpoint.elapsed)} · ${Number(checkpoint.score).toLocaleString('pt-BR')} pontos · ${ship.name}. Seus pontos e melhorias estão guardados; a onda salva recomeça do início.`;
+    ui.checkpointModal.hidden = false;
+    syncAudioVisibility();
+    ui.checkpointModal.querySelector('[data-resume-saved-mission]')?.focus();
+  }
+  function closeSavedMissionPrompt() {
+    if (!ui.checkpointModal || ui.checkpointModal.hidden) return;
+    ui.checkpointModal.hidden = true;
+    syncAudioVisibility();
+    ui.start?.focus({ preventScroll:true });
+  }
+  function beginMissionFlow() {
+    if (!['intro', 'gameover'].includes(state.mode)) return;
+    const checkpoint = readMissionCheckpoint();
+    if (checkpoint) { openSavedMissionPrompt(checkpoint); return; }
+    openMissionSetup();
+  }
+  function resumeSavedMission() {
+    const checkpoint = readMissionCheckpoint();
+    if (!checkpoint) { closeSavedMissionPrompt(); openMissionSetup(); return; }
+    checkpoint.wave = Math.max(Number(checkpoint.wave) || 1, readProfileResumeWave());
+    if (ui.checkpointModal) ui.checkpointModal.hidden = true;
+    syncAudioVisibility();
+    startGame(false, checkpoint);
+  }
+  function startFreshMissionFromPrompt() {
+    clearMissionCheckpoint();
+    if (ui.checkpointModal) ui.checkpointModal.hidden = true;
+    syncAudioVisibility();
+    openMissionSetup();
+  }
+  function createExitChoiceButton(attribute, label, variant) {
+    const actions = ui.exitModal?.querySelector('.starfall-setup-actions');
+    if (!actions) return null;
+    let button = actions.querySelector(`[${attribute}]`);
+    if (button) return button;
+    button = document.createElement('button');
+    button.type = 'button'; button.className = `button ${variant}`; button.setAttribute(attribute, ''); button.textContent = label;
+    actions.append(button);
+    return button;
+  }
+  function saveAndExitMission() {
+    const saved = saveMissionCheckpoint();
+    if (!saved) {
+      const copy = ui.exitModal?.querySelector('h2 + p');
+      if (copy) copy.textContent = 'Não foi possível guardar a missão neste aparelho. Você ainda pode continuar jogando ou finalizar.';
+      return;
+    }
+    if (ui.exitModal) ui.exitModal.hidden = true;
+    state.exitWasPlaying = false; state.exitReturnFocus = null;
+    syncAudioVisibility();
+    returnToMenu();
+  }
+  function finalizeMissionFromExit() {
+    if (ui.exitModal) ui.exitModal.hidden = true;
+    state.exitWasPlaying = false; state.exitReturnFocus = null;
+    syncAudioVisibility();
+    finishGame();
+  }
   function openExitConfirmation() {
     if (!ui.exitModal) { returnToMenu(); return; }
     state.exitReturnFocus = document.activeElement;
-    state.exitWasPlaying = state.mode === 'playing';
-    if (state.exitWasPlaying) pauseGame();
+    state.exitWasPlaying = ['playing', 'paused'].includes(state.mode);
+    if (state.mode === 'playing') pauseGame();
+    const activeMission = ['playing', 'paused', 'upgrade'].includes(state.mode);
+    const canSaveMission = ['playing', 'paused'].includes(state.mode);
+    const saveButton = createExitChoiceButton('data-save-and-exit', 'SALVAR E SAIR', 'button-secondary');
+    const finalizeButton = createExitChoiceButton('data-finalize-from-exit', 'FINALIZAR MISSÃO', 'button-primary');
+    if (saveButton) saveButton.hidden = !canSaveMission || state.dailyChallenge;
+    if (finalizeButton) finalizeButton.hidden = !activeMission;
+    const confirmButton = ui.exitModal.querySelector('[data-confirm-exit]');
+    if (confirmButton) confirmButton.hidden = activeMission;
+    const cancelButton = ui.exitModal.querySelector('[data-cancel-exit]');
+    if (cancelButton) cancelButton.textContent = activeMission ? 'CONTINUAR MISSÃO' : 'CANCELAR';
+    const copy = ui.exitModal.querySelector('h2 + p');
+    if (copy) copy.textContent = activeMission
+      ? state.dailyChallenge ? 'Você pode continuar o desafio ou encerrá-lo agora.' : 'A missão já é salva ao pausar. Escolha se quer guardá-la para depois ou encerrar agora.'
+      : 'Deseja voltar ao menu?';
+    if (saveButton) saveButton.onclick = saveAndExitMission;
+    if (finalizeButton) finalizeButton.onclick = finalizeMissionFromExit;
     ui.exitModal.hidden = false;
     syncAudioVisibility();
     ui.exitModal.querySelector('[data-cancel-exit]')?.focus();
@@ -4096,7 +4852,7 @@
     state.dailyBestScore = 0;
     state.randomStreams = null;
     if (ui.secretUnlockDialog?.open) ui.secretUnlockDialog.close();
-    [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal]
+    [ui.missionSetupModal, ui.exitModal, ui.checkpointModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal]
       .forEach((modal) => { if (modal) modal.hidden = true; });
     resetGame();
     setMode('intro');
@@ -4150,6 +4906,12 @@
     ui.shipModal?.querySelector('[data-close-ships]')?.focus();
   }
   function closeShips() { if (ui.shipModal) ui.shipModal.hidden = true; syncAudioVisibility(); }
+  function closePrismRankNotice() {
+    if (!ui.prismRankNotice || ui.prismRankNotice.hidden) return;
+    ui.prismRankNotice.hidden = true;
+    syncAudioVisibility();
+    $('[data-open-ships]')?.focus({ preventScroll:true });
+  }
   function openAchievements() {
     if (!['intro', 'gameover'].includes(state.mode)) return;
     renderAchievements();
@@ -4160,12 +4922,21 @@
   function closeAchievements() { if (ui.achievementsModal) ui.achievementsModal.hidden = true; syncAudioVisibility(); }
   document.querySelectorAll('[data-control-mode]').forEach((button) => button.addEventListener('click', () => {
     state.controlMode = button.dataset.controlMode;
+    state.savedControlMode = state.controlMode;
+    if (ui.missionSetupModal?.hidden) state.preferencesConfigured = true;
     try { localStorage.setItem(controlModeKey, state.controlMode); } catch { /* Preferência vale para a sessão. */ }
     state.keys.clear(); state.pointer.active = false; releaseAnalog(); updateControlUI();
+    saveNicknameSettings();
   }));
   ui.performanceModeButtons.forEach((button) => button.addEventListener('click', () => setPerformanceMode(button.dataset.performanceMode)));
   $('[data-open-settings]')?.addEventListener('click', openSettings);
   $('[data-open-ships]')?.addEventListener('click', openShips);
+  ui.prismSelect?.addEventListener('click', openPrismWheel);
+  document.querySelectorAll('[data-prism-slot]').forEach((button) => button.addEventListener('click', () => { setPrismAbilitySlot(button.dataset.prismSlot); renderPrismWheel(); }));
+  document.querySelectorAll('[data-close-prism-wheel]').forEach((button) => button.addEventListener('click', closePrismWheel));
+  ui.prismWheel?.addEventListener('click', (event) => { if (event.target === ui.prismWheel) closePrismWheel(); });
+  document.querySelectorAll('[data-close-prism-rank-notice]').forEach((button) => button.addEventListener('click', closePrismRankNotice));
+  ui.prismRankNotice?.addEventListener('click', (event) => { if (event.target === ui.prismRankNotice) closePrismRankNotice(); });
   ui.eclipseSkipCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', () => {
     state.eclipseSkipVideoEnabled = checkbox.checked;
     ui.eclipseSkipCheckboxes.forEach((item) => { item.checked = checkbox.checked; });
@@ -4202,7 +4973,11 @@
   ui.copyAuthorizedPilots?.addEventListener('click', copyAuthorizedPilots);
   document.querySelectorAll('[data-close-daily-summary]').forEach((button) => button.addEventListener('click', closeDailySummary));
   ui.dailySummaryStart?.addEventListener('click', () => openMissionSetup(true));
-  ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : openMissionSetup());
+  document.querySelectorAll('[data-close-checkpoint]').forEach((button) => button.addEventListener('click', closeSavedMissionPrompt));
+  $('[data-resume-saved-mission]')?.addEventListener('click', resumeSavedMission);
+  $('[data-start-fresh-mission]')?.addEventListener('click', startFreshMissionFromPrompt);
+  ui.checkpointModal?.addEventListener('click', (event) => { if (event.target === ui.checkpointModal) closeSavedMissionPrompt(); });
+  ui.start.addEventListener('click', () => state.mode === 'paused' ? pauseGame() : beginMissionFlow());
   ui.pause.addEventListener('click', pauseGame);
   function bindAbilityControl(button, activate) {
     if (!button) return;
@@ -4230,18 +5005,24 @@
     if (event.code === 'Escape' && ui.missionSetupModal && !ui.missionSetupModal.hidden) { closeMissionSetup(); return; }
     if (event.code === 'Escape' && ui.exitModal && !ui.exitModal.hidden) { closeExitConfirmation(); return; }
     if (event.code === 'Escape' && ui.settingsModal && !ui.settingsModal.hidden) { closeSettings(); return; }
+    if (event.code === 'Escape' && ui.prismRankNotice && !ui.prismRankNotice.hidden) { closePrismRankNotice(); return; }
+    if (event.code === 'Escape' && ui.checkpointModal && !ui.checkpointModal.hidden) { closeSavedMissionPrompt(); return; }
+    if (event.code === 'Escape' && ui.prismWheel && !ui.prismWheel.hidden) { closePrismWheel(); return; }
     if (event.code === 'Escape' && ui.shipDetailsDialog?.open) { ui.shipDetailsDialog.close(); return; }
     if (event.code === 'Escape' && ui.shipModal && !ui.shipModal.hidden) { closeShips(); return; }
     if (event.code === 'Escape' && ui.achievementsModal && !ui.achievementsModal.hidden) { closeAchievements(); return; }
     if (event.code === 'Escape' && ui.dailySummaryModal && !ui.dailySummaryModal.hidden) { closeDailySummary(); return; }
+    if (ui.prismWheel && !ui.prismWheel.hidden && ['KeyE','KeyQ','KeyG','KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(event.code)) { event.preventDefault(); return; }
     if (event.code === 'Escape' || event.code === 'KeyP') { if (state.mode === 'playing' || state.mode === 'paused') pauseGame(); }
-    if (event.code === 'Enter' && ['intro', 'gameover'].includes(state.mode) && (!ui.shipModal || ui.shipModal.hidden) && !event.target.closest('button,[role="dialog"],input,select,textarea')) openMissionSetup();
+    if (event.code === 'Enter' && ['intro', 'gameover'].includes(state.mode) && (!ui.shipModal || ui.shipModal.hidden) && !event.target.closest('button,[role="dialog"],input,select,textarea')) beginMissionFlow();
+    if (event.code === 'KeyG' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) openPrismWheel();
     if (event.code === 'KeyE' && !event.repeat) activateAbility();
     if (event.code === 'KeyQ' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) activateSecondaryAbility();
     if (state.controlMode === 'keys') state.keys.add(event.code);
   });
   window.addEventListener('keyup', (event) => { state.keys.delete(event.code); });
   window.addEventListener('blur', () => { state.keys.clear(); state.pointer.active = false; releaseAnalog(); if (state.mode === 'playing' && state.eclipsePhase !== 'cinematic') pauseGame(); });
+  window.addEventListener('pagehide', () => { if (state.mode === 'playing' && state.eclipsePhase !== 'cinematic') pauseGame(); else if (state.mode === 'paused') saveMissionCheckpoint(); });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && state.mode === 'playing' && state.eclipsePhase !== 'cinematic') {
       pauseGame();

@@ -21,4 +21,4 @@ Os demais pilotos devem usar no Perfil um destes apelidos: KAUAN B, EDUARDO F, L
 
 O código temporário do hangar libera as naves secretas somente neste aparelho. Ele é uma conveniência para os testes, não uma proteção: como o jogo roda no navegador, o código pode ser encontrado no código publicado. Remova essa opção quando a fase de teste terminar.
 
-Os códigos de naves usados no banco são: 1 Aurora, 2 Aegis, 3 Chronos, 4 Tempestade, 5 Flashblade, 6 Bastião Rubro, 7 Eclipse e 8 Saurion. A conta sincroniza apenas as naves desbloqueadas, nave equipada e melhor onda concluída. Favoritos, estatísticas, histórico e conquistas continuam locais em cada aparelho.
+Os códigos de naves usados no banco são: 1 Aurora, 2 Aegis, 3 Chronos, 4 Tempestade, 5 Flashblade, 6 Bastião Rubro, 7 Eclipse, 8 Saurion e 9 Prisma Real (exclusiva da conta autorizada `educvv`). A conta sincroniza apenas as naves desbloqueadas, nave equipada e melhor onda concluída. Favoritos, estatísticas, histórico e conquistas continuam locais em cada aparelho.

@@ -66,16 +66,21 @@ revoke all on public.starfall_scores from anon, authenticated;
 grant select, insert, update on public.starfall_scores to anon;
 grant select, insert, update on public.starfall_scores to authenticated;
 
--- Progresso privado do hangar: códigos 1-8 identificam as naves pela ordem atual.
+-- Progresso privado do hangar: códigos 1-9 identificam as naves pela ordem atual.
 -- 1 Aurora, 2 Aegis, 3 Chronos, 4 Tempestade, 5 Flashblade,
--- 6 Bastião Rubro, 7 Eclipse e 8 Saurion.
+-- 6 Bastião Rubro, 7 Eclipse, 8 Saurion e 9 Prisma Real (somente educvv).
 create table if not exists public.starfall_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   unlocked_ships smallint[] not null default array[1]::smallint[],
-  selected_ship smallint not null default 1 check (selected_ship between 1 and 8),
+  selected_ship smallint not null default 1 check (selected_ship between 1 and 9),
   best_completed_wave integer not null default 0 check (best_completed_wave >= 0),
   updated_at timestamptz not null default now()
 );
+
+-- Permite atualizar projetos que já tinham a faixa antiga de 1 a 8.
+alter table public.starfall_profiles drop constraint if exists starfall_profiles_selected_ship_check;
+alter table public.starfall_profiles add constraint starfall_profiles_selected_ship_check
+  check (selected_ship between 1 and 9);
 
 alter table public.starfall_profiles enable row level security;
 
@@ -102,8 +107,19 @@ create table if not exists public.starfall_settings (
   damage_counter_x real not null default 0.89 check (damage_counter_x between 0.16 and 0.96),
   damage_counter_y real not null default 0.53 check (damage_counter_y between 0.12 and 0.88),
   eclipse_skip_video boolean not null default false,
+  control_mode text not null default 'keys' check (control_mode in ('keys','touch','analog')),
+  performance_mode text not null default 'normal' check (performance_mode in ('normal','light')),
+  setup_complete boolean not null default false,
   updated_at timestamptz not null default now()
 );
+
+-- Preferências de controle e desempenho também acompanham o apelido entre dispositivos.
+alter table public.starfall_settings
+  add column if not exists control_mode text not null default 'keys' check (control_mode in ('keys','touch','analog'));
+alter table public.starfall_settings
+  add column if not exists performance_mode text not null default 'normal' check (performance_mode in ('normal','light'));
+alter table public.starfall_settings
+  add column if not exists setup_complete boolean not null default false;
 
 -- Mantém a lista atualizada mesmo se a tabela já tiver sido criada anteriormente.
 alter table public.starfall_settings drop constraint if exists starfall_settings_nickname_check;
