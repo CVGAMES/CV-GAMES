@@ -275,6 +275,7 @@
   }
   function missionCheckpointKey(nickname = profileNickname()) { return missionCheckpointPrefix + encodeURIComponent(nickname || 'jogador'); }
   function readMissionCheckpoint() {
+    if (!isDeveloperProfile()) return null;
     try {
       const checkpoint = JSON.parse(localStorage.getItem(missionCheckpointKey()) || 'null');
       if (!checkpoint || checkpoint.version !== 1 || !Number.isFinite(Number(checkpoint.wave)) || Number(checkpoint.wave) < 1 || !skins.some((skin) => skin.id === checkpoint.shipId)) return null;
@@ -282,10 +283,11 @@
     } catch { return null; }
   }
   function clearMissionCheckpoint(nickname = profileNickname()) {
+    if (!isDeveloperProfile()) return;
     try { localStorage.removeItem(missionCheckpointKey(nickname)); } catch { /* A missão pode continuar sem armazenamento local. */ }
   }
   function saveMissionCheckpoint() {
-    if (state.dailyChallenge || !['playing', 'paused'].includes(state.mode)) return false;
+    if (!isDeveloperProfile() || state.dailyChallenge || !['playing', 'paused'].includes(state.mode)) return false;
     const nickname = profileNickname();
     const previous = readMissionCheckpoint();
     const bestWave = readProfileResumeWave(nickname);
@@ -1211,7 +1213,7 @@
     updateHud();
   }
   function restoreMissionCheckpoint(checkpoint) {
-    if (!checkpoint) return;
+    if (!isDeveloperProfile() || !checkpoint) return;
     const profileBestWave = readProfileResumeWave();
     const beforeBestWave = Math.max(state.bestCompletedWave, readBestWave(), profileBestWave);
     Object.entries(checkpoint.stats || {}).forEach(([key, value]) => {
@@ -1259,6 +1261,7 @@
     state.lives = state.maxLives;
   }
   function startGame(dailyChallenge = false, checkpoint = null) {
+    if (!isDeveloperProfile()) checkpoint = null;
     if (!['intro', 'gameover'].includes(state.mode)) return;
     refreshDeviceSizing();
     cancelAnimationFrame(state.raf);
@@ -4198,6 +4201,10 @@
   }
   function handleProfileChange() {
     if (state.damageCounterEditing) finishDamageCounterEdit(false);
+    if (!isDeveloperProfile()) {
+      if (ui.checkpointModal) ui.checkpointModal.hidden = true;
+      ui.exitModal?.querySelector('[data-save-and-exit]')?.remove();
+    }
     const selected = currentSkin();
     if (selected.secret && !hasSecretShipAccess(selected)) {
       state.selectedSkin = 'aurora';
@@ -4730,6 +4737,7 @@
     startGame(dailyChallenge);
   }
   function openSavedMissionPrompt(checkpoint) {
+    if (!isDeveloperProfile()) { openMissionSetup(); return; }
     if (!ui.checkpointModal) { startGame(false, checkpoint); return; }
     checkpoint.wave = Math.max(Number(checkpoint.wave) || 1, readProfileResumeWave());
     const ship = skins.find((item) => item.id === checkpoint.shipId) || skins[0];
@@ -4751,6 +4759,7 @@
     openMissionSetup();
   }
   function resumeSavedMission() {
+    if (!isDeveloperProfile()) { closeSavedMissionPrompt(); openMissionSetup(); return; }
     const checkpoint = readMissionCheckpoint();
     if (!checkpoint) { closeSavedMissionPrompt(); openMissionSetup(); return; }
     checkpoint.wave = Math.max(Number(checkpoint.wave) || 1, readProfileResumeWave());
@@ -4759,6 +4768,7 @@
     startGame(false, checkpoint);
   }
   function startFreshMissionFromPrompt() {
+    if (!isDeveloperProfile()) { closeSavedMissionPrompt(); openMissionSetup(); return; }
     clearMissionCheckpoint();
     if (ui.checkpointModal) ui.checkpointModal.hidden = true;
     syncAudioVisibility();
@@ -4775,6 +4785,7 @@
     return button;
   }
   function saveAndExitMission() {
+    if (!isDeveloperProfile()) return;
     const saved = saveMissionCheckpoint();
     if (!saved) {
       const copy = ui.exitModal?.querySelector('h2 + p');
@@ -4798,10 +4809,12 @@
     state.exitWasPlaying = ['playing', 'paused'].includes(state.mode);
     if (state.mode === 'playing') pauseGame();
     const activeMission = ['playing', 'paused', 'upgrade'].includes(state.mode);
-    const canSaveMission = ['playing', 'paused'].includes(state.mode);
-    const saveButton = createExitChoiceButton('data-save-and-exit', 'SALVAR E SAIR', 'button-secondary');
+    const canSaveMission = isDeveloperProfile() && ['playing', 'paused'].includes(state.mode) && !state.dailyChallenge;
+    let saveButton = null;
+    if (canSaveMission) saveButton = createExitChoiceButton('data-save-and-exit', 'SALVAR E SAIR', 'button-secondary');
+    else ui.exitModal.querySelector('[data-save-and-exit]')?.remove();
     const finalizeButton = createExitChoiceButton('data-finalize-from-exit', 'FINALIZAR MISSÃO', 'button-primary');
-    if (saveButton) saveButton.hidden = !canSaveMission || state.dailyChallenge;
+    if (saveButton) saveButton.hidden = false;
     if (finalizeButton) finalizeButton.hidden = !activeMission;
     const confirmButton = ui.exitModal.querySelector('[data-confirm-exit]');
     if (confirmButton) confirmButton.hidden = activeMission;
@@ -4809,7 +4822,7 @@
     if (cancelButton) cancelButton.textContent = activeMission ? 'CONTINUAR MISSÃO' : 'CANCELAR';
     const copy = ui.exitModal.querySelector('h2 + p');
     if (copy) copy.textContent = activeMission
-      ? state.dailyChallenge ? 'Você pode continuar o desafio ou encerrá-lo agora.' : 'A missão já é salva ao pausar. Escolha se quer guardá-la para depois ou encerrar agora.'
+      ? state.dailyChallenge ? 'Você pode continuar o desafio ou encerrá-lo agora.' : isDeveloperProfile() ? 'A missão já é salva ao pausar. Escolha se quer guardá-la para depois ou encerrar agora.' : 'Você pode continuar jogando ou finalizar esta missão agora.'
       : 'Deseja voltar ao menu?';
     if (saveButton) saveButton.onclick = saveAndExitMission;
     if (finalizeButton) finalizeButton.onclick = finalizeMissionFromExit;
