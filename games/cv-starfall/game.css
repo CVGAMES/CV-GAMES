@@ -630,12 +630,14 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-skin-select:hover:not(:disabled),.starfall-skin-select:focus-visible { background:rgba(255,255,255,.045); outline:2px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 65%,transparent); outline-offset:1px; }
 .starfall-skin-select:disabled { opacity:.66; cursor:not-allowed; }
 .starfall-skin-select .starfall-skin-icon { display:grid; width:2.45rem; height:2.45rem; grid-row:1 / span 4; place-items:center; color:var(--skin-color,#9fd8ff); font-size:1.5rem; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--skin-color,#9fd8ff) 40%,transparent)); }
+.starfall-skin-select .starfall-training-icon { border:1px solid rgba(199,207,218,.46); border-radius:.7rem; background:linear-gradient(145deg,rgba(172,181,193,.2),rgba(19,24,31,.84)); color:#cbd1da; text-shadow:0 1px 4px #111; }
 .starfall-skin-select .starfall-eclipse-sprite { display:block; background-size:contain; }
 .starfall-skin-select .starfall-dino-icon { font-size:1.7rem; }
 .starfall-skin-card.is-secret .starfall-skin-select .starfall-skin-icon { color:var(--skin-color,#c49aff); font-size:1.5rem; }
 .starfall-skin-card.is-secret .starfall-skin-select .starfall-dino-icon { font-size:1.7rem; }
 .starfall-skin-select strong { overflow:hidden; color:#f3f8ff; font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
 .starfall-skin-skill { display:flex; min-width:0; align-items:center; gap:.35rem; color:#bfd1e8; font-size:.65rem; line-height:1.25; }
+.starfall-skin-training-note { grid-column:2; color:#c4ccd6; font-size:.58rem; font-weight:850; letter-spacing:.035em; }
 .starfall-skin-skill kbd { flex:none; min-width:1.1rem; padding:.08rem .2rem; border:1px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 45%,transparent); border-radius:.3rem; background:color-mix(in srgb,var(--skin-color,#9fd8ff) 12%,#101b2c); color:var(--skin-color,#9fd8ff); font:900 .58rem system-ui; text-align:center; }
 .starfall-skin-skill span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .starfall-skin-status { grid-column:2; color:var(--skin-color,#9fd8ff); font-size:.55rem; font-weight:950; letter-spacing:.08em; }
