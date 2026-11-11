@@ -10,3 +10,11 @@ alter table public.starfall_settings
 
 alter table public.starfall_settings
   add column if not exists setup_complete boolean not null default false;
+
+-- Permite equipar Umbra (código 12) em perfis existentes.
+alter table public.starfall_profiles
+  drop constraint if exists starfall_profiles_selected_ship_check;
+
+alter table public.starfall_profiles
+  add constraint starfall_profiles_selected_ship_check
+  check (selected_ship between 1 and 12);

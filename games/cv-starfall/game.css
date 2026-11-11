@@ -486,6 +486,41 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
   body[data-cv-starfall-state="playing"] .starfall-game-panel:fullscreen .starfall-controls .starfall-ability,body[data-cv-starfall-state="playing"] .starfall-game-panel.is-fullscreen-fallback .starfall-controls .starfall-ability { display:grid; }
   body[data-cv-starfall-state="playing"] .starfall-ability:disabled { opacity:.52; }
 }
+
+/* Mahoraga: the wheel stays visible on the hull and takes over the arena when an adaptation completes. */
+.starfall-mahoraga-icon { border:1px solid rgba(228,196,119,.62); border-radius:50%; background:radial-gradient(circle,rgba(242,225,189,.26),rgba(126,143,146,.16) 58%,rgba(24,32,40,.92)); color:#f2d48f !important; text-shadow:0 0 10px rgba(242,212,143,.42); }
+.starfall-mahoraga-icon svg { display:block; width:100%; height:100%; overflow:visible; }
+.starfall-equipped-icon.starfall-mahoraga-icon { border-radius:50%; }
+.starfall-equipped-icon.starfall-mahoraga-sprite { overflow:hidden; border-radius:50%; background:radial-gradient(circle,rgba(242,225,189,.18),rgba(24,32,40,.92)); }
+.starfall-equipped-icon.starfall-mahoraga-sprite img { display:block; width:180%; height:180%; max-width:none; object-fit:contain; mix-blend-mode:screen; }
+.starfall-adaptation-skill-icon { display:block; width:1.65rem; height:1.65rem; max-width:none; object-fit:contain; mix-blend-mode:screen; pointer-events:none; }
+.starfall-secondary-ability.is-mahoraga { border-color:rgba(228,196,119,.72); background:linear-gradient(145deg,rgba(97,104,105,.94),rgba(34,42,51,.98)); color:#f4e8c9; box-shadow:0 0 15px rgba(228,196,119,.16),inset 0 0 12px rgba(241,233,212,.09); }
+.starfall-secondary-ability.is-mahoraga::after { border-color:rgba(239,222,178,.88); background:#3a4247; color:#f4e8c9; }
+.starfall-secondary-ability.is-mahoraga[aria-pressed="true"] { border-color:#fff1ce; background:linear-gradient(145deg,rgba(173,143,83,.97),rgba(73,76,71,.98)); box-shadow:0 0 23px rgba(228,196,119,.4),inset 0 0 13px rgba(255,246,218,.2); }
+.starfall-primary-ability-wrap .starfall-ability.is-mahoraga[aria-pressed="true"] { border-color:#fff1ce; background:linear-gradient(145deg,rgba(173,143,83,.96),rgba(73,76,71,.98)); color:#fff7e5; box-shadow:0 0 22px rgba(228,196,119,.4),inset 0 0 13px rgba(255,246,218,.2); }
+.starfall-mahoraga-awakening[hidden] { display:none !important; }
+.starfall-mahoraga-readout[hidden] { display:none !important; }
+.starfall-mahoraga-readout { position:absolute; z-index:2; bottom:.55rem; left:.55rem; max-width:min(58%,27rem); padding:.34rem .58rem; border:1px solid rgba(228,196,119,.48); border-radius:999px; background:rgba(20,25,31,.84); color:#f3e4bf; font-size:clamp(.48rem,1.25vw,.66rem); font-weight:900; letter-spacing:.055em; line-height:1.25; text-align:left; text-shadow:0 1px 5px #071018; }
+.starfall-mahoraga-awakening { position:absolute; z-index:6; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.22rem; overflow:hidden; padding:1rem; background:radial-gradient(ellipse at center,rgba(218,187,118,.2),rgba(12,17,23,.3) 36%,transparent 72%); color:#f4ede0; opacity:0; pointer-events:none; text-align:center; text-shadow:0 2px 12px rgba(0,0,0,.95); }
+.starfall-mahoraga-awakening.is-visible { animation:starfall-mahoraga-awakening-in 2.9s ease both; }
+.starfall-mahoraga-wheel { position:relative; width:clamp(10rem,31vw,16.5rem); aspect-ratio:1; flex:none; filter:drop-shadow(0 0 18px rgba(228,196,119,.38)); }
+.starfall-mahoraga-wheel::before { position:absolute; inset:10%; border-radius:50%; background:radial-gradient(circle,rgba(241,225,190,.22),rgba(109,120,124,.1) 47%,transparent 72%); content:""; }
+.starfall-mahoraga-wheel svg { display:block; width:100%; height:100%; overflow:visible; transform-origin:50% 50%; filter:drop-shadow(0 0 3px rgba(228,196,119,.38)); }
+.starfall-mahoraga-awakening.is-visible .starfall-mahoraga-wheel svg { animation:starfall-mahoraga-wheel-spin 1.45s cubic-bezier(.12,.78,.18,1) both; }
+.starfall-mahoraga-wheel-halo { fill:rgba(241,225,190,.04); stroke:rgba(228,196,119,.52); stroke-width:1.5; }
+.starfall-mahoraga-wheel-ring { fill:rgba(31,37,43,.92); stroke:#e8d7b4; stroke-width:3.2; }
+.starfall-mahoraga-wheel-inner { fill:rgba(130,141,141,.16); stroke:#b89b62; stroke-width:1.8; }
+.starfall-mahoraga-wheel-spokes { fill:none; stroke:rgba(239,232,216,.92); stroke-width:3; stroke-linecap:round; }
+.starfall-mahoraga-wheel-nodes circle { fill:#c6aa70; stroke:#f5ead4; stroke-width:2; }
+.starfall-mahoraga-wheel-hub { fill:#293139; stroke:#f0dfbc; stroke-width:3; }
+.starfall-mahoraga-wheel-core { fill:#e4c477; stroke:#fff4d8; stroke-width:1.2; }
+.starfall-mahoraga-awakening-kicker { margin:.35rem 0 0; color:#e4c477; font-size:clamp(.64rem,2vw,.87rem); font-weight:950; letter-spacing:.22em; }
+.starfall-mahoraga-awakening > strong { color:#f2ead9; font-size:clamp(1rem,3vw,1.5rem); font-weight:950; letter-spacing:.14em; }
+.starfall-mahoraga-awakening-buff { margin-top:.32rem; padding:.42rem .82rem; border:1px solid rgba(228,196,119,.74); border-radius:999px; background:rgba(25,30,35,.92); color:#f1d28a; font-size:clamp(.72rem,2.3vw,1.02rem); font-weight:950; letter-spacing:.1em; box-shadow:0 0 20px rgba(228,196,119,.18); }
+@keyframes starfall-mahoraga-wheel-spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(720deg); } }
+@keyframes starfall-mahoraga-awakening-in { 0% { opacity:0; } 10%,76% { opacity:1; } 100% { opacity:0; } }
+@media(max-width:560px) { .starfall-mahoraga-readout { bottom:.3rem; left:.3rem; max-width:72%; padding:.27rem .42rem; font-size:.46rem; } .starfall-mahoraga-awakening { gap:.12rem; } .starfall-mahoraga-wheel { width:min(56vw,12rem); } .starfall-mahoraga-awakening-buff { margin-top:.15rem; padding:.34rem .6rem; } }
+@media(prefers-reduced-motion:reduce) { .starfall-mahoraga-awakening.is-visible,.starfall-mahoraga-awakening.is-visible .starfall-mahoraga-wheel svg { animation-duration:.01ms; animation-iteration-count:1; } }
 @media(prefers-reduced-motion:reduce) { .starfall-prism-card,.starfall-prism-rank-notice-card { animation:none; } .starfall-prism-option { transition:none; } }
 @media(max-width:760px) { .starfall-skin-picker { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 @media(max-width:560px) { .starfall-skin-picker { grid-template-columns:repeat(2,minmax(0,1fr)); } .starfall-skin-card { min-height:7rem; } .starfall-modal-card { gap:.48rem; padding:2.5rem .8rem .9rem; } .starfall-modal-close { top:.45rem; right:.45rem; } .starfall-achievements-list,.starfall-daily-summary-stats { grid-template-columns:1fr; max-height:50vh; } }
@@ -663,3 +698,26 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
   .starfall-prism-option small { font-size:.49rem; }
   .starfall-prism-option strong { font-size:.66rem; }
 }
+
+/* Umbra: dark hangar accents, the summoning ritual, and the shadow veil. */
+.starfall-skin-icon.starfall-umbra-icon,.starfall-equipped-icon.starfall-umbra-icon { overflow:hidden; border:1px solid rgba(177,157,219,.68); border-radius:50%; background:radial-gradient(circle at 50% 42%,rgba(117,95,156,.44),rgba(25,22,37,.95) 70%); color:#d6c9f1; text-shadow:0 0 12px rgba(181,156,237,.5); }
+.starfall-skin-icon.starfall-umbra-icon img,.starfall-equipped-icon.starfall-umbra-icon img { display:block; width:180%; height:180%; max-width:none; object-fit:contain; mix-blend-mode:screen; }
+.starfall-ability.is-megumi,.starfall-secondary-ability.is-megumi { border-color:rgba(177,157,219,.76); background:linear-gradient(145deg,rgba(68,56,91,.96),rgba(22,21,34,.98)); color:#e6dcff; box-shadow:0 0 16px rgba(165,135,225,.19),inset 0 0 12px rgba(209,193,245,.1); }
+.starfall-megumi-cutscene[hidden] { display:none !important; }
+.starfall-megumi-cutscene { position:absolute; z-index:12; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.55rem; overflow:hidden; isolation:isolate; background:radial-gradient(ellipse at 50% 54%,rgba(57,45,80,.52),rgba(9,8,15,.95) 58%,#030307); color:#f4efff; text-align:center; text-shadow:0 2px 18px #000; animation:starfall-megumi-cut-in 2.6s ease both; }
+.starfall-megumi-cutscene-shadow { position:absolute; z-index:-1; inset:-22%; opacity:.7; background:repeating-conic-gradient(from 0deg at 50% 49%,transparent 0deg 22deg,rgba(171,144,225,.14) 23deg 24deg,transparent 25deg 45deg); animation:starfall-megumi-shadow-spin 6s linear infinite; mask-image:radial-gradient(ellipse,black 0 26%,transparent 69%); }
+.starfall-megumi-cutscene-wheel { width:clamp(9rem,27vw,14rem); aspect-ratio:1; filter:drop-shadow(0 0 24px rgba(228,196,119,.42)); animation:starfall-megumi-wheel-arrive 1.65s cubic-bezier(.16,.8,.16,1) both; }
+.starfall-megumi-cutscene-wheel img { display:block; width:100%; height:100%; aspect-ratio:1; object-fit:contain; object-position:center; transform-origin:50% 50%; overflow:visible; mix-blend-mode:screen; animation:starfall-megumi-wheel-spin 1.8s cubic-bezier(.2,.7,.2,1) both; }
+.starfall-megumi-cutscene > p { margin:.3rem 0 0; color:#bba5e4; font-size:clamp(.66rem,2vw,.9rem); font-weight:950; letter-spacing:.24em; }
+.starfall-megumi-cutscene > strong { font-size:clamp(1.8rem,7vw,4.2rem); font-weight:1000; letter-spacing:.18em; }
+.starfall-megumi-cutscene > span { color:#d7cee8; font-size:clamp(.58rem,1.6vw,.78rem); font-weight:850; letter-spacing:.28em; }
+.starfall-megumi-shadow-veil { filter:saturate(.65) brightness(.64); }
+.starfall-megumi-shadow-veil::after { position:absolute; z-index:5; inset:0; pointer-events:none; background:radial-gradient(ellipse at center,rgba(40,30,63,.24),rgba(4,3,10,.74)); content:""; }
+.starfall-megumi-form-timer[hidden] { display:none !important; }
+.starfall-megumi-form-timer { position:absolute; z-index:3; right:.55rem; bottom:.55rem; max-width:calc(100% - 1.1rem); padding:.36rem .6rem; border:1px solid rgba(193,174,230,.58); border-radius:999px; background:rgba(20,16,31,.88); color:#e6dcff; font-size:clamp(.52rem,1.2vw,.68rem); font-weight:950; letter-spacing:.09em; text-align:center; text-shadow:0 1px 6px #08060d; box-shadow:0 0 16px rgba(165,135,225,.2); }
+@keyframes starfall-megumi-wheel-spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(720deg); } }
+@keyframes starfall-megumi-wheel-arrive { 0% { opacity:0; transform:translateY(3rem) scale(.45); } 35% { opacity:1; } 100% { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes starfall-megumi-shadow-spin { to { transform:rotate(360deg); } }
+@keyframes starfall-megumi-cut-in { 0% { opacity:0; } 12%,88% { opacity:1; } 100% { opacity:0; } }
+@media(prefers-reduced-motion:reduce) { .starfall-megumi-cutscene,.starfall-megumi-cutscene-wheel,.starfall-megumi-cutscene-wheel img,.starfall-megumi-cutscene-shadow { animation-duration:.01ms; animation-iteration-count:1; } }
+@media(max-width:560px) { .starfall-megumi-form-timer { right:.3rem; bottom:.3rem; padding:.28rem .45rem; font-size:.52rem; } }

@@ -66,21 +66,22 @@ revoke all on public.starfall_scores from anon, authenticated;
 grant select, insert, update on public.starfall_scores to anon;
 grant select, insert, update on public.starfall_scores to authenticated;
 
--- Progresso privado do hangar: códigos 1-10 identificam as naves pela ordem atual.
+-- Progresso privado do hangar: códigos 1-12 identificam as naves pela ordem atual.
 -- 1 Aurora, 2 Aegis, 3 Chronos, 4 Tempestade, 5 Flashblade,
--- 6 Bastião Rubro, 7 Eclipse, 8 Saurion, 9 Prisma Real (somente educvv), 10 Ferrum.
+-- 6 Bastião Rubro, 7 Eclipse, 8 Saurion, 9 Prisma Real (somente educvv),
+-- 10 Ferrum, 11 reservado para a forma interna Mahoraga, 12 Umbra.
 create table if not exists public.starfall_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   unlocked_ships smallint[] not null default array[1]::smallint[],
-  selected_ship smallint not null default 1 check (selected_ship between 1 and 10),
+  selected_ship smallint not null default 1 check (selected_ship between 1 and 12),
   best_completed_wave integer not null default 0 check (best_completed_wave >= 0),
   updated_at timestamptz not null default now()
 );
 
--- Atualiza a faixa para incluir Prisma Real e Ferrum em projetos já existentes.
+-- Atualiza a faixa para incluir Prisma Real, Ferrum e Umbra em projetos já existentes.
 alter table public.starfall_profiles drop constraint if exists starfall_profiles_selected_ship_check;
 alter table public.starfall_profiles add constraint starfall_profiles_selected_ship_check
-  check (selected_ship between 1 and 10);
+  check (selected_ship between 1 and 12);
 
 alter table public.starfall_profiles enable row level security;
 
