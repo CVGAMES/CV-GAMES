@@ -14,10 +14,11 @@
     'ismail s':'ISMAIL S',
     'brendo t':'BRENDO T',
     'adryan v':'ADRYAN V',
-    geovanagamer099:'geovanagamer099',
-    cypher:'Cypher',
-    nys:'nys',
-    educvv:'educvv'
+    storm:'STORM',
+    'hiago a':'HIAGO A',
+    cypher:'CYPHER',
+    nys:'NYS',
+    educvv:'EDUCVV'
   });
 
   window.CV_STARFALL_SUPABASE = Object.freeze({

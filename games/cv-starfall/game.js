@@ -67,20 +67,20 @@
   ui.prismSelectWrap = $('[data-prism-select-wrap]');
   ui.prismSelect = $('[data-prism-select]');
   const skins = [
-    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 25, cooldownQ: 28, shape: 'classic', description: 'E cria uma explosão ampla. Com Q ativo, a Nova espalha o mesmo dano para os demais inimigos ligados se atingir um deles. Q conecta cinco alvos, ampliáveis até oito; cada vida perdida pela nave causa 2 de dano aos inimigos conectados.' },
+    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 22, cooldownQ: 24, shape: 'classic', description: 'E libera uma Explosão Nova mais ampla e poderosa. Com Q ativo, ela espalha o dano entre os inimigos ligados. Elo Estelar conecta até dez alvos por até nove segundos.' },
     { id: 'training', name: 'Ferrum', color: '#aeb5c0', accent: '#282d36', ability: '', abilityShort: '', cooldown: 0, cooldownQ: 0, shape: 'training', noAbilities: true, description: 'Nave de treino sem habilidades E ou Q. Move-se 10% mais devagar e recebe metade do dano.' },
     { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 25, cooldownQ: 30, shape: 'shield', unlockWave: 10, description: 'E cria uma barreira que absorve três impactos. Q invoca Órbitas Sentinelas: fragmentos orbitais interceptam tiros e os convertem em projéteis teleguiados; os fragmentos intactos são lançados contra inimigos ao final.' },
-    { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 25, cooldownQ: 28, shape: 'ring', unlockWave: 20, description: 'E desacelera inimigos e projéteis. Q cria Ecos do Futuro: os disparos são repetidos com atraso e dano reduzido.' },
-    { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 34, cooldownQ: 28, shape: 'wing', unlockWave: 30, description: 'E dispara um Poço Negro que curva suavemente na direção do movimento da nave. Q libera a Maré Reversa, que causa dano leve, empurra inimigos e desvia tiros próximos; alguns são lançados contra os inimigos. Começa com três cargas, ampliáveis até cinco.' },
-    { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 25, cooldownQ: 26, shape: 'blade', unlockWave: 40, description: 'E lança uma lâmina que curva e ricocheteia. Q acelera a nave e cria barreiras cortantes pelo trajeto por 5 segundos.' },
+    { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 22, cooldownQ: 24, shape: 'ring', unlockWave: 20, description: 'E desacelera fortemente inimigos e projéteis por mais tempo. Q cria Ecos do Futuro que repetem os disparos após curto atraso, com dano aumentado.' },
+    { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 30, cooldownQ: 24, shape: 'wing', unlockWave: 30, description: 'E dispara um Poço Negro maior e duradouro que puxa inimigos e causa dano repetido. Q libera a Maré Reversa, que causa dano, empurra inimigos e desvia tiros próximos; começa com quatro cargas, ampliáveis até seis. As cargas só recarregam juntas depois que todas forem usadas.' },
+    { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 22, cooldownQ: 24, shape: 'blade', unlockWave: 40, description: 'E lança uma lâmina veloz que persegue alvos, ricocheteia e causa dano aumentado. Q acelera a nave em 2,6× e deixa rastros cortantes por até nove segundos.' },
     { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, cooldownQ: 28, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'E reflete projéteis. Q cria um Perímetro de Cerco móvel por 6 segundos; inimigos que cruzam os feixes recebem dano.' },
     { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral móvel por 4 segundos; ela atrai disparos, tenta desviar e dispara tiros leves e espaçados. Melhorias podem prolongar sua duração.' },
-    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: atordoa uma grande área; três garras leves reaparecem a cada 2 segundos por 15 segundos. Q causa dano extra aos alvos marcados.' },
+    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q causa dano extra aos alvos marcados.' },
     { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' },
-    { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação', abilityShort: 'APARO', cooldown: 0, cooldownQ: 8, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E ativa a Adaptação, concede 3 segundos de invulnerabilidade e abre uma janela de aparo de 0,42 segundo. Ative perto do impacto: cinco aparos do mesmo tipo completam a adaptação e reduzem em 25% o dano daquele ataque. Q lança o Corte Mundial, que atravessa a arena e elimina tudo em sua trajetória.' },
-    { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 12, cooldownQ: 36, shape: 'megumi', secret: true, description: 'Nave secreta em desenvolvimento. Não conta no Top 10. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação. Q inicia o ritual do Guardião; após a cutscene, a nave assume a forma Mahoraga até o fim da missão, com Adaptação no E e Corte Mundial no Q.' }
+    { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 9, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz o dano recebido em 65%. Cinco golpes do mesmo tipo iniciam a adaptação; ela persiste pelas ondas 1, 2 e 3 e evolui até 50%. Ao entrar na onda 4, o ciclo reinicia. A roda completa fortalece a adaptação atual sem ultrapassar esse limite.' },
+    { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 12, cooldownQ: 36, shape: 'megumi', secret: true, description: 'Nave secreta em desenvolvimento. Não conta no Top 10. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação. Q inicia o ritual do Guardião; após a cutscene, a nave assume a forma Mahoraga até o fim da missão, com Adaptação Divina no E e Espada da Exterminação no Q.' }
   ];
-  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Isca Umbral', saurion:'Estouro da Manada', prisma:'Dobra de Horizonte', mahoraga:'Corte Mundial', megumi:'Ritual do Guardião' });
+  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Isca Umbral', saurion:'Estouro da Manada', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião' });
   const megumiTechniques = Object.freeze({
     rabbits:{ id:'rabbits', name:'Fuga dos Coelhos', short:'COELHOS', icon:'🐇', description:'Cinco shikigami-armadilha se espalham, atiram e atraem inimigos.' },
     shadow:{ id:'shadow', name:'Ocultação nas Sombras', short:'SOMBRA', icon:'◑', description:'Fica invisível, dispara projéteis sombrios, atravessa as bordas e recolhe recursos.' },
@@ -88,17 +88,17 @@
   });
   let megumiCutsceneTimer = 0;
   const shipAbilityDetails = Object.freeze({
-    aurora: { e:'Explosão Nova atinge uma grande área ao redor da nave. Com o Elo Estelar ativo, se a explosão atingir um inimigo ligado, os demais recebem o mesmo dano.', q:'Conecta cinco alvos por 5 segundos, com pulsos a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada vida perdida pela nave durante o Elo causa 2 de dano a cada alvo conectado. Melhorias ampliam a conexão para até oito alvos, prolongam a duração até 7s e aumentam o dano dos pulsos para 2,4; a recarga cai de 28s para 22s.' },
+    aurora: { e:'A Explosão Nova causa mais dano em uma área maior ao redor da nave; sua recarga é de 22 segundos.', q:'Conecta até dez alvos por 7 segundos, com pulsos a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada vida perdida pela nave durante o Elo causa 2 de dano a cada alvo conectado. Melhorias prolongam a duração até 9s e aumentam o dano dos pulsos até 3; a recarga cai de 24s para 18s.' },
     aegis: { e:'A Barreira Aegis absorve três impactos e protege a nave enquanto estiver ativa.', q:'Três sentinelas orbitam por 6 segundos. Cada uma pode interceptar um tiro comum e convertê-lo em um disparo teleguiado. A nave fica protegida; fragmentos que sobrarem atacam os inimigos ao final. Melhorias chegam a 8s, cinco sentinelas e dano 5; a recarga cai de 30s para 24s.' },
-    chronos: { e:'A Dobra Temporal desacelera os inimigos e seus projéteis para abrir espaço e facilitar a esquiva.', q:'Ecos repetem os disparos da nave após 0,42s. Melhorias aumentam a duração de 4s para 6s e o dano dos ecos de 40% para 70%; a recarga pode cair de 28s para 22s.' },
-    tempest: { e:'O Poço Negro é disparado na direção da nave e curva suavemente conforme ela se move. A singularidade puxa inimigos próximos e causa dano repetido.', q:'A Maré Reversa afasta inimigos, causa dano leve, desvia tiros comuns e redireciona alguns contra os adversários. Também protege a nave por um instante. Começa com três cargas, pode chegar a cinco e recupera uma carga a cada 28s, ou 22s com melhorias.' },
-    flashblade: { e:'O Corte Flash lança uma lâmina veloz que persegue alvos, ricocheteia nas bordas e causa dano ao cruzar os inimigos.', q:'A nave acelera em 2,2× por 5 segundos e deixa barreiras de luz no trajeto. Os rastros duram até 7s, ferem e desviam inimigos a cada contato e destroem tiros que os atingem; melhorias prolongam e fortalecem o efeito.' },
+    chronos: { e:'A Dobra Temporal desacelera fortemente inimigos e projéteis em toda a arena por 7,2 segundos, criando espaço para atacar e esquivar.', q:'Ecos repetem os disparos da nave após 0,30s. Melhorias aumentam a duração de 6s para 8s e o dano dos ecos de 70% para 100%; a recarga cai de 24s para 18s.' },
+    tempest: { e:'O Poço Negro é disparado na direção da nave e curva suavemente conforme ela se move. A singularidade puxa inimigos de uma área ampliada e causa mais dano repetido durante 8,5 segundos.', q:'A Maré Reversa afasta inimigos, causa mais dano, desvia tiros comuns em 40% das vezes e redireciona alguns contra os adversários. Também protege a nave por um instante. Começa com quatro cargas, pode chegar a seis; ao gastar todas, recupera o conjunto após 24s, ou 18s com melhorias.' },
+    flashblade: { e:'O Corte Flash lança uma lâmina mais rápida e forte, com perseguição mais precisa e ricochetes frequentes; sua recarga é de 22 segundos.', q:'A nave acelera em 2,6× por 6 segundos e deixa barreiras de luz no trajeto. Cada rastro dura até 9s, fere e desvia inimigos e destrói tiros que o atingem; melhorias reforçam o dano.' },
     redshift: { e:'O Escudo de Retorno reflete projéteis que atingem a nave durante a proteção. Melhorias aumentam duração e dano e reduzem a recarga.', q:'O Perímetro de Cerco acompanha a nave com feixes cortantes. Inimigos que cruzam as linhas recebem dano. Melhorias ampliam a duração de 6s para 8s e podem reduzir a recarga de 28s para 22s.' },
     eclipse: { e:'A Expansão de Domínio inicia com uma abertura cinematográfica e transforma a arena em um santuário. Os cortes cobrem a área por 10 segundos; a nave fica invulnerável durante o efeito e por alguns segundos ao final.', q:'A Isca Umbral cria uma cópia móvel por cerca de 4 segundos. Ela cruza a arena em velocidade próxima à da nave, um pouco menor; inimigos miram nela enquanto desvia e dispara um tiro leve a cada 0,9 segundo. Esses disparos causam menos dano que os da nave. Melhorias podem prolongar o efeito e melhorar seus desvios.' },
-    saurion: { e:'O Rugido de Garras atordoa uma grande área e marca os inimigos. Três cortes leves reaparecem a cada 2 segundos por 15 segundos; os alvos marcados recebem dano extra do Q.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' },
+    saurion: { e:'O Rugido de Garras tem duas cargas. Atinge uma área maior, atordoa por mais tempo e marca os inimigos; garras mais fortes atingem com maior frequência.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' },
     prisma: { e:'O Núcleo Prisma concentra luz diante da nave e libera uma onda de impacto. Inimigos próximos recebem dano e são afastados; chefes resistem parcialmente ao empurrão. Melhorias ampliam o raio, o dano e reduzem a recarga. Você também pode escolher outra habilidade no Arquivo de Ecos.', q:'A Dobra de Horizonte grava a posição da nave por 4 segundos. Ative novamente para retornar ao ponto marcado, ganhar proteção breve e liberar uma onda de chegada que causa dano e desorganiza inimigos próximos. Melhorias ampliam a janela até 6 segundos e fortalecem a onda. O espaço Q também pode receber outra habilidade escolhida.' },
-    mahoraga: { e:'Pressione E para ganhar 3 segundos de invulnerabilidade e abrir uma janela de aparo de 0,42 segundo. Se acertar o tempo, o golpe é bloqueado e conta para a adaptação daquele tipo. Cinco aparos iguais completam a adaptação: a roda gira e concede redução permanente de 25% do dano recebido daquele ataque; cada novo ciclo aumenta a proteção.', q:'O Corte Mundial atravessa a arena na direção da nave, causa dano extremo e elimina qualquer inimigo atingido, incluindo chefes. Recarga de 8 segundos.' },
-    megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga permanece até o fim da missão e recebe Adaptação no E e Corte Mundial no Q. Recarga de 36 segundos.' }
+    mahoraga: { e:'Adaptação Divina · escudo de 3s reduz 65% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais iniciam a resistência: 25% na primeira onda, 35% na segunda e 50% na terceira. Ela permanece ativa entre ondas; ao entrar na onda 4, roda, progresso e resistência reiniciam, e um novo ciclo começa. Só uma categoria de ataque fica adaptada por ciclo. Recarga de 14s.', q:'Espada da Exterminação · concentra energia à frente e dispara um corte reto que atravessa inimigos. O primeiro alvo recebe dano alto, os seguintes recebem dano reduzido, e cada alvo ganha uma marca verde que aumenta em 10% o dano do próximo ataque. Recarga de 9s.' },
+    megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga permanece até o fim da missão e recebe Adaptação Divina no E e Espada da Exterminação no Q. Recarga de 36 segundos.' }
   });
   const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
@@ -141,6 +141,7 @@
     return Boolean(coarsePointer && !finePointer && hasTouch && (handheldAgent || touchOnly));
   }
   const detectedMobileDevice = detectMobileDevice();
+  let keyboardInputDetected = false;
   const mobileEntityScale = .66;
   const particleLimit = () => state.performanceMode === 'light' ? 110 : state.mobileSizing ? 240 : Infinity;
   const initialNicknameSettings = readNicknameSettings();
@@ -149,11 +150,11 @@
     damageCounterEnabled: initialNicknameSettings.damageCounterEnabled, damageCounterPosition: initialNicknameSettings.damageCounterPosition, damageCounterTotal: 0, damageCounterLastHit: 0, damageCounterIdle: 0, damageCounterPopups: [], damageCounterEditing: false, damageCounterDragging: false, damageCounterEditStart: null, damageCounterEditorHadMenu: false, trainingDamageRemainder: 0,
     eclipseSkipVideoEnabled: initialNicknameSettings.eclipseSkipVideo,
     shipEWasCooling: false, shipQWasCooling: false, shipQChargeCount: null,
-    mahoragaParryWindow: 0, mahoragaParryCooldown: 0, mahoragaAdaptationVisualTime: 0, mahoragaSlashCooldown: 0, mahoragaSlashCooldownBonus: 0, mahoragaProgress: {}, mahoragaAdaptations: {}, mahoragaDamageRemainders: {}, mahoragaLastType: '',
+    mahoragaParryWindow: 0, mahoragaParryCooldown: 0, mahoragaShieldHitCooldown: 0, mahoragaResistanceType: '', mahoragaResistanceUntilWave: 0, mahoragaResistancePower: 0, mahoragaCycleStartWave: 1, mahoragaWheelSegments: 0, mahoragaWheelReady: false, mahoragaAdaptationVisualTime: 0, mahoragaSlashCooldown: 0, mahoragaSlashCooldownBonus: 0, mahoragaProgress: {}, mahoragaAdaptationLevels: {}, mahoragaAdaptationWaves: {}, mahoragaDamageRemainders: {}, mahoragaLastType: '',
     megumiTechnique:'rabbits', megumiSummonCooldown:0, megumiTransformed:false, megumiSummonPhase:'idle', megumiTransformSource:'', megumiCloakTime:0, megumiCloakLastX:0, megumiCloakLastY:0, megumiRabbits:[],
     prismAbilityChoices: { e:'aurora:e', q:'aurora:q' }, prismAbilitySlot:'e', prismDispatchSkinId:'', prismDispatchSlot:'', prismQCooldown:0, prismHorizonAnchor:null, prismHorizonWindowBonus:0, prismHorizonDamageBonus:0, prismCoreRangeBonus:0, prismCoreDamageBonus:0, prismCooldownBonus:0, prismWheelWasPlaying:false,
     aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0,
-    tempestTideCharges: 3, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
+    tempestTideCharges: 4, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
     chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
     score: 0, best: readBest(), bestCompletedWave: readBestWave(), wave: 1, lives: 3, maxLives: 6, shields: 0, tempShields: 0, invulnerable: 0, elapsed: 0,
@@ -162,7 +163,7 @@
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
     selectedSkin: readSkin(), controlMode: adaptControlMode(initialNicknameSettings.controlMode), savedControlMode: initialNicknameSettings.controlMode, performanceMode: initialNicknameSettings.performanceMode, preferencesConfigured: initialNicknameSettings.setupComplete, mobileSizing: detectedMobileDevice, upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1, adminNoCooldown: false, adminBuffsActive: false,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
-    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 235, singularityDuration: 6.5, tempestTideCooldown: 0, tempestTideRadiusBonus: 0, tempestTideForceBonus: 0, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, redshiftPerimeter: null, redshiftPerimeterCooldown: 0, redshiftPerimeterDurationBonus: 0, redshiftPerimeterDamageBonus: 0, redshiftPerimeterRangeBonus: 0, flashTrail: null, flashTrailCooldown: 0, flashTrailDurationBonus: 0, flashTrailDamageBonus: 0, flashTrailDensity: 0, flashTrailContacts: new Set(), eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, eclipseDecoyAI: 0, eclipseDecoyDurationBonus: 0, eclipseDecoyChaos: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
+    blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 300, singularityDuration: 8.5, tempestTideCooldown: 0, tempestTideRadiusBonus: 0, tempestTideForceBonus: 0, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, redshiftPerimeter: null, redshiftPerimeterCooldown: 0, redshiftPerimeterDurationBonus: 0, redshiftPerimeterDamageBonus: 0, redshiftPerimeterRangeBonus: 0, flashTrail: null, flashTrailCooldown: 0, flashTrailDurationBonus: 0, flashTrailDamageBonus: 0, flashTrailDensity: 0, flashTrailContacts: new Set(), eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseDecoy: null, eclipseDecoyCooldown: 0, eclipseDecoyAI: 0, eclipseDecoyDurationBonus: 0, eclipseDecoyChaos: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoRoarCharges: 2, dinoRoarRecharge: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: '#7df7e8' },
     pointer: { active: false, pointerId: null, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
@@ -226,40 +227,40 @@
     ,{ id:'bossDamage', icon:'☄', name:'Rompedor de guardiões', description:'Aumenta o dano causado aos chefes.', max:5, available:()=>state.bossDamageBonus<.75, apply:()=>{state.bossDamageBonus=Math.min(.75,state.bossDamageBonus+.15);} }
     ,{ id:'lowHull', icon:'⚑', name:'Protocolo de emergência', description:'Ganha velocidade quando restam duas vidas ou menos.', max:3, available:()=>state.lowHullBoost<3, apply:()=>{state.lowHullBoost+=1;} }
     ,{ id:'lifeSupport', icon:'♥+', name:'Casco reforçado', description:'Aumenta o máximo de vida e recupera uma unidade.', max:3, available:()=>state.maxLives<9, apply:()=>{state.maxLives=Math.min(9,state.maxLives+1);state.lives=Math.min(state.maxLives,state.lives+1);} }
-    ,{ id:'gravityWell', icon:'🌀', name:'Poço gravitacional', description:'Amplia e prolonga o buraco negro da Tempestade.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('gravityWell')<3, apply:()=>{state.singularityRadius+=32;state.singularityDuration+=.7;} }
-    ,{ id:'tempestTideRadius', icon:'◉', name:'Maré Ampliada', description:'Aumenta o alcance da Maré Reversa em 30 unidades.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideRadius')<3, apply:()=>{state.tempestTideRadiusBonus=Math.min(90,state.tempestTideRadiusBonus+30);} }
+    ,{ id:'gravityWell', icon:'🌀', name:'Poço gravitacional', description:'Amplia e prolonga o buraco negro da Tempestade.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('gravityWell')<3, apply:()=>{state.singularityRadius+=40;state.singularityDuration+=1;} }
+    ,{ id:'tempestTideRadius', icon:'◉', name:'Maré Ampliada', description:'Aumenta o alcance da Maré Reversa em 30 unidades, até quatro vezes.', max:4, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideRadius')<4, apply:()=>{state.tempestTideRadiusBonus=Math.min(120,state.tempestTideRadiusBonus+30);} }
     ,{ id:'tempestTideForce', icon:'↗', name:'Repulsão Vetorial', description:'Aumenta o impulso que afasta os inimigos. Chefes recebem um empurrão menor.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideForce')<3, apply:()=>{state.tempestTideForceBonus=Math.min(240,state.tempestTideForceBonus+80);} }
-    ,{ id:'tempestTideCapacity', icon:'✦', name:'Reservatório de Maré', description:'Adiciona uma carga à Maré Reversa, até cinco cargas.', max:2, available:()=>currentSkin().id==='tempest'&&state.tempestTideChargeBonus<2, apply:()=>{state.tempestTideChargeBonus=Math.min(2,state.tempestTideChargeBonus+1);state.tempestTideCharges=Math.min(3+state.tempestTideChargeBonus,state.tempestTideCharges+1);} }
+    ,{ id:'tempestTideCapacity', icon:'✦', name:'Reservatório de Maré', description:'Adiciona uma carga à Maré Reversa, até seis cargas.', max:2, available:()=>currentSkin().id==='tempest'&&state.tempestTideChargeBonus<2, apply:()=>{state.tempestTideChargeBonus=Math.min(2,state.tempestTideChargeBonus+1);state.tempestTideCharges=Math.min(4+state.tempestTideChargeBonus,state.tempestTideCharges+1);} }
     ,{ id:'tempestTideDamage', icon:'✹', name:'Ruptura de Pressão', description:'Aumenta o dano leve do pulso em 1 por nível. Chefes recebem dano reduzido.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideDamage')<3, apply:()=>{state.tempestTideDamageBonus=Math.min(3,state.tempestTideDamageBonus+1);} }
     ,{ id:'tempestTideSweep', icon:'〰', name:'Corrente Defletora', description:'Prolonga a curva defensiva e o rastreamento dos projéteis de contra-ataque.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideSweep')<3, apply:()=>{state.tempestTideSweepBonus=Math.min(.36,state.tempestTideSweepBonus+.12);} }
-    ,{ id:'tempestTideCooldown', icon:'⟳', name:'Ressonância de Maré', description:'Reduz em 2 segundos o tempo para recuperar uma carga, de 28 até 22 segundos.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideCooldown')<3, apply:()=>{state.tempestTideCooldown=Math.max(0,state.tempestTideCooldown-2);} }
-    ,{ id:'chronosEchoDuration', icon:'◷', name:'Janela Estendida', description:'Prolonga os Ecos do Futuro em 1 segundo, até 6 segundos.', max:2, available:()=>currentSkin().id==='chronos'&&state.chronosEchoDurationBonus<2, apply:()=>{state.chronosEchoDurationBonus=Math.min(2,state.chronosEchoDurationBonus+1);} }
-    ,{ id:'chronosEchoDamage', icon:'✦', name:'Ressonância Duplicada', description:'Aumenta o dano dos ecos em 10 pontos percentuais, de 40% até 70%.', max:3, available:()=>currentSkin().id==='chronos'&&state.chronosEchoDamageBonus<.3, apply:()=>{state.chronosEchoDamageBonus=Math.min(.3,state.chronosEchoDamageBonus+.1);} }
-    ,{ id:'chronosEchoCooldown', icon:'⟳', name:'Compasso Acelerado', description:'Reduz em 2 segundos a recarga do Q, de 28 até 22 segundos.', max:3, available:()=>currentSkin().id==='chronos'&&upgradeLevel('chronosEchoCooldown')<3, apply:()=>{state.chronosEchoCooldown=Math.max(0,state.chronosEchoCooldown-2);} }
+    ,{ id:'tempestTideCooldown', icon:'⟳', name:'Ressonância de Maré', description:'Reduz em 2 segundos a recarga do conjunto de cargas, de 24 até 18 segundos.', max:3, available:()=>currentSkin().id==='tempest'&&upgradeLevel('tempestTideCooldown')<3, apply:()=>{state.tempestTideCooldown=Math.max(0,state.tempestTideCooldown-2);} }
+    ,{ id:'chronosEchoDuration', icon:'◷', name:'Janela Estendida', description:'Prolonga os Ecos do Futuro em 1 segundo, até 8 segundos.', max:2, available:()=>currentSkin().id==='chronos'&&state.chronosEchoDurationBonus<2, apply:()=>{state.chronosEchoDurationBonus=Math.min(2,state.chronosEchoDurationBonus+1);} }
+    ,{ id:'chronosEchoDamage', icon:'✦', name:'Ressonância Duplicada', description:'Aumenta o dano dos ecos em 10 pontos percentuais, de 70% até 100%.', max:3, available:()=>currentSkin().id==='chronos'&&state.chronosEchoDamageBonus<.3, apply:()=>{state.chronosEchoDamageBonus=Math.min(.3,state.chronosEchoDamageBonus+.1);} }
+    ,{ id:'chronosEchoCooldown', icon:'⟳', name:'Compasso Acelerado', description:'Reduz em 2 segundos a recarga do Q, de 24 até 18 segundos.', max:3, available:()=>currentSkin().id==='chronos'&&upgradeLevel('chronosEchoCooldown')<3, apply:()=>{state.chronosEchoCooldown=Math.max(0,state.chronosEchoCooldown-2);} }
     ,{ id:'aegisOrbitDuration', icon:'◷', name:'Vigília Prolongada', description:'Prolonga as Órbitas Sentinelas em 1 segundo, até 8 segundos.', max:2, available:()=>currentSkin().id==='aegis'&&state.aegisOrbitDurationBonus<2, apply:()=>{state.aegisOrbitDurationBonus=Math.min(2,state.aegisOrbitDurationBonus+1);} }
     ,{ id:'aegisOrbitCount', icon:'✦', name:'Fragmentos Extras', description:'Invoca mais um fragmento sentinela, até cinco.', max:2, available:()=>currentSkin().id==='aegis'&&state.aegisOrbitCountBonus<2, apply:()=>{state.aegisOrbitCountBonus=Math.min(2,state.aegisOrbitCountBonus+1);} }
     ,{ id:'aegisOrbitDamage', icon:'☄', name:'Núcleo de Retorno', description:'Aumenta em 1 o dano dos projéteis convertidos, de 2 até 5.', max:3, available:()=>currentSkin().id==='aegis'&&state.aegisOrbitDamageBonus<3, apply:()=>{state.aegisOrbitDamageBonus=Math.min(3,state.aegisOrbitDamageBonus+1);} }
     ,{ id:'aegisOrbitCooldown', icon:'⟳', name:'Ciclo Guardião', description:'Reduz em 2 segundos a recarga do Q, de 30 até 24 segundos.', max:3, available:()=>currentSkin().id==='aegis'&&upgradeLevel('aegisOrbitCooldown')<3, apply:()=>{state.aegisOrbitCooldown=Math.max(0,state.aegisOrbitCooldown-2);} }
-    ,{ id:'auroraLinkDuration', icon:'◷', name:'Aurora Duradoura', description:'Prolonga o Elo Estelar em 1 segundo, até 7 segundos.', max:2, available:()=>currentSkin().id==='aurora'&&state.auroraLinkDurationBonus<2, apply:()=>{state.auroraLinkDurationBonus=Math.min(2,state.auroraLinkDurationBonus+1);} }
-    ,{ id:'auroraLinkTargets', icon:'✧', name:'Constelação Ampliada', description:'Adiciona um alvo aos saltos do Elo Estelar, até oito inimigos.', max:3, available:()=>currentSkin().id==='aurora'&&state.auroraLinkTargetBonus<3, apply:()=>{state.auroraLinkTargetBonus=Math.min(3,state.auroraLinkTargetBonus+1);} }
+    ,{ id:'auroraLinkDuration', icon:'◷', name:'Aurora Duradoura', description:'Prolonga o Elo Estelar em 1 segundo, até 9 segundos.', max:2, available:()=>currentSkin().id==='aurora'&&state.auroraLinkDurationBonus<2, apply:()=>{state.auroraLinkDurationBonus=Math.min(2,state.auroraLinkDurationBonus+1);} }
+    ,{ id:'auroraLinkTargets', icon:'✧', name:'Constelação Ampliada', description:'Adiciona um alvo aos saltos do Elo Estelar, até dez inimigos.', max:2, available:()=>currentSkin().id==='aurora'&&state.auroraLinkTargetBonus<2, apply:()=>{state.auroraLinkTargetBonus=Math.min(2,state.auroraLinkTargetBonus+1);} }
     ,{ id:'auroraLinkDamage', icon:'☄', name:'Fótons Intensos', description:'Aumenta em 0,4 o dano de cada pulso do Elo Estelar.', max:3, available:()=>currentSkin().id==='aurora'&&state.auroraLinkDamageBonus<1.2, apply:()=>{state.auroraLinkDamageBonus=Math.min(1.2,state.auroraLinkDamageBonus+.4);} }
-    ,{ id:'auroraLinkCooldown', icon:'⟳', name:'Ressonância Boreal', description:'Reduz em 2 segundos a recarga do Q, de 28 até 22 segundos.', max:3, available:()=>currentSkin().id==='aurora'&&upgradeLevel('auroraLinkCooldown')<3, apply:()=>{state.auroraLinkCooldown=Math.max(0,state.auroraLinkCooldown-2);} }
+    ,{ id:'auroraLinkCooldown', icon:'⟳', name:'Ressonância Boreal', description:'Reduz em 2 segundos a recarga do Q, de 24 até 18 segundos.', max:3, available:()=>currentSkin().id==='aurora'&&upgradeLevel('auroraLinkCooldown')<3, apply:()=>{state.auroraLinkCooldown=Math.max(0,state.auroraLinkCooldown-2);} }
     ,{ id:'returnCore', icon:'⟲', name:'Núcleo de contra-ataque', description:'Aumenta o dano, prolonga o escudo refletor e reduz sua recarga.', max:4, available:()=>currentSkin().id==='redshift'&&upgradeLevel('returnCore')<4, apply:()=>{state.reflectDamageBonus=Math.min(.9,state.reflectDamageBonus+.23);state.reflectDurationBonus=Math.min(2,state.reflectDurationBonus+.5);state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1.25);} }
     ,{ id:'redshiftPerimeterDuration', icon:'◷', name:'Cerco Prolongado', description:'Aumenta em 1 segundo a duração do Perímetro de Cerco, até 8 segundos.', max:2, available:()=>currentSkin().id==='redshift'&&state.redshiftPerimeterDurationBonus<2, apply:()=>{state.redshiftPerimeterDurationBonus=Math.min(2,state.redshiftPerimeterDurationBonus+1);} }
     ,{ id:'redshiftPerimeterDamage', icon:'✹', name:'Fios Cortantes', description:'Aumenta em 1,5 o dano causado quando um inimigo cruza os feixes.', max:3, available:()=>currentSkin().id==='redshift'&&state.redshiftPerimeterDamageBonus<4.5, apply:()=>{state.redshiftPerimeterDamageBonus=Math.min(4.5,state.redshiftPerimeterDamageBonus+1.5);} }
     ,{ id:'redshiftPerimeterRange', icon:'△', name:'Âncoras Expansivas', description:'Amplia o triângulo do perímetro em 15 unidades por nível.', max:3, available:()=>currentSkin().id==='redshift'&&state.redshiftPerimeterRangeBonus<45, apply:()=>{state.redshiftPerimeterRangeBonus=Math.min(45,state.redshiftPerimeterRangeBonus+15);} }
     ,{ id:'redshiftPerimeterCooldown', icon:'⟳', name:'Ressonância Rubra', description:'Reduz em 2 segundos a recarga do Q, até 22 segundos.', max:3, available:()=>currentSkin().id==='redshift'&&upgradeLevel('redshiftPerimeterCooldown')<3, apply:()=>{state.redshiftPerimeterCooldown=Math.max(0,state.redshiftPerimeterCooldown-2);} }
-    ,{ id:'flashTrailDuration', icon:'◷', name:'Rastro Persistente', description:'Aumenta em 1 segundo a duração dos rastros, até 7 segundos.', max:2, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDurationBonus<2, apply:()=>{state.flashTrailDurationBonus=Math.min(2,state.flashTrailDurationBonus+1);} }
+    ,{ id:'flashTrailDuration', icon:'◷', name:'Rastro Persistente', description:'Aumenta em 1 segundo a duração do Rastro de Ruptura, até 9 segundos.', max:3, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDurationBonus<3, apply:()=>{state.flashTrailDurationBonus=Math.min(3,state.flashTrailDurationBonus+1);} }
     ,{ id:'flashTrailDamage', icon:'✦', name:'Fio Residual', description:'Aumenta em 0,7 o dano de cada corte deixado no caminho.', max:3, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDamageBonus<2.1, apply:()=>{state.flashTrailDamageBonus=Math.min(2.1,state.flashTrailDamageBonus+.7);} }
-    ,{ id:'flashTrailDensity', icon:'〰', name:'Passagem Dupla', description:'Deixa rastros mais próximos e aumenta levemente a largura dos cortes.', max:3, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDensity<3, apply:()=>{state.flashTrailDensity=Math.min(3,state.flashTrailDensity+1);} }
-    ,{ id:'flashTrailCooldown', icon:'⟳', name:'Cadência Vetorial', description:'Reduz em 2 segundos a recarga do Q, até 22 segundos.', max:2, available:()=>currentSkin().id==='flashblade'&&upgradeLevel('flashTrailCooldown')<2, apply:()=>{state.flashTrailCooldown=Math.max(0,state.flashTrailCooldown-2);} }
+    ,{ id:'flashTrailDensity', icon:'〰', name:'Passagem Dupla', description:'Deixa rastros mais próximos e aumenta a largura dos cortes.', max:4, available:()=>currentSkin().id==='flashblade'&&state.flashTrailDensity<4, apply:()=>{state.flashTrailDensity=Math.min(4,state.flashTrailDensity+1);} }
+    ,{ id:'flashTrailCooldown', icon:'⟳', name:'Cadência Vetorial', description:'Reduz em 2 segundos a recarga do Q, de 24 até 18 segundos.', max:3, available:()=>currentSkin().id==='flashblade'&&upgradeLevel('flashTrailCooldown')<3, apply:()=>{state.flashTrailCooldown=Math.max(0,state.flashTrailCooldown-2);} }
     ,{ id:'eclipseVeil', icon:'✧', name:'Manto de eclipse', description:'Prolonga a sequência e amplia o alcance dos cortes.', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseVeil')<4, apply:()=>{state.eclipseDurationBonus=Math.min(2.2,state.eclipseDurationBonus+.55);state.eclipseCutBonus=Math.min(36,state.eclipseCutBonus+9);} }
     ,{ id:'eclipseCooldown', icon:'◷', name:'Ressonador do domínio', description:'Reduz a recarga da Eclipse em 1 segundo, até o mínimo de 25 segundos.', max:5, available:()=>currentSkin().id==='eclipse'&&state.abilityBaseCooldown>25, apply:()=>{state.abilityBaseCooldown=Math.max(25,state.abilityBaseCooldown-1);state.abilityCooldown=Math.max(0,state.abilityCooldown-1);} }
     ,{ id:'eclipseDamage', icon:'⚔', name:'Fio do domínio', description:'Aumenta o dano de cada corte em 0,25 (até +1,00).', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseDamage')<4, apply:()=>{state.eclipseCutDamage=Math.min(1,state.eclipseCutDamage+.25);} }
     ,{ id:'eclipseDecoyAI', icon:'◉', name:'Instinto da Isca', description:'A Isca Umbral percebe projéteis mais cedo e desvia com mais agilidade.', max:4, available:()=>currentSkin().id==='eclipse'&&state.eclipseDecoyAI<4, apply:()=>{state.eclipseDecoyAI=Math.min(4,state.eclipseDecoyAI+1);} }
     ,{ id:'eclipseDecoyDuration', icon:'◷', name:'Eco Persistente', description:'Aumenta em 1 segundo a duração da Isca Umbral, até 6 segundos.', max:2, available:()=>currentSkin().id==='eclipse'&&state.eclipseDecoyDurationBonus<2, apply:()=>{state.eclipseDecoyDurationBonus=Math.min(2,state.eclipseDecoyDurationBonus+1);} }
     ,{ id:'eclipseDecoyChaos', icon:'⤨', name:'Trajetória Caótica', description:'A Isca Umbral muda de direção com mais frequência e em ângulos mais imprevisíveis.', max:3, available:()=>currentSkin().id==='eclipse'&&state.eclipseDecoyChaos<3, apply:()=>{state.eclipseDecoyChaos=Math.min(3,state.eclipseDecoyChaos+1);} }
-    ,{ id:'dinoFangs', icon:'〰', name:'Ressonância jurássica', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=4;state.dinoRoarRangeBonus+=18;} }
+    ,{ id:'dinoFangs', icon:'〰', name:'Ressonância jurássica', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=5;state.dinoRoarRangeBonus+=24;} }
     ,{ id:'dinoStampede', icon:'🐾', name:'Manada ancestral', description:'Adiciona um raptor ao Estouro da Manada e fortalece a investida.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=2.5;} }
     ,{ id:'dinoResonance', icon:'◷', name:'Ressonância fóssil', description:'Reduz em 2 segundos o intervalo de recarga entre as cargas de Q, até 24 segundos.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoResonance')<4, apply:()=>{state.dinoStampedeRecharge=Math.max(0,state.dinoStampedeRecharge-2);} }
     ,{ id:'prismCoreRange', icon:'◎', name:'Prisma de longo alcance', description:'Amplia o raio do Núcleo Prisma em 35 unidades por nível.', max:3, available:()=>currentSkin().id==='prisma'&&state.prismCoreRangeBonus<105, apply:()=>{state.prismCoreRangeBonus=Math.min(105,state.prismCoreRangeBonus+35);} }
@@ -275,8 +276,11 @@
 
   function readBest() { try { return Math.max(0, Number(localStorage.getItem(bestKey)) || 0); } catch { return 0; } }
   function readBestWave() { try { return Math.max(0, Number(localStorage.getItem(bestWaveKey)) || 0); } catch { return 0; } }
-  function profileNickname() { return String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); }
-  function normalizeRankNickname(value) { return String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); }
+  function profileNickname() { return normalizeRankNickname(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || ''); }
+  function normalizeRankNickname(value) {
+    const nickname = String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+    return nickname === 'geovanagamer099' ? 'storm' : nickname;
+  }
   function rankBestWaveKey(nickname = profileNickname()) { return nicknameRankBestWavePrefix + encodeURIComponent(nickname || 'jogador'); }
   function readNicknameRankBestWave(nickname = profileNickname()) {
     try { return Math.max(0, Number(localStorage.getItem(rankBestWaveKey(nickname))) || 0); } catch { return 0; }
@@ -327,7 +331,7 @@
       bestCompletedWave:Math.max(bestWave, readNicknameCompletedWave(nickname)), score:Math.max(0, state.score), elapsed:Math.max(0, state.elapsed),
       shipId:state.selectedSkin, lastBossType:state.lastBossType, stats:numericState, upgrades:{ ...state.upgrades },
       megumiTransformed:state.megumiTransformed,
-      mahoraga:{ progress:{ ...state.mahoragaProgress }, adaptations:{ ...state.mahoragaAdaptations }, damageRemainders:{ ...state.mahoragaDamageRemainders }, lastType:state.mahoragaLastType },
+      mahoraga:{ cycleStartWave:state.mahoragaCycleStartWave, progress:{ ...state.mahoragaProgress }, adaptationLevels:{ ...state.mahoragaAdaptationLevels }, adaptationWaves:{ ...state.mahoragaAdaptationWaves }, damageRemainders:{ ...state.mahoragaDamageRemainders }, lastType:state.mahoragaLastType, wheelSegments:state.mahoragaWheelSegments, wheelReady:state.mahoragaWheelReady, resistanceType:state.mahoragaResistanceType, resistanceUntilWave:state.mahoragaResistanceUntilWave, resistancePower:state.mahoragaResistancePower },
       player:{ xRatio:state.width ? state.player.x / state.width : .5, yRatio:state.height ? state.player.y / state.height : .78,
         speed:state.player.speed, damage:state.player.damage, fireRate:state.player.fireRate, spread:state.player.spread,
         angle:state.player.angle, moveAngle:state.player.moveAngle }
@@ -350,7 +354,8 @@
   }
   function displayRankNickname(value) {
     const nickname = normalizeRankNickname(value);
-    return window.CV_STARFALL_SUPABASE?.displayNicknames?.[nickname] || String(value || 'Piloto');
+    const displayName = window.CV_STARFALL_SUPABASE?.displayNicknames?.[nickname] || nickname || 'Piloto';
+    return displayName.toLocaleUpperCase('pt-BR');
   }
   function saoPauloDateKey(date = new Date()) {
     try {
@@ -531,18 +536,18 @@
   function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge && state.adminNoCooldown; }
   function shipCooldownSummary(skin) {
     if (skin.id === 'training') return 'sem habilidades · dano recebido reduzido em 50%';
-    if (skin.id === 'mahoraga') return 'E: janela de aparo de 0,42s · adaptação a cada 5 golpes · Q: Corte Mundial, 8s→3s com melhorias';
+    if (skin.id === 'mahoraga') return 'E: escudo 3s, −65% · adaptação cresce nas ondas 1–3 e reinicia na 4 (depois 4–6, 7–9…)';
     if (skin.id === 'megumi') return 'E: 3 variações sombrias · Q: transformação permanente na missão · recargas 12s / 36s';
     if (hasDeveloperPerks()) return 'sem recarga';
     if (skin.id === 'prisma') return 'E e Q configuráveis no Arquivo de Ecos (G) · recarga própria até 20s · missão fora do placar';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q 24s';
-    if (skin.id === 'chronos') return 'E 25s · Q 28s→22s · ecos 40%→70% por 4→6s';
-    if (skin.id === 'aurora') return 'E 25s · Q 28s→22s · 5→8 alvos por 5→7s';
+    if (skin.id === 'chronos') return 'E 22s · Q 24s→18s · ecos 70%→100% por 6→8s';
+    if (skin.id === 'aurora') return 'E 22s · Q 24s→18s · 8→10 alvos por 7→9s · pulso até 3';
     if (skin.id === 'aegis') return 'E 25s · Q 30s→24s · 3→5 sentinelas por 6→8s';
     if (skin.id === 'redshift') return 'E 30s→25s · Q 28s→22s · duração do Q até 8s';
-    if (skin.id === 'flashblade') return 'E 25s · Q 26s→22s · impulso 2,2× · barreiras 7s';
-    if (skin.id === 'tempest') return 'E 34s · Q com 3→5 cargas · recarga de 28s→22s por carga';
-    if (skin.id === 'saurion') return 'E ' + skin.cooldown + 's→22s · Q 3 cargas · ' + skin.cooldownQ + 's→24s por carga';
+    if (skin.id === 'flashblade') return 'E 22s · Q 24s→18s · impulso 2,6× · rastros até 9s';
+    if (skin.id === 'tempest') return 'E 30s · Q com 4→6 cargas · recarga total de 24s→18s após esgotar';
+    if (skin.id === 'saurion') return 'E 2 cargas · recuperação de até 16s por carga · Q 3 cargas · ' + skin.cooldownQ + 's→24s por carga';
     return 'recarga ' + skin.cooldown + 's';
   }
   function skinUnlocked(skin) {
@@ -847,8 +852,8 @@
       state.damageCounterEnabled = Boolean(data.damage_counter_enabled);
       state.eclipseSkipVideoEnabled = Boolean(data.eclipse_skip_video);
       state.damageCounterPosition = normalizeDamageCounterPosition({ x:data.damage_counter_x, y:data.damage_counter_y });
-      state.savedControlMode = validControlMode(data.control_mode) ? data.control_mode : local.controlMode;
-      state.controlMode = adaptControlMode(state.savedControlMode);
+      state.savedControlMode = keyboardInputDetected ? 'keys' : validControlMode(data.control_mode) ? data.control_mode : local.controlMode;
+      state.controlMode = keyboardInputDetected ? 'keys' : adaptControlMode(state.savedControlMode);
       state.performanceMode = data.performance_mode === 'light' ? 'light' : 'normal';
       state.preferencesConfigured = Boolean(data.setup_complete || local.setupComplete);
       const syncPreviouslyConfigured = local.setupComplete && !data.setup_complete;
@@ -926,10 +931,14 @@
       if (showMahoragaReadout) {
         const type = state.mahoragaLastType;
         const progress = type ? state.mahoragaProgress[type] || 0 : 0;
-        const level = type ? state.mahoragaAdaptations[type] || 0 : 0;
-        const copy = !type ? 'RODA · APARE CINCO ATAQUES DO MESMO TIPO'
-          : level ? 'ADAPTADO · ' + mahoragaAttackName(type) + ' · −' + Math.round(Math.min(.9, level * .25) * 100) + '% DANO · PRÓXIMO ' + progress + '/5'
-            : 'ADAPTAÇÃO · ' + mahoragaAttackName(type) + ' · ' + progress + '/5';
+        const resistanceLevel = state.mahoragaAdaptationLevels[state.mahoragaResistanceType] || 0;
+        const resistance = state.mahoragaResistanceType && state.mahoragaResistanceUntilWave >= state.wave
+          ? ' · RESIST. ' + mahoragaAttackName(state.mahoragaResistanceType) + ' N' + resistanceLevel + '/3 −' + Math.round(state.mahoragaResistancePower * 100) + '% ATÉ ONDA ' + state.mahoragaResistanceUntilWave
+          : '';
+        const shield = state.mahoragaParryWindow > 0 ? ' · ESCUDO −65% ' + Math.ceil(state.mahoragaParryWindow) + 's' : '';
+        const progressCopy = type ? ' · ' + mahoragaAttackName(type) + ' ' + progress + '/5' : '';
+        const wheel = state.mahoragaWheelReady ? 'RODA COMPLETA · PRÓXIMO E ESPECIAL' : 'RODA ' + state.mahoragaWheelSegments + '/8';
+        const copy = wheel + progressCopy + resistance + shield;
         if (ui.mahoragaReadout.textContent !== copy) ui.mahoragaReadout.textContent = copy;
       }
     }
@@ -948,7 +957,8 @@
     const isMahoraga = skin.id === 'mahoraga';
     const isMegumi = skin.id === 'megumi';
     const megumiE = megumiTechnique();
-    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : state.abilityCooldown <= 0;
+    const isSaurion = skin.id === 'saurion';
+    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isSaurion ? state.dinoRoarCharges > 0 : state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
     const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic');
@@ -968,11 +978,13 @@
       } else {
         ui.ability.textContent = isMegumi ? megumiE.icon : '✦';
       }
-      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Aparo aberto: receba um ataque agora; invulnerável por 3 segundos' : ready ? 'Ativar Adaptação · 3 segundos invulnerável e aparo de 0,42 segundo · tecla E' : 'Aparo recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
+      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 65% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 65% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isSaurion ? ready ? 'Rugido de Garras · ' + state.dinoRoarCharges + ' de 2 cargas · tecla E' : 'Rugido de Garras recarregando: próxima carga em ' + Math.ceil(state.dinoRoarRecharge) + ' segundos' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
       const eCountdown = isMegumi
         ? state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown)) : megumiE.short
         : isMahoraga
-        ? state.mahoragaParryWindow > 0 ? 'AGORA' : state.mahoragaParryCooldown > 0 ? state.mahoragaParryCooldown.toFixed(1).replace('.', ',') : ''
+        ? state.mahoragaParryWindow > 0 ? String(Math.ceil(state.mahoragaParryWindow)) : state.mahoragaParryCooldown > 0 ? state.mahoragaParryCooldown.toFixed(1).replace('.', ',') : state.mahoragaWheelReady ? '8/8' : ''
+        : isSaurion
+        ? state.dinoRoarCharges > 0 ? String(state.dinoRoarCharges) : String(Math.ceil(state.dinoRoarRecharge))
         : !hasDeveloperPerks() && state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown))
         : eclipseActive ? String(Math.ceil(state.eclipseTime)) : '';
       if (ui.abilityCooldown) {
@@ -980,7 +992,7 @@
         ui.abilityCooldown.hidden = !eCountdown;
       }
       ui.ability.classList.toggle('is-counting', Boolean(eCountdown));
-      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? (state.megumiTransformed ? 'Forma ativa até o fim desta missão. ' : '') + '3 segundos invulnerável; para ganhar progresso, acerte a janela de aparo: ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
+      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −65% dano; a resistência adaptada continua entre ondas, cresce na segunda e na terceira até 50%, e reinicia ao começar a quarta. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
       const isAurora = skin.id === 'aurora';
@@ -1009,8 +1021,8 @@
       const decoyDuration = 4 + state.eclipseDecoyDurationBonus;
       const perimeterDuration = 6 + state.redshiftPerimeterDurationBonus;
       const perimeterCooldown = Math.max(22, 28 - upgradeLevel('redshiftPerimeterCooldown') * 2);
-      const trailDuration = 5 + state.flashTrailDurationBonus;
-      const trailCooldown = Math.max(22, 26 - upgradeLevel('flashTrailCooldown') * 2);
+      const trailDuration = flashTrailDuration();
+      const trailCooldown = flashTrailCooldownDuration();
       const tempestTideCooldown = tempestTideCooldownDuration();
       const tempestTideCharges = hasDeveloperPerks() ? tempestTideMaxCharges() : state.tempestTideCharges;
       const tempestTideMax = tempestTideMaxCharges();
@@ -1044,19 +1056,19 @@
         : qActive && isRedshift ? 'Perímetro de Cerco ativo por mais ' + Math.ceil(state.redshiftPerimeter.life) + ' segundos'
           : qActive && isFlashblade ? 'Rastro de Ruptura ativo por mais ' + Math.ceil(state.flashTrail.life) + ' segundos'
             : qActive && isTempest ? 'Maré Reversa ativa · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas'
-              : !qReady ? isMahoraga ? 'Corte Mundial recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Isca Umbral recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando; próxima carga em ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
-                : isMahoraga ? 'Corte Mundial · tecla Q · atravessa a arena e elimina tudo na trajetória'
-                  : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia móvel por ' + decoyDuration + ' segundos; dispara tiros leves e espaçados' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,42s com ' + Math.round((.4 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso rápido e barreiras cortantes por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano leve, empurrão e tiros desviados; alguns atingem inimigos' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
+               : !qReady ? isMahoraga ? 'Espada da Exterminação recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Isca Umbral recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando todas as cargas: ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
+                : isMahoraga ? 'Espada da Exterminação · tecla Q · corte frontal perfurante, dano alto no primeiro alvo e marca verde de +10% no próximo golpe'
+                   : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia móvel por ' + decoyDuration + ' segundos; dispara tiros leves e espaçados' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
       ui.eclipseQ.title = isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma permanente até o fim da missão · recarga ' + skin.cooldownQ + 's'
-        : isMahoraga ? 'Corte Mundial · Q · atravessa toda a arena na direção da nave · elimina qualquer alvo na trajetória · recarga ' + mahoragaSlashCooldownDuration() + 's'
+        : isMahoraga ? 'Espada da Exterminação · Q · corte frontal perfurante · primeiro alvo recebe dano alto, próximos recebem dano menor · marca verde aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
         : isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · cada vida perdida pela nave causa 2 de dano aos alvos conectados · dano do pulso ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
         : isAegis ? 'Órbitas Sentinelas · Q · proteção do núcleo · fragmentos intactos atacam ao final · ' + aegisOrbitCount + ' fragmentos · duração ' + aegisOrbitTime + 's · dano convertido ' + (2 + state.aegisOrbitDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + aegisOrbitCooldown + 's'
         : isEclipse ? 'Isca Umbral · Q · cópia móvel por ' + decoyDuration + 's, rota imprevisível, desvio e disparos leves a cada 0,9s · recarga de 24s'
-        : isChronos ? 'Eco do Futuro · Q · ecos repetem os disparos após 0,42s · duração ' + chronosEchoTime + 's · dano ' + Math.round((.4 + state.chronosEchoDamageBonus) * 100) + '% · recarga de ' + chronosEchoCooldown + 's'
+        : isChronos ? 'Eco do Futuro · Q · ecos repetem os disparos após 0,30s · duração ' + chronosEchoTime + 's · dano ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% · recarga de ' + chronosEchoCooldown + 's'
         : isRedshift ? 'Perímetro de Cerco · Q · ' + perimeterDuration + 's · dano ' + (4 + state.redshiftPerimeterDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + perimeterCooldown + 's'
-          : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,2× · barreiras duram 7s · dano ' + (2 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
-            : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(245 + state.tempestTideRadiusBonus)) + ' · dano leve, empurra, desvia tiros comuns e redireciona alguns contra inimigos · recupera 1 carga a cada ' + tempestTideCooldown + 's'
+          : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,6× · rastros até 9s · dano ' + (3 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
+             : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(280 + state.tempestTideRadiusBonus)) + ' · dano ' + (3.2 + state.tempestTideDamageBonus).toFixed(1).replace('.', ',') + ' · 40% de chance de desviar tiros e redirecionar alguns contra inimigos · recarrega todas em ' + tempestTideCooldown + 's após esgotar'
               : 'Estouro da Manada · 3 cargas · Q · recarga de ' + Math.max(24, skin.cooldownQ - upgradeLevel('dinoResonance') * 2) + 's por carga';
       const qActiveRemaining = isAurora ? state.auroraLink?.life || 0
         : isAegis ? state.aegisOrbit?.life || 0
@@ -1066,7 +1078,9 @@
                 : isFlashblade ? state.flashTrail?.life || 0
                   : isTempest ? tideRemaining
                     : isSaurion ? stampedeRemaining : 0;
-      const qCountdown = !hasDeveloperPerks() && qCooldown > 0
+      const qCountdown = isTempest
+        ? tempestTideCharges > 0 ? tempestTideCharges + '/' + tempestTideMax : String(Math.ceil(qCooldown))
+        : !hasDeveloperPerks() && qCooldown > 0
         ? String(Math.ceil(qCooldown))
         : qActive && qActiveRemaining > 0 ? String(Math.ceil(qActiveRemaining)) : '';
       if (ui.eclipseQCooldown) {
@@ -1353,17 +1367,17 @@
     state.trainingDamageRemainder = 0;
     state.player = { x: state.width / 2, y: state.height * .78, radius: mobileSize(13), speed: skin.id === 'training' ? 234 : 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0; state.adminNoCooldown = isDeveloperProfile(); state.adminBuffsActive = false;
-    state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptations = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = '';
+    state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaShieldHitCooldown = 0; state.mahoragaResistanceType = ''; state.mahoragaResistanceUntilWave = 0; state.mahoragaResistancePower = 0; state.mahoragaCycleStartWave = state.wave; state.mahoragaWheelSegments = 0; state.mahoragaWheelReady = false; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptationLevels = {}; state.mahoragaAdaptationWaves = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = '';
     if (mahoragaAwakeningTimer) window.clearTimeout(mahoragaAwakeningTimer);
     if (ui.mahoragaAwakening) { ui.mahoragaAwakening.hidden = true; ui.mahoragaAwakening.classList.remove('is-visible'); }
     state.prismDispatchSkinId = ''; state.prismDispatchSlot = ''; state.prismQCooldown = 0; state.prismHorizonAnchor = null; state.prismHorizonWindowBonus = 0; state.prismHorizonDamageBonus = 0; state.prismCoreRangeBonus = 0; state.prismCoreDamageBonus = 0; state.prismCooldownBonus = 0;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
-    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 235; state.singularityDuration = 6.5; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.eclipseDecoyAI = 0; state.eclipseDecoyDurationBonus = 0; state.eclipseDecoyChaos = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
+    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 300; state.singularityDuration = 8.5; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseDecoy = null; state.eclipseDecoyCooldown = 0; state.eclipseDecoyAI = 0; state.eclipseDecoyDurationBonus = 0; state.eclipseDecoyChaos = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoRoarCharges = 2; state.dinoRoarRecharge = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
     state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0; state.damageCounterTotal = 0; state.damageCounterLastHit = 0; state.damageCounterIdle = 0; state.damageCounterPopups = [];
-    state.shipEWasCooling = false; state.shipQWasCooling = false; state.shipQChargeCount = skin.id === 'tempest' ? state.tempestTideCharges : skin.id === 'saurion' ? state.dinoStampedeCharges : null;
+    state.shipEWasCooling = false; state.shipQWasCooling = false; state.shipQChargeCount = skin.id === 'tempest' ? 4 : skin.id === 'saurion' ? 3 : null;
     state.aegisOrbit = null; state.aegisOrbitCooldown = 0; state.aegisOrbitDurationBonus = 0; state.aegisOrbitCountBonus = 0; state.aegisOrbitDamageBonus = 0;
-    state.tempestTideCharges = 3; state.tempestTideChargeBonus = 0; state.tempestTideDamageBonus = 0; state.tempestTideSweepBonus = 0;
+    state.tempestTideCharges = 4; state.tempestTideChargeBonus = 0; state.tempestTideDamageBonus = 0; state.tempestTideSweepBonus = 0;
     state.chronosEcho = null; state.chronosEchoQueue = []; state.chronosEchoCooldown = 0; state.chronosEchoDurationBonus = 0; state.chronosEchoDamageBonus = 0;
     if (isAllUpgradesProfile() && !state.dailyChallenge) grantAllUpgrades();
     state.keys.clear(); state.pointer.active = false; releaseAnalog();
@@ -1404,13 +1418,25 @@
     state.eclipseDecoy = null; state.eclipsePhase = 'idle'; state.eclipseTime = 0; state.eclipseCutTimer = 0;
     state.reflectTime = 0; state.reflectContacts = new Set(); state.flashTrailContacts = new Set();
     state.damageCounterPopups = []; state.damageCounterIdle = 0; state.shipEWasCooling = false; state.shipQWasCooling = false;
-    state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptations = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = '';
+    state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaShieldHitCooldown = 0; state.mahoragaResistanceType = ''; state.mahoragaResistanceUntilWave = 0; state.mahoragaResistancePower = 0; state.mahoragaCycleStartWave = state.wave; state.mahoragaWheelSegments = 0; state.mahoragaWheelReady = false; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptationLevels = {}; state.mahoragaAdaptationWaves = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = '';
     const validMahoragaTypes = new Set(Object.keys(mahoragaAttackNames));
     const restoreMahoragaMap = (source, maximum, allowFractions = false) => Object.fromEntries(Object.entries(source || {}).filter(([type, value]) => validMahoragaTypes.has(type) && Number.isFinite(Number(value)) && Number(value) > 0).map(([type, value]) => [type, allowFractions ? Math.max(0, Math.min(.999, Number(value))) : Math.min(maximum, Math.floor(Number(value)))]));
     state.mahoragaProgress = restoreMahoragaMap(checkpoint.mahoraga?.progress, 4);
-    state.mahoragaAdaptations = restoreMahoragaMap(checkpoint.mahoraga?.adaptations, 100);
+    state.mahoragaAdaptationLevels = restoreMahoragaMap(checkpoint.mahoraga?.adaptationLevels, 3);
+    state.mahoragaAdaptationWaves = restoreMahoragaMap(checkpoint.mahoraga?.adaptationWaves, Math.max(1, state.wave));
     state.mahoragaDamageRemainders = restoreMahoragaMap(checkpoint.mahoraga?.damageRemainders, 1, true);
     state.mahoragaLastType = validMahoragaTypes.has(checkpoint.mahoraga?.lastType) ? checkpoint.mahoraga.lastType : '';
+    state.mahoragaWheelSegments = Math.min(8, Math.max(0, Math.floor(Number(checkpoint.mahoraga?.wheelSegments) || 0)));
+    state.mahoragaWheelReady = checkpoint.mahoraga?.wheelReady === true || state.mahoragaWheelSegments >= 8;
+    state.mahoragaResistanceType = validMahoragaTypes.has(checkpoint.mahoraga?.resistanceType) ? checkpoint.mahoraga.resistanceType : '';
+    const adaptationCycleEnd = Math.ceil(state.wave / 3) * 3;
+    const savedResistanceUntil = Number(checkpoint.mahoraga?.resistanceUntilWave) || (Number(checkpoint.mahoraga?.resistanceTime) > 0 ? adaptationCycleEnd : 0);
+    state.mahoragaResistanceUntilWave = state.mahoragaResistanceType && savedResistanceUntil >= state.wave ? Math.min(adaptationCycleEnd, savedResistanceUntil) : 0;
+    state.mahoragaResistancePower = state.mahoragaResistanceUntilWave ? clamp(Number(checkpoint.mahoraga?.resistancePower) || .25, .25, .5) : 0;
+    const activeCycleStart = Math.floor((state.wave - 1) / 3) * 3 + 1;
+    const savedCycleStart = Math.max(1, Math.floor(Number(checkpoint.mahoraga?.cycleStartWave) || activeCycleStart));
+    if (savedCycleStart !== activeCycleStart) resetMahoragaAdaptationCycle();
+    state.mahoragaCycleStartWave = activeCycleStart;
     if (ui.megumiFormTimer) { ui.megumiFormTimer.hidden = !state.megumiTransformed; ui.megumiFormTimer.textContent = 'MAHORAGA · G PARA VOLTAR'; }
     saveBestWave();
     renderSkinPicker(); updateEquippedShip(); updateHud();
@@ -1634,6 +1660,7 @@
     saveNicknameCompletedWave(profileNickname(), completedWave);
     setMode('upgrade');
     state.wave += 1;
+    updateMahoragaAdaptationForWave();
     if (Math.floor((state.wave - 1) / 15) !== Math.floor((state.wave - 2) / 15)) toast('NOVO PLANETA: ' + currentZone().name.toUpperCase());
     updateHud();
     ui.status.textContent = 'Escolha uma melhoria antes da próxima onda.';
@@ -1803,8 +1830,8 @@
   }
   function queueChronosEcho(shot) {
     if (!abilitySourceIs('chronos') || !state.chronosEcho || state.chronosEcho.life <= 0 || state.chronosEchoQueue.length >= 420) return;
-    const echoBullet = { ...shot, damage: shot.damage * (.4 + state.chronosEchoDamageBonus), color: '#d6c4ff', hit: [], chronosEchoShot: true };
-    state.chronosEchoQueue.push({ delay: .42, bullet: echoBullet });
+    const echoBullet = { ...shot, damage: shot.damage * (.7 + state.chronosEchoDamageBonus), color: '#d6c4ff', hit: [], chronosEchoShot: true };
+    state.chronosEchoQueue.push({ delay: .30, bullet: echoBullet });
   }
   function enemyAimTarget(enemy = null) {
     if (megumiShadowCloakActive()) return { x:state.megumiCloakLastX, y:state.megumiCloakLastY };
@@ -1903,12 +1930,12 @@
     return fallback;
   }
   function mahoragaAttackName(type) { return mahoragaAttackNames[type] || 'ATAQUES CÓSMICOS'; }
-  function showMahoragaAdaptation(type, level) {
+  function showMahoragaAdaptation(type, reduction, untilWave, special = false) {
     if (!ui.mahoragaAwakening) return;
     if (mahoragaAwakeningTimer) window.clearTimeout(mahoragaAwakeningTimer);
-    const reduction = Math.min(.9, level * .25);
     if (ui.mahoragaAwakeningType) ui.mahoragaAwakeningType.textContent = mahoragaAttackName(type);
-    if (ui.mahoragaAwakeningBuff) ui.mahoragaAwakeningBuff.textContent = '−' + Math.round(reduction * 100) + '% DE DANO RECEBIDO';
+    const adaptationLevel = state.mahoragaAdaptationLevels[type] || 0;
+    if (ui.mahoragaAwakeningBuff) ui.mahoragaAwakeningBuff.textContent = (special ? 'ESPECIAL · ' : 'NÍVEL ' + adaptationLevel + '/3 · ') + '−' + Math.round(reduction * 100) + '% · ATÉ ONDA ' + untilWave;
     ui.mahoragaAwakening.hidden = false;
     ui.mahoragaAwakening.classList.remove('is-visible');
     void ui.mahoragaAwakening.offsetWidth;
@@ -1919,52 +1946,109 @@
       ui.mahoragaAwakening.hidden = true;
     }, 2900);
   }
-  function completeMahoragaParry(type) {
+  function grantMahoragaResistance(type, reduction, special = false, advanced = true) {
+    const resistanceType = mahoragaAttackNames[type] ? type : 'projectile';
+    const sameType = state.mahoragaResistanceType === resistanceType && state.mahoragaResistanceUntilWave >= state.wave;
+    state.mahoragaResistanceType = resistanceType;
+    const cappedReduction = clamp(reduction, .25, .5);
+    state.mahoragaResistancePower = sameType ? Math.max(state.mahoragaResistancePower, cappedReduction) : cappedReduction;
+    state.mahoragaResistanceUntilWave = Math.ceil(state.wave / 3) * 3;
+    state.mahoragaDamageRemainders[state.mahoragaResistanceType] = 0;
+    state.mahoragaAdaptationVisualTime = 3;
+    playMahoragaAdaptationSound();
+    showMahoragaAdaptation(state.mahoragaResistanceType, state.mahoragaResistancePower, state.mahoragaResistanceUntilWave, special);
+    state.effects.push({ type:'mahoraga-adaptation', x:state.player.x, y:state.player.y, life:.9, total:.9, color:'#e4c477' });
+    const masteryLevel = state.mahoragaAdaptationLevels[state.mahoragaResistanceType] || 0;
+    const status = special ? 'ADAPTAÇÃO ESPECIAL' : masteryLevel >= 3 ? 'ADAPTAÇÃO MÁXIMA' : advanced ? 'ADAPTAÇÃO NÍVEL ' + masteryLevel + '/3' : 'ADAPTAÇÃO MANTIDA';
+    toast(status + ' · ' + mahoragaAttackName(state.mahoragaResistanceType) + ' · −' + Math.round(state.mahoragaResistancePower * 100) + '% ATÉ ONDA ' + state.mahoragaResistanceUntilWave);
+    tone(560, .32, 'sawtooth', .05);
+  }
+  function advanceMahoragaAdaptation(type, special = false) {
+    const attackType = mahoragaAttackNames[type] ? type : 'projectile';
+    const previousLevel = state.mahoragaAdaptationLevels[attackType] || 0;
+    const lastLevelWave = state.mahoragaAdaptationWaves[attackType] || 0;
+    const advanced = previousLevel === 0 || (previousLevel < 3 && state.wave > lastLevelWave);
+    let level = previousLevel;
+    if (advanced) {
+      level = Math.min(3, previousLevel + 1);
+      state.mahoragaAdaptationLevels[attackType] = level;
+      state.mahoragaAdaptationWaves[attackType] = state.wave;
+    }
+    const effectiveLevel = Math.max(1, level);
+    grantMahoragaResistance(attackType, [0, .25, .35, .5][effectiveLevel], special, advanced);
+    return { advanced, level:effectiveLevel };
+  }
+  function resetMahoragaAdaptationCycle() {
+    state.mahoragaResistanceType = '';
+    state.mahoragaResistanceUntilWave = 0;
+    state.mahoragaResistancePower = 0;
+    state.mahoragaWheelSegments = 0;
+    state.mahoragaWheelReady = false;
+    state.mahoragaProgress = {};
+    state.mahoragaAdaptationLevels = {};
+    state.mahoragaAdaptationWaves = {};
+    state.mahoragaDamageRemainders = {};
+    state.mahoragaLastType = '';
+    state.mahoragaAdaptationVisualTime = 0;
+    state.mahoragaCycleStartWave = state.wave;
+  }
+  function updateMahoragaAdaptationForWave() {
+    if (state.wave > 1 && (state.wave - 1) % 3 === 0) {
+      resetMahoragaAdaptationCycle();
+      toast('CICLO DE ADAPTAÇÃO REINICIADO · ONDA ' + state.wave);
+      return;
+    }
+    const type = state.mahoragaResistanceType;
+    if (!type || state.mahoragaResistanceUntilWave < state.wave - 1) return;
     state.mahoragaLastType = type;
-    const progress = state.mahoragaProgress[type] || 0;
-    state.mahoragaProgress[type] = Math.min(5, progress + 1);
-    state.mahoragaParryWindow = 0;
-    state.mahoragaParryCooldown = .2;
-    state.invulnerable = Math.max(state.invulnerable, .42);
-    burst(state.player.x, state.player.y, '#f1d38a', 16, 118);
-    burst(state.player.x, state.player.y, '#f4eee1', 8, 76);
-    tone(840, .11, 'triangle', .055);
-    if (state.mahoragaProgress[type] >= 5) {
-      state.mahoragaProgress[type] = 0;
-      const level = (state.mahoragaAdaptations[type] || 0) + 1;
-      state.mahoragaAdaptations[type] = level;
-      state.mahoragaDamageRemainders[type] = 0;
-      playMahoragaAdaptationSound();
-      showMahoragaAdaptation(type, level);
-      state.effects.push({ type:'mahoraga-adaptation', x:state.player.x, y:state.player.y, life:.9, total:.9, color:'#e4c477' });
-      toast('ADAPTAÇÃO COMPLETA · ' + mahoragaAttackName(type));
-      tone(560, .32, 'sawtooth', .05);
+    advanceMahoragaAdaptation(type);
+    toast('NOVA ONDA · ADAPTAÇÃO DE ' + mahoragaAttackName(type) + ' · −' + Math.round(state.mahoragaResistancePower * 100) + '%');
+  }
+  function recordMahoragaHit(type) {
+    const attackType = mahoragaAttackNames[type] ? type : 'projectile';
+    state.mahoragaLastType = attackType;
+    if (!state.mahoragaWheelReady) {
+      state.mahoragaWheelSegments = Math.min(8, state.mahoragaWheelSegments + 1);
+      if (state.mahoragaWheelSegments >= 8) {
+        state.mahoragaWheelReady = true;
+        toast('RODA COMPLETA · O PRÓXIMO E CONCEDE ADAPTAÇÃO ESPECIAL');
+        tone(840, .2, 'triangle', .055);
+      }
+    }
+    const progress = Math.min(5, (state.mahoragaProgress[attackType] || 0) + 1);
+    if (progress >= 5) {
+      state.mahoragaProgress[attackType] = 0;
+      advanceMahoragaAdaptation(attackType);
     } else {
-      toast('APARO ' + state.mahoragaProgress[type] + '/5 · ' + mahoragaAttackName(type));
+      state.mahoragaProgress[attackType] = progress;
+      burst(state.player.x, state.player.y, '#f1d38a', 6, 72);
+      tone(680, .06, 'triangle', .025);
     }
     updateHud();
   }
   function damagePlayer(amount = 1, attackType = 'projectile') {
     if (megumiShadowCloakActive()) return;
-    if (mahoragaAdaptationActive() && state.mahoragaParryWindow > 0 && state.mode === 'playing' && state.eclipsePhase !== 'active') {
-      completeMahoragaParry(attackType);
-      return;
-    }
-    if (state.eclipsePhase === 'active' || state.invulnerable > 0 || state.mode !== 'playing' || (abilitySourceIs('aegis') && state.aegisOrbit?.life > 0)) return;
+    const isMahoraga = mahoragaAdaptationActive();
+    const mahoragaShieldActive = isMahoraga && state.mahoragaParryWindow > 0;
+    if (state.eclipsePhase === 'active' || (!mahoragaShieldActive && state.invulnerable > 0) || (isMahoraga && state.mahoragaShieldHitCooldown > 0) || state.mode !== 'playing' || (abilitySourceIs('aegis') && state.aegisOrbit?.life > 0)) return;
     if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
-    let remaining = Math.max(1, Math.floor(amount));
-    if (mahoragaAdaptationActive() && (state.mahoragaAdaptations[attackType] || 0) > 0) {
-      const reduction = Math.min(.9, state.mahoragaAdaptations[attackType] * .25);
-      const mitigated = amount * (1 - reduction) + (state.mahoragaDamageRemainders[attackType] || 0);
+    if (isMahoraga) recordMahoragaHit(attackType);
+    let remaining;
+    const matchingResistance = isMahoraga && state.mahoragaResistanceUntilWave >= state.wave && state.mahoragaResistanceType === attackType;
+    if (isMahoraga && (mahoragaShieldActive || matchingResistance)) {
+      let mitigated = Math.max(0, amount);
+      if (mahoragaShieldActive) mitigated *= .35;
+      if (matchingResistance) mitigated *= 1 - state.mahoragaResistancePower;
+      mitigated += state.mahoragaDamageRemainders[attackType] || 0;
       remaining = Math.floor(mitigated);
       state.mahoragaDamageRemainders[attackType] = mitigated - remaining;
       if (remaining <= 0) {
-        state.invulnerable = .28;
+        if (mahoragaShieldActive) state.mahoragaShieldHitCooldown = .42;
         burst(state.player.x, state.player.y, '#e4c477', 5, 42);
         updateHud();
         return;
       }
-    }
+    } else remaining = Math.max(1, Math.floor(amount));
     if (currentSkin().id === 'training') {
       const mitigated = remaining * .5 + state.trainingDamageRemainder;
       remaining = Math.floor(mitigated);
@@ -1978,14 +2062,15 @@
     }
     const tempUsed = Math.min(state.tempShields, remaining); state.tempShields -= tempUsed; remaining -= tempUsed;
     const regularUsed = Math.min(state.shields, remaining); state.shields -= regularUsed; remaining -= regularUsed;
-    if (remaining === 0) { state.invulnerable = .82; toast(tempUsed ? 'BARREIRA AEGIS ABSORVEU O IMPACTO' : 'ESCUDO ABSORVEU O IMPACTO'); tone(680, .18, 'triangle', .04); updateHud(); return; }
+    if (remaining === 0) { if (mahoragaShieldActive) state.mahoragaShieldHitCooldown = .42; else state.invulnerable = .82; toast(tempUsed ? 'BARREIRA AEGIS ABSORVEU O IMPACTO' : 'ESCUDO ABSORVEU O IMPACTO'); tone(680, .18, 'triangle', .04); updateHud(); return; }
     if (tempUsed || regularUsed) toast('IMPACTO ROMPEU SEUS ESCUDOS');
     if (state.drones > 0 && state.lives - remaining <= 0) {
       const livesBeforeSave = state.lives;
       sacrificeDrone();
       state.lives = 1;
       reflectAuroraLinkDamage(Math.max(0, livesBeforeSave - state.lives));
-      state.invulnerable = 1.35;
+      if (mahoragaShieldActive) state.mahoragaShieldHitCooldown = .42;
+      else state.invulnerable = 1.35;
       burst(state.player.x, state.player.y, currentSkin().color, 24, 170);
       updateHud();
       return;
@@ -1994,7 +2079,9 @@
     const livesBeforeHit = state.lives;
     state.lives = Math.max(0, state.lives - remaining);
     reflectAuroraLinkDamage(Math.max(0, livesBeforeHit - state.lives));
-    state.invulnerable = 1.35; burst(state.player.x, state.player.y, '#ff6687', 22, 160); tone(120, .23, 'sawtooth', .05); updateHud();
+    if (mahoragaShieldActive) state.mahoragaShieldHitCooldown = .42;
+    else state.invulnerable = 1.35;
+    burst(state.player.x, state.player.y, '#ff6687', 22, 160); tone(120, .23, 'sawtooth', .05); updateHud();
     if (state.lives <= 0) finishGame();
   }
   function sacrificeDrone() {
@@ -2054,6 +2141,11 @@
   }
   function damageEnemy(enemy, amount, fromAbility) {
     if (!enemy || enemy.dead) return;
+    if (abilitySourceIs('mahoraga') && enemy.mahoragaMarkBonus > 0) {
+      amount *= 1 + enemy.mahoragaMarkBonus;
+      enemy.mahoragaMarkBonus = 0;
+      enemy.mahoragaMarkTime = 0;
+    }
     if (enemy.kind === 'boss') amount *= 1 + state.bossDamageBonus;
     const appliedDamage = Math.min(Math.max(0, enemy.hp), Math.max(0, amount));
     recordDamageCounter(appliedDamage, enemy);
@@ -2606,7 +2698,7 @@
       state.prismDispatchSkinId = '';
       if (slot === 'q') state.abilityCooldown = previousECooldown;
       if (slot === 'e') state.prismQCooldown = previousQCooldown;
-      if (!hasDeveloperPerks() && !isHorizonReturn) setPrismSlotCooldown(slot, shipId === 'mahoraga' ? key === 'q' ? mahoragaSlashCooldownDuration() : .42 : shipId === 'megumi' && key === 'q' ? 36 : prismCooldownDuration());
+      if (!hasDeveloperPerks() && !isHorizonReturn) setPrismSlotCooldown(slot, shipId === 'mahoraga' ? key === 'q' ? mahoragaSlashCooldownDuration() : 14 : shipId === 'megumi' && key === 'q' ? 36 : prismCooldownDuration());
       if (!isHorizonReturn) prismCopiedEffect(shipId);
     }
     state.prismDispatchSlot = '';
@@ -2633,6 +2725,7 @@
     state.megumiSummonPhase = 'idle';
     state.mahoragaParryWindow = 0;
     state.mahoragaParryCooldown = 0;
+    state.mahoragaShieldHitCooldown = 0;
     state.mahoragaAdaptationVisualTime = 0;
     if (ui.megumiFormTimer) ui.megumiFormTimer.hidden = true;
     const umbra = skins.find((skin) => skin.id === 'megumi') || skins[0];
@@ -2664,13 +2757,13 @@
       state.mahoragaAdaptationVisualTime = 0;
       playMahoragaAdaptationSound();
       state.abilityCooldown = 0;
-      state.mahoragaParryCooldown = 0; state.mahoragaParryWindow = 0; state.mahoragaSlashCooldown = 0;
+      state.mahoragaParryCooldown = 0; state.mahoragaParryWindow = 0; state.mahoragaShieldHitCooldown = 0; state.mahoragaSlashCooldown = 0;
       if (ui.pause) ui.pause.disabled = false;
       if (ui.stop) ui.stop.disabled = false;
       if (ui.megumiFormTimer) { ui.megumiFormTimer.hidden = false; ui.megumiFormTimer.textContent = 'MAHORAGA · G PARA VOLTAR'; }
       burst(state.player.x, state.player.y, '#b99bdd', 38, 210);
       burst(state.player.x, state.player.y, '#f1ecff', 16, 150);
-      toast('GUARDIÃO INVOCADO · FORMA PERMANENTE · E ADAPTAÇÃO · Q CORTE MUNDIAL');
+      toast('GUARDIÃO INVOCADO · FORMA PERMANENTE · E ADAPTAÇÃO DIVINA · Q ESPADA DA EXTERMINAÇÃO');
       tone(440, .36, 'triangle', .055);
       updateAbilityButton(); updateEquippedShip(); updateControlUI(); updateHud();
       state.lastTime = performance.now();
@@ -2724,14 +2817,21 @@
   function activateMahoragaAdaptation() {
     if (state.mahoragaParryCooldown > 0) return;
     recordAchievementEvent('ship-ability', 'mahoraga');
-    state.mahoragaParryWindow = .42;
-    state.mahoragaParryCooldown = .42;
+    state.mahoragaParryWindow = 3;
+    state.mahoragaParryCooldown = 14;
     state.mahoragaAdaptationVisualTime = 3;
-    state.invulnerable = Math.max(state.invulnerable, 3);
     burst(state.player.x, state.player.y, '#f1d38a', 20, 135);
     burst(state.player.x, state.player.y, '#eef3ee', 12, 92);
+    let specialAdaptation = false;
+    if (state.mahoragaWheelReady) {
+      const adaptedType = state.mahoragaLastType || 'projectile';
+      state.mahoragaWheelReady = false;
+      state.mahoragaWheelSegments = 0;
+      advanceMahoragaAdaptation(adaptedType, true);
+      specialAdaptation = true;
+    }
     updateAbilityButton();
-    toast('ADAPTAÇÃO ATIVA · 3s INVULNERÁVEL · APARE NO IMPACTO');
+    toast(specialAdaptation ? 'ADAPTAÇÃO DIVINA · ESCUDO 3s · ' + mahoragaAttackName(state.mahoragaResistanceType) + ' −' + Math.round(state.mahoragaResistancePower * 100) + '% ATÉ ONDA ' + state.mahoragaResistanceUntilWave : 'ADAPTAÇÃO DIVINA · ESCUDO 3s · −65% DE DANO');
     tone(720, .12, 'triangle', .045);
   }
   function playMahoragaAdaptationSound() {
@@ -2749,34 +2849,39 @@
     const directionX = Math.cos(angle); const directionY = Math.sin(angle);
     const sideX = -directionY; const sideY = directionX;
     const reach = Math.hypot(state.width, state.height) * 1.25;
-    let severed = 0;
+    burst(state.player.x + directionX * state.player.radius * 1.25, state.player.y + directionY * state.player.radius * 1.25, '#fff5d9', 15, 105);
+    const targets = [];
     for (const enemy of state.enemies) {
       if (enemy.dead) continue;
       const dx = enemy.x - state.player.x; const dy = enemy.y - state.player.y;
       const along = dx * directionX + dy * directionY;
       const across = Math.abs(dx * sideX + dy * sideY);
-      if (along < -enemy.r || along > reach || across > Math.max(190, enemy.r * 1.9)) continue;
-      damageEnemy(enemy, Math.max(1000000, enemy.hp * 1.5) * Math.max(1, state.abilityPower), true);
-      burst(enemy.x, enemy.y, '#f4eee1', enemy.kind === 'boss' ? 30 : 14, enemy.kind === 'boss' ? 235 : 145);
-      burst(enemy.x, enemy.y, '#e4c477', enemy.kind === 'boss' ? 18 : 8, 115);
-      severed++;
+      if (along < 0 || along > reach || across > Math.max(32, enemy.r * .9)) continue;
+      targets.push({ enemy, along });
     }
-    state.enemyBullets = [];
-    state.effects.push({ type:'mahoraga-world-slash', x:state.player.x, y:state.player.y, angle, life:.92, total:.92 });
+    targets.sort((a, b) => a.along - b.along);
+    let marked = 0;
+    targets.forEach(({ enemy }, index) => {
+      if (enemy.dead) return;
+      damageEnemy(enemy, (index === 0 ? 46 : 18) * Math.max(1, state.abilityPower), true);
+      if (!enemy.dead) { enemy.mahoragaMarkBonus = .1; enemy.mahoragaMarkTime = 6; marked++; }
+      burst(enemy.x, enemy.y, index === 0 ? '#fff8e8' : '#e4c477', enemy.kind === 'boss' ? 16 : 9, enemy.kind === 'boss' ? 175 : 115);
+    });
+    state.effects.push({ type:'mahoraga-world-slash', x:state.player.x, y:state.player.y, angle, reach, originOffset:state.player.radius * .72, life:.62, total:.62 });
     burst(state.player.x, state.player.y, '#f1d38a', 45, 290);
     burst(state.player.x, state.player.y, '#f5f0e5', 22, 210);
-    toast(severed ? 'CORTE MUNDIAL · ' + severed + ' ALVO' + (severed === 1 ? ' DESTRUÍDO' : 'S DESTRUÍDOS') : 'CORTE MUNDIAL · ARENA FENDIDA');
+    toast(marked ? 'ESPADA DA EXTERMINAÇÃO · ' + marked + ' ALVO' + (marked === 1 ? ' MARCADO' : 'S MARCADOS') + ' · +10% NO PRÓXIMO GOLPE' : 'ESPADA DA EXTERMINAÇÃO · CORTE MUNDIAL');
     tone(110, .48, 'sawtooth', .07);
     updateAbilityButton();
   }
   function mahoragaSlashCooldownDuration() {
     const prismBonus = state.selectedSkin === 'prisma' ? state.prismCooldownBonus : state.mahoragaSlashCooldownBonus;
-    return Math.max(3, 8 - prismBonus);
+    return Math.max(5, 9 - prismBonus);
   }
-  function auroraLinkDuration() { return Math.min(7, 5 + state.auroraLinkDurationBonus); }
-  function auroraLinkMaxTargets() { return Math.min(8, 5 + state.auroraLinkTargetBonus); }
-  function auroraLinkPulseDamage() { return 1.2 + state.auroraLinkDamageBonus; }
-  function auroraLinkCooldownDuration() { return Math.max(22, 28 - upgradeLevel('auroraLinkCooldown') * 2); }
+  function auroraLinkDuration() { return Math.min(9, 7 + state.auroraLinkDurationBonus); }
+  function auroraLinkMaxTargets() { return Math.min(10, 8 + state.auroraLinkTargetBonus); }
+  function auroraLinkPulseDamage() { return 1.8 + state.auroraLinkDamageBonus; }
+  function auroraLinkCooldownDuration() { return Math.max(18, 24 - upgradeLevel('auroraLinkCooldown') * 2); }
   function auroraLinkChain() {
     const first = nearestEnemy();
     if (!first) return [];
@@ -2874,7 +2979,7 @@
       return;
     }
     if (state.mode !== 'playing') return;
-    const eCooling = state.abilityCooldown > 0;
+    const eCooling = skin.id === 'saurion' ? state.dinoRoarCharges <= 0 : state.abilityCooldown > 0;
     const qCooling = qState.cooldown > 0;
     const eReadyNow = state.shipEWasCooling && !eCooling;
     const qReadyNow = qState.charges == null
@@ -2971,8 +3076,8 @@
     updateAbilityButton();
     return true;
   }
-  function chronosEchoDuration() { return Math.min(6, 4 + state.chronosEchoDurationBonus); }
-  function chronosEchoCooldownDuration() { return Math.max(22, 28 - upgradeLevel('chronosEchoCooldown') * 2); }
+  function chronosEchoDuration() { return Math.min(8, 6 + state.chronosEchoDurationBonus); }
+  function chronosEchoCooldownDuration() { return Math.max(18, 24 - upgradeLevel('chronosEchoCooldown') * 2); }
   function activateChronosEcho() {
     if (currentSkin().id !== 'chronos' || state.mode !== 'playing' || state.chronosEcho?.life > 0) return;
     const developerProfile = hasDeveloperPerks();
@@ -3006,18 +3111,18 @@
     state.chronosEchoQueue = pending;
   }
   function tempestTideCooldownDuration() {
-    return Math.max(22, 28 - upgradeLevel('tempestTideCooldown') * 2);
+    return Math.max(18, 24 - upgradeLevel('tempestTideCooldown') * 2);
   }
-  function tempestTideMaxCharges() { return 3 + state.tempestTideChargeBonus; }
+  function tempestTideMaxCharges() { return 4 + state.tempestTideChargeBonus; }
   function advanceTempestTideRecharge(dt) {
     const maxCharges = tempestTideMaxCharges();
     if (hasDeveloperPerks()) { state.tempestTideCharges = maxCharges; state.tempestTideCooldown = 0; return; }
     state.tempestTideCharges = clamp(state.tempestTideCharges, 0, maxCharges);
-    if (state.tempestTideCharges >= maxCharges) { state.tempestTideCooldown = 0; return; }
+    if (state.tempestTideCharges > 0) { state.tempestTideCooldown = 0; return; }
     state.tempestTideCooldown = Math.max(0, state.tempestTideCooldown - dt);
     if (state.tempestTideCooldown <= 0) {
-      state.tempestTideCharges = Math.min(maxCharges, state.tempestTideCharges + 1);
-      state.tempestTideCooldown = state.tempestTideCharges < maxCharges ? tempestTideCooldownDuration() : 0;
+      state.tempestTideCharges = maxCharges;
+      state.tempestTideCooldown = 0;
     }
   }
   function sweepTempestBullet(bullet, center) {
@@ -3029,12 +3134,12 @@
     const side = cross >= 0 ? 1 : -1;
     const duration = .48 + state.tempestTideSweepBonus;
     const targets = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(bullet, a) - distance(bullet, b));
-    if (targets.length && randomUnit('ability') < .28) {
+    if (targets.length && randomUnit('ability') < .4) {
       bullet.reflected = true;
       bullet.reflectLife = 1.8 + state.tempestTideSweepBonus;
       bullet.tempestTideTargeted = true;
       bullet.tempestTideTarget = targets[0];
-      bullet.damage = clamp(Math.max(1.45, (bullet.damage || 1) * .62 + state.tempestTideDamageBonus * .2), 1.45, 3.2);
+      bullet.damage = clamp(Math.max(1.8, (bullet.damage || 1) * .75 + state.tempestTideDamageBonus * .3), 1.8, 4.5);
       bullet.color = '#b6f7ff';
       bullet.r = mobileSize(clamp(bullet.r || 5, 4, 7));
       bullet.explosive = false; bullet.exploded = false; bullet.fuse = null; bullet.blastRadius = 0; bullet.bounces = 0;
@@ -3048,13 +3153,12 @@
     const developerProfile = hasDeveloperPerks();
     const maxCharges = tempestTideMaxCharges();
     if (!developerProfile && state.tempestTideCharges <= 0) return;
-    const radius = mobileSize(245 + state.tempestTideRadiusBonus);
+    const radius = mobileSize(280 + state.tempestTideRadiusBonus);
     const center = { x: state.player.x, y: state.player.y };
     if (developerProfile) { state.tempestTideCharges = maxCharges; state.tempestTideCooldown = 0; }
     else {
-      const wasFull = state.tempestTideCharges >= maxCharges;
       state.tempestTideCharges = Math.max(0, state.tempestTideCharges - 1);
-      if (wasFull) state.tempestTideCooldown = tempestTideCooldownDuration();
+      if (state.tempestTideCharges === 0) state.tempestTideCooldown = tempestTideCooldownDuration();
     }
     state.invulnerable = Math.max(state.invulnerable, .28);
     state.effects.push({ type: 'tempest-tide', x: center.x, y: center.y, radius, life: .68, total: .68, phase: random(0, Math.PI * 2, 'ability') });
@@ -3074,7 +3178,7 @@
       const boss = enemy.kind === 'boss' && !enemy.isMiniBoss;
       const miniBoss = enemy.kind === 'boss' && enemy.isMiniBoss;
       const damageScale = boss ? .35 : miniBoss ? .68 : 1;
-      damageEnemy(enemy, (2.4 + state.tempestTideDamageBonus) * damageScale * state.abilityPower, true);
+      damageEnemy(enemy, (3.2 + state.tempestTideDamageBonus) * damageScale * state.abilityPower, true);
       affectedEnemies++;
       burst(enemy.x, enemy.y, '#d5dcff', boss ? 5 : 4, boss ? 54 : 70);
       if (enemy.dead) continue;
@@ -3098,21 +3202,22 @@
     tone(220, .24, 'sine', .045);
     updateAbilityButton();
   }
+  function flashTrailDuration() { return Math.min(9, 6 + state.flashTrailDurationBonus); }
   function flashTrailCooldownDuration() {
-    return Math.max(22, 26 - upgradeLevel('flashTrailCooldown') * 2);
+    return Math.max(18, 24 - upgradeLevel('flashTrailCooldown') * 2);
   }
   function activateFlashTrail() {
     if (currentSkin().id !== 'flashblade' || state.mode !== 'playing' || state.flashTrail?.life > 0) return;
     const developerProfile = hasDeveloperPerks();
     if (!developerProfile && state.flashTrailCooldown > 0) return;
-    const duration = 5 + state.flashTrailDurationBonus;
+    const duration = flashTrailDuration();
     state.flashTrail = { life: duration, total: duration, lastX: state.player.x, lastY: state.player.y, recordTimer: 0 };
     state.flashTrailCooldown = developerProfile ? 0 : flashTrailCooldownDuration();
     state.flashTrailContacts = new Set();
     recordAchievementEvent('ship-ability', 'flashblade');
     burst(state.player.x, state.player.y, '#ffc86e', 18, 115);
     burst(state.player.x, state.player.y, '#fff0b4', 8, 74);
-    toast('RASTRO DE RUPTURA · IMPULSO 2,2× · ' + duration + 's');
+    toast('RASTRO DE RUPTURA · IMPULSO 2,6× · ' + duration + 's');
     tone(690, .1, 'triangle', .035);
     updateAbilityButton();
   }
@@ -3127,12 +3232,12 @@
       if (moved >= mobileSize(8)) {
         state.effects.push({
           type: 'flash-trail', x1: field.lastX, y1: field.lastY, x2: state.player.x, y2: state.player.y,
-          width: mobileSize(3.3 + density * .65), damage: (2 + state.flashTrailDamageBonus) * state.abilityPower,
-          life: 7, total: 7, phase: random(0, Math.PI * 2, 'ability')
+          width: mobileSize(3.8 + density * .75), damage: (3 + state.flashTrailDamageBonus) * state.abilityPower,
+          life: 9, total: 9, phase: random(0, Math.PI * 2, 'ability')
         });
       }
       field.lastX = state.player.x; field.lastY = state.player.y;
-      field.recordTimer = Math.max(.13, .22 - density * .03);
+      field.recordTimer = Math.max(.1, .22 - density * .03);
     }
     if (field.life <= 0) { state.flashTrail = null; updateAbilityButton(); }
   }
@@ -3230,7 +3335,7 @@
     const hits = [];
     for (const enemy of enemies) {
       const gap = distance(state.player, enemy);
-      if (gap < radius + enemy.r) hits.push({ enemy, damage: (33 + Math.max(0, radius - gap) * .1) * state.abilityPower });
+      if (gap < radius + enemy.r) hits.push({ enemy, damage: (45 + Math.max(0, radius - gap) * .13) * state.abilityPower });
     }
     const ability = state.auroraLink;
     const linked = ability?.life > 0 ? (ability.targets || []).filter((enemy) => enemy && !enemy.dead) : [];
@@ -3255,6 +3360,60 @@
       }
     }
   }
+  function dinoRoarCooldownDuration() {
+    return Math.max(12, Math.round((state.abilityBaseCooldown || currentSkin().cooldown || 28) * .58));
+  }
+  function advanceDinoRoarRecharge(dt) {
+    const maxCharges = 2;
+    if (hasDeveloperPerks()) { state.dinoRoarCharges = maxCharges; state.dinoRoarRecharge = 0; return; }
+    state.dinoRoarCharges = clamp(state.dinoRoarCharges, 0, maxCharges);
+    if (state.dinoRoarCharges >= maxCharges) { state.dinoRoarRecharge = 0; return; }
+    state.dinoRoarRecharge = Math.max(0, state.dinoRoarRecharge - dt);
+    if (state.dinoRoarRecharge <= 0) {
+      state.dinoRoarCharges = Math.min(maxCharges, state.dinoRoarCharges + 1);
+      state.dinoRoarRecharge = state.dinoRoarCharges < maxCharges ? dinoRoarCooldownDuration() : 0;
+    }
+  }
+  function activateSaurionRoar() {
+    if (currentSkin().id !== 'saurion' || state.mode !== 'playing') return;
+    const developerProfile = hasDeveloperPerks();
+    if (!developerProfile && state.dinoRoarCharges <= 0) return;
+    if (developerProfile) { state.dinoRoarCharges = 2; state.dinoRoarRecharge = 0; }
+    else {
+      if (state.dinoRoarCharges >= 2) state.dinoRoarRecharge = dinoRoarCooldownDuration();
+      state.dinoRoarCharges = Math.max(0, state.dinoRoarCharges - 1);
+    }
+    const radius = mobileSize(560 + state.dinoRoarRangeBonus);
+    state.effects.push({ type: 'dino-roar', x: state.player.x, y: state.player.y, radius, life: .92, total: .92 });
+    let clearedBullets = 0;
+    for (const bullet of state.enemyBullets) {
+      if (bullet.dead || bullet.reflected) continue;
+      if (distance(state.player, bullet) <= radius) {
+        bullet.dead = true; clearedBullets++;
+        burst(bullet.x, bullet.y, '#caff91', 5, 70);
+      }
+    }
+    let markedTargets = 0;
+    for (const enemy of state.enemies) {
+      if (enemy.dead || distance(state.player, enemy) > radius + enemy.r) continue;
+      const boss = enemy.kind === 'boss';
+      enemy.dinoStun = Math.max(enemy.dinoStun || 0, boss ? 1.1 : 2);
+      enemy.dinoCutMark = 15;
+      enemy.dinoClawBursts = 10;
+      enemy.dinoClawTimer = .1;
+      markedTargets++;
+      burst(enemy.x, enemy.y, '#75f28b', boss ? 6 : 4, boss ? 92 : 72);
+    }
+    burst(state.player.x, state.player.y, '#75f28b', 34, 260);
+    burst(state.player.x, state.player.y, '#eaffb2', 12, 150);
+    const roarSummary = ['RUGIDO DE GARRAS', state.dinoRoarCharges + '/2 CARGAS'];
+    if (markedTargets) roarSummary.push(markedTargets + ' ALVOS MARCADOS');
+    if (clearedBullets) roarSummary.push(clearedBullets + ' PROJÉTEIS DESFEITOS');
+    recordAchievementEvent('ship-ability', 'saurion');
+    toast(roarSummary.join(' · '));
+    tone(92, .38, 'sawtooth', .04);
+    updateAbilityButton();
+  }
   function activateAbility() {
     if (currentSkin().noAbilities) return;
     if (currentSkin().id === 'prisma' && !state.prismDispatchSkinId) { activatePrismAbilityChoice('e'); return; }
@@ -3269,6 +3428,10 @@
       activateMegumiTechnique();
       return;
     }
+    if (skin.id === 'saurion') {
+      activateSaurionRoar();
+      return;
+    }
     if (!developerProfile && state.abilityCooldown > 0) return;
     if (skin.id === 'eclipse' && state.eclipsePhase !== 'idle') return;
     if (skin.id === 'eclipse') state.eclipseDecoy = null;
@@ -3279,20 +3442,20 @@
       state.eclipseTime = duration;
       startEclipseCinematic(state.eclipseSkipVideoEnabled);
     } else if (skin.id === 'aurora') {
-      const radius = mobileSize(285);
+      const radius = mobileSize(360);
       state.effects.push({ type: 'nova', x: state.player.x, y: state.player.y, radius: 0, maxRadius: radius, life: .95, total: .95 });
       damageAuroraNova(radius);
       burst(state.player.x, state.player.y, skin.color, 76, 310); burst(state.player.x, state.player.y, '#ffffff', 28, 190); toast('EXPLOSÃO NOVA');
     } else if (skin.id === 'flashblade') {
       const angle = state.player.angle || -Math.PI / 2;
-      state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 730, vy: Math.sin(angle) * 730, angle, turnTimer: .12, life: 9.4, total: 9.4, bounces: 0, damage: 14 * state.abilityPower, hitCooldowns: [], trail: [{ x: state.player.x, y: state.player.y }] });
+      state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 850, vy: Math.sin(angle) * 850, angle, turnTimer: .1, life: 10.5, total: 10.5, bounces: 0, damage: 19 * state.abilityPower, hitCooldowns: [], trail: [{ x: state.player.x, y: state.player.y }] });
       burst(state.player.x, state.player.y, skin.color, 34, 195); toast('CORTE FLASH · TRAJETÓRIA INSTÁVEL');
     } else if (skin.id === 'tempest') {
       const angle = state.player.moveAngle ?? state.player.angle ?? -Math.PI / 2;
       state.effects.push({ type: 'singularity-shot', x: state.player.x + Math.cos(angle) * 18, y: state.player.y + Math.sin(angle) * 18, vx: Math.cos(angle) * 470, vy: Math.sin(angle) * 470, angle, life: .72, total: .72 });
       toast('SINGULARIDADE DISPARADA');
     } else if (skin.id === 'chronos') {
-      state.slowTime = 5.4; state.effects.push({ type: 'chronos', life: 5.4, total: 5.4 }); toast('TEMPO DOBRADO');
+      state.slowTime = 7.2; state.effects.push({ type: 'chronos', life: 7.2, total: 7.2 }); toast('TEMPO DOBRADO · CAMPO AMPLIADO');
     } else if (skin.id === 'aegis') {
       state.tempShields = Math.max(state.tempShields, 3); state.effects.push({ type: 'aegis', life: 9, total: 9 }); toast('BARREIRA AEGIS · 3 IMPACTOS'); updateHud();
     } else if (skin.id === 'redshift') {
@@ -3302,34 +3465,6 @@
       state.effects.push({ type: 'reflect-shield', life: duration, total: duration });
       burst(state.player.x, state.player.y, skin.color, 42, 210); burst(state.player.x, state.player.y, skin.accent, 18, 145);
       toast('ESCUDO DE RETORNO · ' + duration.toFixed(1).replace('.', ',') + 's');
-    } else if (skin.id === 'saurion') {
-      const radius = mobileSize(460 + state.dinoRoarRangeBonus);
-      state.effects.push({ type: 'dino-roar', x: state.player.x, y: state.player.y, radius, life: .92, total: .92 });
-      let clearedBullets = 0;
-      for (const bullet of state.enemyBullets) {
-        if (bullet.dead || bullet.reflected) continue;
-        if (distance(state.player, bullet) <= radius) {
-          bullet.dead = true; clearedBullets++;
-          burst(bullet.x, bullet.y, '#caff91', 5, 70);
-        }
-      }
-      let markedTargets = 0;
-      for (const enemy of state.enemies) {
-        if (enemy.dead || distance(state.player, enemy) > radius + enemy.r) continue;
-        const boss = enemy.kind === 'boss';
-        enemy.dinoStun = Math.max(enemy.dinoStun || 0, boss ? .68 : 1.2);
-        enemy.dinoCutMark = 15;
-        enemy.dinoClawBursts = 8;
-        enemy.dinoClawTimer = .12;
-        markedTargets++;
-        burst(enemy.x, enemy.y, '#75f28b', boss ? 6 : 4, boss ? 92 : 72);
-      }
-      burst(state.player.x, state.player.y, '#75f28b', 34, 260);
-      burst(state.player.x, state.player.y, '#eaffb2', 12, 150);
-      const roarSummary = ['RUGIDO DE GARRAS'];
-      if (markedTargets) roarSummary.push(markedTargets + ' ALVOS MARCADOS');
-      if (clearedBullets) roarSummary.push(clearedBullets + ' PROJÉTEIS DESFEITOS');
-      toast(roarSummary.join(' · '));
     }
     updateAbilityButton();
     if (skin.id === 'saurion') tone(92, .38, 'sawtooth', .04);
@@ -3343,6 +3478,13 @@
     state.damageCounterPopups = state.damageCounterPopups.filter((popup) => popup.life > 0);
     state.invulnerable = Math.max(0, state.invulnerable - dt);
     state.mahoragaAdaptationVisualTime = Math.max(0, state.mahoragaAdaptationVisualTime - dt);
+    state.mahoragaShieldHitCooldown = Math.max(0, state.mahoragaShieldHitCooldown - dt);
+    for (const enemy of state.enemies) {
+      if (enemy.mahoragaMarkTime > 0) {
+        enemy.mahoragaMarkTime = Math.max(0, enemy.mahoragaMarkTime - dt);
+        if (enemy.mahoragaMarkTime === 0) enemy.mahoragaMarkBonus = 0;
+      }
+    }
     state.waveGrace = Math.max(0, state.waveGrace - dt);
     state.shotCooldown -= dt;
     state.powerSpawn -= dt;
@@ -3354,14 +3496,8 @@
     }
     ui.stage?.classList.toggle('starfall-megumi-shadow-veil', megumiShadowCloakActive());
     state.mahoragaSlashCooldown = Math.max(0, state.mahoragaSlashCooldown - dt);
-    if (state.mahoragaParryWindow > 0) {
-      state.mahoragaParryWindow = Math.max(0, state.mahoragaParryWindow - dt);
-      state.mahoragaParryCooldown = Math.max(0, state.mahoragaParryCooldown - dt);
-      if (state.mahoragaParryWindow === 0) {
-        state.mahoragaParryCooldown = Math.max(state.mahoragaParryCooldown, .65);
-        toast('APARO PERDIDO · TENTE NO PRÓXIMO IMPACTO');
-      }
-    } else state.mahoragaParryCooldown = Math.max(0, state.mahoragaParryCooldown - dt);
+    state.mahoragaParryWindow = Math.max(0, state.mahoragaParryWindow - dt);
+    state.mahoragaParryCooldown = Math.max(0, state.mahoragaParryCooldown - dt);
     state.prismQCooldown = Math.max(0, state.prismQCooldown - dt);
     if (state.prismHorizonAnchor) {
       state.prismHorizonAnchor.life = Math.max(0, state.prismHorizonAnchor.life - dt);
@@ -3377,6 +3513,7 @@
     state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - dt);
     advanceTempestTideRecharge(dt);
     advanceDinoStampedeRecharge(dt);
+    advanceDinoRoarRecharge(dt);
     advanceAuroraLink(dt);
       advanceAegisOrbit(dt);
     updateEclipseDecoy(dt);
@@ -3417,7 +3554,7 @@
     const hullSpeed = state.lives <= 2 ? 1 + state.lowHullBoost * .12 : 1;
     const flashbladeDash = abilitySourceIs('flashblade') && state.flashTrail?.life > 0;
     const normalMoveSpeed = Math.min(525, state.player.speed + state.endlessSpeed);
-    const moveSpeed = normalMoveSpeed * (flashbladeDash ? 2.2 : 1);
+    const moveSpeed = normalMoveSpeed * (flashbladeDash ? 2.6 : 1);
     if (megumiShadowCloakActive()) {
       const minX = 17, minY = 17, spanX = Math.max(1, state.width - 34), spanY = Math.max(1, state.height - 34);
       state.player.x = minX + ((state.player.x - minX + (dx / norm) * moveSpeed * hullSpeed * dt) % spanX + spanX) % spanX;
@@ -3478,7 +3615,7 @@
       bullet.y += bullet.vy * dt;
     }
     state.bullets = state.bullets.filter(b => b.x > -20 && b.x < state.width + 20 && b.y > -30 && b.y < state.height + 20);
-    const slowFactor = state.slowTime > 0 ? .42 : 1;
+    const slowFactor = state.slowTime > 0 ? .28 : 1;
     for (const bullet of state.enemyBullets) {
       if (bullet.dead || destroyEnemyShotAtFlashTrail(bullet)) continue;
       reflectIncomingBullet(bullet);
@@ -3567,11 +3704,11 @@
         enemy.dinoClawTimer = Math.max(0, (enemy.dinoClawTimer || 0) - dt);
         if (enemy.dinoClawTimer <= 0) {
           emitDinoClawSet(enemy);
-          const clawDamage = (.65 + state.dinoRoarBonus * .0125) * state.abilityPower * (enemy.kind === 'boss' ? 1.25 : 1);
+          const clawDamage = (1 + state.dinoRoarBonus * .02) * state.abilityPower * (enemy.kind === 'boss' ? 1.35 : 1);
           damageEnemy(enemy, clawDamage, true);
           burst(enemy.x, enemy.y, '#caff91', enemy.kind === 'boss' ? 6 : 4, 96);
           enemy.dinoClawBursts--;
-          enemy.dinoClawTimer = 2;
+          enemy.dinoClawTimer = .9;
           if (enemy.dead) continue;
         }
       }
@@ -3755,18 +3892,18 @@
           if (target) {
             const targetAngle = Math.atan2(target.y - effect.y, target.x - effect.x);
             const difference = Math.atan2(Math.sin(targetAngle - effect.angle), Math.cos(targetAngle - effect.angle));
-            effect.angle += difference * .74 + random(-.38, .38, 'ability');
-          } else effect.angle += random(-1.45, 1.45, 'ability');
-          const speed = random(680, 835, 'ability');
+          effect.angle += difference * .9 + random(-.2, .2, 'ability');
+        } else effect.angle += random(-1.05, 1.05, 'ability');
+        const speed = random(820, 990, 'ability');
           effect.vx = Math.cos(effect.angle) * speed; effect.vy = Math.sin(effect.angle) * speed;
-          effect.turnTimer = random(.16, .28, 'ability');
+          effect.turnTimer = random(.12, .22, 'ability');
         }
         effect.x += effect.vx * dt; effect.y += effect.vy * dt;
         let bounced = false;
         if (effect.x < 7 || effect.x > state.width - 7) { effect.x = clamp(effect.x, 7, state.width - 7); effect.angle = Math.PI - effect.angle + random(-.52, .52, 'ability'); bounced = true; }
         if (effect.y < 7 || effect.y > state.height - 7) { effect.y = clamp(effect.y, 7, state.height - 7); effect.angle = -effect.angle + random(-.52, .52, 'ability'); bounced = true; }
         if (bounced) {
-          effect.bounces++; const speed = random(650, 800, 'ability'); effect.vx = Math.cos(effect.angle) * speed; effect.vy = Math.sin(effect.angle) * speed;
+          effect.bounces++; const speed = random(780, 930, 'ability'); effect.vx = Math.cos(effect.angle) * speed; effect.vy = Math.sin(effect.angle) * speed;
           effect.turnTimer = random(.1, .18, 'ability'); burst(effect.x, effect.y, '#fff3ba', 12, 135); burst(effect.x, effect.y, '#ffc86e', 9, 100);
         }
         const previous = effect.trail[effect.trail.length - 1];
@@ -3776,7 +3913,7 @@
         for (const enemy of state.enemies) {
           const cooling = effect.hitCooldowns.some((entry) => entry.enemy === enemy);
           if (!enemy.dead && !cooling && Math.hypot(effect.x - enemy.x, effect.y - enemy.y) < enemy.r + mobileSize(25)) {
-            damageEnemy(enemy, effect.damage, true); effect.hitCooldowns.push({ enemy, time: .42 });
+          damageEnemy(enemy, effect.damage, true); effect.hitCooldowns.push({ enemy, time: .3 });
             burst(effect.x, effect.y, '#fff4c7', 10, 125); burst(effect.x, effect.y, '#ffc86e', 8, 100);
           }
         }
@@ -3787,7 +3924,7 @@
         if (effect.x < 12 || effect.x > state.width - 12 || effect.y < 12 || effect.y > state.height - 12) { effect.x = clamp(effect.x, 12, state.width - 12); effect.y = clamp(effect.y, 12, state.height - 12); effect.life = 0; }
         if (state.particles.length < particleLimit() && visualRandomUnit() < dt * (state.performanceMode === 'light' ? 9 : 28)) state.particles.push({ x: effect.x + visualRandom(-5, 5), y: effect.y + visualRandom(-5, 5), vx: visualRandom(-55, 55), vy: visualRandom(-55, 55), life: .38, maxLife: .38, r: mobileSize(visualRandom(1.5, 3)), color: visualRandomUnit() < .5 ? '#8ef6ff' : '#c19cff' });
         const hit = state.enemies.find((enemy) => !enemy.dead && distance(effect, enemy) < enemy.r + mobileSize(13));
-        if (hit) { damageEnemy(hit, 24 * state.abilityPower, true); effect.life = 0; }
+        if (hit) { damageEnemy(hit, 32 * state.abilityPower, true); effect.life = 0; }
         if (effect.life <= 0) {
           effect.type = 'blackhole'; effect.life = state.singularityDuration; effect.total = state.singularityDuration; effect.radius = mobileSize(state.singularityRadius); effect.damageClock = .2;
           effect.vx *= .45; effect.vy *= .45; effect.targetAngle = Math.atan2(effect.vy, effect.vx); effect.moveTimer = .55;
@@ -3819,13 +3956,13 @@
           if (enemy.dead) continue;
           const dxHole = effect.x - enemy.x; const dyHole = effect.y - enemy.y; const d = Math.hypot(dxHole, dyHole);
           if (d < effect.radius) {
-            const pull = (110 + (1 - d / effect.radius) * 260) * dt;
+            const pull = (160 + (1 - d / effect.radius) * 340) * dt;
             enemy.x += dxHole / (d || 1) * pull; enemy.y += dyHole / (d || 1) * pull;
           }
         }
         if (effect.damageClock <= 0) {
           effect.damageClock = .32;
-          state.enemies.forEach((enemy) => { if (!enemy.dead && distance(effect, enemy) < effect.radius) damageEnemy(enemy, 4.2 * state.abilityPower, true); });
+          state.enemies.forEach((enemy) => { if (!enemy.dead && distance(effect, enemy) < effect.radius) damageEnemy(enemy, 6 * state.abilityPower, true); });
         }
         for (const bullet of state.enemyBullets) {
           if (bullet.dead) continue;
@@ -4163,6 +4300,15 @@
       ctx.setLineDash([]);
       ctx.restore();
     }
+    if (enemy.mahoragaMarkTime > 0) {
+      ctx.save(); ctx.globalAlpha = clamp(enemy.mahoragaMarkTime / 1.2, .42, .92);
+      ctx.strokeStyle = '#a6ff8f'; ctx.fillStyle = '#c7ffb8'; ctx.shadowColor = '#72fb65';
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 9; ctx.lineWidth = mobileSize(1.7);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(6), -performance.now() / 650, Math.PI * 1.55 - performance.now() / 650); ctx.stroke();
+      ctx.translate(enemy.x, enemy.y - enemy.r - mobileSize(7)); ctx.rotate(Math.PI / 4);
+      ctx.fillRect(-mobileSize(2.3), -mobileSize(2.3), mobileSize(4.6), mobileSize(4.6));
+      ctx.restore();
+    }
     if (enemy.dinoStun > 0) {
       ctx.save(); ctx.globalAlpha = .58 + Math.sin(performance.now() / 65 + enemy.x) * .16;
       ctx.strokeStyle = '#eaffb2'; ctx.shadowColor = '#aaff82'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10;
@@ -4246,7 +4392,7 @@
     }
     ctx.restore();
   }
-  function drawMahoragaWheel(x, y, radius, rotation, alpha) {
+  function drawMahoragaWheel(x, y, radius, rotation, alpha, filledSegments = 0, ready = false) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rotation);
@@ -4265,14 +4411,15 @@
       const angle = spoke * Math.PI / 4;
       const nodeX = Math.cos(angle) * radius * .91;
       const nodeY = Math.sin(angle) * radius * .91;
-      ctx.strokeStyle = 'rgba(239,232,216,.88)';
+      const filled = spoke < filledSegments;
+      ctx.strokeStyle = filled ? '#f5df9b' : 'rgba(127,132,133,.7)';
       ctx.lineWidth = Math.max(.9, radius * .045);
       ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(nodeX, nodeY); ctx.stroke();
-      ctx.fillStyle = '#c6aa70'; ctx.strokeStyle = '#f5ead4';
+      ctx.fillStyle = filled ? (ready ? '#b9f5aa' : '#e4c477') : '#343b3b'; ctx.strokeStyle = filled ? '#fff4d8' : 'rgba(205,211,205,.7)';
       ctx.lineWidth = Math.max(.7, radius * .035);
       ctx.beginPath(); ctx.arc(nodeX, nodeY, radius * .105, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     }
-    ctx.fillStyle = '#293139'; ctx.strokeStyle = '#f0dfbc';
+    ctx.fillStyle = ready ? '#31402f' : '#293139'; ctx.strokeStyle = ready ? '#caffb4' : '#f0dfbc';
     ctx.lineWidth = Math.max(1, radius * .055);
     ctx.beginPath(); ctx.arc(0, 0, radius * .18, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     ctx.fillStyle = '#e4c477'; ctx.strokeStyle = '#fff4d8';
@@ -4360,24 +4507,42 @@
         ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); for (let point = 1; point < 10; point++) { const progress = point / 10, offset = Math.sin(point * 17.31 + effect.seed * 31) * mobileSize(17); ctx.lineTo(effect.x1 + dx * progress + sideX * offset, effect.y1 + dy * progress + sideY * offset); } ctx.lineTo(effect.x2, effect.y2); ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.4); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'mahoraga-world-slash') {
         const progress = 1 - alpha;
-        const diagonal = Math.hypot(state.width, state.height);
         const dx = Math.cos(effect.angle); const dy = Math.sin(effect.angle);
         const sideX = -dy; const sideY = dx;
-        const sweep = (progress * 1.5 - .3) * diagonal;
-        const slashAlpha = Math.sin(Math.PI * clamp(progress * 1.15, 0, 1)) * .94;
+        const reach = effect.reach || Math.hypot(state.width, state.height);
+        const start = effect.originOffset || mobileSize(20);
+        const length = Math.min(reach * .9, Math.hypot(state.width, state.height) * 1.05);
+        const reveal = clamp(progress / .12, 0, 1);
+        const slashAlpha = (1 - Math.pow(clamp(progress, 0, 1), 1.45)) * .98;
+        const arcDepth = mobileSize(Math.min(76, Math.max(32, state.width * .055)));
         ctx.save(); ctx.globalAlpha = slashAlpha; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        for (const layer of [-1, 0, 1]) {
+        for (const layer of [-2, -1, 0, 1, 2]) {
           ctx.beginPath();
-          for (let point = 0; point <= 16; point++) {
-            const along = (point / 16 - .5) * diagonal * 1.7;
-            const serration = Math.sin(point * 2.17 + progress * 20 + layer) * mobileSize(layer === 0 ? 4 : 10);
-            const cx = effect.x + dx * sweep + sideX * (along + layer * mobileSize(7)) + dx * serration;
-            const cy = effect.y + dy * sweep + sideY * (along + layer * mobileSize(7)) + dy * serration;
+          for (let point = 0; point <= 24; point++) {
+            const t = point / 24;
+            const along = start + t * Math.max(8, length - start) * reveal;
+            const curve = Math.sin(Math.PI * t) * arcDepth;
+            const fracture = Math.sin(t * Math.PI * 5 + layer * 1.4) * mobileSize(layer === 0 ? 1.6 : 3.2) * Math.sin(Math.PI * t);
+            const spread = layer === 0 ? 0 : layer * mobileSize(4.5);
+            const cx = effect.x + dx * along + sideX * (curve + fracture + spread);
+            const cy = effect.y + dy * along + sideY * (curve + fracture + spread);
             if (point === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
           }
-          ctx.strokeStyle = layer === 0 ? '#fff8e8' : layer < 0 ? '#d8d5c8' : '#e4c477';
-          ctx.lineWidth = mobileSize(layer === 0 ? 9 + Math.sin(progress * Math.PI) * 17 : 3.2);
-          if (state.performanceMode !== 'light') { ctx.shadowColor = layer === 1 ? '#e4c477' : '#fff4dd'; ctx.shadowBlur = mobileSize(layer === 0 ? 32 : 20); }
+          ctx.strokeStyle = layer === 0 ? '#fffdf4' : Math.abs(layer) === 1 ? '#e4c477' : '#d8d5c8';
+          ctx.globalAlpha = slashAlpha * (layer === 0 ? 1 : Math.abs(layer) === 1 ? .78 : .46);
+          ctx.lineWidth = mobileSize(layer === 0 ? 5 + (1 - progress) * 5 : Math.abs(layer) === 1 ? 2.2 : 1.2);
+          if (state.performanceMode !== 'light') { ctx.shadowColor = layer === 0 ? '#fff4dd' : '#e4c477'; ctx.shadowBlur = mobileSize(layer === 0 ? 25 : 12); }
+          ctx.stroke();
+        }
+        ctx.globalAlpha = slashAlpha * .72; ctx.shadowBlur = 0; ctx.strokeStyle = '#fff8e8'; ctx.lineWidth = mobileSize(1.4);
+        for (let fracture = 0; fracture < 4; fracture++) {
+          const t = .2 + fracture * .17;
+          const along = start + t * Math.max(8, length - start) * reveal;
+          const center = Math.sin(Math.PI * t) * arcDepth;
+          const span = mobileSize(9 + (fracture % 2) * 5);
+          ctx.beginPath();
+          ctx.moveTo(effect.x + dx * along + sideX * (center - span), effect.y + dy * along + sideY * (center - span));
+          ctx.lineTo(effect.x + dx * (along + mobileSize(9)) + sideX * (center + span), effect.y + dy * (along + mobileSize(9)) + sideY * (center + span));
           ctx.stroke();
         }
         ctx.restore();
@@ -4793,16 +4958,19 @@
       if (state.performanceMode !== 'light') drawShip(state.player.x - Math.cos(state.player.angle) * trailOffset * 2, state.player.y - Math.sin(state.player.angle) * trailOffset * 2, state.player.radius * .82, currentSkin(), state.player.angle, .13);
     }
     const adaptingMahoraga = currentSkin().id === 'mahoraga';
-    if (adaptingMahoraga && state.mahoragaAdaptationVisualTime > 0) {
+    if (adaptingMahoraga) {
       const wheelRadius = mobileSize(state.player.radius * 2.55);
-      const wheelFade = clamp(state.mahoragaAdaptationVisualTime / 3, 0, 1);
-      const wheelPulse = .9 + Math.sin(timestamp / 115) * .06;
-      drawMahoragaWheel(state.player.x, state.player.y, wheelRadius, timestamp / 1050, .62 * wheelFade * wheelPulse);
+      const celebrating = state.mahoragaAdaptationVisualTime > 0;
+      const wheelFade = celebrating ? clamp(state.mahoragaAdaptationVisualTime / 3, 0, 1) : 1;
+      const wheelPulse = state.mahoragaWheelReady || state.mahoragaParryWindow > 0 ? .92 + Math.sin(timestamp / 115) * .08 : 1;
+      const rotationSpeed = state.mahoragaWheelReady ? 250 : state.mahoragaParryWindow > 0 || celebrating ? 400 : 8200;
+      const idleAlpha = state.mahoragaWheelReady ? .54 : state.mahoragaParryWindow > 0 ? .43 : .24;
+      drawMahoragaWheel(state.player.x, state.player.y, wheelRadius, timestamp / rotationSpeed, idleAlpha * wheelFade * wheelPulse, state.mahoragaWheelSegments, state.mahoragaWheelReady);
     }
     if (!eclipseActive && !megumiShadowCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, currentSkin(), state.player.angle);
     if (currentSkin().id === 'mahoraga' && state.mahoragaParryWindow > 0) {
-      const windowRatio = clamp(state.mahoragaParryWindow / .42, 0, 1);
-      ctx.save(); ctx.globalAlpha = .56 + Math.sin(timestamp / 42) * .18; ctx.strokeStyle = '#f7e5bb'; ctx.lineWidth = mobileSize(2.4);
+      const windowRatio = clamp(state.mahoragaParryWindow / 3, 0, 1);
+      ctx.save(); ctx.globalAlpha = .46 + Math.sin(timestamp / 130) * .12; ctx.strokeStyle = '#f7e5bb'; ctx.lineWidth = mobileSize(2.4);
       ctx.shadowColor = '#e4c477'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(17);
       ctx.beginPath(); ctx.arc(state.player.x, state.player.y, state.player.radius + mobileSize(12 + (1 - windowRatio) * 12), 0, Math.PI * 2); ctx.stroke(); ctx.restore();
     }
@@ -5262,7 +5430,7 @@
     const isPrisma = currentSkin().id === 'prisma';
     const isTraining = currentSkin().id === 'training';
     const isMegumi = currentSkin().id === 'megumi';
-    const abilityInstruction = isTraining ? 'sem habilidades especiais · use as melhorias da missão' : isPrisma ? 'E e Q ativam poderes escolhidos · G abre o Arquivo de Ecos' : isMahoraga ? 'E dá 3s de invulnerabilidade · cinco aparos iguais completam a adaptação · Q Corte Mundial · G retorna à Umbra' : isMegumi ? 'E sorteia Coelhos, Sombras ou Nue · Q invoca o Guardião até o fim da missão' : isAurora ? 'E cria a Explosão Nova · Q encadeia feixes entre inimigos' : isAegis ? 'E absorve impactos · Q converte tiros interceptados em projéteis teleguiados' : isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral móvel' : isChronos ? 'E desacelera o tempo · Q repete os disparos com ecos temporais' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : isRedshift ? 'E reflete projéteis · Q ativa o Perímetro de Cerco' : isFlashblade ? 'E lança o Corte Flash · Q deixa rastros cortantes no trajeto' : isTempest ? 'E guia o Poço Negro suavemente pelo movimento · Q afasta inimigos próximos' : 'ativa a habilidade';
+    const abilityInstruction = isTraining ? 'sem habilidades especiais · use as melhorias da missão' : isPrisma ? 'E e Q ativam poderes escolhidos · G abre o Arquivo de Ecos' : isMahoraga ? 'E reduz 65% do dano por 3s · adaptação persiste e cresce nas ondas 2 e 3, reinicia na 4 · Q Espada da Exterminação · G retorna à Umbra' : isMegumi ? 'E sorteia Coelhos, Sombras ou Nue · Q invoca o Guardião até o fim da missão' : isAurora ? 'E cria a Explosão Nova · Q encadeia feixes entre inimigos' : isAegis ? 'E absorve impactos · Q converte tiros interceptados em projéteis teleguiados' : isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral móvel' : isChronos ? 'E desacelera o tempo · Q repete os disparos com ecos temporais' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : isRedshift ? 'E reflete projéteis · Q ativa o Perímetro de Cerco' : isFlashblade ? 'E lança o Corte Flash · Q deixa rastros cortantes no trajeto' : isTempest ? 'E guia o Poço Negro suavemente pelo movimento · Q afasta inimigos próximos' : 'ativa a habilidade';
     if (ui.controlHint) ui.controlHint.textContent = state.controlMode === 'keys'
       ? hardwareInputDetected ? 'WASD ou setas movem · ' + abilityInstruction + ' · disparo automático.' : 'Disparo automático · controles configuráveis.'
       : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (isTraining ? 'nave sem habilidades especiais.' : isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest || isPrisma || isMahoraga || isMegumi ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
@@ -5390,7 +5558,7 @@
     state.shields = 0;
     state.tempShields = 0;
     state.abilityCooldown = 0;
-    state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptations = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = '';
+    state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaShieldHitCooldown = 0; state.mahoragaResistanceType = ''; state.mahoragaResistanceUntilWave = 0; state.mahoragaResistancePower = 0; state.mahoragaCycleStartWave = state.wave; state.mahoragaWheelSegments = 0; state.mahoragaWheelReady = false; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptationLevels = {}; state.mahoragaAdaptationWaves = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = '';
     state.abilityBaseCooldown = currentSkin().cooldown;
     state.abilityPower = 1;
     state.slowTime = 0;
@@ -5408,8 +5576,8 @@
     state.bonusShots = 0;
     state.lowHullBoost = 0;
     state.salvageHeal = 0;
-    state.singularityRadius = 235;
-    state.singularityDuration = 6.5;
+    state.singularityRadius = 300;
+    state.singularityDuration = 8.5;
     state.reflectTime = 0;
     state.reflectContacts = new Set();
     state.reflectDamageBonus = 0;
@@ -5418,6 +5586,8 @@
     state.eclipseDecoyCooldown = 0;
     state.dinoRoarBonus = 0;
     state.dinoRoarRangeBonus = 0;
+    state.dinoRoarCharges = 2;
+    state.dinoRoarRecharge = 0;
     state.dinoStampedeCharges = 3;
     state.dinoStampedeRecharge = 0;
     state.dinoStampedeExtra = 0;
@@ -5719,6 +5889,7 @@
   }
   function closeAchievements() { if (ui.achievementsModal) ui.achievementsModal.hidden = true; syncAudioVisibility(); }
   document.querySelectorAll('[data-control-mode]').forEach((button) => button.addEventListener('click', () => {
+    keyboardInputDetected = false;
     state.controlMode = button.dataset.controlMode;
     state.savedControlMode = state.controlMode;
     if (ui.missionSetupModal?.hidden) state.preferencesConfigured = true;
@@ -5726,6 +5897,16 @@
     state.keys.clear(); state.pointer.active = false; releaseAnalog(); updateControlUI();
     saveNicknameSettings();
   }));
+  function switchToKeyboardControls() {
+    keyboardInputDetected = true;
+    if (state.controlMode === 'keys' && state.savedControlMode === 'keys') return;
+    state.controlMode = 'keys';
+    state.savedControlMode = 'keys';
+    state.keys.clear(); state.pointer.active = false; state.pointer.pointerId = null; releaseAnalog();
+    try { localStorage.setItem(controlModeKey, 'keys'); } catch { /* O teclado continua ativo nesta sessão. */ }
+    updateControlUI();
+    saveNicknameSettings();
+  }
   ui.performanceModeButtons.forEach((button) => button.addEventListener('click', () => setPerformanceMode(button.dataset.performanceMode)));
   $('[data-open-settings]')?.addEventListener('click', openSettings);
   $('[data-open-ships]')?.addEventListener('click', openShips);
@@ -5795,6 +5976,11 @@
   bindAbilityControl(ui.eclipseQ, activateSecondaryAbility);
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
+    const editableTarget = event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]');
+    if (!editableTarget && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey
+      && ['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','KeyE','KeyQ','KeyG'].includes(event.code)) {
+      switchToKeyboardControls();
+    }
     if (state.eclipsePhase === 'cinematic' || state.megumiSummonPhase === 'cinematic') { event.preventDefault(); return; }
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
     if (event.code === 'KeyF' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && !state.dailyChallenge && ['playing', 'paused'].includes(state.mode) && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {

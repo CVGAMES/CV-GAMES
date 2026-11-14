@@ -7,7 +7,7 @@ create table if not exists public.starfall_scores (
   nickname text primary key check (nickname = lower(btrim(nickname)) and nickname in (
     'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
     'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
-    'geovanagamer099'
+    'storm', 'hiago a'
   )),
   wave integer not null check (wave > 0),
   score integer not null check (score >= 0),
@@ -24,7 +24,7 @@ alter table public.starfall_scores add constraint starfall_scores_nickname_check
   check (nickname = lower(btrim(nickname)) and nickname in (
     'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
     'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
-    'geovanagamer099'
+    'storm', 'hiago a'
   ));
 
 drop policy if exists "Anyone can read Starfall top scores" on public.starfall_scores;
@@ -38,7 +38,7 @@ create policy "Approved test pilots can add Starfall scores"
   on public.starfall_scores for insert to anon
   with check (nickname in (
     'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099'
+    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a'
   ));
 create policy "Owner account can add Starfall score"
   on public.starfall_scores for insert to authenticated
@@ -51,11 +51,11 @@ create policy "Approved test pilots can improve Starfall scores"
   on public.starfall_scores for update to anon
   using (nickname in (
     'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099'
+    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a'
   ))
   with check (nickname in (
     'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099'
+    'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a'
   ));
 create policy "Owner account can improve Starfall score"
   on public.starfall_scores for update to authenticated
@@ -102,7 +102,7 @@ create table if not exists public.starfall_settings (
   constraint starfall_settings_nickname_check check (nickname = lower(btrim(nickname)) and nickname in (
     'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
     'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
-    'geovanagamer099', 'educvv dev', 'educvv dev1', 'adm'
+    'storm', 'hiago a', 'educvv dev', 'educvv dev1', 'adm'
   )),
   damage_counter_enabled boolean not null default true,
   damage_counter_x real not null default 0.89 check (damage_counter_x between 0.16 and 0.96),
@@ -128,7 +128,7 @@ alter table public.starfall_settings add constraint starfall_settings_nickname_c
   check (nickname = lower(btrim(nickname)) and nickname in (
     'educvv', 'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k',
     'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v',
-    'geovanagamer099', 'educvv dev', 'educvv dev1', 'adm'
+    'storm', 'hiago a', 'educvv dev', 'educvv dev1', 'adm'
   ));
 alter table public.starfall_settings alter column damage_counter_enabled set default true;
 alter table public.starfall_settings alter column eclipse_skip_video set default false;
@@ -145,7 +145,7 @@ create policy "Approved pilots can add Starfall settings"
   with check (
     nickname in (
       'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099',
+      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a',
       'educvv dev', 'educvv dev1', 'adm'
     )
     or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
@@ -157,7 +157,7 @@ create policy "Approved pilots can update Starfall settings"
   using (
     nickname in (
       'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099',
+      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a',
       'educvv dev', 'educvv dev1', 'adm'
     )
     or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
@@ -165,7 +165,7 @@ create policy "Approved pilots can update Starfall settings"
   with check (
     nickname in (
       'cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h',
-      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'geovanagamer099',
+      'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a',
       'educvv dev', 'educvv dev1', 'adm'
     )
     or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
