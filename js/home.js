@@ -8,8 +8,8 @@
       .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
     if (currentNickname !== profileNickname) window.location.reload();
   });
-  const orbitalProfileAllowed = profileNickname === 'educvv dev1';
-  const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(profileNickname);
+  const orbitalProfileAllowed = profileNickname === 'educvv dev1' || profileNickname === 'lista';
+  const turboProfileAllowed = ['educvv dev1', 'educvv dev', 'lista'].includes(profileNickname);
   const labyrinthProfileAllowed = turboProfileAllowed;
   const tubesProfileAllowed = turboProfileAllowed;
   const navalProfileAllowed = turboProfileAllowed;
@@ -83,7 +83,7 @@
         <p class="card-meta">${game.category}</p>
         <div class="stars" aria-label="Avaliação visual: ${game.rating} de 5 estrelas">${ratingStars(game.rating)}</div>
         ${localVisits > 0 ? `<p class="card-local-stats">🎮 ${localVisits} ${localStatsLabel}</p>` : ''}
-        <a class="button button-primary" href="${game.href}"${game.externalPortal === true ? ' target="_blank" rel="noopener noreferrer"' : ''}${game.externalWarning === true ? ' data-external-warning="true"' : ''} data-play-game-id="${game.id}">${game.externalPortal === true ? 'Abrir site ↗' : 'Jogar'}</a>
+        <a class="button button-primary" href="${game.href}"${game.externalPortal === true ? ' target="_blank" rel="noopener noreferrer"' : ''}${game.externalWarning === true ? ' data-external-warning="true"' : ''} data-play-game-id="${game.id}">Jogar</a>
       </div>
     `;
 
@@ -131,7 +131,15 @@
 
   // A seleção editorial mantém a seção útil antes do primeiro acesso local.
   const fallbackPopularGames = catalog.filter((game) => game.popular);
-  const featuredPriority = ['cv-starfall', 'gx-launcher', 'cv-labirinto', 'cv-quadrados', 'cv-xadrez', 'cv-damas', 'cv-jogo-da-velha', 'bad-ice-cream', 'fireboy-watergirl', 'drive-mad', 'moto-x3m', 'geometry-jump'];
+  const featuredPriority = [
+    'cv-starfall', 'gx-launcher', 'cv-quadrados', 'cv-xadrez', 'cv-damas', 'cv-jogo-da-velha',
+    'hexgl', 'bad-ice-cream', 'level-devil', 'fireboy-watergirl',
+    'need-for-speed-underground-2', 'drive-mad', 'rocket-goal', 'moto-x3m',
+    'bad-time-simulator', 'geometry-jump', 'super-mario-64', 'among-us',
+    'skate-3', 'fnf', 'pes-6-web', 'angry-birds', 'simpsons-hit-and-run',
+    'stickman-hook', 'subway-surfers', 'cv-neon-breaker', 'cv-turbo-circuit',
+    'cv-dodge', 'cv-labirinto'
+  ];
 
   const setupNewsInvitation = () => {
     const dialog = document.querySelector('[data-news-invitation]');
@@ -516,10 +524,6 @@
     saveFavorites();
 
     renderGames('featured-games', getFeaturedGames());
-    const recentGames = catalog
-      .filter((game) => game.recent)
-      .sort((a, b) => String(b.addedAt || '').localeCompare(String(a.addedAt || '')));
-    renderGames('recent-games', recentGames);
     renderStatisticsSections();
 
     document.addEventListener('click', (event) => {

@@ -77,7 +77,7 @@
     } catch {
       // Sem perfil local válido, mantém o jogo de teste fora das páginas públicas.
     }
-    const turboProfileAllowed = ['educvv dev1', 'educvv dev'].includes(nickname);
+    const turboProfileAllowed = ['educvv dev1', 'educvv dev', 'lista'].includes(nickname);
     const exclusives = catalog.filter((game) => game.exclusivo === true
       && game.id !== 'cv-dodge'
       && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
