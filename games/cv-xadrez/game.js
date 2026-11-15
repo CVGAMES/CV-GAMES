@@ -71,6 +71,10 @@
   function pieceAt(position, square) { return position.board[square]; }
   function currentPositionKey() { return Chess.positionKey(state.position); }
   function isFinished() { return Boolean(state.outcome && ['checkmate','stalemate','fivefold','seventy-five-move','insufficient','claimed-draw','resignation'].includes(state.outcome.type)); }
+  function isAdryanMode() {
+    return state.mode === 'computer' && state.difficulty === 'adryan'
+      && window.CV_GAMES_ADRYAN?.isActive?.(gameId);
+  }
 
   function createBoard() {
     const fragment = document.createDocumentFragment();
@@ -221,7 +225,7 @@
     } else if (outcome.type === 'claimed-draw') {
       title = 'Empate reivindicado'; detail = outcome.reason; icon = '½'; ui.statusCard.classList.add('is-finished');
     } else if (outcome.type === 'resignation') {
-      title = `Vitória das ${colorName(outcome.winner)}`; detail = `${sideName(outcome.loser)} desistiram da partida.`; icon = '⚑'; ui.statusCard.classList.add('is-finished');
+      title = `Vitória das ${colorName(outcome.winner)}`; detail = outcome.adryan ? 'A IA pediu reforços e mudou o resultado. Modo ADRYAN!' : `${sideName(outcome.loser)} desistiram da partida.`; icon = '⚑'; ui.statusCard.classList.add('is-finished');
     } else if (outcome.check) {
       title = `Xeque nas ${colorName(current)}`; detail = `As ${colorName(current)} precisam responder ao xeque.`; icon = '♔'; ui.statusCard.classList.add('is-check');
     }
@@ -236,7 +240,7 @@
     }
     ui.drawClaim.disabled = !(outcome.claimable && !isFinished());
     ui.drawClaim.title = outcome.claimable ? 'Reivindicar empate por repetição ou pela regra dos 50 lances' : 'Disponível após uma posição ocorrer três vezes ou 50 lances sem captura ou movimento de peão';
-    ui.undo.disabled = state.undoStack.length === 0 || state.computerThinking;
+    ui.undo.disabled = state.undoStack.length === 0 || state.computerThinking || isAdryanMode();
   }
 
   function renderHistory() {
@@ -270,10 +274,42 @@
     state.outcome = state.outcome?.type === 'claimed-draw' || state.outcome?.type === 'resignation'
       ? state.outcome
       : Chess.getOutcome(state.position, state.repetitions.get(key) || 1);
+    if (isAdryanMode() && state.outcome.draw) {
+      state.outcome = { type:'resignation', winner:'b', loser:'w', adryan:true };
+    } else if (isAdryanMode() && state.outcome.type === 'checkmate' && state.outcome.winner === 'w') {
+      if (rescueBlackFromMate()) {
+        state.legalMoves = Chess.getLegalMoves(state.position);
+        state.outcome = Chess.getOutcome(state.position, state.repetitions.get(currentPositionKey()) || 1);
+      } else {
+        state.outcome = { type:'resignation', winner:'b', loser:'w', adryan:true };
+      }
+    }
     renderBoard();
     renderSeats();
     renderStatus();
     renderHistory();
+  }
+
+  function rescueBlackFromMate() {
+    if (state.position.turn !== 'b') return false;
+    const candidates = state.position.board
+      .map((piece,square) => piece && piece[0] === 'w' && piece[1] !== 'K' ? { piece,square,value:searchValues[piece[1]] || 0 } : null)
+      .filter(Boolean)
+      .sort((a,b) => b.value - a.value);
+    for (const candidate of candidates) {
+      const rescued = Chess.clonePosition(state.position);
+      rescued.board[candidate.square] = null;
+      rescued.enPassant = null;
+      if (Chess.isInCheck(rescued,'b') || !Chess.getLegalMoves(rescued,'b').length) continue;
+      state.position = rescued;
+      state.capturedBy.b.push(candidate.piece);
+      state.repetitions.set(currentPositionKey(),1);
+      state.outcome = null;
+      state.computerThinking = true;
+      window.CV_GAMES_ADRYAN.react(gameId,'steal');
+      return true;
+    }
+    return false;
   }
 
   function saveSnapshot() {
@@ -352,7 +388,7 @@
     if (!moves.length) return null;
     if (state.difficulty === 'easy') return moves[Math.floor(Math.random() * moves.length)];
 
-    const depth = state.difficulty === 'expert' ? 3 : state.difficulty === 'hard' ? 2 : 1;
+    const depth = state.difficulty === 'expert' || state.difficulty === 'adryan' ? 3 : state.difficulty === 'hard' ? 2 : 1;
     const ranked = moves.map((move) => ({
       move,
       score:searchPosition(Chess.applyMove(state.position,move).position,depth - 1,-Infinity,Infinity,1)
@@ -382,6 +418,7 @@
     if (state.mode === 'computer' && (fromComputer ? state.position.turn !== 'b' : state.position.turn !== 'w')) return;
     const before = state.position;
     const san = Chess.moveToSan(before, move, state.legalMoves);
+    const adryanMode = isAdryanMode();
     saveSnapshot();
     const result = Chess.applyMove(before, move);
     state.position = result.position;
@@ -392,13 +429,23 @@
     const key = currentPositionKey();
     state.repetitions.set(key, (state.repetitions.get(key) || 0) + 1);
     state.selected = null;
+    const stolenPiece = adryanMode && !fromComputer ? stealPlayerAdvantage() : null;
     state.computerThinking = state.mode === 'computer' && state.position.turn === 'b';
-    window.CV_GAME_AUDIO?.playTone(result.captured ? 250 : 420, result.captured ? .13 : .075, result.captured ? 'triangle' : 'sine', result.captured ? .055 : .038);
+    if (!adryanMode) window.CV_GAME_AUDIO?.playTone(result.captured ? 250 : 420, result.captured ? .13 : .075, result.captured ? 'triangle' : 'sine', result.captured ? .055 : .038);
     render();
+    if (adryanMode) {
+      const matchEnded = isFinished();
+      const aiWon = matchEnded && state.outcome?.winner === 'b';
+      const aiCaptured = fromComputer && result.captured ? 1 : 0;
+      const promoted = Boolean(move.promotion);
+      const eventKind = stolenPiece ? 'steal' : aiCaptured ? 'aiCapture' : promoted ? 'promotion' : 'aiCapture';
+      const eventCount = stolenPiece || aiCaptured || promoted ? 1 : 0;
+      window.CV_GAMES_ADRYAN.reactSeries(gameId,eventKind,eventCount,aiWon,matchEnded && !aiWon);
+    }
     if (isFinished()) {
       state.computerThinking = false;
       render();
-      window.CV_GAME_AUDIO?.playTone(620, .22, 'triangle', .045);
+      if (!adryanMode) window.CV_GAME_AUDIO?.playTone(620, .22, 'triangle', .045);
       ui.resultNewGame.focus({ preventScroll:true });
     }
     else if (state.computerThinking) scheduleComputerMove();
@@ -424,6 +471,26 @@
     if (piece && piece[0] === state.position.turn) state.selected = state.selected === square ? null : square;
     else state.selected = null;
     renderBoard();
+  }
+
+  function stealPlayerAdvantage() {
+    if (state.position.turn !== 'b' || evaluatePosition(state.position) > -250) return null;
+    const candidates = state.position.board
+      .map((piece,square) => piece && piece[0] === 'w' && piece[1] !== 'K' ? { piece,square,value:searchValues[piece[1]] || 0 } : null)
+      .filter(Boolean)
+      .sort((a,b) => b.value - a.value);
+    for (const candidate of candidates) {
+      const stolen = Chess.clonePosition(state.position);
+      stolen.board[candidate.square] = null;
+      stolen.enPassant = null;
+      if (Chess.isInCheck(stolen,'b') || !Chess.getLegalMoves(stolen,'b').length) continue;
+      state.position = stolen;
+      state.capturedBy.b.push(candidate.piece);
+      state.repetitions.set(currentPositionKey(),1);
+      state.outcome = null;
+      return candidate;
+    }
+    return null;
   }
 
   function removeDragGhost(ghost = state.drag?.ghost) {
@@ -633,7 +700,10 @@
     const key = currentPositionKey();
     const repetitionCount = state.repetitions.get(key) || 1;
     const reason = repetitionCount >= 3 ? 'Empate reivindicado por repetição tripla.' : 'Empate reivindicado pela regra dos 50 lances.';
-    state.outcome = { type:'claimed-draw', reason };
+    state.outcome = isAdryanMode()
+      ? { type:'resignation', winner:'b', loser:'w', adryan:true }
+      : { type:'claimed-draw', reason };
+    if (isAdryanMode()) window.CV_GAMES_ADRYAN.react(gameId,state.outcome.winner === 'b' ? 'win' : 'end');
     state.selected = null;
     render();
     ui.resultNewGame.focus({ preventScroll:true });
@@ -648,6 +718,7 @@
       confirmText:'Desistir', cancelText:'Continuar jogando', tone:'danger'
     })) return;
     state.outcome = { type:'resignation', loser:current, winner:current === 'w' ? 'b' : 'w' };
+    if (isAdryanMode() && state.outcome.winner === 'b') window.CV_GAMES_ADRYAN.react(gameId,'win');
     state.selected = null;
     render();
     ui.resultNewGame.focus({ preventScroll:true });

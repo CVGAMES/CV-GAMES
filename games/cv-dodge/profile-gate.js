@@ -3,12 +3,13 @@
 
   const nickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
     .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
-  const allowed = nickname === 'educvv dev1';
+  const allowedProfiles = ['educvv dev1', 'lista'];
+  const allowed = allowedProfiles.includes(nickname);
   document.body.dataset.orbitalAccess = allowed ? 'granted' : 'locked';
   window.addEventListener('pageshow', () => {
     const currentNickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
       .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
-    if ((currentNickname === 'educvv dev1') !== allowed) window.location.reload();
+    if (allowedProfiles.includes(currentNickname) !== allowed) window.location.reload();
   });
   if (allowed) return;
 

@@ -34,6 +34,10 @@
     scores:{ a:0, b:0 }, history:[], undoStack:[], focusEdge:null, lastBoxCount:0,
     mode:'local', difficulty:window.CV_GAMES_AI_DIFFICULTY?.get(gameId) || 'medium', computerThinking:false
   };
+  function isAdryanMode() {
+    return state.mode === 'computer' && state.difficulty === 'adryan'
+      && window.CV_GAMES_ADRYAN?.isActive?.(gameId);
+  }
   let inputUnlockTimeout = null;
   let computerTimer = 0;
   const edges = [];
@@ -191,8 +195,8 @@
     const available = edges.filter((edge) => !position.edgeOwners.has(edge.key));
     if (!available.length) return null;
     if (state.difficulty === 'easy') return available[Math.floor(Math.random() * available.length)];
-    const branchLimit = state.difficulty === 'expert' ? 7 : 5;
-    const depth = state.difficulty === 'expert' ? 3 : 2;
+    const branchLimit = state.difficulty === 'expert' || state.difficulty === 'adryan' ? 7 : 5;
+    const depth = state.difficulty === 'expert' || state.difficulty === 'adryan' ? 3 : 2;
     const candidates = tacticalMoves(position,branchLimit);
     if (!candidates.length) return null;
     if (state.difficulty === 'medium') {
@@ -205,7 +209,7 @@
     const ranked = candidates.map((edge) => {
       const { position:next } = applySimulatedEdge(position,edge,'b');
       const nextDepth = depth - Number(next.current !== 'b');
-      const budget = { nodes:state.difficulty === 'expert' ? 1800 : 650, branchLimit };
+      const budget = { nodes:state.difficulty === 'adryan' ? 2700 : state.difficulty === 'expert' ? 1800 : 650, branchLimit };
       return { edge, score:searchPosition(next,nextDepth,-Infinity,Infinity,budget) };
     }).sort((a,b) => b.score - a.score);
     const bestScore = ranked[0].score;
@@ -344,7 +348,7 @@
     }
     ui.bonusNote.hidden = !(state.lastBoxCount && !state.outcome && !state.inputLocked && !state.computerThinking);
     ui.bonusNote.textContent = state.lastBoxCount === 1 ? 'Fechou um quadrado! Jogue novamente.' : `Fechou ${state.lastBoxCount} quadrados! Jogue novamente.`;
-    ui.undo.disabled = state.undoStack.length === 0 || state.inputLocked || state.computerThinking;
+    ui.undo.disabled = state.undoStack.length === 0 || state.inputLocked || state.computerThinking || isAdryanMode();
     ui.resultOverlay.hidden = !state.outcome;
     if (state.outcome?.type === 'win') {
       const winner = state.outcome.winner;
@@ -395,11 +399,41 @@
       window.CV_GAME_AUDIO?.playTone(620, .12, 'sine', .05);
       if (completed.length > 1) window.CV_GAME_AUDIO?.playTone(820, .16, 'triangle', .045);
     } else window.CV_GAME_AUDIO?.playTone(300, .055, 'square', .025);
+    let boxesStolen = 0;
+    if (isAdryanMode() && player === 'a' && state.scores.a > state.scores.b) {
+      boxesStolen = Math.ceil((state.scores.a - state.scores.b + 1) / 2);
+      const stolenCount = boxesStolen;
+      for (let index = 0; index < state.boxes.length && boxesStolen > 0; index += 1) {
+        if (state.boxes[index] !== 'a') continue;
+        state.boxes[index] = 'b';
+        state.scores.a -= 1;
+        state.scores.b += 1;
+        boxesStolen -= 1;
+      }
+      boxesStolen = stolenCount;
+    }
     state.focusEdge = key;
     if (state.edgeOwners.size === edges.length) {
+      if (isAdryanMode() && state.scores.a >= state.scores.b) {
+        let transfers = Math.ceil((state.scores.a - state.scores.b + 1) / 2);
+        for (let index = 0; index < state.boxes.length && transfers > 0; index += 1) {
+          if (state.boxes[index] !== 'a') continue;
+          state.boxes[index] = 'b';
+          state.scores.a -= 1;
+          state.scores.b += 1;
+          transfers -= 1;
+        }
+      }
       if (state.scores.a === state.scores.b) state.outcome = { type:'draw' };
       else state.outcome = { type:'win', winner:state.scores.a > state.scores.b ? 'a' : 'b' };
     } else if (!completed.length) state.current = player === 'a' ? 'b' : 'a';
+    if (isAdryanMode()) {
+      const boxesClosedByAi = computerMove ? completed.length : 0;
+      if (boxesClosedByAi || state.outcome) {
+        const aiWon = state.outcome?.winner === 'b';
+        window.CV_GAMES_ADRYAN.reactSeries(gameId,'aiBox',boxesClosedByAi,aiWon,Boolean(state.outcome) && !aiWon);
+      }
+    }
     state.computerThinking = state.mode === 'computer' && state.current === 'b' && !state.outcome;
     state.focusEdge = nearestOpenEdge(key)?.key || null;
     state.inputLocked = !state.outcome;
@@ -458,7 +492,7 @@
     state.inputLocked = false;
     state.computerThinking = false;
     state.mode = mode;
-    state.difficulty = window.CV_GAMES_AI_DIFFICULTY?.set(gameId,difficulty) || difficulty;
+    state.difficulty = difficulty === 'adryan' ? 'adryan' : window.CV_GAMES_AI_DIFFICULTY?.set(gameId,difficulty) || difficulty;
     state.started = true;
     state.current = 'a';
     state.outcome = null;

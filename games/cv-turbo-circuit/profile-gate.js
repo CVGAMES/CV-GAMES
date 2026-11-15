@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const allowedProfiles = Object.freeze(['educvv dev1', 'educvv dev']);
+  const allowedProfiles = Object.freeze(['educvv dev1', 'educvv dev', 'lista']);
   const normalizeNickname = (value) => String(value || '')
     .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
   const getAllowed = () => allowedProfiles.includes(

@@ -176,7 +176,7 @@
       ui.turnSymbol.textContent = state.current === 'x' ? '×' : '○';
       ui.turnLabel.textContent = state.mode === 'computer' ? playerName(state.current) : `Jogador ${playerName(state.current)}`;
     }
-    ui.undo.disabled = state.undoStack.length === 0;
+    ui.undo.disabled = state.undoStack.length === 0 || (state.difficulty === 'adryan' && window.CV_GAMES_ADRYAN?.isActive?.(gameId));
     ui.newRound.textContent = state.outcome ? '＋ Próxima rodada' : '＋ Nova rodada';
     const scores = modeScores();
     const completedRounds = scores.x + scores.o + scores.draws;
@@ -262,8 +262,8 @@
     if (lobbyFootnote) lobbyFootnote.hidden = false;
     ui.startComputer?.focus({ preventScroll:true });
   }
-  function startComputerGame() {
-    state.difficulty = window.CV_GAMES_AI_DIFFICULTY?.get(gameId) || 'medium';
+  function startComputerGame(difficulty) {
+    state.difficulty = difficulty === 'adryan' ? 'adryan' : window.CV_GAMES_AI_DIFFICULTY?.get(gameId) || 'medium';
     state.mode = 'computer';
     state.started = true;
     lobby.hidden = true;
@@ -346,21 +346,36 @@
     state.board[index] = player;
     state.history.push({ player, square:index });
     state.focusSquare = index;
-    const line = getWinningLine();
+    const adryanMode = state.mode === 'computer' && state.difficulty === 'adryan'
+      && window.CV_GAMES_ADRYAN?.isActive?.(gameId);
+    let line = getWinningLine();
     if (line) {
-      state.outcome = { type:'win', winner:player };
+      const winner = adryanMode && player === 'x' ? 'o' : player;
+      if (winner === 'o' && player === 'x') line.forEach((square) => { state.board[square] = 'o'; });
+      state.outcome = { type:'win', winner };
       state.winningCells = line;
-      const scoreKey = state.mode === 'computer' ? player === 'x' ? 'cpuX' : 'cpuO' : player;
+      const scoreKey = state.mode === 'computer' ? winner === 'x' ? 'cpuX' : 'cpuO' : winner;
       state.scores[scoreKey] += 1;
       saveScores();
-      window.CV_GAME_AUDIO?.playTone(player === 'x' ? 620 : 520, .12, 'triangle', .05);
-      window.CV_GAME_AUDIO?.playTone(800, .2, 'sine', .04);
+      if (!adryanMode) {
+        window.CV_GAME_AUDIO?.playTone(player === 'x' ? 620 : 520, .12, 'triangle', .05);
+        window.CV_GAME_AUDIO?.playTone(800, .2, 'sine', .04);
+      }
     } else if (state.board.every(Boolean)) {
-      state.outcome = { type:'draw' };
-      state.scores[state.mode === 'computer' ? 'cpuDraws' : 'draws'] += 1;
+      if (adryanMode) {
+        line = winLines[Math.floor(Math.random() * winLines.length)];
+        line.forEach((square) => { state.board[square] = 'o'; });
+        state.winningCells = line;
+        state.outcome = { type:'win', winner:'o' };
+        state.scores.cpuO += 1;
+      } else {
+        state.outcome = { type:'draw' };
+        state.scores[state.mode === 'computer' ? 'cpuDraws' : 'draws'] += 1;
+      }
       saveScores();
-      window.CV_GAME_AUDIO?.playTone(320, .16, 'sine', .035);
+      if (!adryanMode) window.CV_GAME_AUDIO?.playTone(320, .16, 'sine', .035);
     } else state.current = player === 'x' ? 'o' : 'x';
+    if (adryanMode && state.outcome) window.CV_GAMES_ADRYAN.react(gameId,state.outcome.winner === 'o' ? 'win' : 'end');
     if (!state.outcome) window.CV_GAME_AUDIO?.playTone(player === 'x' ? 480 : 360, .065, 'sine', .035);
     render();
     if (state.outcome) ui.resultNextRound.focus({ preventScroll:true });
@@ -488,7 +503,7 @@
   ui.startComputer.addEventListener('click',openDifficultyPicker);
   difficultyBack?.addEventListener('click',closeDifficultyPicker);
   document.addEventListener('cv-ai-difficulty-start', (event) => {
-    if (event.detail?.gameKey === gameId) startComputerGame();
+    if (event.detail?.gameKey === gameId) startComputerGame(event.detail.difficulty);
   });
   document.addEventListener('cv-game-return-to-mode-menu', () => {
     window.clearTimeout(computerTimer);

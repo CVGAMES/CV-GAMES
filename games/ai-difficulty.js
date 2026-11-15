@@ -7,6 +7,14 @@
     { id:'hard', name:'Difícil', face:'😠', summary:'A IA analisa sequências e joga com firmeza, mas ainda pode cometer um erro.', behavior:'Calcula mais respostas, com pequenas chances de escolher uma linha menos segura.', wait:590 },
     { id:'expert', name:'Extra difícil', face:'👹', summary:'O nível máximo: a IA escolhe a melhor resposta disponível neste jogo.', behavior:'Usa a estratégia mais forte implementada para o jogo.', wait:730 }
   ]);
+  const adryanDetails = Object.freeze({
+    id:'adryan', name:'ADRYAN', face:'😈',
+    summary:'Modo secreto de meme: a IA joga sujo, rouba viradas e não deixa você ganhar.',
+    behavior:'Prepare-se para jogadas impossíveis, falas da IA, sons e memes aleatórios.',
+    wait:780
+  });
+  const adryanGames = new Set(['cv-quadrados','cv-xadrez','cv-damas','cv-jogo-da-velha']);
+  const adryanEnabled = new Set();
   const normalize = (value) => options.some((option) => option.id === value) ? value : 'medium';
   const keyFor = (gameKey) => `cv-games-ai-difficulty:${String(gameKey || 'default')}`;
   const sessionValues = new Map();
@@ -97,12 +105,49 @@
     options,
     get,
     set,
-    getDetails: (difficulty) => options.find((option) => option.id === normalize(difficulty))
+    getDetails: (difficulty) => difficulty === 'adryan' ? adryanDetails : options.find((option) => option.id === normalize(difficulty)),
+    enableAdryanMode: (gameKey) => {
+      if (!adryanGames.has(String(gameKey))) return false;
+      adryanEnabled.add(String(gameKey));
+      document.querySelectorAll('[data-ai-difficulty-picker]').forEach((picker) => {
+        if (picker.dataset.aiDifficultyKey === String(gameKey)) {
+          const button = picker.querySelector('[data-ai-adryan-start]');
+          if (button) button.hidden = false;
+        }
+      });
+      return true;
+    },
+    disableAdryanMode: (gameKey) => {
+      adryanEnabled.delete(String(gameKey));
+      document.querySelectorAll('[data-ai-difficulty-picker]').forEach((picker) => {
+        if (picker.dataset.aiDifficultyKey === String(gameKey)) {
+          const button = picker.querySelector('[data-ai-adryan-start]');
+          if (button) button.hidden = true;
+        }
+      });
+      return true;
+    },
+    isAdryanModeEnabled: (gameKey) => adryanEnabled.has(String(gameKey))
   });
 
   document.querySelectorAll('[data-ai-difficulty-picker]').forEach((picker) => {
     const key = picker.dataset.aiDifficultyKey || 'default';
     renderPicker(picker, get(key), false);
+    if (adryanGames.has(key)) {
+      const startButton = picker.querySelector('[data-ai-difficulty-start]');
+      const note = picker.querySelector('.cv-ai-difficulty-note');
+      if (startButton && !picker.querySelector('[data-ai-adryan-start]')) {
+        const secretButton = document.createElement('button');
+        secretButton.type = 'button';
+        secretButton.className = 'cv-ai-difficulty-start adryan-mode-button';
+        secretButton.dataset.aiAdryanStart = '';
+        secretButton.hidden = true;
+        secretButton.setAttribute('aria-label','Iniciar o modo secreto ADRYAN');
+        secretButton.innerHTML = '<span aria-hidden="true">😈</span><span class="adryan-mode-copy"><strong>Modo: ADRYAN</strong><small>Dificuldade secreta · boa sorte</small></span><span aria-hidden="true">▶</span>';
+        if (note?.parentElement === startButton.parentElement) note.before(secretButton);
+        else startButton.after(secretButton);
+      }
+    }
     picker.querySelector('[data-ai-difficulty-range]')?.addEventListener('input', (event) => {
       const option = options[Math.max(0, Math.min(options.length - 1, Number(event.currentTarget.value)))] || options[1];
       renderPicker(picker, option.id, true);
@@ -110,6 +155,15 @@
   });
 
   document.addEventListener('click', (event) => {
+    const adryanButton = event.target instanceof Element ? event.target.closest('[data-ai-adryan-start]') : null;
+    if (adryanButton) {
+      const picker = adryanButton.closest('[data-ai-difficulty-picker]');
+      if (!picker) return;
+      const gameKey = picker.dataset.aiDifficultyKey || 'default';
+      if (!adryanEnabled.has(gameKey)) return;
+      document.dispatchEvent(new CustomEvent('cv-ai-difficulty-start', { detail:{ gameKey, difficulty:'adryan', level:5 } }));
+      return;
+    }
     const button = event.target instanceof Element ? event.target.closest('[data-ai-difficulty-start]') : null;
     if (!button) return;
     const picker = button.closest('[data-ai-difficulty-picker]');

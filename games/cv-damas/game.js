@@ -73,6 +73,10 @@
   const sideLower = (color) => color === 'w' ? 'brancas' : 'pretas';
   const squareName = (square) => `${files[colOf(square)]}${8 - rowOf(square)}`;
   const isFinished = () => Boolean(state.outcome);
+  function isAdryanMode() {
+    return state.mode === 'computer' && state.difficulty === 'adryan'
+      && window.CV_GAMES_ADRYAN?.isActive?.(gameId);
+  }
 
   function makeBoard() {
     const fragment = document.createDocumentFragment();
@@ -336,7 +340,7 @@
       ui.resultTitle.textContent = state.outcome.winner ? `Vitória das ${sideName(state.outcome.winner)}` : title;
       ui.resultDetail.textContent = detail;
     }
-    ui.undo.disabled = state.undoStack.length === 0 || state.computerThinking;
+    ui.undo.disabled = state.undoStack.length === 0 || state.computerThinking || isAdryanMode();
     ui.resign.disabled = !state.started || isFinished() || state.computerThinking;
     ui.newGame.disabled = !state.started;
   }
@@ -459,7 +463,7 @@
     const routes = state.legalRoutes;
     if (!routes.length) return null;
     if (state.difficulty === 'easy') return routes[Math.floor(Math.random() * routes.length)];
-    const depth = state.difficulty === 'expert' ? 3 : state.difficulty === 'hard' ? 2 : 1;
+    const depth = state.difficulty === 'expert' || state.difficulty === 'adryan' ? 3 : state.difficulty === 'hard' ? 2 : 1;
     const ranked = routes.map((route) => ({
       route,
       score:searchBoard(applyRouteToBoard(state.board,route,'b'),'w',depth - 1,-Infinity,Infinity,1)
@@ -526,7 +530,24 @@
     state.turn = opponent(move.color);
     if (move.color === 'b') state.turnNumber += 1;
     state.legalRoutes = legalRoutes(state.board, state.turn);
-    if (countPieces(state.turn) === 0) {
+    const playerWouldWin = move.color === 'w' && (countPieces(state.turn) === 0 || !state.legalRoutes.length);
+    if (isAdryanMode() && playerWouldWin) {
+      let revivedSquare = -1;
+      for (let square = 0; square < 64; square += 1) {
+        if ((rowOf(square) + colOf(square)) % 2 === 0 || state.board[square]) continue;
+        state.board[square] = 'B';
+        if (legalRoutes(state.board,'b').length) { revivedSquare = square; break; }
+        state.board[square] = null;
+      }
+      if (revivedSquare < 0) {
+        state.board = createInitialBoard();
+        revivedSquare = 1;
+      }
+      state.focusSquare = revivedSquare;
+      state.turn = 'b';
+      state.legalRoutes = legalRoutes(state.board,'b');
+      state.outcome = null;
+    } else if (countPieces(state.turn) === 0) {
       state.outcome = { type:'win', winner:move.color, reason:`${sideName(state.turn)} ficaram sem peças.` };
     } else if (!state.legalRoutes.length) {
       state.outcome = { type:'win', winner:move.color, reason:`${sideName(state.turn)} não têm movimentos legais.` };
@@ -535,6 +556,11 @@
     playTone(move.captured.length ? 245 : 420, move.captured.length ? .12 : .07, move.captured.length ? 'triangle' : 'sine', move.captured.length ? .055 : .035);
     if (promoted) playTone(720, .2, 'triangle', .05);
     render();
+    if (isAdryanMode()) {
+      const aiCaptured = move.color === 'b' ? move.captured.length : 0;
+      const aiWon = state.outcome?.winner === 'b';
+      window.CV_GAMES_ADRYAN.reactSeries(gameId,'aiCapture',aiCaptured,aiWon,Boolean(state.outcome) && !aiWon);
+    }
     if (isFinished()) {
       state.computerThinking = false;
       render();
@@ -808,6 +834,7 @@
       confirmText:'Desistir', cancelText:'Continuar jogando', tone:'danger'
     })) return;
     state.outcome = { type:'resignation', loser:current, winner:opponent(current) };
+    if (isAdryanMode() && state.outcome.winner === 'b') window.CV_GAMES_ADRYAN.react(gameId,'win');
     state.continuation = null;
     state.pendingMove = null;
     state.selected = null;

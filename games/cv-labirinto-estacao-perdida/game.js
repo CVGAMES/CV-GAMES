@@ -3,7 +3,7 @@
 
   const nickname = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
     .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
-  if (!['educvv dev1', 'educvv dev'].includes(nickname)) return;
+  if (!['educvv dev1', 'educvv dev', 'lista'].includes(nickname)) return;
 
   const $ = (selector) => document.querySelector(selector);
   const canvas = $('[data-canvas]');

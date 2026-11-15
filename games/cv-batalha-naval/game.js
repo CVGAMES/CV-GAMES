@@ -3,7 +3,7 @@
 
   const profileName = String(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || '')
     .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
-  if (!['educvv dev1', 'educvv dev'].includes(profileName)) return;
+  if (!['educvv dev1', 'educvv dev', 'lista'].includes(profileName)) return;
 
   const $ = (selector) => document.querySelector(selector);
   const gameId = 'cv-batalha-naval';

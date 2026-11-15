@@ -23,6 +23,8 @@
   const nicknameSettingsMigrationKey = 'cv-games-cv-starfall-settings-migrated-v2';
   const defaultDamageCounterPosition = Object.freeze({ x: .89, y: .53 });
   const defaultNicknameSettings = Object.freeze({ damageCounterEnabled: true, eclipseSkipVideo: false });
+  const mahoragaFormWaveLimit = 3;
+  const mahoragaFormCooldownDuration = 45;
   const favoritesKey = 'cv-games-favorites';
   const eclipseSprite = new Image();
   eclipseSprite.src = new URL('eclipse-ship.png', document.baseURI).href;
@@ -53,7 +55,7 @@
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
     skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')),
     shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'),
-    damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), damageCounterEditor: $('[data-edit-damage-counter]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), mahoragaAwakening: $('[data-mahoraga-awakening]'), mahoragaAwakeningType: $('[data-mahoraga-awakening-type]'), mahoragaAwakeningBuff: $('[data-mahoraga-awakening-buff]'), mahoragaReadout: $('[data-mahoraga-readout]'), megumiFormTimer: $('[data-megumi-form-timer]'),
+    damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), damageCounterEditor: $('[data-edit-damage-counter]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), mahoragaAwakening: $('[data-mahoraga-awakening]'), mahoragaAwakeningType: $('[data-mahoraga-awakening-type]'), mahoragaAwakeningBuff: $('[data-mahoraga-awakening-buff]'), mahoragaReadout: $('[data-mahoraga-readout]'), megumiFormTimer: $('[data-megumi-form-timer]'), mahoragaReturn: $('[data-mahoraga-return]'),
     deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'),
     dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'),
     rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
@@ -77,8 +79,8 @@
     { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Domínio Eclipse com cortes por 10 segundos. Q: cria uma Isca Umbral móvel por 4 segundos; ela atrai disparos, tenta desviar e dispara tiros leves e espaçados. Melhorias podem prolongar sua duração.' },
     { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q causa dano extra aos alvos marcados.' },
     { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' },
-    { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 9, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz o dano recebido em 65%. Cinco golpes do mesmo tipo iniciam a adaptação; ela persiste pelas ondas 1, 2 e 3 e evolui até 50%. Ao entrar na onda 4, o ciclo reinicia. A roda completa fortalece a adaptação atual sem ultrapassar esse limite.' },
-    { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 12, cooldownQ: 36, shape: 'megumi', secret: true, description: 'Nave secreta em desenvolvimento. Não conta no Top 10. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação. Q inicia o ritual do Guardião; após a cutscene, a nave assume a forma Mahoraga até o fim da missão, com Adaptação Divina no E e Espada da Exterminação no Q.' }
+    { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 12, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz o dano recebido em 65%. Cinco golpes do mesmo tipo iniciam a adaptação; ela persiste pelas ondas 1, 2 e 3 e evolui até 50%. Ao entrar na onda 4, o ciclo reinicia. A roda completa fortalece a adaptação atual sem ultrapassar esse limite.' },
+    { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 25, cooldownQ: 45, shape: 'megumi', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'felype j'], description: 'Nave secreta. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação; a recarga do E cai de 25 para 18 segundos com cinco melhorias. Q invoca o Guardião com a cutscene; a forma Mahoraga dura três ondas completas e, ao terminar, entra em recarga de 45 segundos.' }
   ];
   const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Isca Umbral', saurion:'Estouro da Manada', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião' });
   const megumiTechniques = Object.freeze({
@@ -97,8 +99,8 @@
     eclipse: { e:'A Expansão de Domínio inicia com uma abertura cinematográfica e transforma a arena em um santuário. Os cortes cobrem a área por 10 segundos; a nave fica invulnerável durante o efeito e por alguns segundos ao final.', q:'A Isca Umbral cria uma cópia móvel por cerca de 4 segundos. Ela cruza a arena em velocidade próxima à da nave, um pouco menor; inimigos miram nela enquanto desvia e dispara um tiro leve a cada 0,9 segundo. Esses disparos causam menos dano que os da nave. Melhorias podem prolongar o efeito e melhorar seus desvios.' },
     saurion: { e:'O Rugido de Garras tem duas cargas. Atinge uma área maior, atordoa por mais tempo e marca os inimigos; garras mais fortes atingem com maior frequência.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' },
     prisma: { e:'O Núcleo Prisma concentra luz diante da nave e libera uma onda de impacto. Inimigos próximos recebem dano e são afastados; chefes resistem parcialmente ao empurrão. Melhorias ampliam o raio, o dano e reduzem a recarga. Você também pode escolher outra habilidade no Arquivo de Ecos.', q:'A Dobra de Horizonte grava a posição da nave por 4 segundos. Ative novamente para retornar ao ponto marcado, ganhar proteção breve e liberar uma onda de chegada que causa dano e desorganiza inimigos próximos. Melhorias ampliam a janela até 6 segundos e fortalecem a onda. O espaço Q também pode receber outra habilidade escolhida.' },
-    mahoraga: { e:'Adaptação Divina · escudo de 3s reduz 65% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais iniciam a resistência: 25% na primeira onda, 35% na segunda e 50% na terceira. Ela permanece ativa entre ondas; ao entrar na onda 4, roda, progresso e resistência reiniciam, e um novo ciclo começa. Só uma categoria de ataque fica adaptada por ciclo. Recarga de 14s.', q:'Espada da Exterminação · concentra energia à frente e dispara um corte reto que atravessa inimigos. O primeiro alvo recebe dano alto, os seguintes recebem dano reduzido, e cada alvo ganha uma marca verde que aumenta em 10% o dano do próximo ataque. Recarga de 9s.' },
-    megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga permanece até o fim da missão e recebe Adaptação Divina no E e Espada da Exterminação no Q. Recarga de 36 segundos.' }
+    mahoraga: { e:'Adaptação Divina · escudo de 3s reduz 65% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais iniciam a resistência: 25% na primeira onda, 35% na segunda e 50% na terceira. Ela permanece ativa entre ondas; ao entrar na onda 4, roda, progresso e resistência reiniciam, e um novo ciclo começa. Só uma categoria de ataque fica adaptada por ciclo. Recarga de 14s.', q:'Espada da Exterminação · envia um talho curvo que atravessa a arena em uma faixa, destrói os tiros que cruza e atinge até oito inimigos. Causa 20 de dano no primeiro alvo e 10 nos seguintes, com dano reduzido contra chefes; as marcas ampliam em 10% o próximo golpe. Recarga de 12s.' },
+    megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica. Recarga de 25 segundos, reduzida até 18 segundos com cinco melhorias.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga dura três ondas completas. Ao retornar à Umbra, inicia uma recarga de 45 segundos antes de poder invocar novamente.' }
   });
   const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
@@ -151,7 +153,7 @@
     eclipseSkipVideoEnabled: initialNicknameSettings.eclipseSkipVideo,
     shipEWasCooling: false, shipQWasCooling: false, shipQChargeCount: null,
     mahoragaParryWindow: 0, mahoragaParryCooldown: 0, mahoragaShieldHitCooldown: 0, mahoragaResistanceType: '', mahoragaResistanceUntilWave: 0, mahoragaResistancePower: 0, mahoragaCycleStartWave: 1, mahoragaWheelSegments: 0, mahoragaWheelReady: false, mahoragaAdaptationVisualTime: 0, mahoragaSlashCooldown: 0, mahoragaSlashCooldownBonus: 0, mahoragaProgress: {}, mahoragaAdaptationLevels: {}, mahoragaAdaptationWaves: {}, mahoragaDamageRemainders: {}, mahoragaLastType: '',
-    megumiTechnique:'rabbits', megumiSummonCooldown:0, megumiTransformed:false, megumiSummonPhase:'idle', megumiTransformSource:'', megumiCloakTime:0, megumiCloakLastX:0, megumiCloakLastY:0, megumiRabbits:[],
+    megumiTechnique:'rabbits', megumiSummonCooldown:0, megumiTransformed:false, megumiFormWavesRemaining:0, megumiSummonPhase:'idle', megumiTransformSource:'', megumiCloakTime:0, megumiCloakLastX:0, megumiCloakLastY:0, megumiRabbits:[],
     prismAbilityChoices: { e:'aurora:e', q:'aurora:q' }, prismAbilitySlot:'e', prismDispatchSkinId:'', prismDispatchSlot:'', prismQCooldown:0, prismHorizonAnchor:null, prismHorizonWindowBonus:0, prismHorizonDamageBonus:0, prismCoreRangeBonus:0, prismCoreDamageBonus:0, prismCooldownBonus:0, prismWheelWasPlaying:false,
     aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0,
     tempestTideCharges: 4, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
@@ -217,7 +219,7 @@
     { id:'critical', icon:'✧', name:'Mira de precisão', description:'Aumenta a chance de causar dano crítico.', max:5, available:()=>state.critChance<.4, apply:()=>{state.critChance=Math.min(.4,state.critChance+.08);} },
     { id:'drone', icon:'◈', name:'Drone auxiliar', description:'Um satélite ataca inimigos próximos e pode se sacrificar para salvar a nave.', max:3, available:()=>state.drones<3, apply:()=>{state.drones+=1;} },
     { id:'magnet', icon:'⌖', name:'Ímã gravitacional', description:'Atrai recursos de mais longe.', max:5, available:()=>upgradeLevel('magnet')<5, apply:()=>{state.magnet=Math.min(315,state.magnet+42);} },
-    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:()=>currentSkin().id!=='training'&&upgradeLevel('cooldown')<5, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else{const minimum=currentSkin().id==='eclipse'?25:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);state.abilityCooldown=Math.max(0,state.abilityCooldown-4);}} },
+    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:()=>currentSkin().id!=='training'&&upgradeLevel('cooldown')<5, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else if(currentSkin().id==='megumi')state.abilityBaseCooldown=megumiTechniqueCooldownDuration(1);else{const minimum=currentSkin().id==='eclipse'?25:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);}state.abilityCooldown=Math.max(0,state.abilityCooldown-4);} },
     { id:'power', icon:'✴', name:'Amplificador de núcleo', description:'Fortalece a habilidade especial.', max:4, available:()=>currentSkin().id!=='training'&&upgradeLevel('power')<4, apply:()=>{state.abilityPower=Math.min(2,state.abilityPower+.2);} },
     { id:'armor', icon:'⬟', name:'Blindagem reativa', description:'Chance de anular um impacto recebido.', max:4, available:()=>state.armorChance<.32, apply:()=>{state.armorChance=Math.min(.32,state.armorChance+.08);} },
     { id:'regen', icon:'✚', name:'Nanorreparadores', description:'Recupera uma vida periodicamente.', max:3, available:()=>state.regenLevel<3, apply:()=>{state.regenLevel+=1;} },
@@ -323,14 +325,16 @@
     const targetWave = Math.max(1, state.wave, bestWave, Number(previous?.wave) || 0);
     if (previous && Number(previous.wave) > Math.max(state.wave, bestWave)) return true;
     const numericState = {};
-    Object.entries(state).forEach(([key, value]) => {
-      if (typeof value === 'number' && Number.isFinite(value) && !['lastTime', 'raf', 'width', 'height', 'dpr', 'megumiSummonCooldown', 'megumiCloakTime', 'mahoragaAdaptationVisualTime'].includes(key)) numericState[key] = value;
+      Object.entries(state).forEach(([key, value]) => {
+      if (typeof value === 'number' && Number.isFinite(value) && !['lastTime', 'raf', 'width', 'height', 'dpr', 'megumiSummonCooldown', 'megumiFormWavesRemaining', 'megumiCloakTime', 'mahoragaAdaptationVisualTime'].includes(key)) numericState[key] = value;
     });
     const checkpoint = {
       version:1, nickname:nickname || 'jogador', savedAt:Date.now(), wave:targetWave,
       bestCompletedWave:Math.max(bestWave, readNicknameCompletedWave(nickname)), score:Math.max(0, state.score), elapsed:Math.max(0, state.elapsed),
       shipId:state.selectedSkin, lastBossType:state.lastBossType, stats:numericState, upgrades:{ ...state.upgrades },
       megumiTransformed:state.megumiTransformed,
+      megumiFormWavesRemaining:state.megumiFormWavesRemaining,
+      megumiSummonCooldown:state.megumiSummonCooldown,
       mahoraga:{ cycleStartWave:state.mahoragaCycleStartWave, progress:{ ...state.mahoragaProgress }, adaptationLevels:{ ...state.mahoragaAdaptationLevels }, adaptationWaves:{ ...state.mahoragaAdaptationWaves }, damageRemainders:{ ...state.mahoragaDamageRemainders }, lastType:state.mahoragaLastType, wheelSegments:state.mahoragaWheelSegments, wheelReady:state.mahoragaWheelReady, resistanceType:state.mahoragaResistanceType, resistanceUntilWave:state.mahoragaResistanceUntilWave, resistancePower:state.mahoragaResistancePower },
       player:{ xRatio:state.width ? state.player.x / state.width : .5, yRatio:state.height ? state.player.y / state.height : .78,
         speed:state.player.speed, damage:state.player.damage, fireRate:state.player.fireRate, spread:state.player.spread,
@@ -345,7 +349,9 @@
     } catch { return new Set(); }
   }
   function hasSecretShipAccess(skin) {
-    if (skin.id === 'megumi') return secretShipUnlocks.has('megumi');
+    if (skin.id === 'megumi') return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
+      || secretShipUnlocks.has('megumi') || secretShipUnlocks.has('*')
+      || accountShipProgressLoaded && accountUnlockedShipIds.has('megumi');
     if (skin.id === 'prisma') return accountShipProgressLoaded || secretShipUnlocks.has('prisma');
     if (skin.ownerOnly) return accountShipProgressLoaded;
     return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
@@ -537,7 +543,7 @@
   function shipCooldownSummary(skin) {
     if (skin.id === 'training') return 'sem habilidades · dano recebido reduzido em 50%';
     if (skin.id === 'mahoraga') return 'E: escudo 3s, −65% · adaptação cresce nas ondas 1–3 e reinicia na 4 (depois 4–6, 7–9…)';
-    if (skin.id === 'megumi') return 'E: 3 variações sombrias · Q: transformação permanente na missão · recargas 12s / 36s';
+    if (skin.id === 'megumi') return 'E: 3 variações sombrias · recarga 25s→18s com melhorias · Q: Mahoraga por 3 ondas · recarga de 45s';
     if (hasDeveloperPerks()) return 'sem recarga';
     if (skin.id === 'prisma') return 'E e Q configuráveis no Arquivo de Ecos (G) · recarga própria até 20s · missão fora do placar';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q 24s';
@@ -700,6 +706,42 @@
       renderSkinPicker(); updateEquippedShip(); updateHud();
     }
   }
+  function bastiaoShipSvg(color, accent) {
+    return '<svg class="starfall-redshift-ship-sprite" viewBox="0 0 48 54" aria-hidden="true" focusable="false">'
+      + '<path d="M24 2.3 L32.12 15.32 L41.36 22.32 L35.2 34.92 L27.78 30.72 L24 38.28 L20.22 30.72 L12.8 34.92 L6.64 22.32 L15.88 15.32 Z" fill="' + color + '" stroke="' + accent + '" stroke-width="1.9" stroke-linejoin="round"/>'
+      + '<ellipse cx="24" cy="22.88" rx="3.78" ry="7.28" fill="#f1ffff"/>'
+      + '<path d="M18.12 32.12 L24 48 L29.88 32.12 Z" fill="' + accent + '"/>'
+      + '</svg>';
+  }
+
+  function hangarShipSvg(skin) {
+    if (skin.shape === 'training') {
+      return '<svg class="starfall-hangar-ship-sprite" viewBox="0 0 52 60" aria-hidden="true" focusable="false">'
+        + '<defs><linearGradient id="starfall-ferrum-hull" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#edf0f4"/><stop offset=".34" stop-color="#aeb5c0"/><stop offset=".68" stop-color="#737c89"/><stop offset="1" stop-color="#343a44"/></linearGradient><linearGradient id="starfall-ferrum-flame" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e0e7f0"/><stop offset=".35" stop-color="#8591a1" stop-opacity=".75"/><stop offset="1" stop-color="#303742" stop-opacity="0"/></linearGradient></defs>'
+        + '<path d="M26 4.72 L32.72 20.08 L45.52 37.68 L34.8 35.28 L31.44 43.12 L26 39.92 L20.56 43.12 L17.2 35.28 L6.48 37.68 L19.28 20.08 Z" fill="url(#starfall-ferrum-hull)" stroke="#242932" stroke-width="1.8" stroke-linejoin="round"/>'
+        + '<path d="M26 10.48 L29.2 22.96 L28.08 34 L26 36.72 L23.92 34 L22.8 22.96 Z" fill="#20252d" stroke="#d0d5dd" stroke-width=".9" stroke-linejoin="round"/>'
+        + '<ellipse cx="26" cy="23.92" rx="1.44" ry="3.52" fill="#dce1e8"/>'
+        + '<path d="M13.52 33.2 L19.6 34.8 M38.48 33.2 L32.4 34.8 M22.32 38.96 L23.12 42.16 M29.68 38.96 L28.88 42.16" fill="none" stroke="#171b21" stroke-width="1.7" stroke-linecap="round"/>'
+        + '<path d="M22.8 41.2 L26 58 L29.2 41.2 Z" fill="url(#starfall-ferrum-flame)"/>'
+        + '</svg>';
+    }
+    const points = {
+      classic:[[0,-1.45],[.92,1],[0,.56],[-.92,1]],
+      shield:[[0,-1.48],[1,-.15],[.72,.86],[0,1.08],[-.72,.86],[-1,-.15]],
+      ring:[[0,-1.45],[.92,1],[0,.56],[-.92,1]],
+      wing:[[0,-1.5],[.5,-.25],[1.25,.65],[.34,.42],[0,1],[-.34,.42],[-1.25,.65],[-.5,-.25]],
+      blade:[[0,-1.65],[.34,-.22],[1.12,.8],[0,.43],[-1.12,.8],[-.34,-.22]]
+    };
+    const path = (points[skin.shape] || points.classic).map(([x,y],index) => `${index ? 'L' : 'M'}${(26 + x * 16).toFixed(2)} ${(30 + y * 16).toFixed(2)}`).join(' ') + ' Z';
+    const ring = skin.shape === 'ring' ? '<ellipse cx="26" cy="30" rx="19.52" ry="9.28" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : '';
+    return '<svg class="starfall-hangar-ship-sprite" viewBox="0 0 52 60" aria-hidden="true" focusable="false">'
+      + '<path d="' + path + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="2" stroke-linejoin="round"/>'
+      + '<ellipse cx="26" cy="28.72" rx="4.32" ry="8.32" fill="#f1ffff"/>'
+      + '<path d="M19.28 39.28 L26 52.4 L32.72 39.28 Z" fill="' + skin.accent + '"/>'
+      + ring
+      + '</svg>';
+  }
+
   function updateEquippedShip() {
     if (!ui.equippedShip) return;
     const skin = currentSkin();
@@ -711,6 +753,7 @@
       : skin.shape === 'prism' ? '<span class="starfall-equipped-icon starfall-prism-icon" aria-hidden="true">◇</span>'
       : skin.shape === 'megumi' ? '<span class="starfall-equipped-icon starfall-umbra-icon" aria-hidden="true"><img src="umbra-ship.png" alt=""></span>'
       : skin.shape === 'mahoraga' ? '<span class="starfall-equipped-icon starfall-mahoraga-sprite" aria-hidden="true"><img src="mahoraga-ship.png" alt=""></span>'
+      : skin.shape === 'reflector' ? '<span class="starfall-equipped-icon starfall-redshift-icon" aria-hidden="true">' + bastiaoShipSvg(skin.color,skin.accent) + '</span>'
       : '<svg class="starfall-equipped-icon' + (skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-megumi-icon' : '') + '" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : skin.shape === 'mahoraga' ? '<circle cx="20" cy="5" r="5" fill="#2b343e" stroke="#e4c477" stroke-width="1.2"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#f4ecdb" stroke-width=".9"/><circle cx="20" cy="5" r="1.5" fill="#e4c477"/>' : skin.shape === 'megumi' ? '<circle cx="20" cy="5" r="5" fill="#211a2f" stroke="#c4b2e8" stroke-width="1"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#eee6ff" stroke-width=".7"/><circle cx="20" cy="5" r="1.5" fill="#c4b2e8"/>' : '') + '</svg>';
     ui.equippedShip.innerHTML = equippedIcon + '<span><strong>Nave equipada: ' + skin.name + '</strong><small>' + (skin.noAbilities ? 'SEM HABILIDADES · ' : skin.ability + ' · ') + shipCooldownSummary(skin) + '</small></span>';
     updateEclipseSkipOption();
@@ -923,7 +966,23 @@
     }
     updateAbilityButton();
   }
+  function updateMahoragaFormControls() {
+    const active = state.megumiTransformed && ['playing', 'paused', 'upgrade'].includes(state.mode);
+    if (ui.megumiFormTimer) {
+      ui.megumiFormTimer.hidden = !active;
+      const waves = Math.max(0, state.megumiFormWavesRemaining);
+      const label = 'MAHORAGA · ' + waves + (waves === 1 ? ' ONDA RESTANTE' : ' ONDAS RESTANTES') + ' · VOLTAR: G';
+      if (active && ui.megumiFormTimer.textContent !== label) ui.megumiFormTimer.textContent = label;
+    }
+    if (ui.mahoragaReturn) {
+      ui.mahoragaReturn.hidden = !active;
+      ui.mahoragaReturn.disabled = !active;
+      ui.mahoragaReturn.setAttribute('aria-pressed', String(active));
+      ui.mahoragaReturn.setAttribute('aria-label', active ? 'Voltar para a nave normal antes do limite de três ondas · tecla G' : 'Voltar para a nave normal');
+    }
+  }
   function updateAbilityButton() {
+    updateMahoragaFormControls();
     const skin = currentSkin();
     if (ui.mahoragaReadout) {
       const showMahoragaReadout = mahoragaAdaptationActive() && ['playing', 'paused'].includes(state.mode);
@@ -1031,7 +1090,7 @@
       const qActive = isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseDecoy && state.eclipseDecoy.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion && stampedeRemaining > 0;
       const qCooldown = isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseDecoyCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : state.dinoStampedeRecharge;
       const dinoCharges = hasDeveloperPerks() ? 3 : state.dinoStampedeCharges;
-      const qReady = hasDeveloperPerks() || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
+      const qReady = (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
       ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade) && qActive) || !qReady;
       ui.eclipseQ.textContent = isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '◉' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
@@ -1048,7 +1107,7 @@
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
       const qLabel = isMegumi && state.megumiSummonPhase === 'cinematic' ? 'Ritual do Guardião em andamento'
         : isMegumi && !qReady ? 'Ritual do Guardião recarregando: ' + Math.ceil(qCooldown) + ' segundos'
-        : isMegumi ? 'Invocar o Guardião · tecla Q · cutscene e transformação até o fim da missão'
+        : isMegumi ? 'Invocar o Guardião · tecla Q · cutscene e transformação por 3 ondas · recarga de 45s depois que ela termina'
         : qActive && isAurora ? 'Elo Estelar ativo por mais ' + Math.ceil(state.auroraLink.life) + ' segundos · até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos vinculados'
         : qActive && isAegis ? 'Órbitas Sentinelas protegem a nave por mais ' + Math.ceil(state.aegisOrbit.life) + ' segundos · ' + aegisOrbitRemaining + ' fragmentos restantes'
         : qActive && isEclipse ? 'Isca Umbral ativa por mais ' + Math.ceil(state.eclipseDecoy.life) + ' segundos'
@@ -1057,11 +1116,11 @@
           : qActive && isFlashblade ? 'Rastro de Ruptura ativo por mais ' + Math.ceil(state.flashTrail.life) + ' segundos'
             : qActive && isTempest ? 'Maré Reversa ativa · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas'
                : !qReady ? isMahoraga ? 'Espada da Exterminação recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Isca Umbral recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando todas as cargas: ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
-                : isMahoraga ? 'Espada da Exterminação · tecla Q · corte frontal perfurante, dano alto no primeiro alvo e marca verde de +10% no próximo golpe'
+                : isMahoraga ? 'Espada da Exterminação · tecla Q · talho mundial em onda atravessa a arena, destrói tiros e atinge até oito alvos; 20 de dano no primeiro, 10 nos seguintes e dano reduzido contra chefes'
                    : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Isca Umbral · tecla Q · cópia móvel por ' + decoyDuration + ' segundos; dispara tiros leves e espaçados' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
-      ui.eclipseQ.title = isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma permanente até o fim da missão · recarga ' + skin.cooldownQ + 's'
-        : isMahoraga ? 'Espada da Exterminação · Q · corte frontal perfurante · primeiro alvo recebe dano alto, próximos recebem dano menor · marca verde aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
+      ui.eclipseQ.title = isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por três ondas · recarga de 45s depois que termina'
+        : isMahoraga ? 'Espada da Exterminação · Q · onda de corte atravessa a tela e destrói tiros no trajeto · até oito alvos, 20 de dano no primeiro e 10 nos seguintes; chefes recebem 72% do dano · marca aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
         : isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · cada vida perdida pela nave causa 2 de dano aos alvos conectados · dano do pulso ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
         : isAegis ? 'Órbitas Sentinelas · Q · proteção do núcleo · fragmentos intactos atacam ao final · ' + aegisOrbitCount + ' fragmentos · duração ' + aegisOrbitTime + 's · dano convertido ' + (2 + state.aegisOrbitDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + aegisOrbitCooldown + 's'
         : isEclipse ? 'Isca Umbral · Q · cópia móvel por ' + decoyDuration + 's, rota imprevisível, desvio e disparos leves a cada 0,9s · recarga de 24s'
@@ -1080,7 +1139,7 @@
                     : isSaurion ? stampedeRemaining : 0;
       const qCountdown = isTempest
         ? tempestTideCharges > 0 ? tempestTideCharges + '/' + tempestTideMax : String(Math.ceil(qCooldown))
-        : !hasDeveloperPerks() && qCooldown > 0
+        : (!hasDeveloperPerks() || isMegumi) && qCooldown > 0
         ? String(Math.ceil(qCooldown))
         : qActive && qActiveRemaining > 0 ? String(Math.ceil(qActiveRemaining)) : '';
       if (ui.eclipseQCooldown) {
@@ -1151,7 +1210,7 @@
     if (title) title.textContent = prismaUnlock ? 'Desbloquear Prisma Real' : umbraUnlock ? 'Desbloquear Umbra' : 'Desbloquear naves secretas';
     if (copy) copy.textContent = prismaUnlock
       ? 'Digite o código para liberar a Prisma Real neste aparelho.'
-      : umbraUnlock ? 'Digite a senha temporária para liberar esta nave secreta em desenvolvimento. A Umbra ainda não conta no Top 10.'
+      : umbraUnlock ? 'Digite a senha temporária para liberar esta nave secreta.'
         : 'Digite o código temporário para liberar as naves secretas neste aparelho.';
     if (ui.secretUnlockInput) ui.secretUnlockInput.inputMode = prismaUnlock || umbraUnlock ? 'text' : 'numeric';
     if (ui.secretUnlockDialog?.showModal) {
@@ -1194,7 +1253,7 @@
     ui.secretUnlockInput.value = '';
     ui.secretUnlockError.hidden = true;
     ui.secretUnlockDialog.close();
-    ui.status.textContent = shipId === 'prisma' ? 'Prisma Real liberada neste aparelho.' : shipId === 'megumi' ? 'Umbra liberada neste aparelho. Nave em desenvolvimento e fora do Top 10.' : 'Naves secretas liberadas neste aparelho.';
+    ui.status.textContent = shipId === 'prisma' ? 'Prisma Real liberada neste aparelho.' : shipId === 'megumi' ? 'Umbra liberada neste aparelho.' : 'Naves secretas liberadas neste aparelho.';
   }
   function isSecretShipPasscodeValid(shipId, entered) {
     const value = String(entered || '').trim();
@@ -1226,14 +1285,13 @@
       else ui.shipDetailsDialog.setAttribute('open', '');
       return;
     }
-    ui.shipDetailsKicker.textContent = skin.id === 'megumi' ? 'NAVE SECRETA · EM DESENVOLVIMENTO · FORA DO TOP 10' : skin.secret ? 'NAVE SECRETA · DOSSIÊ DE HABILIDADES' : 'DOSSIÊ DE HABILIDADES';
+    ui.shipDetailsKicker.textContent = skin.secret ? 'NAVE SECRETA · DOSSIÊ DE HABILIDADES' : 'DOSSIÊ DE HABILIDADES';
     ui.shipDetailsTitle.textContent = skin.name;
-    ui.shipDetailsSummary.textContent = (skin.id === 'megumi' ? 'EM DESENVOLVIMENTO · NÃO CONTA NO TOP 10 · ' : '') + 'Habilidade E: ' + skin.ability + ' · Habilidade Q: ' + secondaryAbilityNames[skin.id];
+    ui.shipDetailsSummary.textContent = 'Habilidade E: ' + skin.ability + ' · Habilidade Q: ' + secondaryAbilityNames[skin.id];
     ui.shipDetailsList.replaceChildren();
     for (const [label, abilityName, copy] of [
       ['HABILIDADE E', skin.ability, shipAbilityDetails[skin.id].e],
-      ['HABILIDADE Q', secondaryAbilityNames[skin.id], shipAbilityDetails[skin.id].q],
-      ...(skin.id === 'megumi' ? [['RANKING', 'Fora do Top 10', 'A Umbra está em desenvolvimento. As missões com ela continuam salvas localmente, mas não são enviadas ao ranking público.']] : [])
+      ['HABILIDADE Q', secondaryAbilityNames[skin.id], shipAbilityDetails[skin.id].q]
     ]) {
       const detail = document.createElement('section'); detail.className = 'starfall-rank-detail-card starfall-ship-detail-card';
       const kicker = document.createElement('small'); kicker.className = 'starfall-ship-detail-key'; kicker.textContent = label;
@@ -1262,12 +1320,15 @@
       select.setAttribute('aria-label', concealed ? 'Nave secreta indisponível' : unlocked ? (skin.id === state.selectedSkin ? 'Nave equipada: ' : 'Equipar nave ') + skin.name : skin.secret ? 'Abrir desbloqueio da nave secreta ' + skin.name : skin.name + ' · desbloqueia na onda ' + skin.unlockWave);
       select.disabled = !unlocked && (!skin.secret || (skin.ownerOnly && skin.id !== 'prisma'));
       const icon = document.createElement('span');
-      icon.className = 'starfall-skin-icon' + (concealed ? ' starfall-prism-icon is-concealed' : skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'dino' ? ' starfall-dino-icon starfall-dino-image-wrap' : skin.shape === 'prism' ? ' starfall-prism-icon' : skin.shape === 'training' ? ' starfall-training-icon' : skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-umbra-icon' : '');
+      const usesHangarHull = ['classic','training','shield','ring','wing','blade'].includes(skin.shape);
+      icon.className = 'starfall-skin-icon' + (concealed ? ' starfall-prism-icon is-concealed' : skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'dino' ? ' starfall-dino-icon starfall-dino-image-wrap' : skin.shape === 'prism' ? ' starfall-prism-icon' : skin.shape === 'training' ? ' starfall-training-icon' : skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-umbra-icon' : skin.shape === 'reflector' ? ' starfall-redshift-icon' : '') + (usesHangarHull ? ' starfall-hangar-hull-icon' : '');
       icon.setAttribute('aria-hidden', 'true');
       if (concealed) icon.textContent = '?';
       else if (skin.shape === 'dino') { const image = document.createElement('img'); image.src = 'saurion-raptor-skill.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'megumi') { const image = document.createElement('img'); image.src = 'umbra-ship.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'mahoraga') icon.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 22L31 26L38 30L34 35L30 33L29 40L26 39L24 47L22 39L19 40L18 33L14 35L10 30L17 26Z" fill="#c9d0cf" stroke="#39434c" stroke-width="1.8" stroke-linejoin="round"/><circle cx="24" cy="12" r="9.5" fill="#29333d" stroke="#e4c477" stroke-width="1.8"/><circle cx="24" cy="12" r="6.2" fill="none" stroke="#eee7d8" stroke-width="1"/><path d="M24 4V20M16 12H32M18.4 6.4L29.6 17.6M29.6 6.4L18.4 17.6" fill="none" stroke="#f2ebdc" stroke-width="1.3" stroke-linecap="round"/><g fill="#e4c477" stroke="#f7efdc" stroke-width=".7"><circle cx="24" cy="1.5" r="1.7"/><circle cx="31.4" cy="4.6" r="1.7"/><circle cx="34.5" cy="12" r="1.7"/><circle cx="31.4" cy="19.4" r="1.7"/><circle cx="24" cy="22.5" r="1.7"/><circle cx="16.6" cy="19.4" r="1.7"/><circle cx="13.5" cy="12" r="1.7"/><circle cx="16.6" cy="4.6" r="1.7"/></g></svg>';
+      else if (skin.shape === 'reflector') icon.innerHTML = bastiaoShipSvg(skin.color,skin.accent);
+      else if (usesHangarHull) icon.innerHTML = hangarShipSvg(skin);
       else if (skin.shape !== 'eclipse') icon.textContent = skin.shape === 'reflector' ? '◈' : skin.shape === 'prism' ? '◇' : skin.shape === 'training' ? '⬢' : skin.shape === 'mahoraga' ? '☸' : skin.shape === 'megumi' ? '影' : '✦';
       const name = document.createElement('strong'); name.textContent = concealed ? 'NAVE DESCONHECIDA' : skin.name;
       const primary = document.createElement('span'); primary.className = 'starfall-skin-skill' + (skin.noAbilities ? ' starfall-skin-training-note' : '');
@@ -1277,7 +1338,7 @@
       if (secondary) { secondary.className = 'starfall-skin-skill'; secondary.innerHTML = '<kbd>Q</kbd><span>' + (concealed ? 'SINAL SELADO' : secondaryAbilityNames[skin.id]) + '</span>'; }
       const status = document.createElement('small');
       status.className = 'starfall-skin-status';
-      status.textContent = concealed ? 'ACESSO RESTRITO' : unlocked ? skin.id === state.selectedSkin ? ['prisma','megumi'].includes(skin.id) ? 'EQUIPADA · FORA DO TOP 10' : 'EQUIPADA' : skin.id === 'megumi' ? 'EM TESTE · FORA DO TOP 10' : 'EQUIPAR' : skin.secret ? skin.id === 'megumi' ? 'SECRETA · EM TESTE · LIBERAR' : 'SECRETA · LIBERAR' : 'DESBLOQUEIA NA ONDA ' + skin.unlockWave;
+      status.textContent = concealed ? 'ACESSO RESTRITO' : unlocked ? skin.id === state.selectedSkin ? skin.id === 'prisma' ? 'EQUIPADA · FORA DO TOP 10' : 'EQUIPADA' : 'EQUIPAR' : skin.secret ? 'SECRETA · LIBERAR' : 'DESBLOQUEIA NA ONDA ' + skin.unlockWave;
       select.append(icon, name, primary);
       if (secondary) select.append(secondary);
       select.append(status);
@@ -1293,21 +1354,19 @@
         persistAccountShipProgress();
         ui.copy.textContent = skin.id === 'prisma'
           ? 'Prisma Real equipada: nave especial de teste. As missões com ela não são enviadas ao Top 10; seus recordes continuam salvos neste aparelho.'
-          : skin.id === 'megumi' ? 'Umbra equipada: nave secreta em desenvolvimento. As missões não contam no Top 10; seu recorde continua salvo neste aparelho.'
+          : skin.id === 'megumi' ? 'Umbra equipada: nave secreta elegível para o ranking do CV STARFALL.'
           : skin.noAbilities ? 'Ferrum equipada: nave de treino sem habilidades E/Q. Move-se um pouco mais devagar, recebe metade do dano e continua elegível para o ranking.'
             : 'Cada nave tem habilidades especiais. Use E e Q para ativá-las; abra Naves e Habilidades e selecione Ver detalhes para conhecer cada poder.';
         closeShips();
-        if (['prisma','megumi'].includes(skin.id) && ui.prismRankNotice) {
+        if (skin.id === 'prisma' && ui.prismRankNotice) {
           const kicker = ui.prismRankNotice.querySelector('.starfall-kicker');
           const icon = ui.prismRankNotice.querySelector('.starfall-prism-rank-notice-icon');
           const heading = ui.prismRankNotice.querySelector('#prism-rank-notice-title');
           const copy = ui.prismRankNotice.querySelector('#prism-rank-notice-copy');
-          if (kicker) kicker.textContent = skin.id === 'megumi' ? 'UMBRA · NAVE SECRETA EM TESTE' : 'PRISMA REAL · NAVE ESPECIAL';
-          if (icon) icon.textContent = skin.id === 'megumi' ? '影' : '◇';
+          if (kicker) kicker.textContent = 'PRISMA REAL · NAVE ESPECIAL';
+          if (icon) icon.textContent = '◇';
           if (heading) heading.textContent = 'Esta nave não conta no Top 10';
-          if (copy) copy.textContent = skin.id === 'megumi'
-            ? 'A Umbra ainda está em desenvolvimento. As missões com ela não são enviadas ao placar público; seus recordes continuam salvos localmente neste aparelho.'
-            : 'Missões jogadas com a Prisma Real não são enviadas ao placar público. Seu resultado continua salvo localmente neste aparelho.';
+          if (copy) copy.textContent = 'Missões jogadas com a Prisma Real não são enviadas ao placar público. Seu resultado continua salvo localmente neste aparelho.';
           ui.prismRankNotice.hidden = false;
           syncAudioVisibility();
           ui.prismRankNotice.querySelector('[data-close-prism-rank-notice]')?.focus();
@@ -1353,7 +1412,7 @@
   function resetGame() {
     if (megumiCutsceneTimer) window.clearTimeout(megumiCutsceneTimer);
     megumiCutsceneTimer = 0;
-    state.megumiTechnique = rollMegumiTechnique(''); state.megumiSummonCooldown = 0; state.megumiTransformed = false; state.megumiSummonPhase = 'idle'; state.megumiTransformSource = ''; state.megumiCloakTime = 0; state.megumiRabbits = [];
+    state.megumiTechnique = rollMegumiTechnique(''); state.megumiSummonCooldown = 0; state.megumiTransformed = false; state.megumiFormWavesRemaining = 0; state.megumiSummonPhase = 'idle'; state.megumiTransformSource = ''; state.megumiCloakTime = 0; state.megumiRabbits = [];
     ui.stage?.classList.remove('starfall-megumi-shadow-veil');
     if (ui.megumiFormTimer) ui.megumiFormTimer.hidden = true;
     if (ui.pause) ui.pause.disabled = false;
@@ -1398,6 +1457,8 @@
     state.score = Math.max(0, Number(checkpoint.score) || 0);
     state.elapsed = Math.max(0, Number(checkpoint.elapsed) || 0);
     state.megumiTransformed = checkpoint.megumiTransformed === true && state.selectedSkin === 'megumi';
+    state.megumiFormWavesRemaining = state.megumiTransformed ? clamp(Math.floor(Number(checkpoint.megumiFormWavesRemaining) || mahoragaFormWaveLimit), 1, mahoragaFormWaveLimit) : 0;
+    state.megumiSummonCooldown = Math.max(0, Number(checkpoint.megumiSummonCooldown) || 0);
     state.megumiTransformSource = state.megumiTransformed ? 'megumi' : '';
     state.megumiSummonPhase = state.megumiTransformed ? 'active' : 'idle';
     if (typeof checkpoint.lastBossType === 'string') state.lastBossType = checkpoint.lastBossType;
@@ -1437,7 +1498,7 @@
     const savedCycleStart = Math.max(1, Math.floor(Number(checkpoint.mahoraga?.cycleStartWave) || activeCycleStart));
     if (savedCycleStart !== activeCycleStart) resetMahoragaAdaptationCycle();
     state.mahoragaCycleStartWave = activeCycleStart;
-    if (ui.megumiFormTimer) { ui.megumiFormTimer.hidden = !state.megumiTransformed; ui.megumiFormTimer.textContent = 'MAHORAGA · G PARA VOLTAR'; }
+    updateMahoragaFormControls();
     saveBestWave();
     renderSkinPicker(); updateEquippedShip(); updateHud();
   }
@@ -1517,7 +1578,7 @@
   }
   function finishGame() {
     if (state.mode === 'gameover') return;
-    state.megumiTransformed = false; state.megumiTransformSource = ''; state.megumiSummonPhase = 'idle'; state.megumiCloakTime = 0; state.megumiRabbits = []; state.mahoragaAdaptationVisualTime = 0;
+    state.megumiTransformed = false; state.megumiFormWavesRemaining = 0; state.megumiTransformSource = ''; state.megumiSummonPhase = 'idle'; state.megumiCloakTime = 0; state.megumiRabbits = []; state.mahoragaAdaptationVisualTime = 0;
     ui.stage?.classList.remove('starfall-megumi-shadow-veil');
     if (ui.megumiFormTimer) ui.megumiFormTimer.hidden = true;
     if (ui.megumiCutscene) { ui.megumiCutscene.hidden = true; ui.megumiCutscene.setAttribute('aria-hidden', 'true'); }
@@ -1560,10 +1621,8 @@
       updateDailyChallengeInfo();
       if (ui.rankStatus) ui.rankStatus.textContent = result.isRecord ? 'Novo recorde diário local!' : 'Desafio guardado neste dispositivo';
       showDailySummary(run, result);
-    } else if (run.ship_id === 'prisma' || run.ship_id === 'megumi') {
-      if (ui.rankStatus) ui.rankStatus.textContent = run.ship_id === 'megumi'
-        ? 'Umbra em desenvolvimento: esta missão não conta no Top 10. Seu recorde local foi guardado.'
-        : 'Missão com a Prisma Real: não conta para o placar. Seu recorde local foi guardado.';
+    } else if (run.ship_id === 'prisma') {
+      if (ui.rankStatus) ui.rankStatus.textContent = 'Missão com a Prisma Real: não conta para o placar. Seu recorde local foi guardado.';
     } else submitRun(run).then(refreshLeaderboard);
     tone(newRecord ? 520 : 170, .3, newRecord ? 'triangle' : 'sawtooth', .05);
     if (dailyRun && state.skinBeforeDaily) {
@@ -1660,6 +1719,11 @@
     saveNicknameCompletedWave(profileNickname(), completedWave);
     setMode('upgrade');
     state.wave += 1;
+    if (state.megumiTransformed) {
+      state.megumiFormWavesRemaining = Math.max(0, state.megumiFormWavesRemaining - 1);
+      if (state.megumiFormWavesRemaining === 0) deactivateMahoragaForm({ expired:true });
+      else updateMahoragaFormControls();
+    }
     updateMahoragaAdaptationForWave();
     if (Math.floor((state.wave - 1) / 15) !== Math.floor((state.wave - 2) / 15)) toast('NOVO PLANETA: ' + currentZone().name.toUpperCase());
     updateHud();
@@ -2698,7 +2762,7 @@
       state.prismDispatchSkinId = '';
       if (slot === 'q') state.abilityCooldown = previousECooldown;
       if (slot === 'e') state.prismQCooldown = previousQCooldown;
-      if (!hasDeveloperPerks() && !isHorizonReturn) setPrismSlotCooldown(slot, shipId === 'mahoraga' ? key === 'q' ? mahoragaSlashCooldownDuration() : 14 : shipId === 'megumi' && key === 'q' ? 36 : prismCooldownDuration());
+      if (!hasDeveloperPerks() && !isHorizonReturn) setPrismSlotCooldown(slot, shipId === 'mahoraga' ? key === 'q' ? mahoragaSlashCooldownDuration() : 14 : shipId === 'megumi' && key === 'q' ? 45 : prismCooldownDuration());
       if (!isHorizonReturn) prismCopiedEffect(shipId);
     }
     state.prismDispatchSlot = '';
@@ -2718,26 +2782,28 @@
     else if (currentSkin().id === 'saurion') activateDinoStampede();
     else if (currentSkin().id === 'tempest') activateTempestTide();
   }
-  function deactivateMahoragaForm() {
-    if (!state.megumiTransformed || !['playing','paused'].includes(state.mode)) return false;
+  function deactivateMahoragaForm({ expired = false } = {}) {
+    if (!state.megumiTransformed || !['playing','paused','upgrade'].includes(state.mode)) return false;
+    const originalShip = skins.find((skin) => skin.id === (state.megumiTransformSource === 'prisma' ? 'prisma' : 'megumi')) || skins[0];
     state.megumiTransformed = false;
+    state.megumiFormWavesRemaining = 0;
+    state.megumiSummonCooldown = mahoragaFormCooldownDuration;
     state.megumiTransformSource = '';
     state.megumiSummonPhase = 'idle';
     state.mahoragaParryWindow = 0;
     state.mahoragaParryCooldown = 0;
     state.mahoragaShieldHitCooldown = 0;
     state.mahoragaAdaptationVisualTime = 0;
-    if (ui.megumiFormTimer) ui.megumiFormTimer.hidden = true;
-    const umbra = skins.find((skin) => skin.id === 'megumi') || skins[0];
-    state.player.color = umbra.color; state.player.accent = umbra.accent; state.player.shape = umbra.shape;
-    toast('FORMA DO GUARDIÃO ENCERRADA · UMBRA RESTAURADA');
+    state.player.color = originalShip.color; state.player.accent = originalShip.accent; state.player.shape = originalShip.shape;
+    toast(expired ? 'MAHORAGA RECUA · LIMITE DE 3 ONDAS · RECARGA 45s' : 'NAVE NORMAL RESTAURADA · RECARGA 45s');
     updateEquippedShip(); updateControlUI(); updateHud();
     return true;
   }
   function startMegumiSummon() {
-    if (state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (state.megumiSummonCooldown > 0 && !hasDeveloperPerks())) return;
+    if (state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || state.megumiSummonCooldown > 0) return;
     recordAchievementEvent('ship-ability', 'megumi');
-    state.megumiSummonCooldown = hasDeveloperPerks() ? 0 : 36;
+    state.megumiSummonCooldown = 0;
+    state.megumiFormWavesRemaining = 0;
     state.megumiSummonPhase = 'cinematic';
     state.megumiTransformSource = state.selectedSkin === 'prisma' ? 'prisma' : 'megumi';
     state.megumiTransformed = false;
@@ -2754,16 +2820,16 @@
       if (ui.megumiCutscene) { ui.megumiCutscene.hidden = true; ui.megumiCutscene.setAttribute('aria-hidden', 'true'); }
       state.megumiSummonPhase = 'active';
       state.megumiTransformed = true;
+      state.megumiFormWavesRemaining = mahoragaFormWaveLimit;
       state.mahoragaAdaptationVisualTime = 0;
       playMahoragaAdaptationSound();
       state.abilityCooldown = 0;
       state.mahoragaParryCooldown = 0; state.mahoragaParryWindow = 0; state.mahoragaShieldHitCooldown = 0; state.mahoragaSlashCooldown = 0;
       if (ui.pause) ui.pause.disabled = false;
       if (ui.stop) ui.stop.disabled = false;
-      if (ui.megumiFormTimer) { ui.megumiFormTimer.hidden = false; ui.megumiFormTimer.textContent = 'MAHORAGA · G PARA VOLTAR'; }
       burst(state.player.x, state.player.y, '#b99bdd', 38, 210);
       burst(state.player.x, state.player.y, '#f1ecff', 16, 150);
-      toast('GUARDIÃO INVOCADO · FORMA PERMANENTE · E ADAPTAÇÃO DIVINA · Q ESPADA DA EXTERMINAÇÃO');
+      toast('MAHORAGA DESPERTO · 3 ONDAS · G OU BOTÃO PARA VOLTAR');
       tone(440, .36, 'triangle', .055);
       updateAbilityButton(); updateEquippedShip(); updateControlUI(); updateHud();
       state.lastTime = performance.now();
@@ -2775,7 +2841,7 @@
     if (!hasDeveloperPerks() && state.abilityCooldown > 0) return;
     const technique = megumiTechnique();
     recordAchievementEvent('ship-ability', 'megumi');
-    state.abilityCooldown = hasDeveloperPerks() ? 0 : 12;
+    state.abilityCooldown = hasDeveloperPerks() ? 0 : megumiTechniqueCooldownDuration();
     if (technique.id === 'rabbits') {
       const strengths = [2.6, 1.9, 1.45, 1.05, .72];
       state.megumiRabbits = Array.from({ length: 5 }, (_, index) => {
@@ -2847,36 +2913,32 @@
     state.mahoragaSlashCooldown = hasDeveloperPerks() ? 0 : mahoragaSlashCooldownDuration();
     const angle = state.player.angle ?? -Math.PI / 2;
     const directionX = Math.cos(angle); const directionY = Math.sin(angle);
-    const sideX = -directionY; const sideY = directionX;
-    const reach = Math.hypot(state.width, state.height) * 1.25;
-    burst(state.player.x + directionX * state.player.radius * 1.25, state.player.y + directionY * state.player.radius * 1.25, '#fff5d9', 15, 105);
-    const targets = [];
-    for (const enemy of state.enemies) {
-      if (enemy.dead) continue;
-      const dx = enemy.x - state.player.x; const dy = enemy.y - state.player.y;
-      const along = dx * directionX + dy * directionY;
-      const across = Math.abs(dx * sideX + dy * sideY);
-      if (along < 0 || along > reach || across > Math.max(32, enemy.r * .9)) continue;
-      targets.push({ enemy, along });
-    }
-    targets.sort((a, b) => a.along - b.along);
-    let marked = 0;
-    targets.forEach(({ enemy }, index) => {
-      if (enemy.dead) return;
-      damageEnemy(enemy, (index === 0 ? 46 : 18) * Math.max(1, state.abilityPower), true);
-      if (!enemy.dead) { enemy.mahoragaMarkBonus = .1; enemy.mahoragaMarkTime = 6; marked++; }
-      burst(enemy.x, enemy.y, index === 0 ? '#fff8e8' : '#e4c477', enemy.kind === 'boss' ? 16 : 9, enemy.kind === 'boss' ? 175 : 115);
+    const edgeDistances = [
+      directionX > .0001 ? (state.width - state.player.x) / directionX : directionX < -.0001 ? state.player.x / -directionX : Infinity,
+      directionY > .0001 ? (state.height - state.player.y) / directionY : directionY < -.0001 ? state.player.y / -directionY : Infinity
+    ];
+    const originOffset = state.player.radius * 1.05;
+    const maxTravel = Math.max(mobileSize(70), Math.min(...edgeDistances) - originOffset + mobileSize(26));
+    const waveWidth = mobileSize(40);
+    state.effects.push({
+      type:'mahoraga-world-wave', x:state.player.x, y:state.player.y, angle, originOffset, curveDepth:mobileSize(76),
+      travel:0, maxTravel, elapsed:0, travelDuration:.54, waveWidth,
+      halfSpan:Math.hypot(state.width, state.height) * 1.1,
+      life:.88, total:.88, hitEnemies:new Set(), maxTargets:8, targetsHit:0, markedTargets:0, destroyedBullets:0, completed:false
     });
-    state.effects.push({ type:'mahoraga-world-slash', x:state.player.x, y:state.player.y, angle, reach, originOffset:state.player.radius * .72, life:.62, total:.62 });
-    burst(state.player.x, state.player.y, '#f1d38a', 45, 290);
-    burst(state.player.x, state.player.y, '#f5f0e5', 22, 210);
-    toast(marked ? 'ESPADA DA EXTERMINAÇÃO · ' + marked + ' ALVO' + (marked === 1 ? ' MARCADO' : 'S MARCADOS') + ' · +10% NO PRÓXIMO GOLPE' : 'ESPADA DA EXTERMINAÇÃO · CORTE MUNDIAL');
+    burst(state.player.x + directionX * originOffset, state.player.y + directionY * originOffset, '#fff5d9', 14, 120);
+    burst(state.player.x, state.player.y, '#f1d38a', 28, 210);
+    toast('ESPADA DA EXTERMINAÇÃO · TALHO MUNDIAL A CAMINHO');
     tone(110, .48, 'sawtooth', .07);
     updateAbilityButton();
   }
   function mahoragaSlashCooldownDuration() {
     const prismBonus = state.selectedSkin === 'prisma' ? state.prismCooldownBonus : state.mahoragaSlashCooldownBonus;
-    return Math.max(5, 9 - prismBonus);
+    return Math.max(8, 12 - prismBonus);
+  }
+  function megumiTechniqueCooldownDuration(additionalCooldownUpgrades = 0) {
+    const cooldownUpgrades = Math.min(5, upgradeLevel('cooldown') + additionalCooldownUpgrades);
+    return Math.max(18, 25 - cooldownUpgrades * 1.4);
   }
   function auroraLinkDuration() { return Math.min(9, 7 + state.auroraLinkDurationBonus); }
   function auroraLinkMaxTargets() { return Math.min(10, 8 + state.auroraLinkTargetBonus); }
@@ -3862,6 +3924,56 @@
           burst(enemy.x, enemy.y, '#ffc86e', 7, 82);
           burst(enemy.x, enemy.y, '#fff0b4', 4, 54);
         }
+      } else if (effect.type === 'mahoraga-world-wave' && !effect.completed) {
+        const previousTravel = effect.travel;
+        effect.elapsed += dt;
+        effect.travel = effect.maxTravel * clamp(effect.elapsed / effect.travelDuration, 0, 1);
+        if (effect.travel > previousTravel) {
+          const directionX = Math.cos(effect.angle); const directionY = Math.sin(effect.angle);
+          const sideX = -directionY; const sideY = directionX;
+          const bandStart = Math.max(0, previousTravel - effect.waveWidth * .5);
+          const bandEnd = effect.travel + effect.waveWidth * .5;
+          const targets = [];
+          for (const enemy of state.enemies) {
+            if (enemy.dead || effect.hitEnemies.has(enemy)) continue;
+            const dx = enemy.x - effect.x; const dy = enemy.y - effect.y;
+            const along = dx * directionX + dy * directionY;
+            const signedAcross = dx * sideX + dy * sideY;
+            const across = Math.abs(signedAcross);
+            const bow = Math.cos(clamp(signedAcross / effect.halfSpan, -1, 1) * Math.PI * .5) * effect.curveDepth;
+            const relativeAlong = along - effect.originOffset - bow;
+            if (relativeAlong + enemy.r < bandStart || relativeAlong - enemy.r > bandEnd || across > effect.halfSpan + enemy.r) continue;
+            targets.push({ enemy, along });
+          }
+          targets.sort((a, b) => a.along - b.along);
+          for (const { enemy } of targets) {
+            if (effect.targetsHit >= effect.maxTargets) break;
+            effect.hitEnemies.add(enemy);
+            const rawDamage = effect.targetsHit === 0 ? 20 : 10;
+            const bossScale = enemy.kind === 'boss' ? .72 : 1;
+            damageEnemy(enemy, rawDamage * Math.max(1, state.abilityPower) * bossScale, true);
+            effect.targetsHit++;
+            if (!enemy.dead) { enemy.mahoragaMarkBonus = .1; enemy.mahoragaMarkTime = 6; effect.markedTargets++; }
+            burst(enemy.x, enemy.y, effect.targetsHit === 1 ? '#fff8e8' : '#e4c477', enemy.kind === 'boss' ? 11 : 7, enemy.kind === 'boss' ? 145 : 92);
+          }
+          for (const bullet of state.enemyBullets) {
+            if (bullet.dead || bullet.reflected) continue;
+            const dx = bullet.x - effect.x; const dy = bullet.y - effect.y;
+            const along = dx * directionX + dy * directionY;
+            const signedAcross = dx * sideX + dy * sideY;
+            const across = Math.abs(signedAcross);
+            const bow = Math.cos(clamp(signedAcross / effect.halfSpan, -1, 1) * Math.PI * .5) * effect.curveDepth;
+            const relativeAlong = along - effect.originOffset - bow;
+            if (relativeAlong + bullet.r < bandStart || relativeAlong - bullet.r > bandEnd || across > effect.halfSpan + bullet.r) continue;
+            bullet.dead = true;
+            effect.destroyedBullets++;
+            if (effect.destroyedBullets <= 12) burst(bullet.x, bullet.y, '#e8d19c', 3, 45);
+          }
+        }
+        if (effect.travel >= effect.maxTravel && !effect.completed) {
+          effect.completed = true;
+          if (effect.targetsHit || effect.destroyedBullets) toast('CORTE MUNDIAL · ' + effect.targetsHit + ' ALVOS · ' + effect.destroyedBullets + ' TIROS DESTRUÍDOS');
+        }
       } else if (effect.type === 'dino-raptor') {
         if (!effect.target || effect.target.dead || effect.hit.includes(effect.target)) effect.target = nearestDinoTarget(effect.x, effect.y, false, effect.hit);
         if (effect.target) {
@@ -4191,10 +4303,9 @@
       return;
     }
     if (ship.shape === 'megumi') {
-      const pulse = .78 + Math.sin(performance.now() / 82) * .22;
       if (umbraShipSprite.complete && umbraShipSprite.naturalWidth) {
         const spriteWidth = size * 3.6, spriteHeight = spriteWidth * umbraShipSprite.naturalHeight / umbraShipSprite.naturalWidth;
-        ctx.globalAlpha = alpha * pulse; ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha; ctx.globalCompositeOperation = 'screen';
         ctx.shadowColor = ship.accent; ctx.shadowBlur = 0;
         ctx.drawImage(umbraShipSprite, -spriteWidth / 2, -spriteHeight / 2 - size * .21, spriteWidth, spriteHeight);
         ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
@@ -4505,44 +4616,31 @@
         const dx = effect.x2 - effect.x1, dy = effect.y2 - effect.y1, length = Math.hypot(dx, dy) || 1, sideX = -dy / length, sideY = dx / length;
         ctx.save(); ctx.globalAlpha = alpha; ctx.lineCap = 'round'; ctx.strokeStyle = '#a8eaff'; ctx.shadowColor = '#6bc7ff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18); ctx.lineWidth = mobileSize(4);
         ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); for (let point = 1; point < 10; point++) { const progress = point / 10, offset = Math.sin(point * 17.31 + effect.seed * 31) * mobileSize(17); ctx.lineTo(effect.x1 + dx * progress + sideX * offset, effect.y1 + dy * progress + sideY * offset); } ctx.lineTo(effect.x2, effect.y2); ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.4); ctx.stroke(); ctx.restore();
-      } else if (effect.type === 'mahoraga-world-slash') {
-        const progress = 1 - alpha;
+      } else if (effect.type === 'mahoraga-world-wave') {
         const dx = Math.cos(effect.angle); const dy = Math.sin(effect.angle);
         const sideX = -dy; const sideY = dx;
-        const reach = effect.reach || Math.hypot(state.width, state.height);
-        const start = effect.originOffset || mobileSize(20);
-        const length = Math.min(reach * .9, Math.hypot(state.width, state.height) * 1.05);
-        const reveal = clamp(progress / .12, 0, 1);
-        const slashAlpha = (1 - Math.pow(clamp(progress, 0, 1), 1.45)) * .98;
-        const arcDepth = mobileSize(Math.min(76, Math.max(32, state.width * .055)));
-        ctx.save(); ctx.globalAlpha = slashAlpha; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        for (const layer of [-2, -1, 0, 1, 2]) {
+        const fade = clamp(effect.life / effect.total, 0, 1);
+        const front = effect.originOffset + effect.travel;
+        const span = effect.halfSpan;
+        const curveDepth = effect.curveDepth;
+        ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        for (const trail of [mobileSize(24), mobileSize(12), 0]) {
+          const isCore = trail === 0;
           ctx.beginPath();
-          for (let point = 0; point <= 24; point++) {
-            const t = point / 24;
-            const along = start + t * Math.max(8, length - start) * reveal;
-            const curve = Math.sin(Math.PI * t) * arcDepth;
-            const fracture = Math.sin(t * Math.PI * 5 + layer * 1.4) * mobileSize(layer === 0 ? 1.6 : 3.2) * Math.sin(Math.PI * t);
-            const spread = layer === 0 ? 0 : layer * mobileSize(4.5);
-            const cx = effect.x + dx * along + sideX * (curve + fracture + spread);
-            const cy = effect.y + dy * along + sideY * (curve + fracture + spread);
-            if (point === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+          for (let point = 0; point <= 28; point++) {
+            const t = point / 28;
+            const across = (t * 2 - 1) * span;
+            const bow = Math.cos((t * 2 - 1) * Math.PI * .5) * curveDepth;
+            const fracture = Math.sin(t * Math.PI * 8 + effect.elapsed * 13) * mobileSize(2) * Math.sin(Math.PI * t);
+            const along = front - trail + bow + fracture;
+            const x = effect.x + dx * along + sideX * across;
+            const y = effect.y + dy * along + sideY * across;
+            if (point === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
           }
-          ctx.strokeStyle = layer === 0 ? '#fffdf4' : Math.abs(layer) === 1 ? '#e4c477' : '#d8d5c8';
-          ctx.globalAlpha = slashAlpha * (layer === 0 ? 1 : Math.abs(layer) === 1 ? .78 : .46);
-          ctx.lineWidth = mobileSize(layer === 0 ? 5 + (1 - progress) * 5 : Math.abs(layer) === 1 ? 2.2 : 1.2);
-          if (state.performanceMode !== 'light') { ctx.shadowColor = layer === 0 ? '#fff4dd' : '#e4c477'; ctx.shadowBlur = mobileSize(layer === 0 ? 25 : 12); }
-          ctx.stroke();
-        }
-        ctx.globalAlpha = slashAlpha * .72; ctx.shadowBlur = 0; ctx.strokeStyle = '#fff8e8'; ctx.lineWidth = mobileSize(1.4);
-        for (let fracture = 0; fracture < 4; fracture++) {
-          const t = .2 + fracture * .17;
-          const along = start + t * Math.max(8, length - start) * reveal;
-          const center = Math.sin(Math.PI * t) * arcDepth;
-          const span = mobileSize(9 + (fracture % 2) * 5);
-          ctx.beginPath();
-          ctx.moveTo(effect.x + dx * along + sideX * (center - span), effect.y + dy * along + sideY * (center - span));
-          ctx.lineTo(effect.x + dx * (along + mobileSize(9)) + sideX * (center + span), effect.y + dy * (along + mobileSize(9)) + sideY * (center + span));
+          ctx.strokeStyle = isCore ? '#fffdf4' : trail === mobileSize(12) ? '#e4c477' : '#d8d5c8';
+          ctx.globalAlpha = fade * (isCore ? 1 : trail === mobileSize(12) ? .72 : .35);
+          ctx.lineWidth = mobileSize(isCore ? 5.5 : trail === mobileSize(12) ? 3 : 1.6);
+          if (state.performanceMode !== 'light') { ctx.shadowColor = isCore ? '#fff5df' : '#e4c477'; ctx.shadowBlur = mobileSize(isCore ? 24 : 12); }
           ctx.stroke();
         }
         ctx.restore();
@@ -4967,7 +5065,9 @@
       const idleAlpha = state.mahoragaWheelReady ? .54 : state.mahoragaParryWindow > 0 ? .43 : .24;
       drawMahoragaWheel(state.player.x, state.player.y, wheelRadius, timestamp / rotationSpeed, idleAlpha * wheelFade * wheelPulse, state.mahoragaWheelSegments, state.mahoragaWheelReady);
     }
-    if (!eclipseActive && !megumiShadowCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, currentSkin(), state.player.angle);
+    const playerSkin = currentSkin();
+    const keepMegumiVisible = playerSkin.id === 'megumi';
+    if (!eclipseActive && !megumiShadowCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || keepMegumiVisible || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, playerSkin, state.player.angle);
     if (currentSkin().id === 'mahoraga' && state.mahoragaParryWindow > 0) {
       const windowRatio = clamp(state.mahoragaParryWindow / 3, 0, 1);
       ctx.save(); ctx.globalAlpha = .46 + Math.sin(timestamp / 130) * .12; ctx.strokeStyle = '#f7e5bb'; ctx.lineWidth = mobileSize(2.4);
@@ -5103,7 +5203,7 @@
   }
   function renderAuthorizedPilots() {
     if (!ui.authorizedPilots) return;
-    const visible = isDeveloperProfile();
+    const visible = isDeveloperProfile() || profileNickname() === 'lista';
     ui.authorizedPilots.hidden = !visible;
     if (!visible || !ui.authorizedPilotList) return;
     const names = window.CV_STARFALL_SUPABASE?.rosterNicknames || [];
@@ -5372,10 +5472,8 @@
     }
   }
   async function submitRun(run) {
-    if (run?.ship_id === 'prisma' || run?.ship_id === 'megumi') {
-      if (ui.rankStatus) ui.rankStatus.textContent = run.ship_id === 'megumi'
-        ? 'Umbra em desenvolvimento: esta missão não conta no Top 10.'
-        : 'Missão com a Prisma Real: não conta para o placar.';
+    if (run?.ship_id === 'prisma') {
+      if (ui.rankStatus) ui.rankStatus.textContent = 'Missão com a Prisma Real: não conta para o placar.';
       return;
     }
     const config = supabaseConfig();
@@ -5430,7 +5528,7 @@
     const isPrisma = currentSkin().id === 'prisma';
     const isTraining = currentSkin().id === 'training';
     const isMegumi = currentSkin().id === 'megumi';
-    const abilityInstruction = isTraining ? 'sem habilidades especiais · use as melhorias da missão' : isPrisma ? 'E e Q ativam poderes escolhidos · G abre o Arquivo de Ecos' : isMahoraga ? 'E reduz 65% do dano por 3s · adaptação persiste e cresce nas ondas 2 e 3, reinicia na 4 · Q Espada da Exterminação · G retorna à Umbra' : isMegumi ? 'E sorteia Coelhos, Sombras ou Nue · Q invoca o Guardião até o fim da missão' : isAurora ? 'E cria a Explosão Nova · Q encadeia feixes entre inimigos' : isAegis ? 'E absorve impactos · Q converte tiros interceptados em projéteis teleguiados' : isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral móvel' : isChronos ? 'E desacelera o tempo · Q repete os disparos com ecos temporais' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : isRedshift ? 'E reflete projéteis · Q ativa o Perímetro de Cerco' : isFlashblade ? 'E lança o Corte Flash · Q deixa rastros cortantes no trajeto' : isTempest ? 'E guia o Poço Negro suavemente pelo movimento · Q afasta inimigos próximos' : 'ativa a habilidade';
+    const abilityInstruction = isTraining ? 'sem habilidades especiais · use as melhorias da missão' : isPrisma ? 'E e Q ativam poderes escolhidos · G abre o Arquivo de Ecos' : isMahoraga ? 'E reduz 65% do dano por 3s · adaptação persiste e cresce nas ondas 2 e 3, reinicia na 4 · Q Corte Mundial limpa tiros · botão ou G volta ao normal' : isMegumi ? 'E sorteia Coelhos, Sombras ou Nue · recarga de 25s, cai a 18s com melhorias · Q invoca o Guardião por 3 ondas · recarga de 45s' : isAurora ? 'E cria a Explosão Nova · Q encadeia feixes entre inimigos' : isAegis ? 'E absorve impactos · Q converte tiros interceptados em projéteis teleguiados' : isEclipse ? 'E abre o Domínio · Q ativa a Isca Umbral móvel' : isChronos ? 'E desacelera o tempo · Q repete os disparos com ecos temporais' : isSaurion ? 'E libera o Rugido de Garras · Q com 3 cargas chama raptores que perseguem inimigos marcados' : isRedshift ? 'E reflete projéteis · Q ativa o Perímetro de Cerco' : isFlashblade ? 'E lança o Corte Flash · Q deixa rastros cortantes no trajeto' : isTempest ? 'E guia o Poço Negro suavemente pelo movimento · Q afasta inimigos próximos' : 'ativa a habilidade';
     if (ui.controlHint) ui.controlHint.textContent = state.controlMode === 'keys'
       ? hardwareInputDetected ? 'WASD ou setas movem · ' + abilityInstruction + ' · disparo automático.' : 'Disparo automático · controles configuráveis.'
       : state.controlMode === 'touch' ? 'Toque e arraste na arena para mover · ' + (isTraining ? 'nave sem habilidades especiais.' : isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest || isPrisma || isMahoraga || isMegumi ? 'botões das habilidades E e Q.' : 'use o botão da habilidade.')
@@ -5974,6 +6072,7 @@
   }
   bindAbilityControl(ui.ability, activateAbility);
   bindAbilityControl(ui.eclipseQ, activateSecondaryAbility);
+  ui.mahoragaReturn?.addEventListener('click', () => deactivateMahoragaForm());
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
     const editableTarget = event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]');

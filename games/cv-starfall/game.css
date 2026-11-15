@@ -48,6 +48,10 @@
 .starfall-controls { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.65rem; padding-top:.8rem; }
 .starfall-controls > p { flex-basis:100%; margin:0; color:var(--muted); font-size:.74rem; text-align:center; }
 .starfall-pause { min-height:2.75rem; }
+.starfall-mahoraga-return[hidden] { display:none !important; }
+.starfall-mahoraga-return:not([hidden]) { position:relative; display:grid; width:2.75rem; min-width:2.75rem; height:2.75rem; min-height:2.75rem; place-items:center; padding:0; border:1px solid rgba(228,196,119,.76); border-radius:50%; background:linear-gradient(145deg,rgba(85,71,46,.96),rgba(28,30,34,.98)); color:#f7e8c5; font-size:1.2rem; font-weight:950; line-height:1; box-shadow:0 0 16px rgba(228,196,119,.18),inset 0 0 12px rgba(255,246,218,.08); }
+.starfall-mahoraga-return:not([hidden])::after { content:"G"; position:absolute; top:-.26rem; right:-.22rem; display:grid; width:1rem; height:1rem; place-items:center; border:1px solid rgba(239,222,178,.88); border-radius:50%; background:#3a3528; color:#f4e8c9; font-size:.58rem; font-weight:950; }
+.starfall-mahoraga-return:not([hidden]):hover,.starfall-mahoraga-return:not([hidden]):focus-visible { border-color:#fff1ce; background:linear-gradient(145deg,rgba(130,104,58,.98),rgba(42,42,39,.99)); color:#fff8e7; box-shadow:0 0 22px rgba(228,196,119,.32); }
 .starfall-pause:disabled { opacity:.48; cursor:not-allowed; }
 .starfall-mobile-pad { display:none; }
 .starfall-fullscreen { min-height:2.75rem; }
@@ -140,6 +144,7 @@ body.has-fullscreen-fallback { overflow:hidden; }
 }
 .starfall-skin-icon { color:var(--skin-color,#9fd8ff); font-size:1.1rem; line-height:1; }
 .starfall-skin-icon.starfall-eclipse-sprite { display:block; width:2.7rem; height:2.7rem; background:url('eclipse-ship.png') center / contain no-repeat; }
+.starfall-redshift-ship-sprite { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 0 4px color-mix(in srgb,var(--skin-color,#d83a2e) 42%,transparent)); }
 .starfall-skin-card strong { font-size:.68rem; }
 .starfall-skin-card > span:last-child { color:#b9c8dc; font-size:.55rem; line-height:1.2; }
 .starfall-run-summary {
@@ -420,6 +425,7 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-achievement-progress { color:#91d8ff; font-size:.59rem; font-weight:900; letter-spacing:.04em; }
 .starfall-equipped-ship { display:flex; align-items:center; gap:.65rem; min-width:min(100%,18rem); padding:.55rem .85rem; border:1px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 42%,transparent); border-radius:.8rem; background:rgba(13,25,46,.82); text-align:left; }
 .starfall-equipped-icon { display:grid; width:2.25rem; height:2.25rem; flex:none; place-items:center; border:1px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 55%,transparent); border-radius:.7rem; color:var(--skin-color,#9fd8ff); font-size:1.35rem; text-shadow:0 0 14px currentColor; }
+.starfall-equipped-icon.starfall-redshift-icon { padding:.06rem; }
 .starfall-equipped-icon.starfall-eclipse-sprite { display:block; background:url('eclipse-ship.png') center / contain no-repeat; }
 .starfall-equipped-icon.starfall-dino-image-wrap,.starfall-skin-icon.starfall-dino-image-wrap { overflow:hidden; border-radius:.7rem; background:radial-gradient(circle,rgba(94,255,67,.2),rgba(8,40,29,.72)); }
 .starfall-dino-image-wrap img { display:block; width:100%; height:100%; object-fit:contain; transform:scale(1.05); }
@@ -475,10 +481,12 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
 .starfall-game-panel:fullscreen .starfall-ship-modal,.starfall-game-panel.is-fullscreen-fallback .starfall-ship-modal,.starfall-game-panel:fullscreen .starfall-prism-wheel,.starfall-game-panel.is-fullscreen-fallback .starfall-prism-wheel,.starfall-game-panel:fullscreen .starfall-prism-rank-notice,.starfall-game-panel.is-fullscreen-fallback .starfall-prism-rank-notice,.starfall-game-panel:fullscreen .starfall-checkpoint-modal,.starfall-game-panel.is-fullscreen-fallback .starfall-checkpoint-modal,.starfall-game-panel:fullscreen .starfall-settings-modal,.starfall-game-panel.is-fullscreen-fallback .starfall-settings-modal,.starfall-game-panel:fullscreen .starfall-achievements-modal,.starfall-game-panel.is-fullscreen-fallback .starfall-achievements-modal,.starfall-game-panel:fullscreen .starfall-daily-summary-modal,.starfall-game-panel.is-fullscreen-fallback .starfall-daily-summary-modal,.starfall-game-panel:fullscreen .starfall-mission-setup-modal,.starfall-game-panel.is-fullscreen-fallback .starfall-mission-setup-modal,.starfall-game-panel:fullscreen .starfall-exit-modal,.starfall-game-panel.is-fullscreen-fallback .starfall-exit-modal { z-index:8; }
 .starfall-game-panel:fullscreen .starfall-joystick,.starfall-game-panel.is-fullscreen-fallback .starfall-joystick { z-index:2; }
 @media(max-width:700px) {
+  body[data-cv-starfall-state="playing"] .starfall-mahoraga-return:not([hidden]),body[data-cv-starfall-state="paused"] .starfall-mahoraga-return:not([hidden]) { position:fixed; z-index:10001; left:max(.8rem,env(safe-area-inset-left)); bottom:max(.8rem,env(safe-area-inset-bottom)); width:3.8rem; min-width:3.8rem; height:3.8rem; min-height:3.8rem; border-radius:50%; background:linear-gradient(145deg,rgba(69,59,41,.97),rgba(19,22,27,.97)); box-shadow:0 5px 20px rgba(0,0,0,.36),0 0 15px rgba(228,196,119,.2); }
   .starfall-game-panel:fullscreen .starfall-hud,.starfall-game-panel.is-fullscreen-fallback .starfall-hud { top:.35rem; left:.35rem; max-width:calc(100% - 10.2rem); gap:.25rem .5rem; padding:.38rem .45rem; }
   .starfall-game-panel:fullscreen .starfall-hud span,.starfall-game-panel.is-fullscreen-fallback .starfall-hud span { font-size:.49rem; letter-spacing:.035em; }
   .starfall-game-panel:fullscreen .starfall-hud strong,.starfall-game-panel.is-fullscreen-fallback .starfall-hud strong { font-size:.68rem; }
   .starfall-game-panel:fullscreen .starfall-controls,.starfall-game-panel.is-fullscreen-fallback .starfall-controls { top:.35rem; right:.35rem; gap:.28rem; }
+  .starfall-game-panel:fullscreen .starfall-controls .starfall-mahoraga-return:not([hidden]),.starfall-game-panel.is-fullscreen-fallback .starfall-controls .starfall-mahoraga-return:not([hidden]) { position:static; min-height:2.3rem; width:2.3rem; min-width:2.3rem; height:2.3rem; padding:0; border-radius:50%; font-size:1rem; }
   .starfall-game-panel:fullscreen .starfall-damage-counter-editor,.starfall-game-panel.is-fullscreen-fallback .starfall-damage-counter-editor { top:6.25rem; }
   .starfall-game-panel:fullscreen .starfall-settings-button,.starfall-game-panel.is-fullscreen-fallback .starfall-settings-button,.starfall-game-panel:fullscreen .starfall-pause,.starfall-game-panel.is-fullscreen-fallback .starfall-pause,.starfall-game-panel:fullscreen .starfall-fullscreen,.starfall-game-panel.is-fullscreen-fallback .starfall-fullscreen,.starfall-game-panel:fullscreen .starfall-prism-select-button,.starfall-game-panel.is-fullscreen-fallback .starfall-prism-select-button { width:2.3rem; min-width:2.3rem; height:2.3rem; min-height:2.3rem; }
   .starfall-game-panel:fullscreen .starfall-stop-button,.starfall-game-panel.is-fullscreen-fallback .starfall-stop-button { bottom:max(.55rem,env(safe-area-inset-bottom)); left:max(.55rem,env(safe-area-inset-left)); width:2.3rem; min-width:2.3rem; height:2.3rem; min-height:2.3rem; }
@@ -665,6 +673,7 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-skin-select:hover:not(:disabled),.starfall-skin-select:focus-visible { background:rgba(255,255,255,.045); outline:2px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 65%,transparent); outline-offset:1px; }
 .starfall-skin-select:disabled { opacity:.66; cursor:not-allowed; }
 .starfall-skin-select .starfall-skin-icon { display:grid; width:2.45rem; height:2.45rem; grid-row:1 / span 4; place-items:center; color:var(--skin-color,#9fd8ff); font-size:1.5rem; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--skin-color,#9fd8ff) 40%,transparent)); }
+.starfall-skin-select .starfall-hangar-hull-icon .starfall-hangar-ship-sprite { display:block; width:100%; height:100%; overflow:visible; }
 .starfall-skin-select .starfall-training-icon { border:1px solid rgba(199,207,218,.46); border-radius:.7rem; background:linear-gradient(145deg,rgba(172,181,193,.2),rgba(19,24,31,.84)); color:#cbd1da; text-shadow:0 1px 4px #111; }
 .starfall-skin-select .starfall-eclipse-sprite { display:block; background-size:contain; }
 .starfall-skin-select .starfall-dino-icon { font-size:1.7rem; }
