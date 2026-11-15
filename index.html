@@ -197,13 +197,18 @@
       </div>
     </section>
 
-    <section class="content-section curated-section" id="recentes" aria-labelledby="titulo-recentes">
+    <section class="content-section" id="jogos" aria-labelledby="titulo-jogos">
       <div class="container">
         <div class="section-heading">
-          <h2 id="titulo-recentes">🆕 Adicionados recentemente</h2>
-          <p>Os jogos adicionados mais recentemente aparecem primeiro.</p>
+          <h2 id="titulo-jogos" data-catalog-title>🎮 Todos os jogos</h2>
+          <div class="catalog-summary">
+            <p data-results-count aria-live="polite">Carregando jogos...</p>
+            <button class="catalog-reset" type="button" data-clear-filters>🎮 Todos os jogos</button>
+          </div>
         </div>
-        <div class="game-grid" id="recent-games" aria-live="polite"></div>
+        <div class="game-grid" id="all-games" aria-live="polite">
+          <p class="empty-state">Carregando catálogo de jogos...</p>
+        </div>
       </div>
     </section>
 
@@ -230,20 +235,6 @@
       </div>
     </section>
 
-    <section class="content-section" id="jogos" aria-labelledby="titulo-jogos">
-      <div class="container">
-        <div class="section-heading">
-          <h2 id="titulo-jogos" data-catalog-title>🎮 Todos os jogos</h2>
-          <div class="catalog-summary">
-            <p data-results-count aria-live="polite">28 jogos encontrados</p>
-            <button class="catalog-reset" type="button" data-clear-filters>🎮 Todos os jogos</button>
-          </div>
-        </div>
-        <div class="game-grid" id="all-games" aria-live="polite">
-          <p class="empty-state">Carregando catálogo de jogos...</p>
-        </div>
-      </div>
-    </section>
   </main>
 
   <dialog class="news-invitation" data-news-invitation aria-labelledby="news-invitation-title" aria-describedby="news-invitation-description">
