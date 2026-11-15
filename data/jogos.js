@@ -153,7 +153,7 @@ window.CV_GAMES_CATALOG = [
   {
     id: '2048', title: '2048', category: 'Puzzle', categoryKey: 'puzzle',
     description: 'Combine peças com o mesmo número, alcance 2048 e tente superar sua pontuação.', tags: ['2048', 'puzzle', 'numeros', 'logica', 'quebra-cabeca', 'jogo online'],
-    type: 'Jogo online', platform: 'Navegador', href: 'https://play2048.co/', image: 'img/2048-cover.png', imageFit: 'contain', fallback: '🔢',
+    type: 'Jogo online', platform: 'Navegador', href: 'https://classic.play2048.co/', image: 'img/2048-cover.png', imageFit: 'contain', fallback: '🔢',
     rating: 5, addedAt: '2026-10-19', featured: false, recent: true, popular: false, pcFraco: true, multiplayer: false
   },
   {
@@ -245,6 +245,60 @@ window.CV_GAMES_CATALOG = [
     description: 'Conecte pontos, complete quadrados e dispute o maior território em um tabuleiro 5×5 para dois jogadores.', tags: ['quadrados', 'dots and boxes', 'pontos e caixas', '2 jogadores', 'multiplayer local', 'estrategia', 'cv quadrados'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-quadrados/index.html', image: 'games/cv-quadrados/cover.svg', fallback: '▦',
     rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: true, exclusivo: true
+  },
+  {
+    id: 'hexgl', title: 'HexGL', category: 'Corrida', categoryKey: 'corrida',
+    description: 'Dispute corridas futuristas em pistas de alta velocidade.', tags: ['corrida', 'futurista', 'naves', '3d', 'hexgl'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://hexgl.bkcore.com/play/', image: 'img/hexgl-cover.jpeg', fallback: '🏎️',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'level-devil', title: 'Level Devil', category: 'Aventura', categoryKey: 'aventura',
+    description: 'Atravesse fases de plataforma cheias de armadilhas e mudanças inesperadas.', tags: ['plataforma', 'aventura', 'armadilhas', 'level devil'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://poki.com/en/g/level-devil', image: 'img/level-devil-cover.png', fallback: '😈',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: true, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'need-for-speed-underground-2', title: 'Need for Speed: Underground 2', category: 'Corrida', categoryKey: 'corrida',
+    description: 'Corridas de rua e personalização de carros em uma experiência independente para navegador.', tags: ['corrida', 'carros', 'rua', 'need for speed', 'underground 2'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://nfsu2.xyz/', image: 'img/need-for-speed-underground-2.png', fallback: '🏁',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'rocket-goal', title: 'Rocket Goal', category: 'Esportes', categoryKey: 'esportes',
+    description: 'Marque gols com carros em partidas rápidas de futebol sobre rodas.', tags: ['esportes', 'futebol', 'carros', 'multiplayer', 'rocket goal'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://rocketgoal.io/', image: 'img/rocket-goal-cover.jpg', fallback: '⚽',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: true, externalPortal: true
+  },
+  {
+    id: 'bad-time-simulator', title: 'Bad Time Simulator', category: 'Ação', categoryKey: 'acao',
+    description: 'Desvie de padrões de ataques em uma batalha arcade contra Sans.', tags: ['acao', 'arcade', 'desviar', 'undertale', 'sans', 'bad time simulator'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://jcw87.github.io/c2-sans-fight/', image: 'img/undertale-cover.png', fallback: '💀',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: true, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'super-mario-64', title: 'Super Mario 64', category: 'Aventura', categoryKey: 'aventura',
+    description: 'Explore mundos em 3D, pule plataformas e colete estrelas. Controles: WASD move, L pula, I soca ou mergulha e K agacha. Remapeie em Keyboard and Gamepad nas configurações.', tags: ['super mario 64', 'mario', 'aventura', 'plataforma', 'nintendo 64', '3d'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://olivers.tools/play/?net=off', image: 'img/super-mario-64-cover.jpg', fallback: '⭐',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'skate-3', title: 'Skate 3', category: 'Esportes', categoryKey: 'esportes',
+    description: 'Projeto de fã para navegador. O site informa que é necessário fornecer dados convertidos da sua própria cópia do jogo.', tags: ['skate', 'esportes', 'skateboard', 'fan game', 'skate 3'],
+    type: 'Projeto externo', platform: 'Navegador', href: 'https://skate.aaddpp.lol/', image: 'img/skate-3-cover.jpg', fallback: '🛹',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'pes-6-web', title: 'PES 6 Web Online', category: 'Esportes', categoryKey: 'esportes',
+    description: 'Versão para navegador mantida por um projeto externo; abre no site de origem e não é hospedada pelo CV GAMES.', tags: ['pes 6', 'futebol', 'esportes', 'pro evolution soccer', 'online'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://pes6.optijuegos.net/', image: 'img/pes6-cover.jpg', fallback: '⚽',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: true, externalPortal: true
+  },
+  {
+    id: 'simpsons-hit-and-run', title: 'The Simpsons: Hit & Run', category: 'Aventura', categoryKey: 'aventura',
+    description: 'Aventura de ação em mundo aberto. Este port de navegador é carregado no site externo, não nos servidores do CV GAMES.', tags: ['simpsons', 'hit and run', 'aventura', 'carros', 'acao'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://shar-wasm.cjoseph.workers.dev/?skipmovie', image: 'img/simpsons-hit-and-run-cover.jpg', fallback: '🚗',
+    rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
   }
 ];
 
@@ -257,9 +311,9 @@ window.CV_GAMES_GET_VISIBLE_CATALOG = function () {
       .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
   } catch { /* Sem perfil válido, os jogos de teste ficam ocultos. */ }
 
-  const devProfiles = ['educvv dev1', 'educvv dev'];
+  const devProfiles = ['educvv dev1', 'educvv dev', 'lista'];
   const canUseDevGames = devProfiles.includes(nickname);
-  const canUseOrbital = nickname === 'educvv dev1';
+  const canUseOrbital = nickname === 'educvv dev1' || nickname === 'lista';
   return window.CV_GAMES_CATALOG.filter((game) =>
     (game.id !== 'cv-dodge' || canUseOrbital)
     && (game.id !== 'cv-turbo-circuit' || canUseDevGames)
