@@ -253,6 +253,12 @@ window.CV_GAMES_CATALOG = [
     rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
   },
   {
+    id: 'gta-5', title: 'GTA 5', category: 'Ação', categoryKey: 'acao',
+    description: 'Acesse esta experiência de GTA pelo site externo indicado.', tags: ['ação', 'mundo aberto', 'carros', 'gta', 'gta 5'],
+    type: 'Jogo externo', platform: 'Navegador', href: 'https://playgta5.com/', image: 'img/gta-5-cover.png', fallback: '🚗',
+    rating: 5, addedAt: '2026-11-15', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
     id: 'level-devil', title: 'Level Devil', category: 'Aventura', categoryKey: 'aventura',
     description: 'Atravesse fases de plataforma cheias de armadilhas e mudanças inesperadas.', tags: ['plataforma', 'aventura', 'armadilhas', 'level devil'],
     type: 'Jogo externo', platform: 'Navegador', href: 'https://poki.com/en/g/level-devil', image: 'img/level-devil-cover.png', fallback: '😈',
@@ -299,6 +305,12 @@ window.CV_GAMES_CATALOG = [
     description: 'Aventura de ação em mundo aberto. Este port de navegador é carregado no site externo, não nos servidores do CV GAMES.', tags: ['simpsons', 'hit and run', 'aventura', 'carros', 'acao'],
     type: 'Jogo externo', platform: 'Navegador', href: 'https://shar-wasm.cjoseph.workers.dev/?skipmovie', image: 'img/simpsons-hit-and-run-cover.jpg', fallback: '🚗',
     rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
+  },
+  {
+    id: 'cv-xadrez-3d', title: 'CV XADREZ ARENA 3D', category: 'Puzzle', categoryKey: 'puzzle',
+    description: 'Xadrez em terceira dimensão com personagens controláveis, peças físicas, combate arcade e quatro níveis de IA.', tags: ['xadrez', '3d', 'arena', 'estrategia', 'cv xadrez arena 3d'],
+    type: 'Jogo em desenvolvimento', platform: 'Navegador', href: 'games/cv-xadrez%203D/', image: 'games/cv-xadrez%203D/cover.svg', fallback: '♞',
+    rating: 5, addedAt: '2026-11-14', featured: false, recent: false, popular: false, pcFraco: false, multiplayer: false, private: true, development: true
   }
 ];
 
@@ -314,12 +326,14 @@ window.CV_GAMES_GET_VISIBLE_CATALOG = function () {
   const devProfiles = ['educvv dev1', 'educvv dev', 'lista'];
   const canUseDevGames = devProfiles.includes(nickname);
   const canUseOrbital = nickname === 'educvv dev1' || nickname === 'lista';
+  const canUsePrivateChess = ['educvv dev', 'educvv dev1', 'lista'].includes(nickname);
   return window.CV_GAMES_CATALOG.filter((game) =>
     (game.id !== 'cv-dodge' || canUseOrbital)
     && (game.id !== 'cv-turbo-circuit' || canUseDevGames)
     && (game.id !== 'cv-labirinto' || canUseDevGames)
     && (game.id !== 'cv-tubos' || canUseDevGames)
-    && (game.id !== 'cv-batalha-naval' || canUseDevGames));
+    && (game.id !== 'cv-batalha-naval' || canUseDevGames)
+    && (game.id !== 'cv-xadrez-3d' || canUsePrivateChess));
 };
 
 window.CV_GAMES_GET_VISIBLE_FAVORITE_IDS = function () {
