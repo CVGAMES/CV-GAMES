@@ -12,7 +12,8 @@
         && (item.id !== 'cv-turbo-circuit' || ['educvv dev1', 'educvv dev', 'lista'].includes(profileNickname))
         && (item.id !== 'cv-labirinto' || ['educvv dev1', 'educvv dev', 'lista'].includes(profileNickname))
         && (item.id !== 'cv-tubos' || ['educvv dev1', 'educvv dev', 'lista'].includes(profileNickname))
-        && (item.id !== 'cv-batalha-naval' || ['educvv dev1', 'educvv dev', 'lista'].includes(profileNickname)));
+        && (item.id !== 'cv-batalha-naval' || ['educvv dev1', 'educvv dev', 'lista'].includes(profileNickname))
+        && (item.id !== 'cv-xadrez-3d' || ['educvv dev', 'educvv dev1', 'lista'].includes(profileNickname)));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';

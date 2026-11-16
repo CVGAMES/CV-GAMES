@@ -10,6 +10,7 @@
   });
   const orbitalProfileAllowed = profileNickname === 'educvv dev1' || profileNickname === 'lista';
   const turboProfileAllowed = ['educvv dev1', 'educvv dev', 'lista'].includes(profileNickname);
+  const privateChessAllowed = ['educvv dev', 'educvv dev1', 'lista'].includes(profileNickname);
   const labyrinthProfileAllowed = turboProfileAllowed;
   const tubesProfileAllowed = turboProfileAllowed;
   const navalProfileAllowed = turboProfileAllowed;
@@ -20,7 +21,8 @@
         && (game.id !== 'cv-turbo-circuit' || turboProfileAllowed)
         && (game.id !== 'cv-labirinto' || labyrinthProfileAllowed)
         && (game.id !== 'cv-tubos' || tubesProfileAllowed)
-        && (game.id !== 'cv-batalha-naval' || navalProfileAllowed));
+        && (game.id !== 'cv-batalha-naval' || navalProfileAllowed)
+        && (game.id !== 'cv-xadrez-3d' || privateChessAllowed));
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
@@ -80,6 +82,7 @@
       </div>
       <div class="card-body">
         <h3>${game.title}</h3>
+        ${game.development === true ? '<p class="game-development-status"><span>EM DESENVOLVIMENTO</span><span>ACESSO PRIVADO</span></p>' : ''}
         <p class="card-meta">${game.category}</p>
         <div class="stars" aria-label="Avaliação visual: ${game.rating} de 5 estrelas">${ratingStars(game.rating)}</div>
         ${localVisits > 0 ? `<p class="card-local-stats">🎮 ${localVisits} ${localStatsLabel}</p>` : ''}
@@ -133,7 +136,7 @@
   const fallbackPopularGames = catalog.filter((game) => game.popular);
   const featuredPriority = [
     'cv-starfall', 'gx-launcher', 'cv-quadrados', 'cv-xadrez', 'cv-damas', 'cv-jogo-da-velha',
-    'hexgl', 'bad-ice-cream', 'level-devil', 'fireboy-watergirl',
+    'hexgl', 'gta-5', 'bad-ice-cream', 'level-devil', 'fireboy-watergirl',
     'need-for-speed-underground-2', 'drive-mad', 'rocket-goal', 'moto-x3m',
     'bad-time-simulator', 'geometry-jump', 'super-mario-64', 'among-us',
     'skate-3', 'fnf', 'pes-6-web', 'angry-birds', 'simpsons-hit-and-run',

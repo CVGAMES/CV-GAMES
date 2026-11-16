@@ -5,7 +5,8 @@
     .trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
   const catalog = typeof window.CV_GAMES_GET_VISIBLE_CATALOG === 'function'
     ? window.CV_GAMES_GET_VISIBLE_CATALOG()
-    : (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : []);
+    : (Array.isArray(window.CV_GAMES_CATALOG) ? window.CV_GAMES_CATALOG : [])
+      .filter((game) => game.id !== 'cv-xadrez-3d' || ['educvv dev', 'educvv dev1', 'lista'].includes(profileNickname));
   const stats = window.CV_GAMES_STATS;
   const achievements = window.CV_GAMES_ACHIEVEMENTS;
   const profileStore = window.CV_GAMES_PROFILE;
@@ -125,12 +126,18 @@
     const body = createElement('div', 'profile-game-body');
     const title = createElement('h3', '', game.title);
     const category = createElement('p', '', game.category);
+    if (game.development === true) {
+      const status = createElement('p', 'profile-game-development', 'EM DESENVOLVIMENTO · ACESSO PRIVADO');
+      body.append(title, status, category);
+    } else {
+      body.append(title, category);
+    }
     const visits = getVisits(game.id);
     const meta = createElement('p', 'profile-game-meta', visits ? `🎮 ${accessLabel(visits)}` : '🎮 Ainda não jogado neste dispositivo');
     const link = createElement('a', 'button button-primary', 'Jogar');
     link.href = game.href;
     link.dataset.profileGameId = game.id;
-    body.append(title, category, meta, link);
+    body.append(meta, link);
     card.append(cover, body);
     return card;
   };
