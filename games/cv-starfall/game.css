@@ -686,6 +686,11 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-skin-skill span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .starfall-skin-status { grid-column:2; color:var(--skin-color,#9fd8ff); font-size:.55rem; font-weight:950; letter-spacing:.08em; }
 .starfall-skin-card.is-locked .starfall-skin-status { color:#e8c985; }
+.starfall-special-unlock { min-height:2.1rem; width:100%; padding:.42rem .65rem; border:1px solid color-mix(in srgb,var(--skin-color,#c49aff) 64%,#fff); border-radius:999px; background:linear-gradient(110deg,color-mix(in srgb,var(--skin-color,#c49aff) 30%,#101426),rgba(9,14,27,.96)); color:#f6f0ff; font:900 .66rem system-ui,sans-serif; letter-spacing:.09em; cursor:pointer; transition:transform .16s ease,filter .16s ease,box-shadow .16s ease; }
+.starfall-special-unlock:hover { transform:translateY(-1px); filter:brightness(1.15); box-shadow:0 0 15px color-mix(in srgb,var(--skin-color,#c49aff) 35%,transparent); }
+.starfall-special-unlock:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+.starfall-skin-card.is-secret .starfall-skin-status { color:#dfc7ff; }
+.starfall-skin-card.is-locked:has(.starfall-special-unlock) { border-color:color-mix(in srgb,var(--skin-color,#c49aff) 42%,rgba(137,182,255,.22)); }
 .starfall-skin-details-trigger { min-height:2rem; width:100%; padding:.3rem .45rem; border:1px solid rgba(114,202,255,.3); border-radius:999px; background:rgba(45,132,187,.12); color:#aee3ff; font:inherit; font-size:.64rem; font-weight:900; cursor:pointer; }
 .starfall-skin-details-trigger:hover,.starfall-skin-details-trigger:focus-visible { border-color:#78d6ff; background:rgba(49,164,220,.24); outline:2px solid rgba(141,220,255,.55); outline-offset:1px; }
 .starfall-ship-details-dialog { width:min(46rem,calc(100% - 1.25rem)); max-height:min(88dvh,48rem); }

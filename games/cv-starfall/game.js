@@ -10,9 +10,9 @@
   const performanceModeKey = 'cv-games-cv-starfall-performance';
   const eclipseSkipVideoKey = 'cv-games-cv-starfall-eclipse-skip-video';
   const auroraDamageCounterKey = 'cv-games-cv-starfall-aurora-damage-counter';
-  const secretShipUnlockKey = 'cv-games-cv-starfall-secret-ships-v1';
-  const secretShipPasscode = '12345678';
-  const umbraShipPasscode = 'felps123';
+  const legacySecretShipUnlockKey = 'cv-games-cv-starfall-secret-ships-v1';
+  const secretShipUnlockPrefix = 'cv-games-cv-starfall-secret-ships-v2:';
+  const secretShipUnlockMigrationKey = 'cv-games-cv-starfall-secret-ships-v1-migrated';
   const prismaShipPasscode = 'cvgames.com.br';
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
@@ -342,20 +342,37 @@
     };
     try { localStorage.setItem(missionCheckpointKey(nickname), JSON.stringify(checkpoint)); return true; } catch { return false; }
   }
-  function readSecretShipUnlocks() {
+  function secretShipUnlockStorageKey(nickname = profileNickname()) {
+    return secretShipUnlockPrefix + encodeURIComponent(nickname || 'jogador');
+  }
+  function saveSecretShipUnlocks(nickname = profileNickname()) {
+    try { localStorage.setItem(secretShipUnlockStorageKey(nickname), JSON.stringify([...secretShipUnlocks])); return true; }
+    catch { return false; }
+  }
+  function readSecretShipUnlocks(nickname = profileNickname()) {
     try {
-      const saved = JSON.parse(localStorage.getItem(secretShipUnlockKey) || '[]');
-      return new Set(Array.isArray(saved) ? saved.filter((id) => id === '*' || skins.some((skin) => skin.secret && skin.id === id)) : []);
+      const profileKey = secretShipUnlockStorageKey(nickname);
+      const savedForProfile = localStorage.getItem(profileKey);
+      if (savedForProfile !== null) {
+        const saved = JSON.parse(savedForProfile);
+        return new Set(Array.isArray(saved) ? saved.filter((id) => skins.some((skin) => skin.secret && skin.id === id)) : []);
+      }
+      if (localStorage.getItem(secretShipUnlockMigrationKey) === '1') return new Set();
+      const legacy = JSON.parse(localStorage.getItem(legacySecretShipUnlockKey) || '[]');
+      const migrated = new Set(Array.isArray(legacy)
+        ? legacy.includes('*')
+          ? skins.filter((skin) => skin.secret && skin.id !== 'prisma').map((skin) => skin.id)
+          : legacy.filter((id) => skins.some((skin) => skin.secret && skin.id === id))
+        : []);
+      localStorage.setItem(profileKey, JSON.stringify([...migrated]));
+      localStorage.setItem(secretShipUnlockMigrationKey, '1');
+      return migrated;
     } catch { return new Set(); }
   }
   function hasSecretShipAccess(skin) {
-    if (skin.id === 'megumi') return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
-      || secretShipUnlocks.has('megumi') || secretShipUnlocks.has('*')
-      || accountShipProgressLoaded && accountUnlockedShipIds.has('megumi');
     if (skin.id === 'prisma') return accountShipProgressLoaded || secretShipUnlocks.has('prisma');
-    if (skin.ownerOnly) return accountShipProgressLoaded;
     return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
-      || secretShipUnlocks.has('*') || secretShipUnlocks.has(skin.id)
+      || secretShipUnlocks.has(skin.id)
       || accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id);
   }
   function displayRankNickname(value) {
@@ -1204,15 +1221,12 @@
   function openSecretShipUnlock(shipId = null) {
     pendingSecretShipId = shipId;
     const prismaUnlock = shipId === 'prisma';
-    const umbraUnlock = shipId === 'megumi';
     const title = $('#secret-unlock-title');
     const copy = ui.secretUnlockDialog?.querySelector('.starfall-secret-dialog-card > p:nth-of-type(2)');
-    if (title) title.textContent = prismaUnlock ? 'Desbloquear Prisma Real' : umbraUnlock ? 'Desbloquear Umbra' : 'Desbloquear naves secretas';
-    if (copy) copy.textContent = prismaUnlock
-      ? 'Digite o código para liberar a Prisma Real neste aparelho.'
-      : umbraUnlock ? 'Digite a senha temporária para liberar esta nave secreta.'
-        : 'Digite o código temporário para liberar as naves secretas neste aparelho.';
-    if (ui.secretUnlockInput) ui.secretUnlockInput.inputMode = prismaUnlock || umbraUnlock ? 'text' : 'numeric';
+    if (!prismaUnlock) return;
+    if (title) title.textContent = 'Desbloquear Prisma Real';
+    if (copy) copy.textContent = 'Digite o código para liberar a Prisma Real neste aparelho.';
+    if (ui.secretUnlockInput) ui.secretUnlockInput.inputMode = 'text';
     if (ui.secretUnlockDialog?.showModal) {
       ui.secretUnlockError.hidden = true;
       ui.secretUnlockInput.value = '';
@@ -1220,16 +1234,16 @@
       ui.secretUnlockInput.focus();
       return;
     }
-    const entered = window.prompt(prismaUnlock ? 'Digite o código para liberar a Prisma Real:' : umbraUnlock ? 'Digite a senha para liberar a nave secreta Umbra:' : 'Digite o código temporário para liberar as naves secretas:');
+    const entered = window.prompt('Digite o código para liberar a Prisma Real:');
     const valid = isSecretShipPasscodeValid(shipId, entered);
     if (!valid) { if (entered !== null) window.alert('Código incorreto.'); pendingSecretShipId = null; return; }
     grantSecretShipUnlock(shipId);
   }
   function grantSecretShipUnlock(shipId) {
-    if (shipId === 'prisma') secretShipUnlocks.add('prisma');
-    else if (shipId === 'megumi') secretShipUnlocks.add('megumi');
-    else secretShipUnlocks = new Set(['*']);
-    try { localStorage.setItem(secretShipUnlockKey, JSON.stringify([...secretShipUnlocks])); } catch { /* A liberação vale nesta sessão. */ }
+    if (!skins.some((skin) => skin.secret && skin.id === shipId)) return;
+    secretShipUnlocks.add(shipId);
+    saveSecretShipUnlocks();
+    if (shipId !== 'prisma' && accountShipProgressLoaded) accountUnlockedShipIds.add(shipId);
     pendingSecretShipId = null;
     renderSkinPicker(); updateEquippedShip(); updateControlUI(); persistAccountShipProgress(); reconcileAbilityCollectorAchievement();
   }
@@ -1253,13 +1267,12 @@
     ui.secretUnlockInput.value = '';
     ui.secretUnlockError.hidden = true;
     ui.secretUnlockDialog.close();
-    ui.status.textContent = shipId === 'prisma' ? 'Prisma Real liberada neste aparelho.' : shipId === 'megumi' ? 'Umbra liberada neste aparelho.' : 'Naves secretas liberadas neste aparelho.';
+    ui.status.textContent = 'Prisma Real liberada neste aparelho.';
   }
   function isSecretShipPasscodeValid(shipId, entered) {
     const value = String(entered || '').trim();
     if (shipId === 'prisma') return value.toLowerCase() === prismaShipPasscode;
-    if (shipId === 'megumi') return value.toLowerCase() === umbraShipPasscode;
-    return value === secretShipPasscode;
+    return false;
   }
   function openShipDetails(skin) {
     if (!ui.shipDetailsDialog || !ui.shipDetailsList) return;
@@ -1317,8 +1330,8 @@
       select.type = 'button';
       select.className = 'starfall-skin-select';
       select.setAttribute('aria-pressed', String(skin.id === state.selectedSkin));
-      select.setAttribute('aria-label', concealed ? 'Nave secreta indisponível' : unlocked ? (skin.id === state.selectedSkin ? 'Nave equipada: ' : 'Equipar nave ') + skin.name : skin.secret ? 'Abrir desbloqueio da nave secreta ' + skin.name : skin.name + ' · desbloqueia na onda ' + skin.unlockWave);
-      select.disabled = !unlocked && (!skin.secret || (skin.ownerOnly && skin.id !== 'prisma'));
+      select.setAttribute('aria-label', concealed ? 'Nave secreta indisponível' : unlocked ? (skin.id === state.selectedSkin ? 'Nave equipada: ' : 'Equipar nave ') + skin.name : skin.ownerOnly ? 'Abrir acesso restrito da nave ' + skin.name : skin.secret ? 'Nave especial bloqueada; use o botão Desbloquear para ' + skin.name : skin.name + ' · desbloqueia na onda ' + skin.unlockWave);
+      select.disabled = !unlocked && !skin.ownerOnly;
       const icon = document.createElement('span');
       const usesHangarHull = ['classic','training','shield','ring','wing','blade'].includes(skin.shape);
       icon.className = 'starfall-skin-icon' + (concealed ? ' starfall-prism-icon is-concealed' : skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'dino' ? ' starfall-dino-icon starfall-dino-image-wrap' : skin.shape === 'prism' ? ' starfall-prism-icon' : skin.shape === 'training' ? ' starfall-training-icon' : skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-umbra-icon' : skin.shape === 'reflector' ? ' starfall-redshift-icon' : '') + (usesHangarHull ? ' starfall-hangar-hull-icon' : '');
@@ -1338,13 +1351,13 @@
       if (secondary) { secondary.className = 'starfall-skin-skill'; secondary.innerHTML = '<kbd>Q</kbd><span>' + (concealed ? 'SINAL SELADO' : secondaryAbilityNames[skin.id]) + '</span>'; }
       const status = document.createElement('small');
       status.className = 'starfall-skin-status';
-      status.textContent = concealed ? 'ACESSO RESTRITO' : unlocked ? skin.id === state.selectedSkin ? skin.id === 'prisma' ? 'EQUIPADA · FORA DO TOP 10' : 'EQUIPADA' : 'EQUIPAR' : skin.secret ? 'SECRETA · LIBERAR' : 'DESBLOQUEIA NA ONDA ' + skin.unlockWave;
+      status.textContent = concealed ? 'ACESSO RESTRITO' : unlocked ? skin.id === state.selectedSkin ? skin.id === 'prisma' ? 'EQUIPADA · FORA DO TOP 10' : 'EQUIPADA' : 'EQUIPAR' : skin.secret ? skin.id === 'prisma' ? 'NAVE ESPECIAL · RESTRITA' : 'NAVE ESPECIAL' : 'DESBLOQUEIA NA ONDA ' + skin.unlockWave;
       select.append(icon, name, primary);
       if (secondary) select.append(secondary);
       select.append(status);
       select.addEventListener('click', () => {
-        if (skin.ownerOnly && skin.id !== 'prisma' && !skinUnlocked(skin)) return;
-        if (skin.secret && !skinUnlocked(skin)) { openSecretShipUnlock(skin.id); return; }
+        if (skin.ownerOnly && !skinUnlocked(skin)) { openSecretShipUnlock(skin.id); return; }
+        if (skin.secret && !skinUnlocked(skin)) return;
         if (!skinUnlocked(skin) || state.mode === 'playing' || state.mode === 'upgrade') return;
         state.selectedSkin = skin.id;
         try { localStorage.setItem('cv-games-cv-starfall-skin', skin.id); } catch { /* A escolha vale para esta sessão. */ }
@@ -1372,12 +1385,25 @@
           ui.prismRankNotice.querySelector('[data-close-prism-rank-notice]')?.focus();
         }
       });
+      let specialUnlock = null;
+      if (skin.secret && !unlocked && skin.id !== 'prisma') {
+        specialUnlock = document.createElement('button');
+        specialUnlock.type = 'button';
+        specialUnlock.className = 'starfall-special-unlock';
+        specialUnlock.textContent = 'DESBLOQUEAR';
+        specialUnlock.setAttribute('aria-label', 'Desbloquear nave especial ' + skin.name + ' para este perfil');
+        specialUnlock.addEventListener('click', () => {
+          grantSecretShipUnlock(skin.id);
+          ui.status.textContent = skin.name + ' desbloqueada e salva no perfil.';
+        });
+      }
       const details = document.createElement('button');
       details.type = 'button'; details.className = 'starfall-skin-details-trigger'; details.textContent = concealed ? 'Arquivo selado' : 'Ver detalhes';
       details.disabled = concealed;
       details.setAttribute('aria-label', concealed ? 'Detalhes da nave secreta indisponíveis' : skin.noAbilities ? 'Ver detalhes da nave ' + skin.name : 'Ver detalhes das habilidades da nave ' + skin.name);
       details.addEventListener('click', () => { if (!concealed) openShipDetails(skin); });
       card.append(select, details);
+      if (specialUnlock) card.append(specialUnlock);
       ui.skinPicker.append(card);
     });
   }
@@ -5215,6 +5241,7 @@
   }
   function handleProfileChange() {
     if (state.damageCounterEditing) finishDamageCounterEdit(false);
+    secretShipUnlocks = readSecretShipUnlocks();
     if (!isDeveloperProfile()) {
       if (ui.checkpointModal) ui.checkpointModal.hidden = true;
       ui.exitModal?.querySelector('[data-save-and-exit]')?.remove();
