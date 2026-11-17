@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#060b18" />
+    <title>CV XADREZ ARENA 3D — CV GAMES</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; background: #060b18; color: #e2e8f0; font-family: system-ui, sans-serif; }
+      body { display: flex; flex-direction: column; overflow: hidden; }
+      header { z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 52px; padding: 8px 16px; border-bottom: 1px solid #18334a; background: #080e1dcc; }
+      header strong { color: #67e8f9; font-size: 13px; letter-spacing: .08em; }
+      header a { color: #cbd5e1; font-size: 13px; text-decoration: none; }
+      header a:hover { color: #fff; }
+      #game-frame { flex: 1; width: 100%; min-height: 0; border: 0; background: #060b18; }
+      #frame-status { position: fixed; inset: 52px 0 0; z-index: 1; display: grid; place-items: center; padding: 24px; background: #060b18; text-align: center; }
+      #frame-status[hidden] { display: none; }
+      .status-card { max-width: 520px; }
+      .spinner { width: 38px; height: 38px; margin: 0 auto 16px; border: 3px solid #1e3a5f; border-top-color: #22d3ee; border-radius: 50%; animation: spin .8s linear infinite; }
+      .status-card h1 { margin: 0 0 10px; font-size: 20px; }
+      .status-card p { color: #94a3b8; line-height: 1.55; }
+      .status-card a { color: #67e8f9; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @media (max-width: 540px) { header { min-height: 46px; padding: 7px 10px; } header strong, header a { font-size: 11px; } #frame-status { inset-block-start: 46px; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>CV XADREZ ARENA 3D</strong>
+      <a href="../../index.html">← Voltar ao CV GAMES</a>
+    </header>
+    <iframe id="game-frame" src="./public-build/index.html" title="CV XADREZ ARENA 3D" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe>
+    <section id="frame-status" role="status" aria-live="polite">
+      <div class="status-card">
+        <div class="spinner" aria-hidden="true"></div>
+        <h1 id="status-title">Preparando o tabuleiro 3D…</h1>
+        <p id="status-message">A primeira abertura pode levar alguns segundos enquanto os modelos e os recursos da arena são carregados.</p>
+        <p id="status-help" hidden>O pacote de produção não foi encontrado. Gere a pasta <code>public-build</code> e inclua seus arquivos no envio ao GitHub. <a href="./public-build/index.html">Tentar abrir o jogo</a>.</p>
+      </div>
+    </section>
+    <script>
+      const frame = document.getElementById('game-frame');
+      const status = document.getElementById('frame-status');
+      const title = document.getElementById('status-title');
+      const message = document.getElementById('status-message');
+      const help = document.getElementById('status-help');
+      const startedAt = Date.now();
+      const check = window.setInterval(() => {
+        try {
+          const doc = frame.contentDocument;
+          if (doc?.querySelector('#root > *') && !doc.getElementById('startup-loader')) {
+            status.hidden = true;
+            clearInterval(check);
+            return;
+          }
+        } catch { /* O iframe pode ainda estar navegando. */ }
+        if (Date.now() - startedAt > 15000) {
+          title.textContent = 'Não foi possível iniciar o jogo';
+          message.hidden = true;
+          help.hidden = false;
+          document.querySelector('.spinner').hidden = true;
+          clearInterval(check);
+        }
+      }, 250);
+    </script>
+  </body>
+</html>

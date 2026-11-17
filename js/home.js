@@ -26,7 +26,7 @@
   const stats = window.CV_GAMES_STATS;
   const favoriteStorageKey = 'cv-games-favorites';
   const themeStorageKey = 'cv-games-theme';
-  const ownGamesPriority = ['cv-starfall', ...(labyrinthProfileAllowed ? ['cv-labirinto'] : []), 'cv-xadrez', 'cv-damas', 'cv-jogo-da-velha', 'cv-quadrados', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-turbo-circuit', ...(orbitalProfileAllowed ? ['cv-dodge'] : []), ...(navalProfileAllowed ? ['cv-batalha-naval'] : [])];
+  const ownGamesPriority = ['cv-starfall', ...(labyrinthProfileAllowed ? ['cv-labirinto'] : []), 'cv-xadrez', 'cv-damas', 'cv-jogo-da-velha', 'cv-quadrados', 'nexus-rota-zero', 'cv-neon-breaker', 'cv-turbo-circuit', ...(orbitalProfileAllowed ? ['cv-dodge'] : []), ...(navalProfileAllowed ? ['cv-batalha-naval'] : []), 'cv-xadrez-3d'];
   const filters = { category: 'todos', favoritesOnly: false };
 
   const getFavorites = () => {
@@ -141,7 +141,7 @@
     'bad-time-simulator', 'geometry-jump', 'super-mario-64', 'among-us',
     'skate-3', 'fnf', 'pes-6-web', 'angry-birds', 'simpsons-hit-and-run',
     'stickman-hook', 'subway-surfers', 'cv-neon-breaker', 'cv-turbo-circuit',
-    'cv-dodge', 'cv-labirinto'
+    'cv-dodge', 'cv-labirinto', 'cv-xadrez-3d'
   ];
 
   const setupNewsInvitation = () => {

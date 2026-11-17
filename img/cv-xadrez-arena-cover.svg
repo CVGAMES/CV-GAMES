@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">CV XADREZ ARENA 3D</title>
+  <desc id="desc">Tabuleiro tridimensional iluminado em ciano e violeta, com peças de xadrez e dois combatentes.</desc>
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#111a35"/><stop offset="1" stop-color="#050812"/></linearGradient>
+    <linearGradient id="cyan" x2="1" y2="1"><stop stop-color="#67f0ff"/><stop offset="1" stop-color="#1671c9"/></linearGradient>
+    <linearGradient id="violet" x2="1" y2="1"><stop stop-color="#d0a6ff"/><stop offset="1" stop-color="#6842b9"/></linearGradient>
+    <pattern id="squares" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="#111b35"/><rect width="50" height="50" fill="#37cde5" opacity=".68"/><rect x="50" y="50" width="50" height="50" fill="#37cde5" opacity=".68"/>
+    </pattern>
+    <filter id="glow" x="-.6" y="-.6" width="2.2" height="2.2"><feGaussianBlur stdDeviation="14" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="600" cy="342" r="250" fill="#14b9df" opacity=".08" filter="url(#glow)"/>
+  <path d="M600 112 1035 325 600 542 165 325Z" fill="#081022" stroke="#39d9ee" stroke-width="8" opacity=".92"/>
+  <path d="M600 132 1008 329 600 531 192 329Z" fill="url(#squares)" stroke="#a8f5ff" stroke-opacity=".8" stroke-width="3"/>
+  <g fill="none" stroke="#c0fbff" stroke-opacity=".44" stroke-width="2">
+    <path d="m294 279 408 197M396 230l408 197M498 181l408 197M906 279 498 476M804 230 396 427M702 181 294 378"/>
+  </g>
+  <g filter="url(#glow)" stroke="#080d19" stroke-width="7" stroke-linejoin="round">
+    <g transform="translate(450 282)" fill="url(#cyan)"><path d="M0 0h68l-6 19H6z"/><path d="M12-2q-4-24 18-31 22 7 18 31z"/><path d="M23-32 18-52l12-13 12 13-5 20z"/><circle cx="30" cy="-71" r="8" fill="#e4fbff"/></g>
+    <g transform="translate(752 325)" fill="url(#violet)"><path d="M0 0h68l-6 19H6z"/><path d="M12-2q-4-24 18-31 22 7 18 31z"/><path d="M23-32 18-52l12-13 12 13-5 20z"/><circle cx="30" cy="-71" r="8" fill="#f2e9ff"/></g>
+    <g transform="translate(600 345)" fill="#dbeaff"><path d="M-30 0h60l-5 16h-50z"/><path d="M-19-2q-4-20 19-28 23 8 19 28z"/><path d="M0-30v-38m-15 14 15-16 15 16" fill="none" stroke="#dbeaff" stroke-width="10" stroke-linecap="round"/></g>
+  </g>
+  <g fill="none" stroke-width="19" stroke-linecap="round" stroke-linejoin="round" opacity=".95">
+    <g stroke="#67eaff"><circle cx="518" cy="414" r="25" fill="#0a1428"/><path d="m518 441-4 57m-2-36-35 19m40-17 35-12m-38 46-20 35m20-35 31 30"/></g>
+    <g stroke="#c4a2ff"><circle cx="686" cy="390" r="25" fill="#0a1428"/><path d="m686 417 9 57m-6-38 35 4m-39-1-31 28m41 7-28 36m28-36 36 22"/></g>
+  </g>
+  <path d="M93 590h1014" stroke="#3ce1f1" stroke-opacity=".36" stroke-width="2"/>
+  <text x="600" y="618" fill="#f4f8ff" text-anchor="middle" font-family="Outfit,Arial,sans-serif" font-size="39" font-weight="800" letter-spacing="3">CV XADREZ ARENA 3D</text>
+  <text x="600" y="650" fill="#9bafd0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" letter-spacing="5">ESTRATÉGIA · FÍSICA · COMBATE</text>
+</svg>

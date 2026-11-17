@@ -307,10 +307,10 @@ window.CV_GAMES_CATALOG = [
     rating: 5, addedAt: '2026-11-14', featured: true, recent: false, popular: false, pcFraco: false, multiplayer: false, externalPortal: true
   },
   {
-    id: 'cv-xadrez-3d', title: 'CV XADREZ ARENA 3D', category: 'Puzzle', categoryKey: 'puzzle',
-    description: 'Xadrez em terceira dimensão com personagens controláveis, peças físicas, combate arcade e quatro níveis de IA.', tags: ['xadrez', '3d', 'arena', 'estrategia', 'cv xadrez arena 3d'],
-    type: 'Jogo em desenvolvimento', platform: 'Navegador', href: 'games/cv-xadrez%203D/', image: 'games/cv-xadrez%203D/cover.svg', fallback: '♞',
-    rating: 5, addedAt: '2026-11-14', featured: false, recent: false, popular: false, pcFraco: false, multiplayer: false, private: true, development: true
+    id: 'cv-xadrez-3d', title: 'CV XADREZ ARENA 3D', category: 'Estratégia', categoryKey: 'estrategia',
+    description: 'Uma experiência de xadrez em terceira dimensão na qual você controla um personagem dentro do tabuleiro, movimenta fisicamente as peças e enfrenta uma inteligência artificial em quatro níveis de dificuldade. A arena também possui combate físico entre personagens, com socos e agarrões.', tags: ['xadrez', '3d', 'arena', 'estratégia', 'cv xadrez arena 3d'],
+    type: 'Jogo em desenvolvimento', platform: 'Navegador', href: 'games/cv-xadrez-arena/portal.html', image: 'img/cv-xadrez-arena-cover.svg', fallback: '♞',
+    rating: 5, addedAt: '2026-11-16', featured: true, recent: true, popular: false, pcFraco: false, multiplayer: false, private: true, development: true
   }
 ];
 
