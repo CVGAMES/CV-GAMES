@@ -1,0 +1,8 @@
+{
+  "name": "Remix CV-XADREZ-3D COMPLETO ANTES DE MULTIPLAYER",
+  "description": "A physics-based 3D chess game inspired by Human: Fall Flat where two characters walk on the chessboard, grab pieces with independent hands, and switch to a free observer camera.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
