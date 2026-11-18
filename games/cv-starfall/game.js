@@ -381,12 +381,10 @@
       if (ui.rankStatus) ui.rankStatus.textContent = authorized
         ? '✓ Nick autorizado para o TOP 10: ' + displayRankNickname(nickname) + '.'
         : 'Nick ' + displayRankNickname(nickname) + ' não autorizado; esta pontuação não será enviada ao ranking.';
-      const action = pendingPilotNicknameAction;
       pendingPilotNicknameAction = null;
       pendingUnauthorizedNickname = '';
-      if (ui.pilotNicknameModal) ui.pilotNicknameModal.hidden = true;
-      syncAudioVisibility();
-      action?.();
+      returnToMenu();
+      if (ui.status) ui.status.textContent = 'Nick salvo. Escolha sua nave e inicie a missão quando quiser.';
     } finally {
       ui.pilotNicknameConfirm.disabled = false;
       ui.pilotNicknameConfirm.textContent = 'CONFIRMAR NICK';
