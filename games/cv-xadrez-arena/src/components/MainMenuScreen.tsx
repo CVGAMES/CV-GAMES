@@ -1,4 +1,5 @@
-import { BookOpen, ExternalLink, Play, Settings } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { BookOpen, Expand, ExternalLink, Minimize2, Play, Settings } from 'lucide-react';
 import { CvBrandMark } from './CvBrandMark';
 
 interface MainMenuScreenProps {
@@ -13,6 +14,32 @@ export function MainMenuScreen({
   onSettings,
 }: MainMenuScreenProps) {
   const portalHomeUrl = new URL('../../../index.html', window.location.href).href;
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenAvailable, setFullscreenAvailable] = useState(false);
+
+  useEffect(() => {
+    const updateFullscreenState = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+      setFullscreenAvailable(Boolean(document.fullscreenEnabled));
+    };
+
+    updateFullscreenState();
+    document.addEventListener('fullscreenchange', updateFullscreenState);
+    return () => document.removeEventListener('fullscreenchange', updateFullscreenState);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (document.fullscreenEnabled) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (error) {
+      console.warn('Não foi possível alterar o modo de tela cheia.', error);
+    }
+  };
+
   return (
     <div
       data-testid="main-menu-screen"
@@ -21,15 +48,30 @@ export function MainMenuScreen({
       {/* Topo com marca CV GAMES */}
       <header className="w-full max-w-6xl mx-auto flex items-center justify-between gap-4">
         <CvBrandMark />
-        <a
-          href={portalHomeUrl}
-          target="_top"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0e1529]/90 border border-[#1e2d4d] hover:border-[#06b6d4]/60 text-xs sm:text-sm font-medium text-[#cbd5e1] hover:text-white transition-colors whitespace-nowrap"
-        >
-          <span>VOLTAR AO CV GAMES</span>
-          <ExternalLink className="w-3.5 h-3.5 text-[#22d3ee]" />
-        </a>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <button
+            type="button"
+            data-testid="menu-fullscreen-btn"
+            onClick={toggleFullscreen}
+            disabled={!fullscreenAvailable}
+            aria-label={isFullscreen ? 'Sair da tela cheia' : 'Ativar tela cheia'}
+            title={fullscreenAvailable ? (isFullscreen ? 'Sair da tela cheia' : 'Ativar tela cheia') : 'Tela cheia indisponível neste navegador'}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0e1529]/90 border border-[#1e2d4d] hover:border-[#06b6d4]/60 text-xs sm:text-sm font-medium text-[#cbd5e1] hover:text-white transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5 text-[#22d3ee]" /> : <Expand className="w-3.5 h-3.5 text-[#22d3ee]" />}
+            <span>{isFullscreen ? 'SAIR DA TELA CHEIA' : 'TELA CHEIA'}</span>
+          </button>
+
+          <a
+            href={portalHomeUrl}
+            target="_top"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0e1529]/90 border border-[#1e2d4d] hover:border-[#06b6d4]/60 text-xs sm:text-sm font-medium text-[#cbd5e1] hover:text-white transition-colors whitespace-nowrap"
+          >
+            <span>VOLTAR AO CV GAMES</span>
+            <ExternalLink className="w-3.5 h-3.5 text-[#22d3ee]" />
+          </a>
+        </div>
       </header>
 
       {/* Bloco central do menu sobre o tabuleiro 3D animado */}
