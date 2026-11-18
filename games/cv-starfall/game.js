@@ -64,6 +64,11 @@
   ui.prismRankNotice = $('[data-prism-rank-notice]');
   ui.checkpointModal = $('[data-checkpoint-modal]');
   ui.checkpointSummary = $('[data-checkpoint-summary]');
+  ui.pilotNicknameModal = $('[data-pilot-nickname-modal]');
+  ui.pilotNicknameForm = $('[data-pilot-nickname-form]');
+  ui.pilotNicknameInput = $('[data-pilot-nickname-input]');
+  ui.pilotNicknameFeedback = $('[data-pilot-nickname-feedback]');
+  ui.pilotNicknameConfirm = $('[data-confirm-pilot-nickname]');
   ui.prismAbilityList = $('[data-prism-ability-list]');
   ui.prismWheelStatus = $('[data-prism-wheel-status]');
   ui.prismSelectWrap = $('[data-prism-select-wrap]');
@@ -279,10 +284,92 @@
 
   function readBest() { try { return Math.max(0, Number(localStorage.getItem(bestKey)) || 0); } catch { return 0; } }
   function readBestWave() { try { return Math.max(0, Number(localStorage.getItem(bestWaveKey)) || 0); } catch { return 0; } }
+  let selectedPilotNickname = '';
+  let pendingPilotNicknameAction = null;
+  let pendingUnauthorizedNickname = '';
+  const starfallPilotNicknameKey = 'cv-games-cv-starfall-pilot-nickname';
   function profileNickname() { return normalizeRankNickname(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || ''); }
+  function rankNickname() { return normalizeRankNickname(selectedPilotNickname || profileNickname()); }
+  function isGenericPlayerProfile() { return !profileNickname() || profileNickname() === 'jogador'; }
   function normalizeRankNickname(value) {
     const nickname = String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
     return nickname === 'geovanagamer099' ? 'storm' : nickname;
+  }
+  function isAuthorizedPilotNickname(nickname) {
+    const allowed = (window.CV_STARFALL_SUPABASE?.allowedNicknames || ['educvv']).map(normalizeRankNickname);
+    const normalized = normalizeRankNickname(nickname);
+    if (normalized === 'educvv' && profileNickname() !== 'educvv') return false;
+    return Boolean(normalized && allowed.includes(normalized));
+  }
+  function readSavedPilotNickname() {
+    try { return normalizeRankNickname(localStorage.getItem(starfallPilotNicknameKey) || ''); } catch { return ''; }
+  }
+  function updatePilotNicknameFeedback() {
+    if (!ui.pilotNicknameInput || !ui.pilotNicknameFeedback) return false;
+    const nickname = normalizeRankNickname(ui.pilotNicknameInput.value);
+    pendingUnauthorizedNickname = '';
+    ui.pilotNicknameConfirm.textContent = 'CONFIRMAR NICK';
+    if (!nickname) {
+      ui.pilotNicknameFeedback.className = 'starfall-pilot-nickname-feedback is-empty';
+      ui.pilotNicknameFeedback.textContent = 'Digite o nome, apelido ou nick que vai usar.';
+      return false;
+    }
+    if (isAuthorizedPilotNickname(nickname)) {
+      ui.pilotNicknameFeedback.className = 'starfall-pilot-nickname-feedback is-authorized';
+      ui.pilotNicknameFeedback.textContent = '✓ NICK AUTORIZADO · sua pontuação pode entrar no TOP 10.';
+      return true;
+    }
+    ui.pilotNicknameFeedback.className = 'starfall-pilot-nickname-feedback is-unauthorized';
+    ui.pilotNicknameFeedback.textContent = 'Esse nick pode jogar normalmente; ele não está autorizado para o TOP 10.';
+    return false;
+  }
+  function requestPilotNickname(action) {
+    if (!isGenericPlayerProfile() || !ui.pilotNicknameModal || !ui.pilotNicknameForm) {
+      selectedPilotNickname = profileNickname();
+      action?.();
+      return;
+    }
+    pendingPilotNicknameAction = action;
+    ui.pilotNicknameInput.value = readSavedPilotNickname();
+    updatePilotNicknameFeedback();
+    ui.pilotNicknameModal.hidden = false;
+    syncAudioVisibility();
+    ui.pilotNicknameInput.focus();
+  }
+  function closePilotNicknamePrompt() {
+    if (ui.pilotNicknameModal) ui.pilotNicknameModal.hidden = true;
+    pendingPilotNicknameAction = null;
+    pendingUnauthorizedNickname = '';
+    syncAudioVisibility();
+    ui.start?.focus({ preventScroll:true });
+  }
+  function confirmPilotNickname(event) {
+    event.preventDefault();
+    const nickname = normalizeRankNickname(ui.pilotNicknameInput?.value);
+    if (!nickname) {
+      updatePilotNicknameFeedback();
+      ui.pilotNicknameInput?.focus();
+      return;
+    }
+    const authorized = isAuthorizedPilotNickname(nickname);
+    if (!authorized && pendingUnauthorizedNickname !== nickname) {
+      pendingUnauthorizedNickname = nickname;
+      ui.pilotNicknameFeedback.className = 'starfall-pilot-nickname-feedback is-unauthorized';
+      ui.pilotNicknameFeedback.textContent = 'Confirme para continuar: este nick não é autorizado e sua pontuação não será enviada ao ranking.';
+      ui.pilotNicknameConfirm.textContent = 'CONTINUAR SEM RANK';
+      return;
+    }
+    selectedPilotNickname = nickname;
+    try { localStorage.setItem(starfallPilotNicknameKey, nickname); } catch { /* O nick continua nesta sessão. */ }
+    if (ui.rankStatus) ui.rankStatus.textContent = authorized
+      ? '✓ Nick autorizado para o TOP 10: ' + displayRankNickname(nickname) + '.'
+      : 'Nick ' + displayRankNickname(nickname) + ' não autorizado; esta pontuação não será enviada ao ranking.';
+    const action = pendingPilotNicknameAction;
+    pendingPilotNicknameAction = null;
+    pendingUnauthorizedNickname = '';
+    if (ui.pilotNicknameModal) ui.pilotNicknameModal.hidden = true;
+    syncAudioVisibility();
+    action?.();
   }
   function rankBestWaveKey(nickname = profileNickname()) { return nicknameRankBestWavePrefix + encodeURIComponent(nickname || 'jogador'); }
   function readNicknameRankBestWave(nickname = profileNickname()) {
@@ -1758,7 +1845,7 @@
     if (!state.waveDamageTaken) recordAchievementEvent('clean-wave');
     recordAchievementEvent('wave', completedWave);
     if (state.wave > state.bestCompletedWave) { state.bestCompletedWave = state.wave; saveBestWave(); renderSkinPicker(); persistAccountShipProgress(); }
-    saveNicknameCompletedWave(profileNickname(), completedWave);
+    saveNicknameCompletedWave(rankNickname(), completedWave);
     if (!state.dailyChallenge && state.selectedSkin !== 'prisma') queueRunSubmission(createRunRecord(completedWave));
     setMode('upgrade');
     state.wave += 1;
@@ -5316,7 +5403,7 @@
     return headers;
   }
   function authorizedNickname(session) {
-    const nickname = profileNickname();
+    const nickname = rankNickname();
     const names = (window.CV_STARFALL_SUPABASE?.allowedNicknames || ['educvv']).map(normalizeRankNickname);
     if (!nickname || !names.includes(nickname)) return '';
     if (nickname === 'educvv') return window.CV_GAMES_AUTH?.isOwner?.(session?.user) ? 'educvv' : '';
@@ -5335,6 +5422,7 @@
     }));
   }
   function handleProfileChange() {
+    selectedPilotNickname = '';
     if (state.damageCounterEditing) finishDamageCounterEdit(false);
     secretShipUnlocks = readSecretShipUnlocks();
     if (!isDeveloperProfile()) {
@@ -5580,10 +5668,10 @@
       const response = await fetch(url, { headers: supabaseHeaders(config) });
       if (!response.ok) throw new Error('Ranking indisponível');
       const rows = await response.json();
-      const myRank = rows.find((row) => normalizeRankNickname(row.nickname) === profileNickname());
+      const myRank = rows.find((row) => normalizeRankNickname(row.nickname) === rankNickname());
       if (myRank) {
-        saveNicknameRankBestWave(profileNickname(), myRank.wave);
-        state.bestCompletedWave = Math.max(state.bestCompletedWave, readNicknameRankBestWave());
+        saveNicknameRankBestWave(rankNickname(), myRank.wave);
+        state.bestCompletedWave = Math.max(state.bestCompletedWave, readNicknameRankBestWave(rankNickname()));
         saveBestWave();
       }
       renderLeaderboard(rows);
@@ -5609,7 +5697,7 @@
     try { session = await window.CV_GAMES_AUTH?.getOwnerSession?.() || null; } catch { session = null; }
     const nickname = authorizedNickname(session);
     if (!nickname) {
-      if (ui.rankStatus) ui.rankStatus.textContent = profileNickname() === 'educvv'
+      if (ui.rankStatus) ui.rankStatus.textContent = rankNickname() === 'educvv'
         ? 'Entre na conta educvv pelo Perfil para publicar seu recorde.'
         : 'Este apelido não está autorizado para o placar.';
       return;
@@ -5879,7 +5967,7 @@
   }
   function syncAudioVisibility() {
     if (!ui.audio) return;
-    const modalOpen = [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.prismWheel, ui.prismRankNotice, ui.checkpointModal, ui.achievementsModal, ui.dailySummaryModal]
+    const modalOpen = [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.prismWheel, ui.prismRankNotice, ui.checkpointModal, ui.achievementsModal, ui.dailySummaryModal, ui.pilotNicknameModal]
       .some((modal) => modal && !modal.hidden);
     ui.audio.classList.toggle('is-menu-hidden', modalOpen);
     if (modalOpen) {
@@ -5936,9 +6024,11 @@
   }
   function beginMissionFlow() {
     if (!['intro', 'gameover'].includes(state.mode)) return;
-    const checkpoint = readMissionCheckpoint();
-    if (checkpoint) { openSavedMissionPrompt(checkpoint); return; }
-    openMissionSetup();
+    requestPilotNickname(() => {
+      const checkpoint = readMissionCheckpoint();
+      if (checkpoint) { openSavedMissionPrompt(checkpoint); return; }
+      openMissionSetup();
+    });
   }
   function resumeSavedMission() {
     if (!isDeveloperProfile()) { closeSavedMissionPrompt(); openMissionSetup(); return; }
@@ -6047,7 +6137,7 @@
     state.dailyBestScore = 0;
     state.randomStreams = null;
     if (ui.secretUnlockDialog?.open) ui.secretUnlockDialog.close();
-    [ui.missionSetupModal, ui.exitModal, ui.checkpointModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal]
+    [ui.missionSetupModal, ui.exitModal, ui.checkpointModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal, ui.pilotNicknameModal]
       .forEach((modal) => { if (modal) modal.hidden = true; });
     resetGame();
     setMode('intro');
@@ -6148,7 +6238,10 @@
   ui.saveDamageCounter?.addEventListener('click', () => finishDamageCounterEdit(true));
   ui.cancelDamageCounter?.addEventListener('click', () => finishDamageCounterEdit(false));
   $('[data-open-achievements]')?.addEventListener('click', openAchievements);
-  ui.dailyStart?.addEventListener('click', () => openMissionSetup(true));
+  ui.pilotNicknameForm?.addEventListener('submit', confirmPilotNickname);
+  ui.pilotNicknameInput?.addEventListener('input', updatePilotNicknameFeedback);
+  document.querySelectorAll('[data-cancel-pilot-nickname]').forEach((button) => button.addEventListener('click', closePilotNicknamePrompt));
+  ui.dailyStart?.addEventListener('click', () => requestPilotNickname(() => openMissionSetup(true)));
   document.querySelectorAll('[data-close-mission-setup]').forEach((button) => button.addEventListener('click', closeMissionSetup));
   $('[data-confirm-mission-setup]')?.addEventListener('click', confirmMissionSetup);
   ui.stop?.addEventListener('click', openExitConfirmation);
@@ -6168,7 +6261,7 @@
   ui.rankDialog?.addEventListener('click', (event) => { if (event.target === ui.rankDialog) ui.rankDialog.close(); });
   ui.copyAuthorizedPilots?.addEventListener('click', copyAuthorizedPilots);
   document.querySelectorAll('[data-close-daily-summary]').forEach((button) => button.addEventListener('click', closeDailySummary));
-  ui.dailySummaryStart?.addEventListener('click', () => openMissionSetup(true));
+  ui.dailySummaryStart?.addEventListener('click', () => requestPilotNickname(() => openMissionSetup(true)));
   document.querySelectorAll('[data-close-checkpoint]').forEach((button) => button.addEventListener('click', closeSavedMissionPrompt));
   $('[data-resume-saved-mission]')?.addEventListener('click', resumeSavedMission);
   $('[data-start-fresh-mission]')?.addEventListener('click', startFreshMissionFromPrompt);
