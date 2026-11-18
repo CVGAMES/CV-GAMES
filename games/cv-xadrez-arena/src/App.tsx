@@ -2,8 +2,10 @@ import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState, ty
 import {
   ChevronDown,
   ChevronUp,
+  Expand,
   History,
   Home,
+  Minimize2,
   Pause,
   RotateCcw,
   Settings,
@@ -240,8 +242,33 @@ export default function App() {
     isAutostart ? humanColor : null,
   );
   const [arenaMountKey, setArenaMountKey] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenAvailable, setFullscreenAvailable] = useState(false);
 
   const controllerRef = useRef<ArenaController | null>(null);
+
+  useEffect(() => {
+    const updateFullscreenState = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+      setFullscreenAvailable(Boolean(document.fullscreenEnabled));
+    };
+
+    updateFullscreenState();
+    document.addEventListener('fullscreenchange', updateFullscreenState);
+    return () => document.removeEventListener('fullscreenchange', updateFullscreenState);
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (document.fullscreenEnabled) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (error) {
+      console.warn('Não foi possível alterar o modo de tela cheia.', error);
+    }
+  }, []);
 
   useEffect(() => {
     soundFX.setMuted(settings.muted);
@@ -703,7 +730,26 @@ export default function App() {
             </div>
 
             {/* Controles Utilitários (Histórico + Som + Pausar) */}
-            <div className={`${isNativeLockedInCharMode ? 'pointer-events-none' : 'pointer-events-auto'} flex items-center gap-1.5 sm:gap-2 shrink-0`}>
+            <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <button
+                type="button"
+                tabIndex={-1}
+                data-testid="game-fullscreen-btn"
+                data-hud-interactive="true"
+                aria-label={isFullscreen ? 'Sair da tela cheia' : 'Ativar tela cheia'}
+                title={fullscreenAvailable ? (isFullscreen ? 'Sair da tela cheia' : 'Ativar tela cheia') : 'Tela cheia indisponível neste navegador'}
+                disabled={!fullscreenAvailable}
+                onClick={(e) => {
+                  e.currentTarget.blur();
+                  void toggleFullscreen();
+                }}
+                className="pointer-events-auto inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-2.5 rounded-xl bg-[rgba(10,16,34,0.92)] text-white border border-white/15 hover:border-[#06b6d4]/70 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Expand className="w-4 h-4" />}
+                <span className="hidden sm:inline">{isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}</span>
+              </button>
+
+              <div className={`${isNativeLockedInCharMode ? 'pointer-events-none' : 'pointer-events-auto'} flex items-center gap-1.5 sm:gap-2 shrink-0`}>
               <button
                 type="button"
                 tabIndex={-1}
@@ -753,6 +799,7 @@ export default function App() {
                 <Pause className="w-4 h-4" />
                 <span className="hidden sm:inline">Pausar</span>
               </button>
+              </div>
             </div>
           </div>
 
@@ -913,8 +960,20 @@ export default function App() {
       {phase === 'paused' && (
         <div data-testid="pause-modal" className="fixed inset-0 z-30 flex items-center justify-center bg-black/70 p-4">
           <div className="bg-[#0e1529] border border-[#06b6d4]/35 rounded-3xl p-7 max-w-sm w-full shadow-2xl cv-animate-in">
-            <div className="mb-4">
+            <div className="mb-4 flex items-center justify-between gap-3">
               <CvBrandMark compact />
+              <button
+                type="button"
+                data-testid="pause-fullscreen-btn"
+                aria-label={isFullscreen ? 'Sair da tela cheia' : 'Ativar tela cheia'}
+                title={fullscreenAvailable ? (isFullscreen ? 'Sair da tela cheia' : 'Ativar tela cheia') : 'Tela cheia indisponível neste navegador'}
+                disabled={!fullscreenAvailable}
+                onClick={() => void toggleFullscreen()}
+                className="inline-flex items-center gap-1.5 p-2 rounded-xl bg-[#121a33] hover:bg-[#192547] text-white border border-[#1e2d4d] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Expand className="w-4 h-4" />}
+                <span className="hidden sm:inline text-xs">{isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}</span>
+              </button>
             </div>
             <h2 className="font-display text-3xl font-bold text-white mb-1">
               Jogo Pausado

@@ -17,6 +17,12 @@ import type { ChessMatchEngine } from './chessRules';
 import type { CharacterInput, PiecePhysicsState, WorldPhysicsState } from './physics';
 import { normalizeAngle } from './cameraMath';
 
+interface ChessAiSearchResponse {
+  id: number;
+  choice: AiMoveChoice | null;
+  error?: string;
+}
+
 export type AiExecutionPhase =
   | 'idle'
   | 'thinking'
@@ -162,6 +168,13 @@ export class AiOpponentController {
   private thinkTimer = 0;
   private phaseTimer = 0;
   private jumpCooldown = 0;
+  private chessAiWorker: Worker | null = null;
+  private chessAiRequestId = 0;
+  private chessAiSearchFen: string | null = null;
+  private chessAiSearchDifficulty: AiDifficulty = 1;
+  private chessAiSearchPending = false;
+  private chessAiSearchResult: { fen: string; choice: AiMoveChoice | null } | null = null;
+  private chessAiSearchRng: (() => number) | null = null;
 
   // Combat state machine fields
   private combatRestTimer = 3.5;
@@ -182,7 +195,90 @@ export class AiOpponentController {
     this.aiColor = color;
   }
 
+  private clearChessSearch(terminateWorker = false): void {
+    if (this.chessAiSearchPending || this.chessAiSearchFen || this.chessAiSearchResult) {
+      this.chessAiRequestId += 1;
+    }
+    this.chessAiSearchFen = null;
+    this.chessAiSearchPending = false;
+    this.chessAiSearchResult = null;
+    this.chessAiSearchRng = null;
+    if (terminateWorker) {
+      this.chessAiWorker?.terminate();
+      this.chessAiWorker = null;
+    }
+  }
+
+  private fallbackChessSearch(fen: string, difficulty: AiDifficulty, rng: () => number): void {
+    this.chessAiSearchPending = false;
+    this.chessAiSearchResult = {
+      fen,
+      choice: chooseBestMove(fen, difficulty, rng),
+    };
+  }
+
+  private startChessSearch(fen: string, difficulty: AiDifficulty, rng: () => number): void {
+    this.chessAiRequestId += 1;
+    const requestId = this.chessAiRequestId;
+    this.chessAiSearchFen = fen;
+    this.chessAiSearchDifficulty = difficulty;
+    this.chessAiSearchPending = true;
+    this.chessAiSearchResult = null;
+    this.chessAiSearchRng = rng;
+
+    if (typeof Worker === 'undefined') {
+      this.fallbackChessSearch(fen, difficulty, rng);
+      return;
+    }
+
+    try {
+      if (!this.chessAiWorker) {
+        const worker = new Worker(new URL('./chessAiWorker.ts', import.meta.url), {
+          type: 'module',
+        });
+        worker.addEventListener('message', (event: MessageEvent<ChessAiSearchResponse>) => {
+          if (this.chessAiWorker !== worker || event.data.id !== this.chessAiRequestId) return;
+          this.chessAiSearchPending = false;
+          if (event.data.error) {
+            console.warn('A busca da IA falhou no worker; usando o modo de compatibilidade.', event.data.error);
+            this.fallbackChessSearch(
+              this.chessAiSearchFen ?? fen,
+              this.chessAiSearchDifficulty,
+              this.chessAiSearchRng ?? Math.random,
+            );
+            return;
+          }
+          this.chessAiSearchResult = {
+            fen: this.chessAiSearchFen ?? fen,
+            choice: event.data.choice,
+          };
+        });
+        worker.addEventListener('error', () => {
+          if (this.chessAiWorker !== worker) return;
+          const searchFen = this.chessAiSearchFen;
+          const searchDifficulty = this.chessAiSearchDifficulty;
+          const searchRng = this.chessAiSearchRng ?? Math.random;
+          worker.terminate();
+          this.chessAiWorker = null;
+          if (searchFen) this.fallbackChessSearch(searchFen, searchDifficulty, searchRng);
+        });
+        this.chessAiWorker = worker;
+      }
+
+      this.chessAiWorker.postMessage({
+        id: requestId,
+        fen,
+        difficulty,
+        randomSeed: Math.floor(rng() * 0x1_0000_0000) >>> 0,
+      });
+    } catch (error) {
+      console.warn('Não foi possível iniciar o worker da IA; usando o modo de compatibilidade.', error);
+      this.fallbackChessSearch(fen, difficulty, rng);
+    }
+  }
+
   reset(aiColor?: PlayerColor, initialCombatDelay = 3.2): void {
+    this.clearChessSearch(true);
     if (aiColor) {
       this.aiColor = aiColor;
     }
@@ -202,11 +298,16 @@ export class AiOpponentController {
     this.grappleDragAngle = 0;
   }
 
+  dispose(): void {
+    this.clearChessSearch(true);
+  }
+
   getPendingPromotionChoice(): Exclude<PieceType, 'p' | 'k'> {
     return this.plannedMove?.promotion ?? 'q';
   }
 
   private resetChessTurnState(): void {
+    this.clearChessSearch();
     this.plannedMove = null;
     this.thinkTimer = 0;
     this.phaseTimer = 0;
@@ -665,7 +766,20 @@ export class AiOpponentController {
         return IDLE_INPUT;
       }
 
-      const choice: AiMoveChoice | null = chooseBestMove(engine.getFen(), difficulty, rng);
+      const fen = engine.getFen();
+      if (this.chessAiSearchFen !== fen) {
+        this.clearChessSearch();
+        this.startChessSearch(fen, difficulty, rng);
+        return IDLE_INPUT;
+      }
+      if (this.chessAiSearchPending || !this.chessAiSearchResult) {
+        return IDLE_INPUT;
+      }
+
+      const choice = this.chessAiSearchResult.choice;
+      this.chessAiSearchResult = null;
+      this.chessAiSearchFen = null;
+      this.chessAiSearchRng = null;
       if (!choice) {
         this.resetChessTurnState();
         return IDLE_INPUT;
