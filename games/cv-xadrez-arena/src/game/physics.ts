@@ -1425,6 +1425,9 @@ function stepCharacter(
   }
 
   // Hand reaching, grabbing & independent punching logic (Left & Right hands)
+  const opponent = world.characters[char.color === 'w' ? 'b' : 'w'];
+  const opponentCanReceivePunch =
+    !opponent.isKnockedDown && opponent.stunTimer <= 0 && opponent.pushCooldown <= 0;
   const hands: Array<{
     side: 'left' | 'right';
     hand: HandState;
@@ -1518,7 +1521,8 @@ function stepCharacter(
       hand.punchCooldown <= 0 &&
       hand.punchTimer <= 0 &&
       char.punchSequenceCooldown <= 0 &&
-      char.punchesRemaining > 0
+      char.punchesRemaining > 0 &&
+      opponentCanReceivePunch
     ) {
       hand.punchTimer = PUNCH_DURATION;
       hand.punchCooldown = PUNCH_COOLDOWN;
@@ -1658,8 +1662,8 @@ function resolveCombatHits(
     const attacker = world.characters[attackerColor];
     const defender = world.characters[attackerColor === 'w' ? 'b' : 'w'];
 
-    // Enforce defender recovery windows; punch charges were already deducted when swing started
-    if (defender.stunTimer > 0 || defender.pushCooldown > 0) continue;
+    // Do not consume or resolve punches against an opponent who is down or still recovering.
+    if (defender.isKnockedDown || defender.stunTimer > 0 || defender.pushCooldown > 0) continue;
 
     const fwdX = Math.sin(attacker.yaw);
     const fwdZ = Math.cos(attacker.yaw);
