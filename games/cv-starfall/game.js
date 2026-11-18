@@ -96,7 +96,7 @@
     tempest: { e:'O Poço Negro é disparado na direção da nave e curva suavemente conforme ela se move. A singularidade puxa inimigos de uma área ampliada e causa mais dano repetido durante 8,5 segundos.', q:'A Maré Reversa afasta inimigos, causa mais dano, desvia tiros comuns em 40% das vezes e redireciona alguns contra os adversários. Também protege a nave por um instante. Começa com quatro cargas, pode chegar a seis; ao gastar todas, recupera o conjunto após 24s, ou 18s com melhorias.' },
     flashblade: { e:'O Corte Flash lança uma lâmina mais rápida e forte, com perseguição mais precisa e ricochetes frequentes; sua recarga é de 22 segundos.', q:'A nave acelera em 2,6× por 6 segundos e deixa barreiras de luz no trajeto. Cada rastro dura até 9s, fere e desvia inimigos e destrói tiros que o atingem; melhorias reforçam o dano.' },
     redshift: { e:'O Escudo de Retorno reflete projéteis que atingem a nave durante a proteção. Melhorias aumentam duração e dano e reduzem a recarga.', q:'O Perímetro de Cerco acompanha a nave com feixes cortantes. Inimigos que cruzam as linhas recebem dano. Melhorias ampliam a duração de 6s para 8s e podem reduzir a recarga de 28s para 22s.' },
-    eclipse: { e:'A Expansão de Domínio inicia com uma abertura cinematográfica e transforma a arena em um santuário. Os cortes cobrem a área por 10 segundos; a nave fica invulnerável durante o efeito e por alguns segundos ao final. Se for ativado durante o Paradoxo, o campo colapsa e os alvos sobreviventes recebem cortes reforçados por 3 segundos: +15% contra inimigos comuns e +8% contra chefes.', q:'Paradoxo Absoluto abre uma distorção espacial que cobre a arena inteira. Inimigos em toda a tela ficam cada vez mais lentos e sofrem pulsos que interrompem movimento e ataques por breves instantes. Quando o campo colapsa, todos os alvos marcados recebem uma Sentença: o dano aumenta conforme o tempo que cada um permaneceu na distorção. Se usar E antes do fim, o Q colapsa na hora e fortalece os cortes do Santuário por 3 segundos nos alvos atingidos. Melhorias ampliam ainda mais o alcance e a duração, reforçam a supressão e o golpe final, ou reduzem a recarga.' },
+    eclipse: { e:'A Expansão de Domínio inicia com uma abertura cinematográfica e transforma a arena em um santuário. Os cortes cobrem a área por 10 segundos; a nave fica invulnerável durante o efeito e por alguns segundos ao final. Se for ativado durante o Paradoxo, os cortes são reforçados por 3 segundos nos inimigos atingidos pelo Q: +15% contra inimigos comuns e +8% contra chefes. O Q continua ativo normalmente.', q:'Paradoxo Absoluto abre uma distorção espacial que cobre a arena inteira. Inimigos em toda a tela ficam cada vez mais lentos e sofrem pulsos que interrompem movimento e ataques por breves instantes. Quando o campo colapsa, todos os alvos marcados recebem uma Sentença: o dano aumenta conforme o tempo que cada um permaneceu na distorção. Se usar E antes do fim, o Santuário fortalece os cortes por 3 segundos nos alvos atingidos pelo Q sem encerrar o campo; ele continua e aplica a Sentença no fim normal. Melhorias ampliam ainda mais o alcance e a duração, reforçam a supressão e o golpe final, ou reduzem a recarga.' },
     saurion: { e:'O Rugido de Garras tem duas cargas. Atinge uma área maior, atordoa por mais tempo e marca os inimigos; garras mais fortes atingem com maior frequência.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' },
     prisma: { e:'O Núcleo Prisma concentra luz diante da nave e libera uma onda de impacto. Inimigos próximos recebem dano e são afastados; chefes resistem parcialmente ao empurrão. Melhorias ampliam o raio, o dano e reduzem a recarga. Você também pode escolher outra habilidade no Arquivo de Ecos.', q:'A Dobra de Horizonte grava a posição da nave por 4 segundos. Ative novamente para retornar ao ponto marcado, ganhar proteção breve e liberar uma onda de chegada que causa dano e desorganiza inimigos próximos. Melhorias ampliam a janela até 6 segundos e fortalecem a onda. O espaço Q também pode receber outra habilidade escolhida.' },
     mahoraga: { e:'Adaptação Divina · escudo de 3s que reduz até 90% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais adaptam a nave contra aquele tipo por cinco ondas; cada categoria se adapta separadamente e evolui até 70%. Repetir uma adaptação concede dano extra temporário. Recarga de 14s.', q:'Espada da Exterminação · envia um talho curvo que atravessa a arena em uma faixa, destrói os tiros que cruza e atinge até oito inimigos. Causa 20 de dano no primeiro alvo e 10 nos seguintes, com dano reduzido contra chefes; as marcas ampliam em 10% o próximo golpe. Recarga de 12s.' },
@@ -1062,7 +1062,7 @@
       } else {
         ui.ability.textContent = isMegumi ? megumiE.icon : '✦';
       }
-      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 90% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 90% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isSaurion ? ready ? 'Rugido de Garras · ' + state.dinoRoarCharges + ' de 2 cargas · tecla E' : 'Rugido de Garras recarregando: próxima carga em ' + Math.ceil(state.dinoRoarRecharge) + ' segundos' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário agora para colapsar o Paradoxo e reforçar os cortes por 3 segundos · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
+      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 90% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 90% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isSaurion ? ready ? 'Rugido de Garras · ' + state.dinoRoarCharges + ' de 2 cargas · tecla E' : 'Rugido de Garras recarregando: próxima carga em ' + Math.ceil(state.dinoRoarRecharge) + ' segundos' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
       const eCountdown = isMegumi
         ? state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown)) : megumiE.short
         : isMahoraga
@@ -1136,7 +1136,7 @@
         : isMegumi ? 'Invocar o Guardião · tecla Q · cutscene e transformação por 5 ondas com uma vida extra · recarga de 45s depois que ela termina'
         : qActive && isAurora ? 'Elo Estelar ativo por mais ' + Math.ceil(state.auroraLink.life) + ' segundos · até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos vinculados'
         : qActive && isAegis ? 'Órbitas Sentinelas protegem a nave por mais ' + Math.ceil(state.aegisOrbit.life) + ' segundos · ' + aegisOrbitRemaining + ' fragmentos restantes'
-        : qActive && isEclipse ? 'Paradoxo Absoluto ativo por mais ' + Math.ceil(state.eclipseParadox.life) + ' segundos · campo cobre toda a tela · E colapsa o campo e reforça os cortes'
+        : qActive && isEclipse ? 'Paradoxo Absoluto ativo por mais ' + Math.ceil(state.eclipseParadox.life) + ' segundos · campo continua ativo · E reforça os cortes por 3 segundos'
         : qActive && isChronos ? 'Eco do Futuro ativo por mais ' + Math.ceil(state.chronosEcho.life) + ' segundos'
         : qActive && isRedshift ? 'Perímetro de Cerco ativo por mais ' + Math.ceil(state.redshiftPerimeter.life) + ' segundos'
           : qActive && isFlashblade ? 'Rastro de Ruptura ativo por mais ' + Math.ceil(state.flashTrail.life) + ' segundos'
@@ -1149,7 +1149,7 @@
         : isMahoraga ? 'Espada da Exterminação · Q · onda de corte atravessa a tela e destrói tiros no trajeto · até oito alvos, 20 de dano no primeiro e 10 nos seguintes; chefes recebem 72% do dano · marca aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
         : isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · cada vida perdida pela nave causa 2 de dano aos alvos conectados · dano do pulso ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
         : isAegis ? 'Órbitas Sentinelas · Q · proteção do núcleo · fragmentos intactos atacam ao final · ' + aegisOrbitCount + ' fragmentos · duração ' + aegisOrbitTime + 's · dano convertido ' + (2 + state.aegisOrbitDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + aegisOrbitCooldown + 's'
-        : isEclipse ? 'Paradoxo Absoluto · Q · distorção em toda a tela por ' + paradoxDuration + 's · lentidão progressiva, pulsos de supressão e Sentença proporcional ao tempo no campo · raio ' + Math.round(eclipseParadoxRadius()) + ' · dano máximo ' + (7 + state.eclipseParadoxDamageBonus).toFixed(1).replace('.', ',') + ' · combo com E: +15% por 3s (+8% em chefes) · recarga de ' + paradoxCooldown + 's'
+        : isEclipse ? 'Paradoxo Absoluto · Q · distorção em toda a tela por ' + paradoxDuration + 's · lentidão progressiva, pulsos de supressão e Sentença proporcional ao tempo no campo · raio ' + Math.round(eclipseParadoxRadius()) + ' · dano máximo ' + (7 + state.eclipseParadoxDamageBonus).toFixed(1).replace('.', ',') + ' · combo com E: +15% por 3s (+8% em chefes); Q continua ativo · recarga de ' + paradoxCooldown + 's'
         : isChronos ? 'Eco do Futuro · Q · ecos repetem os disparos após 0,30s · duração ' + chronosEchoTime + 's · dano ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% · recarga de ' + chronosEchoCooldown + 's'
         : isRedshift ? 'Perímetro de Cerco · Q · ' + perimeterDuration + 's · dano ' + (4 + state.redshiftPerimeterDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + perimeterCooldown + 's'
           : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,6× · rastros até 9s · dano ' + (3 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
@@ -1867,6 +1867,37 @@
     const pickupKind = kind || (randomUnit('loot') < .06 ? 'charge' : randomUnit('loot') > .5 ? 'repair' : 'shield');
     state.pickups.push({ x, y, kind: pickupKind, r: mobileSize(11), life: 10, spin: 0 });
   }
+  function collectPickup(pickup) {
+    if (!pickup || pickup.dead) return false;
+    pickup.dead = true;
+    if (pickup.kind === 'repair') { state.lives = Math.min(state.maxLives, state.lives + 1); toast('CASCO REPARADO +1 VIDA'); }
+    else if (pickup.kind === 'charge') {
+      if (currentSkin().id === 'training') {
+        toast(collectFerrumCharge());
+      } else {
+        state.abilityCooldown = Math.max(0, state.abilityCooldown - 8);
+        state.prismQCooldown = Math.max(0, state.prismQCooldown - 8);
+        const selectedSources = currentSkin().id === 'prisma'
+          ? ['e','q'].map((slot) => prismChoiceParts(state.prismAbilityChoices[slot]))
+          : [{ shipId:currentSkin().id, key:'q' }];
+        for (const { shipId, key } of selectedSources) {
+          if (key !== 'q') continue;
+          if (shipId === 'aurora') state.auroraLinkCooldown = Math.max(0, state.auroraLinkCooldown - 8);
+          if (shipId === 'eclipse') state.eclipseParadoxCooldown = Math.max(0, state.eclipseParadoxCooldown - 8);
+          if (shipId === 'aegis') state.aegisOrbitCooldown = Math.max(0, state.aegisOrbitCooldown - 8);
+          if (shipId === 'redshift') state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - 8);
+          if (shipId === 'flashblade') state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - 8);
+          if (shipId === 'tempest') { state.tempestTideCooldown = Math.max(0, state.tempestTideCooldown - 8); advanceTempestTideRecharge(0); }
+          if (shipId === 'chronos') state.chronosEchoCooldown = Math.max(0, state.chronosEchoCooldown - 8);
+          if (shipId === 'saurion') advanceDinoStampedeRecharge(8);
+        }
+        toast('CARGA DE HABILIDADE −8s');
+      }
+    } else { state.shields = Math.min(4, state.shields + 1); toast('ESCUDO DE ENERGIA +1'); }
+    const color = pickup.kind === 'repair' ? '#76ffae' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff';
+    burst(pickup.x, pickup.y, color, 14, 90); tone(780, .17, 'sine', .04); updateHud();
+    return true;
+  }
   function burst(x, y, color, count = 12, power = 100) {
     const lightMode = state.performanceMode === 'light';
     const particleCount = lightMode ? Math.ceil(count * .45) : count;
@@ -2398,12 +2429,18 @@
         state.eclipseHitCooldowns.push({ enemy, time: .55 });
         burst(nearestX, nearestY, '#fffafa', 5, 82);
       }
+      for (const pickup of state.pickups) {
+        if (pickup.dead) continue;
+        const projection = clamp(((pickup.x - x1) * lineX + (pickup.y - y1) * lineY) / lineLengthSquared, 0, 1);
+        const nearestX = x1 + lineX * projection; const nearestY = y1 + lineY * projection;
+        if (Math.hypot(pickup.x - nearestX, pickup.y - nearestY) <= pickup.r + width + mobileSize(2)) collectPickup(pickup);
+      }
     }
   }
   function eclipseParadoxDuration() { return 5 + state.eclipseParadoxDurationBonus; }
   function eclipseParadoxRadius() { return Math.hypot(Math.max(1, state.width), Math.max(1, state.height)) + mobileSize(state.eclipseParadoxRadiusBonus); }
   function eclipseParadoxCooldownDuration() { return Math.max(18, 26 - state.eclipseParadoxCooldownBonus * 2); }
-  function finishEclipseParadox(triggeredBySanctuary = false) {
+  function finishEclipseParadox() {
     const field = state.eclipseParadox;
     if (!field) return;
     state.eclipseParadox = null;
@@ -2416,20 +2453,30 @@
       const holdRatio = clamp(exposure / field.total, 0, 1);
       const bossScale = enemy.kind === 'boss' ? enemy.isMiniBoss ? .72 : .58 : 1;
       const sentenceDamage = (2.8 + holdRatio * 4.2 + state.eclipseParadoxDamageBonus) * state.abilityPower * bossScale;
-      enemy.eclipseParadoxMarked = 0;
       damageEnemy(enemy, sentenceDamage, true);
       if (!enemy.dead) {
-        if (triggeredBySanctuary) {
-          enemy.eclipseParadoxComboTime = 3;
-          enemy.eclipseParadoxMarked = 1;
-        }
+        enemy.eclipseParadoxMarked = enemy.eclipseParadoxComboTime > 0 ? enemy.eclipseParadoxComboTime / 3 : 0;
         burst(enemy.x, enemy.y, '#d8bbff', 7, 118);
       }
       sentenced++;
     }
-    toast(triggeredBySanctuary ? 'COLAPSO DO SANTUÁRIO · SENTENÇA · CORTES REFORÇADOS POR 3s · ' + sentenced + ' ALVOS' : 'PARADOXO ABSOLUTO · SENTENÇA · ' + sentenced + ' ALVOS');
+    toast('PARADOXO ABSOLUTO · SENTENÇA · ' + sentenced + ' ALVOS');
     tone(105, .4, 'sawtooth', .06);
     updateAbilityButton();
+  }
+  function empowerEclipseParadoxTargets() {
+    const field = state.eclipseParadox;
+    if (!field || field.life <= 0) return 0;
+    field.comboTime = 3;
+    let targets = 0;
+    for (const [enemy, exposure] of field.exposure) {
+      if (enemy.dead || exposure <= 0) continue;
+      enemy.eclipseParadoxComboTime = 3;
+      enemy.eclipseParadoxMarked = 1;
+      targets++;
+    }
+    toast('SANTUÁRIO SINCRONIZADO · Q CONTINUA ATIVO · CORTES REFORÇADOS POR 3s · ' + targets + ' ALVOS');
+    return targets;
   }
   function updateEclipseParadox(dt) {
     const field = state.eclipseParadox;
@@ -2437,11 +2484,13 @@
     field.life = Math.max(0, field.life - dt);
     field.age += dt;
     field.pulseTimer -= dt;
+    field.comboTime = Math.max(0, (field.comboTime || 0) - dt);
     for (const enemy of state.enemies) {
       if (enemy.dead || Math.hypot(enemy.x - field.x, enemy.y - field.y) > field.radius + enemy.r) continue;
       const exposure = Math.min(field.total, (field.exposure.get(enemy) || 0) + dt);
       field.exposure.set(enemy, exposure);
       enemy.eclipseParadoxMarked = Math.max(enemy.eclipseParadoxMarked || 0, exposure / field.total);
+      if (field.comboTime > 0) enemy.eclipseParadoxComboTime = Math.max(enemy.eclipseParadoxComboTime || 0, field.comboTime);
     }
     if (field.pulseTimer <= 0) {
       const suppression = .2 + state.eclipseParadoxSuppressBonus * .045;
@@ -2467,7 +2516,7 @@
     if (!developerProfile && state.eclipseParadoxCooldown > 0) return;
     recordAchievementEvent('ship-ability', 'eclipse');
     const duration = eclipseParadoxDuration();
-    const field = { x:state.player.x, y:state.player.y, radius:eclipseParadoxRadius(), life:duration, total:duration, age:0, pulseTimer:.28, exposure:new Map() };
+    const field = { x:state.player.x, y:state.player.y, radius:eclipseParadoxRadius(), life:duration, total:duration, age:0, pulseTimer:.28, comboTime:0, exposure:new Map() };
     state.eclipseParadox = field;
     state.eclipseParadoxCooldown = developerProfile ? 0 : eclipseParadoxCooldownDuration();
     burst(field.x, field.y, '#b58aff', 22, 126);
@@ -3534,7 +3583,7 @@
     if (!developerProfile && state.abilityCooldown > 0) return;
     if (skin.id === 'eclipse' && state.eclipsePhase !== 'idle') return;
     const eclipseComboActive = skin.id === 'eclipse' && state.eclipseParadox?.life > 0;
-    if (eclipseComboActive) finishEclipseParadox(true);
+    if (eclipseComboActive) empowerEclipseParadoxTargets();
     recordAchievementEvent('ship-ability', skin.id);
     state.abilityCooldown = developerProfile ? 0 : state.abilityBaseCooldown || skin.cooldown;
     if (skin.id === 'eclipse') {
@@ -3917,38 +3966,12 @@
     }
     for (const pickup of state.pickups) {
       if (state.mode !== 'playing') break;
+      if (pickup.dead) continue;
       pickup.life -= dt; pickup.spin += dt * 3;
       const angle = Math.atan2(state.player.y - pickup.y, state.player.x - pickup.x);
       if (distance(state.player, pickup) < state.magnet) { const pull = 96 + state.magnet * .15; pickup.x += Math.cos(angle) * pull * dt; pickup.y += Math.sin(angle) * pull * dt; }
       if (distance(state.player, pickup) < state.player.radius + pickup.r) {
-        pickup.dead = true;
-        if (pickup.kind === 'repair') { state.lives = Math.min(state.maxLives, state.lives + 1); toast('CASCO REPARADO +1 VIDA'); }
-        else if (pickup.kind === 'charge') {
-          if (currentSkin().id === 'training') {
-            toast(collectFerrumCharge());
-          } else {
-            state.abilityCooldown = Math.max(0, state.abilityCooldown - 8);
-            state.prismQCooldown = Math.max(0, state.prismQCooldown - 8);
-            const selectedSources = currentSkin().id === 'prisma'
-              ? ['e','q'].map((slot) => prismChoiceParts(state.prismAbilityChoices[slot]))
-              : [{ shipId:currentSkin().id, key:'q' }];
-            for (const { shipId, key } of selectedSources) {
-              if (key !== 'q') continue;
-              if (shipId === 'aurora') state.auroraLinkCooldown = Math.max(0, state.auroraLinkCooldown - 8);
-              if (shipId === 'eclipse') state.eclipseParadoxCooldown = Math.max(0, state.eclipseParadoxCooldown - 8);
-              if (shipId === 'aegis') state.aegisOrbitCooldown = Math.max(0, state.aegisOrbitCooldown - 8);
-              if (shipId === 'redshift') state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - 8);
-              if (shipId === 'flashblade') state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - 8);
-              if (shipId === 'tempest') { state.tempestTideCooldown = Math.max(0, state.tempestTideCooldown - 8); advanceTempestTideRecharge(0); }
-              if (shipId === 'chronos') state.chronosEchoCooldown = Math.max(0, state.chronosEchoCooldown - 8);
-              if (shipId === 'saurion') advanceDinoStampedeRecharge(8);
-            }
-            toast('CARGA DE HABILIDADE −8s');
-          }
-        }
-        else { state.shields = Math.min(4, state.shields + 1); toast('ESCUDO DE ENERGIA +1'); }
-        const color = pickup.kind === 'repair' ? '#76ffae' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff';
-        burst(pickup.x, pickup.y, color, 14, 90); tone(780, .17, 'sine', .04); updateHud();
+        collectPickup(pickup);
         if (state.mode !== 'playing') {
           state.pickups = state.pickups.filter((item) => !item.dead && item.life > 0);
           return;
