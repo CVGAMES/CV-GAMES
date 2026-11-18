@@ -292,6 +292,7 @@ export function ChessArena({
     let envRT: THREE.WebGLRenderTarget | null = null;
     let assets: SharedAssets | null = null;
     let cleanupListeners: (() => void) | null = null;
+    let aiController: AiOpponentController | null = null;
 
     let loadState = createInitialLoadingState();
     const emitLoadState = (next: LoadingProgressState) => {
@@ -459,7 +460,8 @@ export function ChessArena({
     await yieldInitFrame();
     if (disposed || !renderer) return;
 
-    const aiController = new AiOpponentController(humanColorRef.current === 'w' ? 'b' : 'w');
+    const currentAiController = new AiOpponentController(humanColorRef.current === 'w' ? 'b' : 'w');
+    aiController = currentAiController;
     if (engine.getStatus(humanColorRef.current).isGameOver) {
       throw new Error('Estado inicial inválido da inteligência artificial.');
     }
@@ -672,7 +674,7 @@ export function ChessArena({
         focusTarget,
         mouseLocked,
         nativePointerLocked,
-        aiPhase: aiController.phase,
+        aiPhase: currentAiController.phase,
         moveHistory: engine.getDetailedHistory(),
         combat: {
           w: wHud,
@@ -695,7 +697,7 @@ export function ChessArena({
         bCh.punchSequenceCooldown,
       )}:${Math.round(bCh.combatEnergy)}:${bCh.grappleTargetColor ?? ''}:${bCh.grabbedByColor ?? ''}:${Math.round(
         bCh.grappleStruggleMeter * 20,
-      )}|${aiController.phase}|${mouseLocked ? 1 : 0}:${nativePointerLocked ? 1 : 0}`;
+      )}|${currentAiController.phase}|${mouseLocked ? 1 : 0}:${nativePointerLocked ? 1 : 0}`;
       if (combatKey !== lastCombatHudKey) {
         lastCombatHudKey = combatKey;
         hudDirty = true;
@@ -883,7 +885,7 @@ export function ChessArena({
 
         engine.reset();
         world = createWorldPhysics(engine);
-        aiController.reset(aColor);
+        currentAiController.reset(aColor);
         combatInput.reset();
         keysDown.clear();
         justPressed.clear();
@@ -1389,7 +1391,7 @@ export function ChessArena({
 
       const hColor = humanColorRef.current;
       const aColor: PlayerColor = hColor === 'w' ? 'b' : 'w';
-      aiController.setAiColor(aColor);
+      currentAiController.setAiColor(aColor);
 
       if (inMenuShowcase) {
         // Slowly rotate camera smoothly around vertical axis of the 3D chessboard
@@ -1479,7 +1481,7 @@ export function ChessArena({
             grappleHeld: resolvedCombat.grappleHeld,
           };
 
-          const aiInput: CharacterInput = aiController.step(
+          const aiInput: CharacterInput = currentAiController.step(
             world,
             engine,
             difficultyRef.current,
@@ -1503,7 +1505,7 @@ export function ChessArena({
         // If AI's pawn reached the final rank, resolve promotion automatically
         if (world.pendingPromotion && world.pendingPromotion.color === aColor) {
           const pending = world.pendingPromotion;
-          const promoType = aiController.getPendingPromotionChoice();
+          const promoType = currentAiController.getPendingPromotionChoice();
           const promoEvs: PhysicsEvent[] = [];
           const ok = completePendingPromotion(world, engine, promoType, promoEvs);
           if (ok) {
@@ -1752,6 +1754,7 @@ export function ChessArena({
       disposed = true;
       clearScheduledTick();
       cleanupListeners?.();
+      aiController?.dispose();
 
       envRT?.dispose();
       if (assets) {
