@@ -46,9 +46,8 @@
 .starfall-toast.is-visible { animation:starfall-toast .9s ease-out both; }
 @keyframes starfall-toast { 15%,75% { opacity:1; transform:translate(-50%,0); } 100% { opacity:0; transform:translate(-50%,-20px); } }
 .starfall-controls { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.65rem; padding-top:.8rem; }
-.starfall-controls .starfall-fire-toggle,.starfall-controls .starfall-damage-counter-edit-ingame { min-height:2.25rem; padding:.4rem .7rem; font-size:.65rem; }
+.starfall-controls .starfall-fire-toggle { min-height:2.25rem; padding:.4rem .7rem; font-size:.65rem; }
 .starfall-controls .starfall-fire-toggle[aria-pressed="false"] { border-color:rgba(255,115,127,.55); color:#ffb5bd; background:rgba(79,20,35,.46); }
-.starfall-controls .starfall-damage-counter-edit-ingame { border-color:rgba(125,247,232,.28); color:#bdeeea; }
 .starfall-controls > p { flex-basis:100%; margin:0; color:var(--muted); font-size:.74rem; text-align:center; }
 .starfall-pause { min-height:2.75rem; }
 .starfall-mahoraga-return[hidden] { display:none !important; }
