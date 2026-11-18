@@ -22,7 +22,7 @@
   const nicknameCompletedWavePrefix = 'cv-games-cv-starfall-completed-wave:';
   const nicknameSettingsMigrationKey = 'cv-games-cv-starfall-settings-migrated-v2';
   const defaultDamageCounterPosition = Object.freeze({ x: .89, y: .53 });
-  const defaultNicknameSettings = Object.freeze({ damageCounterEnabled: true, eclipseSkipVideo: false });
+  const defaultNicknameSettings = Object.freeze({ damageCounterEnabled: true, eclipseSkipVideo: false, selectedShip: '', unlockedSecretShips: [] });
   const mahoragaFormWaveLimit = 5;
   const mahoragaFormCooldownDuration = 45;
   const favoritesKey = 'cv-games-favorites';
@@ -115,6 +115,7 @@
   let accountShipProgressLoaded = false;
   let accountShipWriteChain = Promise.resolve();
   let settingsSyncChain = Promise.resolve();
+  let nicknameSettingsLoadPromise = Promise.resolve();
   let settingsMutationRevision = 0;
   const starfallAchievements = [
     { id: 'first-flight', icon: '🚀', title: 'Primeiro voo', description: 'Comece sua primeira missão.', metric: 'missionsStarted', target: 1, unit: 'missão' },
@@ -167,7 +168,7 @@
     shotCooldown: 0, waveGrace: 0, enemySpawn: 0, powerSpawn: 0, waveKills: 0,
     enemiesRequired: 6, bossWave: false, bossSpawned: false, miniBossTimer: 0, miniBossSpawned: false,
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
-    selectedSkin: readSkin(), controlMode: adaptControlMode(initialNicknameSettings.controlMode), savedControlMode: initialNicknameSettings.controlMode, performanceMode: initialNicknameSettings.performanceMode, preferencesConfigured: initialNicknameSettings.setupComplete, mobileSizing: detectedMobileDevice, upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1, adminNoCooldown: false, adminBuffsActive: false, automaticFireEnabled: true,
+    selectedSkin: readSkin(initialNicknameSettings.selectedShip), controlMode: adaptControlMode(initialNicknameSettings.controlMode), savedControlMode: initialNicknameSettings.controlMode, performanceMode: initialNicknameSettings.performanceMode, preferencesConfigured: initialNicknameSettings.setupComplete, mobileSizing: detectedMobileDevice, upgrades: {}, abilityCooldown: 0, abilityBaseCooldown: 0, abilityPower: 1, adminNoCooldown: false, adminBuffsActive: false, automaticFireEnabled: true,
     slowTime: 0, lastBossType: '', magnet: 105, pierce: 0, critChance: 0, armorChance: 0, regenLevel: 0, regenTimer: 24, drones: 0, droneCooldown: 0,
     blastRadius: 0, bossDamageBonus: 0, bonusShots: 0, lowHullBoost: 0, salvageHeal: 0, singularityRadius: 300, singularityDuration: 8.5, tempestTideCooldown: 0, tempestTideRadiusBonus: 0, tempestTideForceBonus: 0, reflectTime: 0, reflectContacts: new Set(), reflectDamageBonus: 0, reflectDurationBonus: 0, redshiftPerimeter: null, redshiftPerimeterCooldown: 0, redshiftPerimeterDurationBonus: 0, redshiftPerimeterDamageBonus: 0, redshiftPerimeterRangeBonus: 0, flashTrail: null, flashTrailCooldown: 0, flashTrailDurationBonus: 0, flashTrailDamageBonus: 0, flashTrailDensity: 0, flashTrailContacts: new Set(), eclipseTime: 0, eclipsePhase: 'idle', eclipseCutTimer: 0, eclipseDurationBonus: 0, eclipseCutBonus: 0, eclipseCutDamage: 0, eclipseHitCooldowns: [], eclipseImpactCooldown: 0, eclipseParadox: null, eclipseParadoxCooldown: 0, eclipseParadoxDurationBonus: 0, eclipseParadoxRadiusBonus: 0, eclipseParadoxSuppressBonus: 0, eclipseParadoxDamageBonus: 0, eclipseParadoxCooldownBonus: 0, dinoRoarBonus: 0, dinoRoarRangeBonus: 0, dinoRoarCharges: 2, dinoRoarRecharge: 0, dinoStampedeCharges: 3, dinoStampedeRecharge: 0, dinoStampedeExtra: 0, dinoStampedeDamageBonus: 0, endlessDamage: 0, endlessSpeed: 0,
     player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: '#7df7e8' },
@@ -343,7 +344,7 @@
     syncAudioVisibility();
     ui.start?.focus({ preventScroll:true });
   }
-  function confirmPilotNickname(event) {
+  async function confirmPilotNickname(event) {
     event.preventDefault();
     const nickname = normalizeRankNickname(ui.pilotNicknameInput?.value);
     if (!nickname) {
@@ -359,17 +360,37 @@
       ui.pilotNicknameConfirm.textContent = 'CONTINUAR SEM RANK';
       return;
     }
+    const profileApi = window.CV_GAMES_PROFILE;
+    const enteredNickname = profileApi?.sanitizeNickname?.(ui.pilotNicknameInput.value)
+      || String(ui.pilotNicknameInput.value || '').replace(/\s+/g, ' ').trim();
     selectedPilotNickname = nickname;
     try { localStorage.setItem(starfallPilotNicknameKey, nickname); } catch { /* O nick continua nesta sessão. */ }
-    if (ui.rankStatus) ui.rankStatus.textContent = authorized
-      ? '✓ Nick autorizado para o TOP 10: ' + displayRankNickname(nickname) + '.'
-      : 'Nick ' + displayRankNickname(nickname) + ' não autorizado; esta pontuação não será enviada ao ranking.';
-    const action = pendingPilotNicknameAction;
-    pendingPilotNicknameAction = null;
-    pendingUnauthorizedNickname = '';
-    if (ui.pilotNicknameModal) ui.pilotNicknameModal.hidden = true;
-    syncAudioVisibility();
-    action?.();
+    ui.pilotNicknameConfirm.disabled = true;
+    ui.pilotNicknameConfirm.textContent = 'SALVANDO PERFIL…';
+    ui.pilotNicknameFeedback.className = authorized
+      ? 'starfall-pilot-nickname-feedback is-authorized'
+      : 'starfall-pilot-nickname-feedback is-unauthorized';
+    ui.pilotNicknameFeedback.textContent = 'Salvando o nick no perfil e carregando as preferências do Starfall…';
+    try {
+      if (profileApi?.saveProfile) {
+        const currentProfile = profileApi.getProfile?.() || {};
+        profileApi.saveProfile({ ...currentProfile, nickname:enteredNickname });
+        selectedPilotNickname = '';
+        await nicknameSettingsLoadPromise;
+      }
+      if (ui.rankStatus) ui.rankStatus.textContent = authorized
+        ? '✓ Nick autorizado para o TOP 10: ' + displayRankNickname(nickname) + '.'
+        : 'Nick ' + displayRankNickname(nickname) + ' não autorizado; esta pontuação não será enviada ao ranking.';
+      const action = pendingPilotNicknameAction;
+      pendingPilotNicknameAction = null;
+      pendingUnauthorizedNickname = '';
+      if (ui.pilotNicknameModal) ui.pilotNicknameModal.hidden = true;
+      syncAudioVisibility();
+      action?.();
+    } finally {
+      ui.pilotNicknameConfirm.disabled = false;
+      ui.pilotNicknameConfirm.textContent = 'CONFIRMAR NICK';
+    }
   }
   function rankBestWaveKey(nickname = profileNickname()) { return nicknameRankBestWavePrefix + encodeURIComponent(nickname || 'jogador'); }
   function readNicknameRankBestWave(nickname = profileNickname()) {
@@ -670,9 +691,21 @@
     if (accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id)) return true;
     return isDeveloperProfile() || !skin.unlockWave || Math.max(readBestWave(), state.bestCompletedWave) >= skin.unlockWave;
   }
-  function readSkin() {
+  function synchronizedShipId(value) {
+    const id = value === 'mahoraga' ? 'megumi' : String(value || '');
+    const skin = skins.find((item) => item.id === id);
+    return skin && !skin.ownerOnly && !skin.hiddenFromHangar ? id : '';
+  }
+  function synchronizedSpecialShipIds(value) {
+    if (!Array.isArray(value)) return [];
+    return [...new Set(value.map(synchronizedShipId).filter((id) => {
+      const skin = skins.find((item) => item.id === id);
+      return skin?.secret && !skin.ownerOnly;
+    }))];
+  }
+  function readSkin(preferredId = '') {
     try {
-      const savedId = localStorage.getItem('cv-games-cv-starfall-skin');
+      const savedId = preferredId || localStorage.getItem('cv-games-cv-starfall-skin');
       const id = savedId === 'mahoraga' ? 'megumi' : savedId;
       if (savedId !== id && id) { try { localStorage.setItem('cv-games-cv-starfall-skin', id); } catch { /* A forma interna migra somente nesta sessão. */ } }
       const skin = skins.find((item) => item.id === id);
@@ -889,6 +922,8 @@
     const migrated = {
       damageCounterEnabled: typeof saved?.damageCounterEnabled === 'boolean' ? saved.damageCounterEnabled : defaultNicknameSettings.damageCounterEnabled,
       eclipseSkipVideo: typeof saved?.eclipseSkipVideo === 'boolean' ? saved.eclipseSkipVideo : defaultNicknameSettings.eclipseSkipVideo,
+      selectedShip: synchronizedShipId(saved?.selectedShip),
+      unlockedSecretShips: synchronizedSpecialShipIds(saved?.unlockedSecretShips),
       damageCounterPosition: normalizeDamageCounterPosition(saved?.damageCounterPosition),
       controlMode: validControlMode(saved?.controlMode) ? saved.controlMode : defaultControlMode(),
       performanceMode: ['normal','light'].includes(saved?.performanceMode) ? saved.performanceMode : 'normal',
@@ -919,6 +954,8 @@
       localStorage.setItem(nicknameSettingsStorageKey(nickname), JSON.stringify({
         damageCounterEnabled: state.damageCounterEnabled,
         eclipseSkipVideo: state.eclipseSkipVideoEnabled,
+        selectedShip: synchronizedShipId(state.selectedSkin),
+        unlockedSecretShips: synchronizedSpecialShipIds([...secretShipUnlocks]),
         damageCounterPosition: normalizeDamageCounterPosition(state.damageCounterPosition),
         controlMode: state.savedControlMode,
         performanceMode: state.performanceMode,
@@ -929,12 +966,30 @@
       localStorage.setItem(profileSetupStorageKey(nickname), String(state.preferencesConfigured));
     } catch { /* As escolhas continuam valendo nesta sessão. */ }
   }
+  function applyNicknameShipSettings(nickname, selectedShip, unlockedShips) {
+    const remoteUnlocks = synchronizedSpecialShipIds(unlockedShips);
+    const mergedUnlocks = new Set([...secretShipUnlocks, ...remoteUnlocks]);
+    if (mergedUnlocks.size !== secretShipUnlocks.size) {
+      secretShipUnlocks = mergedUnlocks;
+      saveSecretShipUnlocks(nickname);
+    }
+    const id = synchronizedShipId(selectedShip);
+    const skin = skins.find((item) => item.id === id);
+    if (!skin || !skinUnlocked(skin)) return;
+    state.selectedSkin = id;
+    try { localStorage.setItem('cv-games-cv-starfall-skin', id); } catch { /* A escolha fica nesta sessão. */ }
+    renderSkinPicker(); updateEquippedShip(); updateControlUI(); updateHud();
+  }
   function settingsNicknameIsAllowed(nickname) {
     const names = (window.CV_STARFALL_SUPABASE?.settingsNicknames || window.CV_STARFALL_SUPABASE?.allowedNicknames || []).map(normalizeRankNickname);
     return Boolean(nickname && names.includes(normalizeRankNickname(nickname)));
   }
   function updateSettingsSyncStatus(message) {
     if (ui.settingsSyncStatus) ui.settingsSyncStatus.textContent = message;
+  }
+  function isMissingShipSettingsColumns(error) {
+    return Boolean(error && (error.code === '42703' || error.code === 'PGRST204'
+      || /selected_ship|unlocked_special_ships/i.test(String(error.message || error.details || ''))));
   }
   function saveNicknameSettings() {
     const nickname = profileNickname();
@@ -951,6 +1006,9 @@
       setup_complete: state.preferencesConfigured,
       updated_at: new Date().toISOString()
     };
+    const selectedShip = synchronizedShipId(state.selectedSkin);
+    if (selectedShip) payload.selected_ship = selectedShip;
+    payload.unlocked_special_ships = synchronizedSpecialShipIds([...secretShipUnlocks]);
     writeNicknameSettingsLocally(nickname);
     if (!settingsNicknameIsAllowed(normalizedNickname) || !window.CV_GAMES_AUTH?.client) {
       updateSettingsSyncStatus('Preferências salvas neste aparelho.');
@@ -960,7 +1018,13 @@
     settingsSyncChain = settingsSyncChain.then(async () => {
       const auth = window.CV_GAMES_AUTH;
       if (normalizedNickname === 'educvv' && !(await auth.getOwnerSession())?.user?.id) throw new Error('A conta educvv precisa estar conectada.');
-      const { error } = await auth.client.from('starfall_settings').upsert(payload, { onConflict:'nickname' });
+      let { error } = await auth.client.from('starfall_settings').upsert(payload, { onConflict:'nickname' });
+      if (error && isMissingShipSettingsColumns(error)) {
+        const legacyPayload = { ...payload };
+        delete legacyPayload.selected_ship;
+        delete legacyPayload.unlocked_special_ships;
+        ({ error } = await auth.client.from('starfall_settings').upsert(legacyPayload, { onConflict:'nickname' }));
+      }
       if (error) throw error;
       if (profileNickname() === normalizedNickname && settingsMutationRevision === revision) updateSettingsSyncStatus('Preferências sincronizadas para ' + displayRankNickname(normalizedNickname) + '.');
     }).catch(() => {
@@ -980,6 +1044,7 @@
     state.controlMode = adaptControlMode(local.controlMode);
     state.performanceMode = local.performanceMode;
     state.preferencesConfigured = local.setupComplete;
+    applyNicknameShipSettings(nickname, local.selectedShip, local.unlockedSecretShips);
     updateEclipseSkipOption(); updateAbilityButton(); updateControlUI(); updatePerformanceModeUI();
     const localParticleLimit = particleLimit();
     if (state.particles.length > localParticleLimit) state.particles.splice(0, state.particles.length - localParticleLimit);
@@ -991,12 +1056,18 @@
     }
     try {
       if (normalizedNickname === 'educvv' && !(await window.CV_GAMES_AUTH.getOwnerSession())?.user?.id) return;
-      const { data, error } = await window.CV_GAMES_AUTH.client.from('starfall_settings')
-        .select('damage_counter_enabled,damage_counter_x,damage_counter_y,eclipse_skip_video,control_mode,performance_mode,setup_complete')
+      let { data, error } = await window.CV_GAMES_AUTH.client.from('starfall_settings')
+        .select('damage_counter_enabled,damage_counter_x,damage_counter_y,eclipse_skip_video,control_mode,performance_mode,setup_complete,selected_ship,unlocked_special_ships')
         .eq('nickname', normalizedNickname).maybeSingle();
+      if (error && isMissingShipSettingsColumns(error)) {
+        ({ data, error } = await window.CV_GAMES_AUTH.client.from('starfall_settings')
+          .select('damage_counter_enabled,damage_counter_x,damage_counter_y,eclipse_skip_video,control_mode,performance_mode,setup_complete')
+          .eq('nickname', normalizedNickname).maybeSingle());
+      }
       if (error) throw error;
       if (profileNickname() !== normalizedNickname || settingsMutationRevision !== revision) return;
       if (!data) { saveNicknameSettings(); return; }
+      applyNicknameShipSettings(nickname, data.selected_ship, data.unlocked_special_ships);
       state.damageCounterEnabled = Boolean(data.damage_counter_enabled);
       state.eclipseSkipVideoEnabled = Boolean(data.eclipse_skip_video);
       state.damageCounterPosition = normalizeDamageCounterPosition({ x:data.damage_counter_x, y:data.damage_counter_y });
@@ -1341,6 +1412,7 @@
     if (!skins.some((skin) => skin.secret && skin.id === shipId)) return;
     secretShipUnlocks.add(shipId);
     saveSecretShipUnlocks();
+    saveNicknameSettings();
     if (shipId !== 'prisma' && accountShipProgressLoaded) accountUnlockedShipIds.add(shipId);
     pendingSecretShipId = null;
     renderSkinPicker(); updateEquippedShip(); updateControlUI(); persistAccountShipProgress(); reconcileAbilityCollectorAchievement();
@@ -1459,6 +1531,7 @@
         if (!skinUnlocked(skin) || state.mode === 'playing' || state.mode === 'upgrade') return;
         state.selectedSkin = skin.id;
         try { localStorage.setItem('cv-games-cv-starfall-skin', skin.id); } catch { /* A escolha vale para esta sessão. */ }
+        saveNicknameSettings();
         renderSkinPicker();
         updateEquippedShip();
         updateControlUI();
@@ -5440,7 +5513,7 @@
     renderAuthorizedPilots();
     updateAdminToolsUI();
     reconcileAbilityCollectorAchievement();
-    loadNicknameSettings();
+    nicknameSettingsLoadPromise = loadNicknameSettings();
   }
   async function copyAuthorizedPilots() {
     const names = window.CV_STARFALL_SUPABASE?.rosterNicknames || [];
@@ -6294,9 +6367,12 @@
   ui.fireToggle?.addEventListener('click', toggleAutomaticFire);
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
+    const textEntryTarget = event.target.closest?.('input,textarea,select,[contenteditable="true"]');
+    if (textEntryTarget && event.code !== 'Escape') return;
+    if (event.code === 'Escape' && ui.pilotNicknameModal && !ui.pilotNicknameModal.hidden) { event.preventDefault(); closePilotNicknamePrompt(); return; }
     const editableTarget = event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]');
     if (state.eclipsePhase === 'cinematic' || state.megumiSummonPhase === 'cinematic') { event.preventDefault(); return; }
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
+    if (!editableTarget && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
     if (event.code === 'KeyF' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && !state.dailyChallenge && ['playing', 'paused'].includes(state.mode) && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
       event.preventDefault(); clearCurrentWaveForAdmin(); return;
     }
@@ -6381,8 +6457,8 @@
   state.achievementProgress = readAchievementProgress();
   renderAchievements(); updateDailyChallengeInfo();
   window.CV_GAMES_AUTH?.client?.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_IN') window.setTimeout(() => { loadAccountShipProgress(); loadNicknameSettings(); }, 0);
-    if (event === 'SIGNED_OUT') window.setTimeout(() => { clearAccountShipProgress(); loadNicknameSettings(); }, 0);
+    if (event === 'SIGNED_IN') window.setTimeout(() => { loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); }, 0);
+    if (event === 'SIGNED_OUT') window.setTimeout(() => { clearAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); }, 0);
   });
-  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); loadNicknameSettings();
+  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings();
 })();

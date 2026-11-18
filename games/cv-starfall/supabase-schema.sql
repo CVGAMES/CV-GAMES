@@ -111,6 +111,12 @@ create table if not exists public.starfall_settings (
   control_mode text not null default 'keys' check (control_mode in ('keys','touch','analog')),
   performance_mode text not null default 'normal' check (performance_mode in ('normal','light')),
   setup_complete boolean not null default false,
+  selected_ship text check (selected_ship is null or selected_ship in (
+    'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
+    'redshift', 'eclipse', 'saurion', 'megumi'
+  )),
+  unlocked_special_ships text[] not null default '{}'
+    check (unlocked_special_ships <@ array['redshift', 'eclipse', 'saurion', 'megumi']::text[]),
   updated_at timestamptz not null default now()
 );
 
@@ -121,6 +127,19 @@ alter table public.starfall_settings
   add column if not exists performance_mode text not null default 'normal' check (performance_mode in ('normal','light'));
 alter table public.starfall_settings
   add column if not exists setup_complete boolean not null default false;
+alter table public.starfall_settings
+  add column if not exists selected_ship text;
+alter table public.starfall_settings
+  add column if not exists unlocked_special_ships text[] not null default '{}';
+alter table public.starfall_settings drop constraint if exists starfall_settings_selected_ship_check;
+alter table public.starfall_settings add constraint starfall_settings_selected_ship_check
+  check (selected_ship is null or selected_ship in (
+    'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
+    'redshift', 'eclipse', 'saurion', 'megumi'
+  ));
+alter table public.starfall_settings drop constraint if exists starfall_settings_unlocked_special_ships_check;
+alter table public.starfall_settings add constraint starfall_settings_unlocked_special_ships_check
+  check (unlocked_special_ships <@ array['redshift', 'eclipse', 'saurion', 'megumi']::text[]);
 
 -- Mantém a lista atualizada mesmo se a tabela já tiver sido criada anteriormente.
 alter table public.starfall_settings drop constraint if exists starfall_settings_nickname_check;
