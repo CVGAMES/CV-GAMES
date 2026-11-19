@@ -44,7 +44,7 @@
   const flameStormBlazedSprite = new Image();
   flameStormBlazedSprite.src = new URL('flamestorm-ship-blazed.jpeg', document.baseURI).href;
   const flameStormVortexSprite = new Image();
-  flameStormVortexSprite.src = new URL('flamestorm-vortex.png', document.baseURI).href;
+  flameStormVortexSprite.src = new URL('flamestorm-vortex-active.png', document.baseURI).href;
   const flameStormVortexIcon = document.createElement('span');
   flameStormVortexIcon.className = 'starfall-flamestorm-q-icon';
   flameStormVortexIcon.setAttribute('aria-hidden', 'true');
@@ -4674,6 +4674,10 @@
       return;
     }
     if (ship.shape === 'flamestorm') {
+      if (state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0)) {
+        ctx.restore();
+        return;
+      }
       const now = performance.now();
       const boosting = state.flameStormDash?.life > 0;
       const pulse = .88 + .12 * Math.sin(now / (boosting ? 28 : 64));
@@ -5017,12 +5021,11 @@
     for (const effect of state.effects) {
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
       if (effect.type === 'flamestorm-vortex') {
-        const pulse = .9 + Math.sin(timestamp / 62) * .1;
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
-        ctx.globalAlpha = alpha * .76 * pulse; ctx.rotate(effect.rotation);
+        ctx.globalAlpha = alpha * .9; ctx.rotate(effect.rotation);
         if (flameStormVortexSprite.complete && flameStormVortexSprite.naturalWidth) {
-          const width = effect.radius * 2.18, height = width * flameStormVortexSprite.naturalHeight / flameStormVortexSprite.naturalWidth;
-          ctx.drawImage(flameStormVortexSprite, -width / 2, -height / 2, width, height);
+          const size = effect.radius * 2.18;
+          ctx.drawImage(flameStormVortexSprite, -size / 2, -size / 2, size, size);
         } else {
           for (let arm = 0; arm < 4; arm++) { ctx.beginPath(); ctx.arc(0, 0, effect.radius * (.34 + arm * .16), arm * Math.PI * .5, arm * Math.PI * .5 + Math.PI * 1.42); ctx.strokeStyle = arm % 2 ? '#ffb164' : '#ff283d'; ctx.lineWidth = mobileSize(10 - arm); ctx.stroke(); }
         }
