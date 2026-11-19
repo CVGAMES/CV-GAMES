@@ -45,7 +45,13 @@
   flameStormBlazedSprite.src = new URL('flamestorm-ship-blazed.jpeg', document.baseURI).href;
   const flameStormVortexSprite = new Image();
   flameStormVortexSprite.src = new URL('flamestorm-vortex.png', document.baseURI).href;
-  flameStormVortexSprite.className = 'starfall-flamestorm-q-icon';
+  const flameStormVortexIcon = document.createElement('span');
+  flameStormVortexIcon.className = 'starfall-flamestorm-q-icon';
+  flameStormVortexIcon.setAttribute('aria-hidden', 'true');
+  const flameStormVortexIconImage = new Image();
+  flameStormVortexIconImage.src = new URL('flamestorm-vortex-icon.png', document.baseURI).href;
+  flameStormVortexIconImage.alt = '';
+  flameStormVortexIcon.append(flameStormVortexIconImage);
   const flameStormBoostIcon = new Image();
   flameStormBoostIcon.src = new URL('flamestorm-boost.png', document.baseURI).href;
   flameStormBoostIcon.className = 'starfall-flamestorm-skill-icon';
@@ -1304,7 +1310,7 @@
       const qReady = (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
       ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
-      if (isFlameStorm) { if (ui.eclipseQ.firstChild !== flameStormVortexSprite) ui.eclipseQ.replaceChildren(flameStormVortexSprite); }
+      if (isFlameStorm) { if (ui.eclipseQ.firstChild !== flameStormVortexIcon) ui.eclipseQ.replaceChildren(flameStormVortexIcon); }
       else ui.eclipseQ.textContent = isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
       ui.eclipseQ.classList.toggle('is-aurora', isAurora);
       ui.eclipseQ.classList.toggle('is-aegis', isAegis);
@@ -4669,15 +4675,6 @@
     }
     if (ship.shape === 'flamestorm') {
       const now = performance.now();
-      const vortexActive = state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
-      if (vortexActive && flameStormBlazedSprite.complete && flameStormBlazedSprite.naturalWidth) {
-        ctx.rotate(now / 67);
-        const spriteSize = size * 3.35;
-        ctx.globalCompositeOperation = 'screen'; ctx.shadowBlur = 0;
-        ctx.drawImage(flameStormBlazedSprite, -spriteSize / 2, -spriteSize / 2, spriteSize, spriteSize);
-        ctx.restore();
-        return;
-      }
       const boosting = state.flameStormDash?.life > 0;
       const pulse = .88 + .12 * Math.sin(now / (boosting ? 28 : 64));
       ctx.globalCompositeOperation = 'screen';
