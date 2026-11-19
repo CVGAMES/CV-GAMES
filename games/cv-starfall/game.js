@@ -44,7 +44,7 @@
   const flameStormBlazedSprite = new Image();
   flameStormBlazedSprite.src = new URL('flamestorm-ship-blazed.jpeg', document.baseURI).href;
   const flameStormVortexSprite = new Image();
-  flameStormVortexSprite.src = new URL('flamestorm-vortex.png', document.baseURI).href;
+  flameStormVortexSprite.src = new URL('flamestorm-vortex-icon.png', document.baseURI).href;
   const flameStormVortexIcon = document.createElement('span');
   flameStormVortexIcon.className = 'starfall-flamestorm-q-icon';
   flameStormVortexIcon.setAttribute('aria-hidden', 'true');
@@ -5021,8 +5021,12 @@
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
         ctx.globalAlpha = alpha * .76 * pulse; ctx.rotate(effect.rotation);
         if (flameStormVortexSprite.complete && flameStormVortexSprite.naturalWidth) {
-          const width = effect.radius * 2.18, height = width * flameStormVortexSprite.naturalHeight / flameStormVortexSprite.naturalWidth;
-          ctx.drawImage(flameStormVortexSprite, -width / 2, -height / 2, width, height);
+          const size = effect.radius * 2.18;
+          const sourceX = flameStormVortexSprite.naturalWidth * .2245;
+          const sourceY = flameStormVortexSprite.naturalHeight * .2917;
+          const sourceWidth = flameStormVortexSprite.naturalWidth * .3135;
+          const sourceHeight = flameStormVortexSprite.naturalHeight * .5352;
+          ctx.drawImage(flameStormVortexSprite, sourceX, sourceY, sourceWidth, sourceHeight, -size / 2, -size / 2, size, size);
         } else {
           for (let arm = 0; arm < 4; arm++) { ctx.beginPath(); ctx.arc(0, 0, effect.radius * (.34 + arm * .16), arm * Math.PI * .5, arm * Math.PI * .5 + Math.PI * 1.42); ctx.strokeStyle = arm % 2 ? '#ffb164' : '#ff283d'; ctx.lineWidth = mobileSize(10 - arm); ctx.stroke(); }
         }
