@@ -294,6 +294,7 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-rank-ship-model { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 0 5px rgba(120,210,255,.35)); }
 .starfall-rank-ship-image { object-fit:contain; }
 .starfall-rank-saurion-image { transform:scale(1.08); }
+.starfall-rank-flamestorm-image { mix-blend-mode:screen; transform:scale(1.08); }
 .starfall-rank-ship-metric .starfall-rank-metric-copy strong { font-size:.82rem; }
 .starfall-rank-metric-copy { display:grid; min-width:0; gap:.18rem; }
 .starfall-rank-metric-copy small { color:#8eaac7; font-size:.58rem; font-weight:800; text-transform:uppercase; letter-spacing:.07em; }
@@ -438,6 +439,8 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-equipped-icon { display:grid; width:2.25rem; height:2.25rem; flex:none; place-items:center; border:1px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 55%,transparent); border-radius:.7rem; color:var(--skin-color,#9fd8ff); font-size:1.35rem; text-shadow:0 0 14px currentColor; }
 .starfall-equipped-icon.starfall-redshift-icon { padding:.06rem; }
 .starfall-equipped-icon.starfall-eclipse-sprite { display:block; background:url('eclipse-ship.png') center / contain no-repeat; }
+.starfall-flamestorm-icon { overflow:hidden; border:1px solid rgba(255,94,67,.75); border-radius:50%; background:radial-gradient(circle at 50% 45%,rgba(255,69,47,.2),rgba(21,8,16,.94) 72%); }
+.starfall-flamestorm-icon img { display:block; width:185%; height:185%; max-width:none; object-fit:contain; mix-blend-mode:screen; }
 .starfall-equipped-icon.starfall-dino-image-wrap,.starfall-skin-icon.starfall-dino-image-wrap { overflow:hidden; border-radius:.7rem; background:radial-gradient(circle,rgba(94,255,67,.2),rgba(8,40,29,.72)); }
 .starfall-dino-image-wrap img { display:block; width:100%; height:100%; object-fit:contain; transform:scale(1.05); }
 .starfall-equipped-ship > span:last-child { display:grid; gap:.15rem; }
@@ -548,6 +551,7 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
 /* Ícones legíveis e recarga visível durante a missão. */
 .starfall-ability-wrap { position:relative; display:flex; align-items:center; justify-content:center; gap:.35rem; }
 .starfall-ability { display:grid; width:2.75rem; min-width:2.75rem; height:2.75rem; min-height:2.75rem; place-items:center; padding:0; font-size:1.2rem; line-height:1; }
+.starfall-ability > img.starfall-flamestorm-skill-icon,.starfall-ability > img.starfall-flamestorm-q-icon { display:block; width:155%; height:155%; max-width:none; object-fit:contain; mix-blend-mode:screen; pointer-events:none; }
 .starfall-ability-cooldown { position:absolute; z-index:2; right:0; bottom:.17rem; left:0; display:block; min-width:0; padding:0; color:#fff; font-size:.5rem; font-weight:950; line-height:1; text-align:center; text-shadow:0 1px 4px rgba(0,0,0,.98),0 0 6px rgba(0,0,0,.85); white-space:nowrap; pointer-events:none; }
 .starfall-ability-cooldown[hidden] { display:none !important; }
 .starfall-ability.is-counting { padding-bottom:.42rem; }
@@ -585,6 +589,9 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
 .starfall-primary-ability-wrap[hidden] { display:none !important; }
 .starfall-prism-select-wrap[hidden] { display:none !important; }
 .starfall-secondary-ability { position:relative; border-color:rgba(190,151,255,.62); background:linear-gradient(145deg,rgba(79,52,131,.82),rgba(18,24,50,.95)); color:#f0e5ff; }
+.starfall-ability.is-flamestorm { border-color:rgba(255,115,78,.86); background:linear-gradient(145deg,rgba(174,42,36,.88),rgba(55,17,24,.98)); color:#fff0d7; box-shadow:0 0 17px rgba(255,62,42,.3),inset 0 0 12px rgba(255,182,112,.12); }
+.starfall-ability.is-flamestorm::after { border-color:rgba(255,206,164,.9); background:#611d22; color:#fff1dc; }
+.starfall-ability.is-flamestorm[aria-pressed="true"] { border-color:#ffe1ad; background:linear-gradient(145deg,rgba(219,64,42,.98),rgba(102,28,34,.98)); box-shadow:0 0 24px rgba(255,73,42,.48),inset 0 0 13px rgba(255,221,160,.22); }
 .starfall-secondary-ability::after { content:"Q"; position:absolute; top:-.26rem; right:-.22rem; display:grid; width:1rem; height:1rem; place-items:center; border:1px solid rgba(215,195,255,.65); border-radius:50%; background:#211736; color:#eadcff; font-size:.58rem; font-weight:900; }
 .starfall-secondary-ability[aria-pressed="true"] { border-color:#e4d2ff; background:linear-gradient(145deg,rgba(130,91,194,.95),rgba(37,25,70,.98)); box-shadow:0 0 20px rgba(177,136,255,.42); }
 .starfall-secondary-ability.is-saurion { border-color:rgba(121,255,146,.72); background:linear-gradient(145deg,rgba(35,111,69,.88),rgba(13,39,38,.96)); color:#e2ffd2; }

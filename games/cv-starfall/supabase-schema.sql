@@ -113,7 +113,7 @@ create table if not exists public.starfall_settings (
   setup_complete boolean not null default false,
   selected_ship text check (selected_ship is null or selected_ship in (
     'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
-    'redshift', 'eclipse', 'saurion', 'megumi'
+    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm'
   )),
   unlocked_special_ships text[] not null default '{}'
     check (unlocked_special_ships <@ array['redshift', 'eclipse', 'saurion', 'megumi']::text[]),
@@ -135,7 +135,7 @@ alter table public.starfall_settings drop constraint if exists starfall_settings
 alter table public.starfall_settings add constraint starfall_settings_selected_ship_check
   check (selected_ship is null or selected_ship in (
     'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
-    'redshift', 'eclipse', 'saurion', 'megumi'
+    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm'
   ));
 alter table public.starfall_settings drop constraint if exists starfall_settings_unlocked_special_ships_check;
 alter table public.starfall_settings add constraint starfall_settings_unlocked_special_ships_check
