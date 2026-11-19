@@ -39,6 +39,17 @@
   mahoragaAdaptationIcon.src = new URL('mahoraga-adaptation-icon.png', document.baseURI).href;
   mahoragaAdaptationIcon.className = 'starfall-adaptation-skill-icon';
   mahoragaAdaptationIcon.alt = '';
+  const flameStormNormalSprite = new Image();
+  flameStormNormalSprite.src = new URL('flamestorm-ship-normal.jpeg', document.baseURI).href;
+  const flameStormBlazedSprite = new Image();
+  flameStormBlazedSprite.src = new URL('flamestorm-ship-blazed.jpeg', document.baseURI).href;
+  const flameStormVortexSprite = new Image();
+  flameStormVortexSprite.src = new URL('flamestorm-vortex.png', document.baseURI).href;
+  flameStormVortexSprite.className = 'starfall-flamestorm-q-icon';
+  const flameStormBoostIcon = new Image();
+  flameStormBoostIcon.src = new URL('flamestorm-boost.png', document.baseURI).href;
+  flameStormBoostIcon.className = 'starfall-flamestorm-skill-icon';
+  flameStormBoostIcon.alt = '';
   const saurionRaptorSprite = new Image();
   saurionRaptorSprite.src = new URL('saurion-raptor-skill.png', document.baseURI).href;
   const eclipseShrineSprite = new Image();
@@ -85,9 +96,10 @@
     { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q causa dano extra aos alvos marcados.' },
     { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' },
     { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 12, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz até 90% do dano. Cinco impactos do mesmo tipo concedem resistência a essa categoria por cinco ondas; cada tipo se adapta separadamente até 70%. Repetir um tipo já adaptado fortalece temporariamente o dano.' },
-    { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 20, cooldownQ: 45, shape: 'megumi', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'felype j'], description: 'Nave secreta. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação; a recarga do E cai de 20 para 15 segundos com cinco melhorias. Q invoca o Guardião com a cutscene; a forma Mahoraga dura cinco ondas completas e, ao terminar, entra em recarga de 45 segundos.' }
+    { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 20, cooldownQ: 45, shape: 'megumi', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'felype j'], description: 'Nave secreta. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação; a recarga do E cai de 20 para 15 segundos com cinco melhorias. Q invoca o Guardião com a cutscene; a forma Mahoraga dura cinco ondas completas e, ao terminar, entra em recarga de 45 segundos.' },
+    { id: 'flamestorm', name: 'Flame Storm', color: '#ff302e', accent: '#ffd0cb', ability: 'Propulsão Infernal', abilityShort: 'PROPULSÃO', cooldown: 20, cooldownQ: 22, shape: 'flamestorm', secret: true, profileRestricted: true, allowedProfiles: ['storm', 'educvv dev', 'educvv dev1'], description: 'Nave especial. E: avança em uma explosão de fogo por 1 segundo e deixa um rastro flamejante que fere inimigos. Q: gira e cria um vórtice carmesim por 3 segundos, puxando e atingindo inimigos próximos.' }
   ];
-  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Estouro da Manada', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião' });
+  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Estouro da Manada', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim' });
   const megumiTechniques = Object.freeze({
     rabbits:{ id:'rabbits', name:'Fuga dos Coelhos', short:'COELHOS', icon:'🐇', description:'Cinco shikigami-armadilha se espalham, atiram e atraem inimigos.' },
     shadow:{ id:'shadow', name:'Ocultação nas Sombras', short:'SOMBRA', icon:'◑', description:'Fica invisível, dispara projéteis sombrios, atravessa as bordas e recolhe recursos.' },
@@ -105,9 +117,10 @@
     saurion: { e:'O Rugido de Garras tem duas cargas. Atinge uma área maior, atordoa por mais tempo e marca os inimigos; garras mais fortes atingem com maior frequência.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' },
     prisma: { e:'O Núcleo Prisma concentra luz diante da nave e libera uma onda de impacto. Inimigos próximos recebem dano e são afastados; chefes resistem parcialmente ao empurrão. Melhorias ampliam o raio, o dano e reduzem a recarga. Você também pode escolher outra habilidade no Arquivo de Ecos.', q:'A Dobra de Horizonte grava a posição da nave por 4 segundos. Ative novamente para retornar ao ponto marcado, ganhar proteção breve e liberar uma onda de chegada que causa dano e desorganiza inimigos próximos. Melhorias ampliam a janela até 6 segundos e fortalecem a onda. O espaço Q também pode receber outra habilidade escolhida.' },
     mahoraga: { e:'Adaptação Divina · escudo de 3s que reduz até 90% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais adaptam a nave contra aquele tipo por cinco ondas; cada categoria se adapta separadamente e evolui até 70%. Repetir uma adaptação concede dano extra temporário. Recarga de 14s.', q:'Espada da Exterminação · envia um talho curvo que atravessa a arena em uma faixa, destrói os tiros que cruza e atinge até oito inimigos. Causa 20 de dano no primeiro alvo e 10 nos seguintes, com dano reduzido contra chefes; as marcas ampliam em 10% o próximo golpe. Recarga de 12s.' },
-    megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica. Recarga de 20 segundos, reduzida até 15 segundos com cinco melhorias.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga dura cinco ondas completas e concede uma vida extra. Ao retornar à Umbra, inicia uma recarga de 45 segundos antes de poder invocar novamente.' }
+    megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica. Recarga de 20 segundos, reduzida até 15 segundos com cinco melhorias.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga dura cinco ondas completas e concede uma vida extra. Ao retornar à Umbra, inicia uma recarga de 45 segundos antes de poder invocar novamente.' },
+    flamestorm: { e:'Propulsão Infernal · avance na direção atual por 1 segundo com velocidade triplicada. O rastro de fogo permanece brevemente e queima inimigos que cruzarem seu caminho. Recarga inicial de 20 segundos, reduzida pelas melhorias de recarga.', q:'Vórtice Carmesim · gira a nave e cria um tornado ao redor dela por 3 segundos. Puxa inimigos próximos para o centro e causa pulsos de dano; chefes sofrem dano reduzido. Recarga inicial de 22 segundos, reduzida pelas melhorias de recarga.' }
   });
-  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12 });
+  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12, flamestorm:13 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
   let secretShipUnlocks = readSecretShipUnlocks();
   let pendingSecretShipId = null;
@@ -162,6 +175,7 @@
     prismAbilityChoices: { e:'aurora:e', q:'aurora:q' }, prismAbilitySlot:'e', prismDispatchSkinId:'', prismDispatchSlot:'', prismQCooldown:0, prismHorizonAnchor:null, prismHorizonWindowBonus:0, prismHorizonDamageBonus:0, prismCoreRangeBonus:0, prismCoreDamageBonus:0, prismCooldownBonus:0, prismWheelWasPlaying:false,
     aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0,
     tempestTideCharges: 4, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
+    flameStormQCooldown: 0, flameStormDash: null,
     chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
     score: 0, best: readBest(), bestCompletedWave: readBestWave(), wave: 1, lives: 3, maxLives: 6, shields: 0, tempShields: 0, invulnerable: 0, elapsed: 0,
@@ -180,13 +194,13 @@
     const savedPrismChoice = localStorage.getItem(prismAbilityChoiceKey);
     if (savedPrismChoice) {
       let parsed; try { parsed = JSON.parse(savedPrismChoice); } catch { parsed = savedPrismChoice; }
-      const valid = (choice) => { const [shipId,key] = String(choice || '').split(':'); return skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar) && ['e','q'].includes(key); };
+      const valid = (choice) => { const [shipId,key] = String(choice || '').split(':'); return skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar && (!skin.profileRestricted || hasSecretShipAccess(skin))) && ['e','q'].includes(key); };
       if (parsed && typeof parsed === 'object') {
         if (valid(parsed.e)) state.prismAbilityChoices.e = parsed.e;
         if (valid(parsed.q)) state.prismAbilityChoices.q = parsed.q;
       } else {
         const [shipId,key] = String(parsed || savedPrismChoice).split(':');
-        if (skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar) && ['e','q'].includes(key)) state.prismAbilityChoices[key] = shipId + ':' + key;
+        if (skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar && (!skin.profileRestricted || hasSecretShipAccess(skin))) && ['e','q'].includes(key)) state.prismAbilityChoices[key] = shipId + ':' + key;
       }
     }
   } catch { /* A escolha padrão continua disponível. */ }
@@ -224,7 +238,7 @@
     { id:'critical', icon:'✧', name:'Mira de precisão', description:'Aumenta a chance de causar dano crítico.', max:5, available:()=>state.critChance<.4, apply:()=>{state.critChance=Math.min(.4,state.critChance+.08);} },
     { id:'drone', icon:'◈', name:'Drone auxiliar', description:'Um satélite ataca inimigos próximos e pode se sacrificar para salvar a nave.', max:3, available:()=>state.drones<3, apply:()=>{state.drones+=1;} },
     { id:'magnet', icon:'⌖', name:'Ímã gravitacional', description:'Atrai recursos de mais longe.', max:5, available:()=>upgradeLevel('magnet')<5, apply:()=>{state.magnet=Math.min(315,state.magnet+42);} },
-    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:()=>currentSkin().id!=='training'&&upgradeLevel('cooldown')<5, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else if(currentSkin().id==='megumi')state.abilityBaseCooldown=megumiTechniqueCooldownDuration(1);else{const minimum=currentSkin().id==='eclipse'?25:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);}state.abilityCooldown=Math.max(0,state.abilityCooldown-4);} },
+    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:()=>currentSkin().id!=='training'&&upgradeLevel('cooldown')<5, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else if(currentSkin().id==='megumi')state.abilityBaseCooldown=megumiTechniqueCooldownDuration(1);else{const minimum=currentSkin().id==='eclipse'?25:currentSkin().id==='flamestorm'?14:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);}state.abilityCooldown=Math.max(0,state.abilityCooldown-4);} },
     { id:'power', icon:'✴', name:'Amplificador de núcleo', description:'Fortalece a habilidade especial.', max:4, available:()=>currentSkin().id!=='training'&&upgradeLevel('power')<4, apply:()=>{state.abilityPower=Math.min(2,state.abilityPower+.2);} },
     { id:'armor', icon:'⬟', name:'Blindagem reativa', description:'Chance de anular um impacto recebido.', max:4, available:()=>state.armorChance<.32, apply:()=>{state.armorChance=Math.min(.32,state.armorChance+.08);} },
     { id:'regen', icon:'✚', name:'Nanorreparadores', description:'Recupera uma vida periodicamente.', max:3, available:()=>state.regenLevel<3, apply:()=>{state.regenLevel+=1;} },
@@ -478,6 +492,7 @@
   }
   function hasSecretShipAccess(skin) {
     if (skin.id === 'prisma') return accountShipProgressLoaded || secretShipUnlocks.has('prisma');
+    if (skin.profileRestricted) return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname());
     return Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(profileNickname())
       || secretShipUnlocks.has(skin.id)
       || accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id);
@@ -669,6 +684,7 @@
     if (skin.id === 'mahoraga') return 'E: escudo 3s, −90% · adapta tipos diferentes por 5 ondas, até −70%';
     if (skin.id === 'megumi') return 'E: 3 variações sombrias · recarga 20s→15s com melhorias · Q: Mahoraga por 5 ondas e uma vida extra · recarga de 45s';
     if (hasDeveloperPerks()) return 'sem recarga';
+    if (skin.id === 'flamestorm') return 'E: avanço flamejante por 1s · recarga 20s→14s · Q: vórtice por 3s · recarga 22s→16s';
     if (skin.id === 'prisma') return 'E e Q configuráveis no Arquivo de Ecos (G) · recarga própria até 20s · missão fora do placar';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q Paradoxo Absoluto 26s→18s';
     if (skin.id === 'chronos') return 'E 22s · Q 24s→18s · ecos 70%→100% por 6→8s';
@@ -682,6 +698,7 @@
   }
   function skinUnlocked(skin) {
     if (skin.hiddenFromHangar) return false;
+    if (skin.profileRestricted) return hasSecretShipAccess(skin);
     if (skin.id === 'megumi') return hasSecretShipAccess(skin);
     if (skin.ownerOnly) return hasSecretShipAccess(skin);
     if (isAllShipsProfile()) return true;
@@ -698,7 +715,7 @@
     if (!Array.isArray(value)) return [];
     return [...new Set(value.map(synchronizedShipId).filter((id) => {
       const skin = skins.find((item) => item.id === id);
-      return skin?.secret && !skin.ownerOnly;
+      return skin?.secret && !skin.ownerOnly && !skin.profileRestricted;
     }))];
   }
   function readSkin(preferredId = '') {
@@ -775,7 +792,7 @@
     const result = new Set(['aurora']);
     skins.forEach((skin) => {
       if (skin.hiddenFromHangar) return;
-      const unlocked = skin.ownerOnly ? hasSecretShipAccess(skin) : isAllShipsProfile()
+      const unlocked = skin.profileRestricted ? hasSecretShipAccess(skin) : skin.ownerOnly ? hasSecretShipAccess(skin) : isAllShipsProfile()
         || (skin.secret ? hasSecretShipAccess(skin)
           : isDeveloperProfile() || !skin.unlockWave || bestWave >= skin.unlockWave);
       if (unlocked) result.add(skin.id);
@@ -795,6 +812,7 @@
       const session = await window.CV_GAMES_AUTH.getOwnerSession();
       if (!session?.user?.id) return;
       accountUnlockedShipIds = new Set([...accountUnlockedShipIds, ...unlockedShipsAtWave(Math.max(readBestWave(), state.bestCompletedWave))]);
+      if (hasSecretShipAccess(skins.find((skin) => skin.id === 'flamestorm'))) accountUnlockedShipIds.add('flamestorm');
       const unlockedCodes = [...accountUnlockedShipIds].filter((id) => !skins.find((skin) => skin.id === id)?.hiddenFromHangar).map((id) => shipCodeById[id]).filter(Number.isInteger).sort((a, b) => a - b);
       const selectedCode = shipCodeById[state.selectedSkin] || 1;
       const { error } = await window.CV_GAMES_AUTH.client.from('starfall_profiles').upsert({
@@ -819,12 +837,16 @@
         .select('unlocked_ships,selected_ship,best_completed_wave')
         .eq('user_id', session.user.id).maybeSingle();
       if (error) throw error;
-      const cloudIds = new Set((data?.unlocked_ships || []).map((code) => shipIdByCode[Number(code)]).filter((id) => id && !skins.find((skin) => skin.id === id)?.hiddenFromHangar));
+      const cloudIds = new Set((data?.unlocked_ships || []).map((code) => shipIdByCode[Number(code)]).filter((id) => {
+        const ship = skins.find((skin) => skin.id === id);
+        return ship && !ship.hiddenFromHangar && (!ship.profileRestricted || hasSecretShipAccess(ship));
+      }));
       const bestWave = Math.max(readBestWave(), state.bestCompletedWave, Number(data?.best_completed_wave) || 0);
       saveNicknameCompletedWave('educvv', Number(data?.best_completed_wave) || 0);
       state.bestCompletedWave = bestWave;
       accountShipProgressLoaded = true;
       accountUnlockedShipIds = new Set([...cloudIds, ...unlockedShipsAtWave(bestWave)]);
+      if (hasSecretShipAccess(skins.find((skin) => skin.id === 'flamestorm'))) accountUnlockedShipIds.add('flamestorm');
       const rawCloudSelected = data ? shipIdByCode[Number(data.selected_ship)] : '';
       const cloudSelected = rawCloudSelected === 'mahoraga' ? 'megumi' : rawCloudSelected;
       const localSelected = state.selectedSkin;
@@ -888,6 +910,7 @@
       : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon starfall-dino-image-wrap" aria-hidden="true"><img src="saurion-raptor-skill.png" alt=""></span>'
       : skin.shape === 'prism' ? '<span class="starfall-equipped-icon starfall-prism-icon" aria-hidden="true">◇</span>'
       : skin.shape === 'megumi' ? '<span class="starfall-equipped-icon starfall-umbra-icon" aria-hidden="true"><img src="umbra-ship.png" alt=""></span>'
+      : skin.shape === 'flamestorm' ? '<span class="starfall-equipped-icon starfall-flamestorm-icon" aria-hidden="true"><img src="flamestorm-ship-normal.jpeg" alt=""></span>'
       : skin.shape === 'mahoraga' ? '<span class="starfall-equipped-icon starfall-mahoraga-sprite" aria-hidden="true"><img src="mahoraga-ship.png" alt=""></span>'
       : skin.shape === 'reflector' ? '<span class="starfall-equipped-icon starfall-redshift-icon" aria-hidden="true">' + bastiaoShipSvg(skin.color,skin.accent) + '</span>'
       : '<svg class="starfall-equipped-icon' + (skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-megumi-icon' : '') + '" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : skin.shape === 'mahoraga' ? '<circle cx="20" cy="5" r="5" fill="#2b343e" stroke="#e4c477" stroke-width="1.2"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#f4ecdb" stroke-width=".9"/><circle cx="20" cy="5" r="1.5" fill="#e4c477"/>' : skin.shape === 'megumi' ? '<circle cx="20" cy="5" r="5" fill="#211a2f" stroke="#c4b2e8" stroke-width="1"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#eee6ff" stroke-width=".7"/><circle cx="20" cy="5" r="1.5" fill="#c4b2e8"/>' : '') + '</svg>';
@@ -1196,17 +1219,19 @@
     const showAbility = ['playing', 'paused'].includes(state.mode);
     const isMahoraga = skin.id === 'mahoraga';
     const isMegumi = skin.id === 'megumi';
+    const isFlameStorm = skin.id === 'flamestorm';
     const megumiE = megumiTechnique();
     const isSaurion = skin.id === 'saurion';
     const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isSaurion ? state.dinoRoarCharges > 0 : state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
-    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic');
+    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0);
     if (ui.abilityWrap) ui.abilityWrap.hidden = !showAbility;
     if (ui.ability) {
       ui.ability.classList.remove('is-prisma');
       ui.ability.classList.toggle('is-mahoraga', isMahoraga);
       ui.ability.classList.toggle('is-megumi', isMegumi);
+      ui.ability.classList.toggle('is-flamestorm', isFlameStorm);
       ui.ability.style.setProperty('--ship-color', skin.color);
       ui.ability.style.setProperty('--ship-accent', skin.accent);
       ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
@@ -1215,14 +1240,17 @@
       ui.ability.setAttribute('aria-pressed', String(active));
       if (isMahoraga) {
         if (ui.ability.firstChild !== mahoragaAdaptationIcon) ui.ability.replaceChildren(mahoragaAdaptationIcon);
+      } else if (isFlameStorm) {
+        if (ui.ability.firstChild !== flameStormBoostIcon) ui.ability.replaceChildren(flameStormBoostIcon);
       } else {
         ui.ability.textContent = isMegumi ? megumiE.icon : '✦';
       }
-      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 90% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 90% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isSaurion ? ready ? 'Rugido de Garras · ' + state.dinoRoarCharges + ' de 2 cargas · tecla E' : 'Rugido de Garras recarregando: próxima carga em ' + Math.ceil(state.dinoRoarRecharge) + ' segundos' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
+      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 90% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 90% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos' : ready ? 'Ativar Propulsão Infernal · avanço flamejante por 1 segundo · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isSaurion ? ready ? 'Rugido de Garras · ' + state.dinoRoarCharges + ' de 2 cargas · tecla E' : 'Rugido de Garras recarregando: próxima carga em ' + Math.ceil(state.dinoRoarRecharge) + ' segundos' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
       const eCountdown = isMegumi
         ? state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown)) : megumiE.short
         : isMahoraga
         ? state.mahoragaParryWindow > 0 ? String(Math.ceil(state.mahoragaParryWindow)) : state.mahoragaParryCooldown > 0 ? state.mahoragaParryCooldown.toFixed(1).replace('.', ',') : state.mahoragaWheelReady ? '8/8' : ''
+        : isFlameStorm && state.flameStormDash?.life > 0 ? state.flameStormDash.life.toFixed(1).replace('.', ',')
         : isSaurion
         ? state.dinoRoarCharges > 0 ? String(state.dinoRoarCharges) : String(Math.ceil(state.dinoRoarRecharge))
         : !hasDeveloperPerks() && state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown))
@@ -1232,7 +1260,7 @@
         ui.abilityCooldown.hidden = !eCountdown;
       }
       ui.ability.classList.toggle('is-counting', Boolean(eCountdown));
-      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −90% dano; adapta tipos diferentes por cinco ondas até 70%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
+      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −90% dano; adapta tipos diferentes por cinco ondas até 70%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Avanço rápido por 1s, trilha de fogo que causa dano. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
       const isAurora = skin.id === 'aurora';
@@ -1245,9 +1273,10 @@
       const isTempest = skin.id === 'tempest';
       const isMahoraga = skin.id === 'mahoraga';
       const isMegumi = skin.id === 'megumi';
+      const isFlameStorm = skin.id === 'flamestorm';
       ui.eclipseQWrap.style.setProperty('--ship-accent', skin.accent);
       ui.eclipseQWrap.style.setProperty('--ship-color', skin.color);
-      const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest || isMahoraga || isMegumi) && ['playing', 'paused'].includes(state.mode);
+      const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest || isMahoraga || isMegumi || isFlameStorm) && ['playing', 'paused'].includes(state.mode);
       const auroraLinkTime = auroraLinkDuration();
       const auroraLinkCooldown = auroraLinkCooldownDuration();
       const auroraLinkTargets = auroraLinkMaxTargets();
@@ -1269,13 +1298,14 @@
       const tempestTideMax = tempestTideMaxCharges();
       const stampedeRemaining = state.effects.reduce((remaining, effect) => effect.type === 'dino-raptor' ? Math.max(remaining, effect.life) : remaining, 0);
       const tideRemaining = state.effects.reduce((remaining, effect) => effect.type === 'tempest-tide' ? Math.max(remaining, effect.life) : remaining, 0);
-      const qActive = isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion && stampedeRemaining > 0;
-      const qCooldown = isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseParadoxCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : state.dinoStampedeRecharge;
+      const qActive = isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion ? stampedeRemaining > 0 : isFlameStorm && state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
+      const qCooldown = isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseParadoxCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : isFlameStorm ? state.flameStormQCooldown : state.dinoStampedeRecharge;
       const dinoCharges = hasDeveloperPerks() ? 3 : state.dinoStampedeCharges;
-      const qReady = (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
+      const qReady = (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
-      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade) && qActive) || !qReady;
-      ui.eclipseQ.textContent = isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
+      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
+      if (isFlameStorm) { if (ui.eclipseQ.firstChild !== flameStormVortexSprite) ui.eclipseQ.replaceChildren(flameStormVortexSprite); }
+      else ui.eclipseQ.textContent = isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
       ui.eclipseQ.classList.toggle('is-aurora', isAurora);
       ui.eclipseQ.classList.toggle('is-aegis', isAegis);
       ui.eclipseQ.classList.toggle('is-chronos', isChronos);
@@ -1285,6 +1315,7 @@
       ui.eclipseQ.classList.toggle('is-tempest', isTempest);
       ui.eclipseQ.classList.toggle('is-mahoraga', isMahoraga);
       ui.eclipseQ.classList.toggle('is-megumi', isMegumi);
+      ui.eclipseQ.classList.toggle('is-flamestorm', isFlameStorm);
       ui.eclipseQ.classList.remove('is-prisma');
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
       const qLabel = isMegumi && state.megumiSummonPhase === 'cinematic' ? 'Ritual do Guardião em andamento'
@@ -1296,12 +1327,15 @@
         : qActive && isChronos ? 'Eco do Futuro ativo por mais ' + Math.ceil(state.chronosEcho.life) + ' segundos'
         : qActive && isRedshift ? 'Perímetro de Cerco ativo por mais ' + Math.ceil(state.redshiftPerimeter.life) + ' segundos'
           : qActive && isFlashblade ? 'Rastro de Ruptura ativo por mais ' + Math.ceil(state.flashTrail.life) + ' segundos'
-            : qActive && isTempest ? 'Maré Reversa ativa · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas'
-               : !qReady ? isMahoraga ? 'Espada da Exterminação recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Paradoxo Absoluto recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando todas as cargas: ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
+        : qActive && isTempest ? 'Maré Reversa ativa · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas'
+               : qActive && isFlameStorm ? 'Vórtice Carmesim ativo por mais ' + Math.ceil(state.effects.find((effect) => effect.type === 'flamestorm-vortex')?.life || 0) + ' segundos · puxando e queimando inimigos'
+               : !qReady ? isMahoraga ? 'Espada da Exterminação recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Paradoxo Absoluto recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando todas as cargas: ' + Math.ceil(qCooldown) + ' segundos' : isFlameStorm ? 'Vórtice Carmesim recarregando: ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
+                : isFlameStorm ? 'Ativar Vórtice Carmesim · tecla Q · tornado de 3 segundos que gira ao redor da nave, puxa inimigos e causa dano em pulsos'
                 : isMahoraga ? 'Espada da Exterminação · tecla Q · talho mundial em onda atravessa a arena, destrói tiros e atinge até oito alvos; 20 de dano no primeiro, 10 nos seguintes e dano reduzido contra chefes'
                    : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Paradoxo Absoluto · tecla Q · distorção por toda a tela durante ' + paradoxDuration + 's; desacelera, interrompe ataques e sentencia os alvos no colapso · recarga ' + paradoxCooldown + 's' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
       ui.eclipseQ.title = isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por cinco ondas com uma vida extra · recarga de 45s depois que termina'
+        : isFlameStorm ? 'Vórtice Carmesim · Q · atrai inimigos próximos e causa dano por 3s · recarga de ' + Math.max(16, 22 - upgradeLevel('cooldown') * 1.2) + 's'
         : isMahoraga ? 'Espada da Exterminação · Q · onda de corte atravessa a tela e destrói tiros no trajeto · até oito alvos, 20 de dano no primeiro e 10 nos seguintes; chefes recebem 72% do dano · marca aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
         : isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · cada vida perdida pela nave causa 2 de dano aos alvos conectados · dano do pulso ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
         : isAegis ? 'Órbitas Sentinelas · Q · proteção do núcleo · fragmentos intactos atacam ao final · ' + aegisOrbitCount + ' fragmentos · duração ' + aegisOrbitTime + 's · dano convertido ' + (2 + state.aegisOrbitDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + aegisOrbitCooldown + 's'
@@ -1318,7 +1352,7 @@
               : isRedshift ? state.redshiftPerimeter?.life || 0
                 : isFlashblade ? state.flashTrail?.life || 0
                   : isTempest ? tideRemaining
-                    : isSaurion ? stampedeRemaining : 0;
+          : isSaurion ? stampedeRemaining : isFlameStorm && qActive ? state.effects.find((effect) => effect.type === 'flamestorm-vortex')?.life || 0 : 0;
       const qCountdown = qActive && isEclipse && qActiveRemaining > 0
         ? String(Math.ceil(qActiveRemaining))
         : isTempest
@@ -1336,7 +1370,7 @@
   function prismAbilityGlyph(choice = state.prismAbilityChoices.e) {
     const { shipId, key } = prismChoiceParts(choice);
     if (shipId === 'prisma') return key === 'q' ? '⌖' : '✧';
-    const glyphs = { aurora:{ e:'✴', q:'✧' }, aegis:{ e:'⬡', q:'⬡' }, chronos:{ e:'◷', q:'◌' }, tempest:{ e:'◉', q:'↗' }, flashblade:{ e:'✧', q:'〰' }, redshift:{ e:'◈', q:'△' }, eclipse:{ e:'◉', q:'◌' }, saurion:{ e:'〰', q:'🐾' }, mahoraga:{ e:'☸', q:'斬' }, megumi:{ e:'影', q:'召' } };
+    const glyphs = { aurora:{ e:'✴', q:'✧' }, aegis:{ e:'⬡', q:'⬡' }, chronos:{ e:'◷', q:'◌' }, tempest:{ e:'◉', q:'↗' }, flashblade:{ e:'✧', q:'〰' }, redshift:{ e:'◈', q:'△' }, eclipse:{ e:'◉', q:'◌' }, saurion:{ e:'〰', q:'🐾' }, mahoraga:{ e:'☸', q:'斬' }, megumi:{ e:'影', q:'召' }, flamestorm:{ e:'🔥', q:'🌀' } };
     return glyphs[shipId]?.[key] || '✧';
   }
   function updatePrismAbilityButton() {
@@ -1355,7 +1389,7 @@
       ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
       ui.ability.style.setProperty('--ship-accent-rgb', colorRgbTriplet(skin.accent));
       ui.ability.classList.add('is-prisma');
-      ui.ability.classList.remove('is-mahoraga','is-megumi');
+      ui.ability.classList.remove('is-mahoraga','is-megumi','is-flamestorm');
       ui.ability.disabled = !canUse;
       ui.ability.textContent = prismAbilityGlyph();
       ui.ability.setAttribute('aria-pressed', String(active));
@@ -1372,7 +1406,7 @@
       const qTimer = prismSlotCooldown('q');
       const qCountdown = !hasDeveloperPerks() && qTimer > 0 ? String(Math.ceil(qTimer)) : '';
       ui.eclipseQWrap.hidden = !show;
-      ui.eclipseQ.classList.remove('is-aurora','is-aegis','is-chronos','is-saurion','is-redshift','is-flashblade','is-tempest','is-mahoraga','is-megumi');
+      ui.eclipseQ.classList.remove('is-aurora','is-aegis','is-chronos','is-saurion','is-redshift','is-flashblade','is-tempest','is-mahoraga','is-megumi','is-flamestorm');
       ui.eclipseQ.classList.add('is-prisma');
       ui.eclipseQ.textContent = prismAbilityGlyph(state.prismAbilityChoices.q);
       ui.eclipseQ.disabled = !qCanUse || state.eclipsePhase === 'cinematic' || state.megumiSummonPhase === 'cinematic';
@@ -1408,6 +1442,8 @@
   }
   function grantSecretShipUnlock(shipId) {
     if (!skins.some((skin) => skin.secret && skin.id === shipId)) return;
+    const restrictedSkin = skins.find((skin) => skin.id === shipId);
+    if (restrictedSkin?.profileRestricted && !hasSecretShipAccess(restrictedSkin)) return;
     secretShipUnlocks.add(shipId);
     saveSecretShipUnlocks();
     saveNicknameSettings();
@@ -1489,6 +1525,7 @@
     ui.skinPicker.replaceChildren();
     skins.forEach((skin) => {
       if (skin.hiddenFromHangar) return;
+      if (skin.profileRestricted && !skinUnlocked(skin)) return;
       const unlocked = skinUnlocked(skin);
       const concealed = Boolean(skin.ownerOnly && !unlocked);
       const card = document.createElement('article');
@@ -1507,6 +1544,7 @@
       if (concealed) icon.textContent = '?';
       else if (skin.shape === 'dino') { const image = document.createElement('img'); image.src = 'saurion-raptor-skill.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'megumi') { const image = document.createElement('img'); image.src = 'umbra-ship.png'; image.alt = ''; icon.append(image); }
+      else if (skin.shape === 'flamestorm') { icon.classList.add('starfall-flamestorm-icon'); const image = document.createElement('img'); image.src = 'flamestorm-ship-normal.jpeg'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'mahoraga') icon.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 22L31 26L38 30L34 35L30 33L29 40L26 39L24 47L22 39L19 40L18 33L14 35L10 30L17 26Z" fill="#c9d0cf" stroke="#39434c" stroke-width="1.8" stroke-linejoin="round"/><circle cx="24" cy="12" r="9.5" fill="#29333d" stroke="#e4c477" stroke-width="1.8"/><circle cx="24" cy="12" r="6.2" fill="none" stroke="#eee7d8" stroke-width="1"/><path d="M24 4V20M16 12H32M18.4 6.4L29.6 17.6M29.6 6.4L18.4 17.6" fill="none" stroke="#f2ebdc" stroke-width="1.3" stroke-linecap="round"/><g fill="#e4c477" stroke="#f7efdc" stroke-width=".7"><circle cx="24" cy="1.5" r="1.7"/><circle cx="31.4" cy="4.6" r="1.7"/><circle cx="34.5" cy="12" r="1.7"/><circle cx="31.4" cy="19.4" r="1.7"/><circle cx="24" cy="22.5" r="1.7"/><circle cx="16.6" cy="19.4" r="1.7"/><circle cx="13.5" cy="12" r="1.7"/><circle cx="16.6" cy="4.6" r="1.7"/></g></svg>';
       else if (skin.shape === 'reflector') icon.innerHTML = bastiaoShipSvg(skin.color,skin.accent);
       else if (usesHangarHull) icon.innerHTML = hangarShipSvg(skin);
@@ -1555,7 +1593,7 @@
         }
       });
       let specialUnlock = null;
-      if (skin.secret && !unlocked && skin.id !== 'prisma') {
+      if (skin.secret && !skin.profileRestricted && !unlocked && skin.id !== 'prisma') {
         specialUnlock = document.createElement('button');
         specialUnlock.type = 'button';
         specialUnlock.className = 'starfall-special-unlock';
@@ -1621,6 +1659,7 @@
     state.trainingDamageRemainder = 0;
     state.player = { x: state.width / 2, y: state.height * .78, radius: mobileSize(13), speed: skin.id === 'training' ? 234 : 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0; state.adminNoCooldown = isDeveloperProfile(); state.adminBuffsActive = false;
+    state.flameStormQCooldown = 0; state.flameStormDash = null;
     state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaShieldHitCooldown = 0; state.mahoragaResistanceType = ''; state.mahoragaResistanceUntilWave = 0; state.mahoragaResistancePower = 0; state.mahoragaCycleStartWave = state.wave; state.mahoragaWheelSegments = 0; state.mahoragaWheelReady = false; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptationLevels = {}; state.mahoragaAdaptationWaves = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = ''; state.mahoragaDuplicateBuffTime = 0; state.mahoragaDuplicateBuffBonus = 0; state.mahoragaReviveUsed = false;
     if (mahoragaAwakeningTimer) window.clearTimeout(mahoragaAwakeningTimer);
     if (ui.mahoragaAwakening) { ui.mahoragaAwakening.hidden = true; ui.mahoragaAwakening.classList.remove('is-visible'); }
@@ -2819,6 +2858,8 @@
   function prismChoiceCanActivate(slot = 'e') {
     if (state.mode !== 'playing') return false;
     const { shipId, key } = prismChoiceParts(state.prismAbilityChoices[slot]);
+    const selectedShip = skins.find((skin) => skin.id === shipId);
+    if (!selectedShip || selectedShip.profileRestricted && !hasSecretShipAccess(selectedShip)) return false;
     const returning = shipId === 'prisma' && key === 'q' && state.prismHorizonAnchor?.life > 0;
     if (returning) return true;
     if (!hasDeveloperPerks() && prismSlotCooldown(slot) > 0) return false;
@@ -2837,7 +2878,7 @@
   }
   function prismChoiceIcon(skin, key) {
     if (skin.id === 'prisma') return key === 'q' ? '⌖' : '✧';
-    return ({ aurora:{e:'✴',q:'✧'}, aegis:{e:'⬡',q:'⬡'}, chronos:{e:'◷',q:'◌'}, tempest:{e:'◉',q:'↗'}, flashblade:{e:'✧',q:'〰'}, redshift:{e:'◈',q:'△'}, eclipse:{e:'◉',q:'◌'}, saurion:{e:'〰',q:'🐾'}, mahoraga:{e:'☸',q:'斬'}, megumi:{e:'影',q:'召'} })[skin.id]?.[key] || '✦';
+    return ({ aurora:{e:'✴',q:'✧'}, aegis:{e:'⬡',q:'⬡'}, chronos:{e:'◷',q:'◌'}, tempest:{e:'◉',q:'↗'}, flashblade:{e:'✧',q:'〰'}, redshift:{e:'◈',q:'△'}, eclipse:{e:'◉',q:'◌'}, saurion:{e:'〰',q:'🐾'}, mahoraga:{e:'☸',q:'斬'}, megumi:{e:'影',q:'召'}, flamestorm:{e:'🔥',q:'🌀'} })[skin.id]?.[key] || '✦';
   }
   function renderPrismWheel() {
     if (!ui.prismAbilityList) return;
@@ -2850,7 +2891,7 @@
       : 'Escolha o poder do espaço ' + slot.toUpperCase() + '. Depois configure o outro espaço, se quiser.';
     document.querySelectorAll('[data-prism-slot]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.prismSlot === slot)));
     skins.forEach((skin) => {
-      if (skin.noAbilities || skin.hiddenFromHangar) return;
+      if (skin.noAbilities || skin.hiddenFromHangar || skin.profileRestricted && !hasSecretShipAccess(skin)) return;
       const group = document.createElement('section');
       group.className = 'starfall-prism-ship-group' + (skin.id === 'prisma' ? ' is-native' : '');
       const heading = document.createElement('h3'); heading.textContent = skin.id === 'prisma' ? 'PRISMA REAL · PODERES PRÓPRIOS' : skin.name;
@@ -2994,7 +3035,7 @@
         const qCooldownFields = {
           aurora:'auroraLinkCooldown', aegis:'aegisOrbitCooldown', eclipse:'eclipseParadoxCooldown',
           chronos:'chronosEchoCooldown', redshift:'redshiftPerimeterCooldown', flashblade:'flashTrailCooldown',
-          tempest:'tempestTideCooldown', saurion:'dinoStampedeRecharge'
+          tempest:'tempestTideCooldown', saurion:'dinoStampedeRecharge', flamestorm:'flameStormQCooldown'
         };
         const cooldownField = qCooldownFields[shipId];
         if (cooldownField) state[cooldownField] = 0;
@@ -3023,6 +3064,34 @@
     else if (currentSkin().id === 'flashblade') activateFlashTrail();
     else if (currentSkin().id === 'saurion') activateDinoStampede();
     else if (currentSkin().id === 'tempest') activateTempestTide();
+    else if (currentSkin().id === 'flamestorm') activateFlameStormVortex();
+  }
+  function flameStormVortexCooldownDuration() { return Math.max(16, 22 - upgradeLevel('cooldown') * 1.2); }
+  function activateFlameStormVortex() {
+    if (currentSkin().id !== 'flamestorm' || state.mode !== 'playing' || state.flameStormQCooldown > 0 || state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0)) return;
+    const skin = currentSkin();
+    state.flameStormQCooldown = hasDeveloperPerks() ? 0 : flameStormVortexCooldownDuration();
+    state.effects.push({ type:'flamestorm-vortex', x:state.player.x, y:state.player.y, life:3, total:3, radius:mobileSize(265), damageClock:.08, rotation:0 });
+    burst(state.player.x, state.player.y, '#ff2c32', 48, 235);
+    burst(state.player.x, state.player.y, '#ffc07a', 22, 155);
+    recordAchievementEvent('ship-ability', skin.id);
+    toast('VÓRTICE CARMESIM · ALVOS PUXADOS');
+    tone(118, .36, 'sawtooth', .045);
+    updateAbilityButton();
+  }
+  function activateFlameStormBoost() {
+    if (currentSkin().id !== 'flamestorm' || state.mode !== 'playing' || state.abilityCooldown > 0 || state.flameStormDash?.life > 0) return;
+    const skin = currentSkin();
+    const angle = Number.isFinite(state.player.angle) ? state.player.angle : -Math.PI / 2;
+    state.flameStormDash = { life:1, total:1, angle };
+    state.abilityCooldown = hasDeveloperPerks() ? 0 : state.abilityBaseCooldown || skin.cooldown;
+    state.effects.push({ type:'flamestorm-trail', x:state.player.x, y:state.player.y, life:1.6, total:1.6, width:mobileSize(28), damage:7.5 * state.abilityPower, points:[{ x:state.player.x, y:state.player.y }], hitCooldowns:new Map(), ownerDash:state.flameStormDash });
+    burst(state.player.x, state.player.y, '#ff312e', 24, 185);
+    burst(state.player.x, state.player.y, '#ffd07b', 14, 125);
+    recordAchievementEvent('ship-ability', skin.id);
+    toast('PROPULSÃO INFERNAL · AVANÇO');
+    tone(196, .24, 'sawtooth', .05);
+    updateAbilityButton();
   }
   function deactivateMahoragaForm({ expired = false, deathReturn = false } = {}) {
     if (!state.megumiTransformed || !['playing','paused','upgrade'].includes(state.mode)) return false;
@@ -3257,7 +3326,7 @@
   }
   function shipRechargeIcon(which, skin = currentSkin()) {
     if (which !== 'q') return '✦';
-    return ({ aurora:'✴', aegis:'⬡', eclipse:'◉', chronos:'◷', tempest:'↗', flashblade:'✧', redshift:'△', saurion:'✦' })[skin.id] || '✦';
+    return ({ aurora:'✴', aegis:'⬡', eclipse:'◉', chronos:'◷', tempest:'↗', flashblade:'✧', redshift:'△', saurion:'✦', flamestorm:'🌀' })[skin.id] || '✦';
   }
   function shipQRechargeState(skin = currentSkin()) {
     if (skin.id === 'aurora') return { cooldown: state.auroraLinkCooldown, charges: null };
@@ -3268,6 +3337,7 @@
     if (skin.id === 'flashblade') return { cooldown: state.flashTrailCooldown, charges: null };
     if (skin.id === 'redshift') return { cooldown: state.redshiftPerimeterCooldown, charges: null };
     if (skin.id === 'saurion') return { cooldown: state.dinoStampedeRecharge, charges: state.dinoStampedeCharges };
+    if (skin.id === 'flamestorm') return { cooldown: state.flameStormQCooldown, charges: null };
     return { cooldown: 0, charges: null };
   }
   function showShipRechargeFlash(which, iconOffsetX = 0, skin = currentSkin()) {
@@ -3738,6 +3808,10 @@
       activateSaurionRoar();
       return;
     }
+    if (skin.id === 'flamestorm') {
+      activateFlameStormBoost();
+      return;
+    }
     if (!developerProfile && state.abilityCooldown > 0) return;
     if (skin.id === 'eclipse' && state.eclipsePhase !== 'idle') return;
     const eclipseComboActive = skin.id === 'eclipse' && state.eclipseParadox?.life > 0;
@@ -3802,6 +3876,7 @@
     state.shotCooldown -= dt;
     state.powerSpawn -= dt;
     state.abilityCooldown = Math.max(0, state.abilityCooldown - dt);
+    state.flameStormQCooldown = hasDeveloperPerks() ? 0 : Math.max(0, state.flameStormQCooldown - dt);
     state.megumiSummonCooldown = Math.max(0, state.megumiSummonCooldown - dt);
     if (state.megumiCloakTime > 0) {
       state.megumiCloakTime = Math.max(0, state.megumiCloakTime - dt);
@@ -3861,6 +3936,8 @@
       const inputLength = Math.hypot(dx, dy);
       if (inputLength > 1) { dx /= inputLength; dy /= inputLength; }
     }
+    const flameStormDashActive = currentSkin().id === 'flamestorm' && state.flameStormDash?.life > 0;
+    if (flameStormDashActive) { dx = Math.cos(state.flameStormDash.angle); dy = Math.sin(state.flameStormDash.angle); }
     if (dx !== 0 || dy !== 0) {
       // Quantiza a direção do movimento em oito ângulos de 45 graus.
       const eighthTurn = Math.PI / 4;
@@ -3871,7 +3948,7 @@
     const hullSpeed = state.lives <= 2 ? 1 + state.lowHullBoost * .12 : 1;
     const flashbladeDash = abilitySourceIs('flashblade') && state.flashTrail?.life > 0;
     const normalMoveSpeed = Math.min(525, state.player.speed + state.endlessSpeed);
-    const moveSpeed = normalMoveSpeed * (flashbladeDash ? 2.6 : 1);
+    const moveSpeed = normalMoveSpeed * (flameStormDashActive ? 3 : flashbladeDash ? 2.6 : 1);
     if (megumiShadowCloakActive()) {
       const minX = 17, minY = 17, spanX = Math.max(1, state.width - 34), spanY = Math.max(1, state.height - 34);
       state.player.x = minX + ((state.player.x - minX + (dx / norm) * moveSpeed * hullSpeed * dt) % spanX + spanX) % spanX;
@@ -3879,6 +3956,12 @@
     } else {
       state.player.x = clamp(state.player.x + (dx / norm) * moveSpeed * hullSpeed * dt, 17, state.width - 17);
       state.player.y = clamp(state.player.y + (dy / norm) * moveSpeed * hullSpeed * dt, 17, state.height - 17);
+    }
+    if (flameStormDashActive) {
+      state.flameStormDash.life = Math.max(0, state.flameStormDash.life - dt);
+      const trail = state.effects.find((effect) => effect.type === 'flamestorm-trail' && effect.ownerDash === state.flameStormDash);
+      if (trail) trail.points.push({ x:state.player.x, y:state.player.y });
+      if (state.flameStormDash.life <= 0) state.flameStormDash = null;
     }
     for (const rabbit of state.megumiRabbits) {
       rabbit.life -= dt; rabbit.turnTimer -= dt;
@@ -4142,7 +4225,43 @@
     const currentFlashTrailContacts = new Set();
     for (const effect of state.effects) {
       effect.life -= dt;
-      if (effect.type === 'flash-trail' && effect.life > 0) {
+      if (effect.type === 'flamestorm-vortex' && effect.life > 0) {
+        effect.x = state.player.x; effect.y = state.player.y; effect.rotation += dt * 8.2; effect.damageClock -= dt;
+        for (const enemy of state.enemies) {
+          if (enemy.dead) continue;
+          const dx = effect.x - enemy.x, dy = effect.y - enemy.y, d = Math.hypot(dx, dy) || 1;
+          if (d > effect.radius + enemy.r) continue;
+          const pull = (250 + clamp(1 - d / effect.radius, 0, 1) * 410) * (enemy.kind === 'boss' ? .42 : 1) * dt;
+          enemy.x = clamp(enemy.x + dx / d * pull, enemy.r, state.width - enemy.r);
+          enemy.y = clamp(enemy.y + dy / d * pull, enemy.r, state.height - enemy.r);
+          enemy.angle += dt * (enemy.kind === 'boss' ? 2.4 : 5.2);
+        }
+        if (effect.damageClock <= 0) {
+          effect.damageClock = .44;
+          for (const enemy of state.enemies) {
+            if (enemy.dead || distance(effect, enemy) > effect.radius + enemy.r) continue;
+            const damage = 5.8 * state.abilityPower * (enemy.kind === 'boss' ? .55 : 1);
+            damageEnemy(enemy, damage, true);
+            burst(enemy.x, enemy.y, '#ff4b34', enemy.kind === 'boss' ? 7 : 4, enemy.kind === 'boss' ? 86 : 55);
+          }
+        }
+      } else if (effect.type === 'flamestorm-trail' && effect.life > 0) {
+        for (const [enemy, cooldown] of effect.hitCooldowns) {
+          if (enemy.dead || cooldown <= dt) effect.hitCooldowns.delete(enemy);
+          else effect.hitCooldowns.set(enemy, cooldown - dt);
+        }
+        for (const enemy of state.enemies) {
+          if (enemy.dead || effect.hitCooldowns.has(enemy)) continue;
+          let pathDistance = Infinity;
+          if (effect.points.length === 1) pathDistance = distance(enemy, effect.points[0]);
+          else for (let index = 1; index < effect.points.length; index++) pathDistance = Math.min(pathDistance, distanceToSegment(enemy, effect.points[index - 1], effect.points[index]));
+          if (pathDistance > effect.width + enemy.r) continue;
+          damageEnemy(enemy, effect.damage * (enemy.kind === 'boss' ? .58 : 1), true);
+          effect.hitCooldowns.set(enemy, .34);
+          burst(enemy.x, enemy.y, '#ff4931', 5, 66);
+          burst(enemy.x, enemy.y, '#ffd27a', 3, 42);
+        }
+      } else if (effect.type === 'flash-trail' && effect.life > 0) {
         for (const enemy of state.enemies) {
           if (enemy.dead || distanceToSegment(enemy, { x: effect.x1, y: effect.y1 }, { x: effect.x2, y: effect.y2 }) > enemy.r * .7 + effect.width) continue;
           const alreadyInContact = previousFlashTrailContacts.has(enemy) || currentFlashTrailContacts.has(enemy);
@@ -4548,6 +4667,39 @@
       ctx.restore();
       return;
     }
+    if (ship.shape === 'flamestorm') {
+      const now = performance.now();
+      const vortexActive = state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
+      if (vortexActive && flameStormBlazedSprite.complete && flameStormBlazedSprite.naturalWidth) {
+        ctx.rotate(now / 67);
+        const spriteSize = size * 3.35;
+        ctx.globalCompositeOperation = 'screen'; ctx.shadowBlur = 0;
+        ctx.drawImage(flameStormBlazedSprite, -spriteSize / 2, -spriteSize / 2, spriteSize, spriteSize);
+        ctx.restore();
+        return;
+      }
+      const boosting = state.flameStormDash?.life > 0;
+      const pulse = .88 + .12 * Math.sin(now / (boosting ? 28 : 64));
+      ctx.globalCompositeOperation = 'screen';
+      for (const side of [-1, 1]) {
+        const flameLength = size * (boosting ? 2.08 : .78) * pulse;
+        const flame = ctx.createLinearGradient(side * size * .42, size * 1.1, side * size * .42, size * 1.1 + flameLength);
+        flame.addColorStop(0, boosting ? 'rgba(255,244,198,.98)' : 'rgba(255,197,122,.86)');
+        flame.addColorStop(.2, 'rgba(255,103,42,.96)'); flame.addColorStop(.62, 'rgba(255,39,35,.78)'); flame.addColorStop(1, 'rgba(164,22,40,0)');
+        ctx.fillStyle = flame; ctx.beginPath(); ctx.moveTo(side * size * .42 - size * .16, size * 1.1); ctx.quadraticCurveTo(side * size * .42 - size * .25, size * 1.1 + flameLength * .58, side * size * .42, size * 1.1 + flameLength); ctx.quadraticCurveTo(side * size * .42 + size * .25, size * 1.1 + flameLength * .58, side * size * .42 + size * .16, size * 1.1); ctx.closePath(); ctx.fill();
+      }
+      if (flameStormNormalSprite.complete && flameStormNormalSprite.naturalWidth) {
+        const spriteWidth = size * 3.42, spriteHeight = spriteWidth * flameStormNormalSprite.naturalHeight / flameStormNormalSprite.naturalWidth;
+        ctx.save(); ctx.rotate(Math.PI / 2); ctx.globalCompositeOperation = 'screen'; ctx.shadowBlur = 0;
+        ctx.drawImage(flameStormNormalSprite, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight);
+        ctx.restore();
+      } else {
+        ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#24151d'; ctx.strokeStyle = ship.accent; ctx.lineWidth = Math.max(1.5, size * .09);
+        ctx.beginPath(); ctx.moveTo(0, -size * 1.55); ctx.lineTo(size * .82, size * .55); ctx.lineTo(0, size * .96); ctx.lineTo(-size * .82, size * .55); ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
+      ctx.restore();
+      return;
+    }
     if (ship.shape === 'mahoraga') {
       drawMahoragaShipLocal(size, ship.color, ship.accent, performance.now());
       ctx.restore();
@@ -4867,7 +5019,31 @@
     }
     for (const effect of state.effects) {
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
-      if (effect.type === 'eclipse-paradox-pulse') {
+      if (effect.type === 'flamestorm-vortex') {
+        const pulse = .9 + Math.sin(timestamp / 62) * .1;
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha * .76 * pulse; ctx.rotate(effect.rotation);
+        if (flameStormVortexSprite.complete && flameStormVortexSprite.naturalWidth) {
+          const width = effect.radius * 2.18, height = width * flameStormVortexSprite.naturalHeight / flameStormVortexSprite.naturalWidth;
+          ctx.drawImage(flameStormVortexSprite, -width / 2, -height / 2, width, height);
+        } else {
+          for (let arm = 0; arm < 4; arm++) { ctx.beginPath(); ctx.arc(0, 0, effect.radius * (.34 + arm * .16), arm * Math.PI * .5, arm * Math.PI * .5 + Math.PI * 1.42); ctx.strokeStyle = arm % 2 ? '#ffb164' : '#ff283d'; ctx.lineWidth = mobileSize(10 - arm); ctx.stroke(); }
+        }
+        ctx.rotate(-effect.rotation * 1.8); ctx.globalAlpha = alpha * .6; ctx.strokeStyle = '#ff493b'; ctx.lineWidth = mobileSize(2.4); ctx.shadowColor = '#ff342d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15);
+        ctx.beginPath(); ctx.arc(0, 0, effect.radius * (.91 + .035 * Math.sin(timestamp / 80)), 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .45; ctx.strokeStyle = '#ffd08a'; ctx.lineWidth = mobileSize(1.2); ctx.beginPath(); ctx.arc(0, 0, effect.radius * .76, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'flamestorm-trail') {
+        if (effect.points.length > 1) {
+          ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+          for (const [width, color, opacity] of [[effect.width * 2.4, 'rgba(255,42,32,.34)', .48], [effect.width * 1.15, 'rgba(255,104,32,.8)', .72], [effect.width * .42, 'rgba(255,221,133,.95)', .9]]) {
+            ctx.globalAlpha = alpha * opacity; ctx.strokeStyle = color; ctx.lineWidth = width;
+            ctx.shadowColor = '#ff372a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+            ctx.beginPath(); effect.points.forEach((point, index) => { if (index === 0) ctx.moveTo(point.x, point.y); else ctx.lineTo(point.x, point.y); }); ctx.stroke();
+          }
+          ctx.restore();
+        }
+      } else if (effect.type === 'eclipse-paradox-pulse') {
         const progress = 1 - alpha; const pulseRadius = effect.radius * (.28 + progress * .74);
         ctx.save(); ctx.globalAlpha = alpha * .72; ctx.lineCap = 'round'; ctx.strokeStyle = '#d9c2ff'; ctx.shadowColor = '#a56cff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
         ctx.lineWidth = mobileSize(4 * alpha + 1); ctx.beginPath(); ctx.arc(effect.x, effect.y, pulseRadius, 0, Math.PI * 2); ctx.stroke();
@@ -5580,6 +5756,12 @@
       const image = document.createElement('img');
       image.className = 'starfall-rank-ship-model starfall-rank-ship-image';
       image.src = 'eclipse-ship.png'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
+      return image;
+    }
+    if (skin.shape === 'flamestorm') {
+      const image = document.createElement('img');
+      image.className = 'starfall-rank-ship-model starfall-rank-ship-image starfall-rank-flamestorm-image';
+      image.src = 'flamestorm-ship-normal.jpeg'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
       return image;
     }
     if (skin.shape === 'dino') {
