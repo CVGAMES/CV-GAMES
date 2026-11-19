@@ -3095,7 +3095,7 @@
     const angle = Number.isFinite(state.player.angle) ? state.player.angle : -Math.PI / 2;
     state.flameStormDash = { life:2.4, total:2.4, angle };
     state.abilityCooldown = hasDeveloperPerks() ? 0 : state.abilityBaseCooldown || skin.cooldown;
-    state.effects.push({ type:'flamestorm-trail', x:state.player.x, y:state.player.y, life:2.7, total:2.7, width:mobileSize(40), damage:7.5 * state.abilityPower, points:[{ x:state.player.x, y:state.player.y }], hitCooldowns:new Map(), ownerDash:state.flameStormDash });
+    state.effects.push({ type:'flamestorm-trail', x:state.player.x, y:state.player.y, life:2.7, total:2.7, width:mobileSize(7), damage:7.5 * state.abilityPower, points:[{ x:state.player.x, y:state.player.y }], hitCooldowns:new Map(), ownerDash:state.flameStormDash });
     burst(state.player.x, state.player.y, '#ff312e', 24, 185);
     burst(state.player.x, state.player.y, '#ffd07b', 14, 125);
     recordAchievementEvent('ship-ability', skin.id);
@@ -3994,7 +3994,25 @@
     if (flameStormDashActive) {
       flameStormDash.life = Math.max(0, flameStormDash.life - dt);
       const trail = state.effects.find((effect) => effect.type === 'flamestorm-trail' && effect.ownerDash === flameStormDash);
-      if (trail) trail.points.push({ x:state.player.x, y:state.player.y });
+      if (trail) {
+        trail.points.push({ x:state.player.x, y:state.player.y });
+        const maxTrailLength = mobileSize(150);
+        let keptLength = 0;
+        for (let index = trail.points.length - 1; index > 0; index--) {
+          const from = trail.points[index - 1];
+          const to = trail.points[index];
+          const segmentLength = Math.hypot(to.x - from.x, to.y - from.y);
+          if (keptLength + segmentLength > maxTrailLength) {
+            const remaining = maxTrailLength - keptLength;
+            const fraction = segmentLength > 0 ? remaining / segmentLength : 0;
+            const trailStart = { x:to.x + (from.x - to.x) * fraction, y:to.y + (from.y - to.y) * fraction };
+            trail.points.splice(0, index);
+            trail.points.unshift(trailStart);
+            break;
+          }
+          keptLength += segmentLength;
+        }
+      }
       if (flameStormDash.life <= 0) state.flameStormDash = null;
     }
     for (const rabbit of state.megumiRabbits) {
@@ -4715,7 +4733,7 @@
           return;
         }
       }
-      if (state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0)) {
+      if (state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > .42)) {
         ctx.restore();
         return;
       }
@@ -5074,10 +5092,10 @@
         ctx.restore();
       } else if (effect.type === 'flamestorm-trail') {
         if (effect.points.length > 1) {
-          ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-          for (const [width, color, opacity] of [[effect.width * 2.4, 'rgba(255,42,32,.34)', .48], [effect.width * 1.15, 'rgba(255,104,32,.8)', .72], [effect.width * .42, 'rgba(255,221,133,.95)', .9]]) {
+          ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+          for (const [width, color, opacity] of [[effect.width * 2, 'rgba(13,7,13,.84)', .62], [effect.width * 1.15, 'rgba(116,8,29,.88)', .82], [effect.width * .48, 'rgba(244,35,53,.9)', .92]]) {
             ctx.globalAlpha = alpha * opacity; ctx.strokeStyle = color; ctx.lineWidth = width;
-            ctx.shadowColor = '#ff372a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+            ctx.shadowColor = '#b8132b'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(4);
             ctx.beginPath(); effect.points.forEach((point, index) => { if (index === 0) ctx.moveTo(point.x, point.y); else ctx.lineTo(point.x, point.y); }); ctx.stroke();
           }
           ctx.restore();
@@ -5560,8 +5578,9 @@
       drawMahoragaWheel(state.player.x, state.player.y, wheelRadius, timestamp / rotationSpeed, idleAlpha * wheelFade * wheelPulse, state.mahoragaWheelSegments, state.mahoragaWheelReady);
     }
     const playerSkin = currentSkin();
+    const flameStormQActive = playerSkin.id === 'flamestorm' && state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
     const keepMegumiVisible = playerSkin.id === 'megumi';
-    if (!eclipseActive && !megumiShadowCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || keepMegumiVisible || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, playerSkin, state.player.angle);
+    if (!eclipseActive && !megumiShadowCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || keepMegumiVisible || flameStormQActive || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, playerSkin, state.player.angle);
     if (currentSkin().id === 'mahoraga' && state.mahoragaParryWindow > 0) {
       const windowRatio = clamp(state.mahoragaParryWindow / 3, 0, 1);
       ctx.save(); ctx.globalAlpha = .46 + Math.sin(timestamp / 130) * .12; ctx.strokeStyle = '#f7e5bb'; ctx.lineWidth = mobileSize(2.4);
