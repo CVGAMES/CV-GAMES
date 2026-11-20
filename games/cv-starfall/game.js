@@ -149,11 +149,16 @@
     { name: 'Abismo Ciano', colors: ['#061f29', '#0a2633'], stars: '170,241,255' }
   ];
   const bossTypes = {
-    meteor: { name: 'Colosso de Cinzas', color: '#ff925f' },
-    drone: { name: 'Mãe de Enxame', color: '#ff5fa4' },
-    brute: { name: 'Titã Âmbar', color: '#ffcf69' },
-    hunter: { name: 'Espectro Roxo', color: '#b68aff' },
-    prism: { name: 'Prisma Rebote', color: '#71eaff' }
+    meteor: { name: 'Colosso de Cinzas', color: '#ff925f', attackCooldown:1.1 },
+    drone: { name: 'Mãe de Enxame', color: '#ff5fa4', attackCooldown:.76 },
+    brute: { name: 'Titã Âmbar', color: '#ffcf69', attackCooldown:1.1 },
+    hunter: { name: 'Espectro Roxo', color: '#b68aff', attackCooldown:.92 },
+    prism: { name: 'Prisma Rebote', color: '#71eaff', attackCooldown:.86 },
+    storm: { name: 'Arconte de Íons', color: '#67e8ff', attackCooldown:1.02 },
+    mine: { name: 'Semeador de Minas', color: '#ffad68', attackCooldown:1.42 },
+    lancer: { name: 'Lança Solar', color: '#ffe27a', attackCooldown:.94 },
+    mirror: { name: 'Espelho Fraturado', color: '#d0a0ff', attackCooldown:1.12 },
+    rift: { name: 'Rasgo Dimensional', color: '#ff79cf', attackCooldown:1.02 }
   };
   function detectMobileDevice() {
     const handheldAgent = navigator.userAgentData?.mobile === true || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -192,7 +197,7 @@
     player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: '#7df7e8' },
     pointer: { active: false, pointerId: null, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
-    waveDamageTaken: false, achievementProgress: null
+    waveDamageTaken: false, enemyDamageRemainders: {}, salvageHealsThisWave: 0, lastSalvageHealWave: 0, lastRepairUpgradeWave: 0, achievementProgress: null
   };
   try {
     const savedPrismChoice = localStorage.getItem(prismAbilityChoiceKey);
@@ -251,6 +256,13 @@
     const investedLevels = Object.values(state.upgrades).reduce((total, level) => total + level, 0);
     return Math.min(12, Math.floor(investedLevels / 5));
   }
+  function lateWavePressure() { return Math.max(0, state.wave - 40); }
+  function enemyWaveHpScale() { return 1 + lateWavePressure() * .026; }
+  function enemyWaveSpeedScale() { return 1 + lateWavePressure() * .002; }
+  function enemyWaveProjectileScale() { return 1 + lateWavePressure() * .006; }
+  function enemyWaveFireRateScale() { return Math.max(.52, 1 - lateWavePressure() * .006); }
+  function enemyWaveDamageScale() { return 1 + lateWavePressure() * .026; }
+  function wavePickupChance() { return Math.max(.12, 1 - lateWavePressure() * .014); }
   function enemyUpgradeHpScale() { return 1 + enemyUpgradeLevel() * .022; }
   function enemyUpgradeSpeedScale() { return 1 + enemyUpgradeLevel() * .006; }
   function enemyUpgradeAttackScale() { return 1 + enemyUpgradeLevel() * .008; }
@@ -260,7 +272,7 @@
     { id:'speed', icon:'➤', name:'Propulsores vetoriais', description:'Aumenta a velocidade da nave.', max:5, available:()=>state.player.speed<405&&upgradeLevel('speed')<5, apply:()=>{state.player.speed=Math.min(405,state.player.speed*1.1);} },
     { id:'rapid', icon:'⚡', name:'Recarga cinética', description:'Reduz o intervalo entre disparos.', max:7, available:()=>upgradeLevel('rapid')<7, apply:()=>{state.player.fireRate=Math.max(.19,state.player.fireRate*.93);} },
     { id:'spread', icon:'✦', name:'Canhões laterais', description:'Adiciona um disparo ao leque da nave.', max:4, available:()=>state.player.spread<5, apply:()=>{state.player.spread=Math.min(5,state.player.spread+1);} },
-    { id:'repair', icon:'♥', name:'Reparo de casco', description:'Recupera uma vida e concede proteção breve.', max:0, available:()=>state.lives<state.maxLives, apply:()=>{state.lives=Math.min(state.maxLives,state.lives+1);state.invulnerable=.8;} },
+    { id:'repair', icon:'♥', name:'Reparo de casco', description:'Recupera uma vida e concede proteção breve.', max:0, available:()=>state.lives<state.maxLives&&(state.wave<=40||state.wave-state.lastRepairUpgradeWave>=5), apply:()=>{state.lives=Math.min(state.maxLives,state.lives+1);state.invulnerable=.8;state.lastRepairUpgradeWave=state.wave;} },
     { id:'shield', icon:'⬡', name:'Escudo de energia', description:'Recupera uma carga de escudo, respeitando o limite total de sete.', max:4, available:()=>upgradeLevel('shield')<4&&canRestoreShield(), apply:()=>{restoreOneShield();} },
     { id:'pierce', icon:'⌁', name:'Projétil perfurante', description:'Cada tiro atravessa mais um inimigo.', max:3, available:()=>state.pierce<3, apply:()=>{state.pierce+=1;} },
     { id:'critical', icon:'✧', name:'Mira de precisão', description:'Aumenta a chance de causar dano crítico.', max:5, available:()=>state.critChance<.4, apply:()=>{state.critChance=Math.min(.4,state.critChance+.08);} },
@@ -1725,7 +1737,7 @@
     if (ui.pause) ui.pause.disabled = false;
     if (ui.stop) ui.stop.disabled = false;
     if (ui.megumiCutscene) { ui.megumiCutscene.hidden = true; ui.megumiCutscene.setAttribute('aria-hidden', 'true'); }
-    state.score = 0; state.wave = 1; state.lives = 3; state.maxLives = 6; state.shields = 0; state.tempShields = 0; state.invulnerable = 1.4; state.elapsed = 0; state.missionStartedAt = Date.now(); state.waveStartedAt = state.missionStartedAt; state.waveEndedAt = 0;
+    state.score = 0; state.wave = 1; state.lives = 3; state.maxLives = 6; state.shields = 0; state.tempShields = 0; state.invulnerable = 1.4; state.elapsed = 0; state.missionStartedAt = Date.now(); state.waveStartedAt = state.missionStartedAt; state.waveEndedAt = 0; state.lastRepairUpgradeWave = 0; state.salvageHealsThisWave = 0; state.lastSalvageHealWave = 0;
     state.shotCooldown = 0; state.automaticFireEnabled = true; state.waveGrace = .45; state.enemySpawn = .22; state.powerSpawn = 8; state.waveKills = 0;
     state.enemiesRequired = 9; state.bossWave = false; state.bossSpawned = false; state.miniBossTimer = 0; state.miniBossSpawned = false;
     state.bullets = []; state.enemyBullets = []; state.enemies = []; state.particles = []; state.pickups = []; state.effects = [];
@@ -2070,12 +2082,12 @@
   }
   function beginNextWave() {
     state.waveStartedAt = Date.now(); state.waveEndedAt = 0;
-    state.enemiesRequired = 10 + Math.floor(state.wave * 2.15) + Math.floor(state.wave / 10) * 3;
+    state.enemiesRequired = 10 + Math.floor(state.wave * 1.75) + Math.floor(state.wave / 10) * 2;
     state.waveKills = 0; state.bossWave = state.wave % 10 === 0; state.bossSpawned = false;
     const waveInCycle = state.wave % 10;
     state.miniBossSpawned = false; state.miniBossTimer = !state.bossWave && (waveInCycle === 4 || waveInCycle === 8) ? 3.5 : 0;
     state.enemySpawn = .31; state.waveGrace = .4; state.powerSpawn = 7.5;
-    state.waveDamageTaken = false;
+    state.waveDamageTaken = false; state.salvageHealsThisWave = 0;
     recordAchievementEvent('wave', state.wave);
     ui.status.textContent = state.bossWave ? `Onda ${state.wave}: sinal de guardião detectado!` : `Onda ${state.wave}: novos inimigos se aproximam.`;
     if (state.bossWave) toast(`GUARDIÃO NA ONDA ${state.wave}`);
@@ -2094,48 +2106,57 @@
     if (state.wave >= 6 && roll > .87) kind = 'brute';
     if (state.wave >= 4 && roll > .985 && !state.enemies.some((enemy) => enemy.kind === 'ricochet' && !enemy.dead)) kind = 'ricochet';
     const tier = Math.floor((state.wave - 1) / 10);
-    const multiplier = Math.min(3.6, 1 + (state.wave - 1) * .04 + tier * .12) * enemyUpgradeSpeedScale();
-    const hpScale = (1 + tier * .55 + Math.floor((state.wave - 1) / 20) * .3) * enemyUpgradeHpScale();
+    const multiplier = Math.min(2.45, 1 + (state.wave - 1) * .025 + tier * .08) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale();
+    const hpScale = (1 + tier * .68 + Math.floor((state.wave - 1) / 20) * .36) * enemyUpgradeHpScale() * enemyWaveHpScale();
     const config = {
       meteor: { r: random(15, 23, 'enemy') + Math.min(8, tier), hp: Math.ceil((2 + Math.floor(state.wave / 8)) * hpScale), speed: random(64, 92, 'enemy') * multiplier, score: 85, color: '#f6a26f' },
       drone: { r: 16 + Math.min(5, tier), hp: Math.ceil((3 + Math.floor(state.wave / 6)) * hpScale), speed: random(75, 102, 'enemy') * multiplier, score: 145, color: '#ff5fa4', shoot: random(1.05, 1.65, 'attack') },
-      hunter: { r: 14 + Math.min(4, tier), hp: Math.ceil((3 + Math.floor(state.wave / 5)) * hpScale), speed: Math.min(330, random(126, 153, 'enemy') * (1 + Math.min(state.wave - 1, 28) * .04)) * enemyUpgradeSpeedScale(), score: 185, color: '#b68aff' },
+      hunter: { r: 14 + Math.min(4, tier), hp: Math.ceil((3 + Math.floor(state.wave / 5)) * hpScale), speed: Math.min(245, random(126, 153, 'enemy') * (1 + Math.min(state.wave - 1, 28) * .025)) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale(), score: 185, color: '#b68aff' },
       brute: { r: 26 + Math.min(8, tier * 2), hp: Math.ceil((8 + Math.floor(state.wave / 3)) * hpScale), speed: 49 * multiplier, score: 280, color: '#ffcf69', shoot: 1.55 },
       ricochet: { r: 17 + Math.min(6, tier), hp: Math.ceil((4 + Math.floor(state.wave / 6)) * hpScale), speed: random(72, 98, 'enemy') * multiplier, score: 210, color: '#71eaff', shoot: random(.95, 1.5, 'attack') }
     }[kind];
     config.r = mobileSize(config.r);
     state.enemies.push({ ...pos, ...config, kind, maxHp: config.hp, cooldown: config.shoot || 0, spin: random(-2, 2, 'enemy'), angle: random(0, 7, 'enemy'), ramCooldown: 0, hitFlash: 0 });
   }
-  function selectBossType() {
-    if (state.wave === 10) return 'drone';
-    if (state.wave === 20) return 'hunter';
-    if (state.wave === 30) return 'brute';
-    if (state.wave === 40) return 'prism';
-    if (state.wave === 50) return 'meteor';
-    const types = ['meteor', 'drone', 'brute', 'hunter', 'prism'];
-    if (state.lastBossType && randomUnit('boss') < .28) return state.lastBossType;
-    return types[Math.floor(randomUnit('boss') * types.length)];
+  function selectBossType(isMini = false) {
+    if (!isMini && state.wave === 10) return 'drone';
+    const types = Object.keys(bossTypes);
+    const options = state.lastBossType && types.length > 1
+      ? types.filter((type) => type !== state.lastBossType)
+      : types;
+    return options[Math.floor(randomUnit('boss') * options.length)] || 'drone';
   }
   function spawnBoss(isMini = false) {
     if (!isMini) {
       if (state.bossSpawned) return;
       state.bossSpawned = true;
     }
-    const bossType = selectBossType();
+    const bossType = selectBossType(isMini);
     if (!isMini) state.lastBossType = bossType;
     const tier = Math.floor((state.wave - 1) / 10);
     const hp = isMini
       ? Math.round(Math.min(18, 5 + tier * 2) * enemyUpgradeHpScale())
-      : Math.round((115 + state.wave * 9 + Math.pow(state.wave / 5, 2) * 15 + tier * 55) * .66 * enemyUpgradeHpScale());
+      : Math.round((115 + state.wave * 9 + Math.pow(state.wave / 5, 2) * 15 + tier * 55) * .72 * enemyUpgradeHpScale() * enemyWaveHpScale());
     const boss = bossTypes[bossType];
-    const radius = isMini ? random(21, 26, 'boss') : bossType === 'brute' ? 47 : 40;
-    state.enemies.push({ x: random(state.width * .3, state.width * .7, 'boss'), y: isMini ? -30 : -55, r: mobileSize(radius), hp, maxHp: hp, speed: (isMini ? 43 + tier * 3 : 68 + tier * 11) * enemyUpgradeSpeedScale(), score: isMini ? 350 + state.wave * 35 : 1900 + state.wave * 180, color: boss.color, kind: 'boss', bossType, bossName: (isMini ? 'Mini-chefe ' : '') + boss.name, isMiniBoss: isMini, phase: 1, cooldown: isMini ? 2.25 : .72, angle: 0, spin: .35, ramCooldown: 0, dashTime: 0, dashCooldown: 2.2, hitFlash: 0, drift: random(0, Math.PI * 2, 'boss') });
+    const radius = isMini ? random(21, 26, 'boss') : bossType === 'brute' || bossType === 'mine' ? 47 : 40;
+    state.enemies.push({ x: random(state.width * .3, state.width * .7, 'boss'), y: isMini ? -30 : -55, r: mobileSize(radius), hp, maxHp: hp, speed: (isMini ? 43 + Math.min(24, tier * 2) : 66 + Math.min(44, tier * 5)) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale(), score: isMini ? 350 + state.wave * 35 : 1900 + state.wave * 180, color: boss.color, kind: 'boss', bossType, bossName: (isMini ? 'Mini-chefe ' : '') + boss.name, isMiniBoss: isMini, phase: 1, cooldown: isMini ? 2.25 : .72, angle: 0, spin: .35, ramCooldown: 0, dashTime: 0, dashCooldown: 2.2, hitFlash: 0, drift: random(0, Math.PI * 2, 'boss') });
     toast((isMini ? 'MINI-CHEFE: ' : '') + boss.name.toUpperCase());
     if (!isMini) tone(90, .7, 'sawtooth', .045);
   }
   function spawnPickup(x, y, kind) {
     const pickupKind = kind || (randomUnit('loot') < .06 ? 'charge' : randomUnit('loot') > .5 ? 'repair' : 'shield');
     state.pickups.push({ x, y, kind: pickupKind, r: mobileSize(11), life: 10, spin: 0 });
+  }
+  function spawnBossRewards(enemy) {
+    spawnPickup(enemy.x - mobileSize(13), enemy.y, 'charge');
+    const recoveryKinds = [];
+    if (state.lives < state.maxLives) recoveryKinds.push('repair');
+    if (canRestoreShield()) recoveryKinds.push('shield');
+    const recoveryChance = Math.max(.2, .92 - lateWavePressure() * .012);
+    if (recoveryKinds.length && randomUnit('loot') < recoveryChance) {
+      const index = Math.floor(randomUnit('loot') * recoveryKinds.length);
+      spawnPickup(enemy.x + mobileSize(13), enemy.y, recoveryKinds[index]);
+    }
   }
   function collectPickup(pickup) {
     if (!pickup || pickup.dead) return false;
@@ -2237,13 +2258,26 @@
     if (vortex && (enemy.kind === 'boss' || enemy.isMiniBoss) && distance(enemy, vortex) <= vortex.radius + enemy.r) return;
     const target = enemyAimTarget(enemy);
     const angle = Math.atan2(target.y - enemy.y, target.x - enemy.x);
-    const shot = (a, speed, r, extras = {}) => state.enemyBullets.push({ x: enemy.x, y: enemy.y + enemy.r * .35, vx: Math.cos(a) * speed * enemyUpgradeAttackScale(), vy: Math.sin(a) * speed * enemyUpgradeAttackScale(), r: mobileSize(r || 5), color: enemy.color, source: enemy, ...extras });
+    const shot = (a, speed, r, extras = {}) => {
+      const scaledSpeed = speed * enemyUpgradeAttackScale() * enemyWaveProjectileScale();
+      state.enemyBullets.push({ x: enemy.x, y: enemy.y + enemy.r * .35, vx: Math.cos(a) * scaledSpeed, vy: Math.sin(a) * scaledSpeed, r: mobileSize(r || 5), color: enemy.color, source: enemy, ...extras });
+    };
     if (enemy.isMiniBoss) {
       const speed = Math.min(285, 175 + state.wave * 1.35);
       if (enemy.bossType === 'prism') {
         for (let i = -1; i <= 1; i++) shot(angle + i * .24, speed, 5, { bounces: 1, damage: 1 });
       } else if (enemy.bossType === 'brute') {
         for (let i = -1; i <= 1; i++) shot(angle + i * .2, speed * .82, 5, { damage: 1 });
+      } else if (enemy.bossType === 'storm') {
+        for (let i = -2; i <= 2; i++) shot(angle + i * .25, speed * .9, 4, { damage: 1 });
+      } else if (enemy.bossType === 'mine') {
+        shot(angle, speed * .62, 6, { explosive:true, fuse:1.45, blastRadius:58, damage:1 });
+      } else if (enemy.bossType === 'lancer') {
+        shot(angle, speed * 1.38, 5, { damage:1 });
+      } else if (enemy.bossType === 'mirror') {
+        for (let i = -1; i <= 1; i++) shot(angle + i * .3, speed * .92, 4, { bounces:2, damage:1 });
+      } else if (enemy.bossType === 'rift') {
+        shot(angle, speed * .9, 5, { homingTime:1, turnRate:1.8, damage:1 });
       } else {
         for (let i = -1; i <= 1; i++) shot(angle + i * .22, speed, 4, { damage: 1 });
       }
@@ -2258,8 +2292,38 @@
       tone(150, .06, 'sawtooth', .012); return;
     }
     const phase = enemy.phase || 1;
-    const speedScale = 1 + (phase - 1) * .18;
-    const bossShot = (a, speed, r, extras = {}) => shot(a, speed * speedScale, r, { damage: phase >= 3 ? 2 : 1, ...extras });
+    const speedScale = 1 + (phase - 1) * .12;
+    const bossShot = (a, speed, r, extras = {}) => shot(a, speed * speedScale, r, { damage: phase >= 4 ? 3 : phase >= 3 ? 2 : 1, ...extras });
+    if (phase >= 4) {
+      const now = performance.now() / 1000;
+      if (enemy.bossType === 'meteor') {
+        const count = 20;
+        for (let i = 0; i < count; i++) bossShot(now * .7 + i * Math.PI * 2 / count, 172 + state.wave * .35, 6, { damage:3 });
+        for (let i = -1; i <= 1; i++) bossShot(angle + i * .12, 285 + state.wave * .45, 7, { damage:3 });
+      } else if (enemy.bossType === 'drone') {
+        for (let i = -5; i <= 5; i++) bossShot(angle + i * .13, 276 + state.wave * .45, 5, { damage:3 });
+        bossShot(angle - .035, 330 + state.wave * .55, 5, { damage:3 }); bossShot(angle + .035, 330 + state.wave * .55, 5, { damage:3 });
+      } else if (enemy.bossType === 'brute') {
+        for (let i = -4; i <= 4; i++) bossShot(angle + i * .18, 190 + state.wave * .35, i === 0 ? 8 : 6, { damage:3 });
+        for (let i = -1; i <= 1; i++) bossShot(angle + i * .3, 255 + state.wave * .4, 6, { bounces:1, damage:3 });
+      } else if (enemy.bossType === 'hunter') {
+        for (let i = -3; i <= 3; i++) bossShot(angle + i * .075, 305 + state.wave * .6, 6, { damage:3 });
+        bossShot(angle - .22, 265 + state.wave * .5, 5, { damage:3 }); bossShot(angle + .22, 265 + state.wave * .5, 5, { damage:3 });
+      } else if (enemy.bossType === 'prism') {
+        const count = 14; for (let i = 0; i < count; i++) bossShot(now * .42 + i * Math.PI * 2 / count, 215 + state.wave * .35, 6, { bounces:2, damage:3 });
+      } else if (enemy.bossType === 'storm') {
+        const count = 9; for (let arm = 0; arm < 2; arm++) for (let i = 0; i < count; i++) bossShot(now * .58 + arm * Math.PI + i * Math.PI * 2 / count, 190 + state.wave * .35, 5, { damage:3 });
+      } else if (enemy.bossType === 'mine') {
+        for (let i = -3; i <= 3; i++) bossShot(angle + i * .24, 108 + state.wave * .3, 7, { explosive:true, fuse:1.45, blastRadius:104, damage:3 });
+      } else if (enemy.bossType === 'lancer') {
+        for (let i = -3; i <= 3; i++) bossShot(angle + i * .055, 355 + state.wave * .65, 6, { damage:3 });
+      } else if (enemy.bossType === 'mirror') {
+        for (let i = -5; i <= 5; i++) bossShot(angle + Math.sin(now * .8) * .12 + i * .17, 188 + state.wave * .35, 5, { bounces:2, damage:3 });
+      } else if (enemy.bossType === 'rift') {
+        for (let i = -2; i <= 2; i++) bossShot(angle + i * .16, 190 + state.wave * .35, 6, { homingTime:2.15, turnRate:1.65, damage:3 });
+      }
+      tone(125, .1, 'sawtooth', .02); return;
+    }
     if (enemy.bossType === 'meteor') {
       const start = performance.now() / 1000;
       const count = phase >= 3 ? 15 : phase === 2 ? 12 : 9;
@@ -2277,10 +2341,42 @@
       for (let i = -spread; i <= spread; i++) bossShot(angle + i * .12, 315 + state.wave, 6);
       if (phase >= 2) bossShot(angle - .055, 350 + state.wave, 5);
       if (phase >= 3) bossShot(angle + .055, 350 + state.wave, 5);
-    } else {
+    } else if (enemy.bossType === 'prism') {
       const count = phase >= 3 ? 8 : phase === 2 ? 6 : 4;
       const start = performance.now() / 1000;
       for (let i = 0; i < count; i++) bossShot(start + i * Math.PI * 2 / count, 230 + state.wave, 6, { bounces: 1 });
+    } else if (enemy.bossType === 'storm') {
+      const count = phase >= 3 ? 7 : phase === 2 ? 6 : 5;
+      const start = performance.now() / 1450 + enemy.drift;
+      for (let arm = 0; arm < 2; arm++) for (let i = 0; i < count; i++) {
+        bossShot(start + arm * Math.PI + i * Math.PI * 2 / count, 205 + state.wave, 5);
+      }
+    } else if (enemy.bossType === 'mine') {
+      const count = phase >= 3 ? 5 : phase === 2 ? 4 : 3;
+      const blastRadius = phase >= 3 ? 92 : 76;
+      for (let i = 0; i < count; i++) {
+        const offset = i - (count - 1) / 2;
+        bossShot(angle + offset * .29, 118 + state.wave * .55, 7, { explosive:true, fuse:1.55, blastRadius, damage:phase >= 3 ? 2 : 1 });
+      }
+    } else if (enemy.bossType === 'lancer') {
+      const count = phase >= 3 ? 5 : phase === 2 ? 3 : 1;
+      for (let i = 0; i < count; i++) {
+        const offset = i - (count - 1) / 2;
+        bossShot(angle + offset * .075, 385 + state.wave * 1.35, 6, { damage:phase >= 3 ? 2 : 1 });
+      }
+    } else if (enemy.bossType === 'mirror') {
+      const count = phase >= 3 ? 9 : phase === 2 ? 7 : 5;
+      const offset = Math.sin(performance.now() / 430) * .2;
+      for (let i = 0; i < count; i++) {
+        const spread = i - (count - 1) / 2;
+        bossShot(angle + offset + spread * .22, 195 + state.wave, 5, { bounces:phase >= 3 ? 2 : 1 });
+      }
+    } else if (enemy.bossType === 'rift') {
+      const count = phase >= 3 ? 3 : phase === 2 ? 2 : 1;
+      for (let i = 0; i < count; i++) {
+        const offset = i - (count - 1) / 2;
+        bossShot(angle + offset * .2, 205 + state.wave, 6, { homingTime:phase >= 3 ? 2 : 1.6, turnRate:phase >= 3 ? 2.35 : 1.85, damage:phase >= 3 ? 2 : 1 });
+      }
     }
     tone(150, .06, 'sawtooth', .012);
   }
@@ -2314,7 +2410,8 @@
   let mahoragaAwakeningTimer = 0;
   const mahoragaAttackNames = Object.freeze({
     projectile:'PROJÉTEIS COMUNS', explosive:'EXPLOSÕES', ricochet:'TIROS RICOCHETE', impact:'COLISÕES',
-    'boss-meteor':'COLOSSO DE CINZAS', 'boss-drone':'MÃE DE ENXAME', 'boss-brute':'TITÃ ÂMBAR', 'boss-hunter':'ESPECTRO ROXO', 'boss-prism':'PRISMA REBOTE'
+    'boss-meteor':'COLOSSO DE CINZAS', 'boss-drone':'MÃE DE ENXAME', 'boss-brute':'TITÃ ÂMBAR', 'boss-hunter':'ESPECTRO ROXO', 'boss-prism':'PRISMA REBOTE',
+    'boss-storm':'ARCONTE DE ÍONS', 'boss-mine':'SEMEADOR DE MINAS', 'boss-lancer':'LANÇA SOLAR', 'boss-mirror':'ESPELHO FRATURADO', 'boss-rift':'RASGO DIMENSIONAL'
   });
   function mahoragaAttackType(attack, fallback = 'projectile') {
     const source = attack?.source || attack;
@@ -2458,11 +2555,12 @@
     if (state.eclipsePhase === 'active' || (!mahoragaShieldActive && state.invulnerable > 0) || (isMahoraga && state.mahoragaShieldHitCooldown > 0) || state.mode !== 'playing' || (abilitySourceIs('aegis') && state.aegisOrbit?.life > 0)) return;
     if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
     if (isMahoraga) recordMahoragaHit(attackType);
+    const scaledIncomingAmount = Math.max(0, amount) * enemyWaveDamageScale();
     let remaining;
     const adaptationReduction = isMahoraga ? mahoragaResistanceFor(attackType) : 0;
     const matchingResistance = isMahoraga && adaptationReduction > 0;
     if (isMahoraga && (mahoragaShieldActive || matchingResistance)) {
-      let mitigated = Math.max(0, amount);
+      let mitigated = scaledIncomingAmount;
       const totalReduction = Math.max(mahoragaShieldActive ? .9 : 0, matchingResistance ? adaptationReduction : 0);
       mitigated *= 1 - Math.min(.9, totalReduction);
       mitigated += state.mahoragaDamageRemainders[attackType] || 0;
@@ -2474,7 +2572,14 @@
         updateHud();
         return;
       }
-    } else remaining = Math.max(1, Math.floor(amount));
+    } else if (isMahoraga) remaining = Math.max(1, Math.floor(scaledIncomingAmount));
+    else {
+      const damageKey = String(attackType || 'projectile');
+      const accumulated = scaledIncomingAmount + (state.enemyDamageRemainders[damageKey] || 0);
+      const wholeDamage = Math.floor(accumulated);
+      state.enemyDamageRemainders[damageKey] = accumulated - wholeDamage;
+      remaining = Math.max(1, wholeDamage);
+    }
     if (currentSkin().id === 'training') {
       const mitigated = remaining * .5 + state.trainingDamageRemainder;
       remaining = Math.floor(mitigated);
@@ -2566,14 +2671,17 @@
     state.score += Math.round(enemy.score * (state.scoreMultiplier || 1));
     state.waveKills += enemy.kind === 'boss' ? (enemy.isMiniBoss ? 2 : state.enemiesRequired) : 1;
     burst(enemy.x, enemy.y, enemy.color, enemy.kind === 'boss' ? 44 : 15, enemy.kind === 'boss' ? 220 : 110);
-    if (state.salvageHeal > 0 && state.lives < state.maxLives && randomUnit('loot') < state.salvageHeal * .035) { state.lives++; toast('DESTROÇOS RECICLADOS · +1 VIDA'); }
+    const salvageChance = state.salvageHeal * .035 * Math.max(.06, 1 - lateWavePressure() * .015);
+    const salvageWaveLimit = state.wave > 40 ? 1 : Infinity;
+    const salvageCooldownReady = state.wave <= 40 || state.wave - state.lastSalvageHealWave >= 3;
+    if (state.salvageHeal > 0 && salvageCooldownReady && state.salvageHealsThisWave < salvageWaveLimit && state.lives < state.maxLives && randomUnit('loot') < salvageChance) { state.lives++; state.salvageHealsThisWave++; state.lastSalvageHealWave = state.wave; toast('DESTROÇOS RECICLADOS · +1 VIDA'); }
     if (enemy.kind === 'boss' && !enemy.isMiniBoss) {
       recordAchievementEvent('boss');
-      spawnPickup(enemy.x - 20, enemy.y, 'repair'); spawnPickup(enemy.x, enemy.y, 'shield'); spawnPickup(enemy.x + 20, enemy.y, 'charge');
+      spawnBossRewards(enemy);
       toast(enemy.bossName.toUpperCase() + ' DESTRUÍDO');
     } else if (enemy.isMiniBoss) {
       spawnPickup(enemy.x, enemy.y, 'charge'); toast('MINI-CHEFE DESTRUÍDO');
-    } else if (randomUnit('loot') < .1) spawnPickup(enemy.x, enemy.y);
+    } else if (randomUnit('loot') < Math.max(.006, .1 * Math.max(.06, 1 - lateWavePressure() * .015))) spawnPickup(enemy.x, enemy.y);
     updateHud();
   }
   function damageEnemy(enemy, amount, fromAbility) {
@@ -2584,17 +2692,19 @@
       enemy.mahoragaMarkTime = 0;
     }
     if (enemy.kind === 'boss') amount *= 1 + state.bossDamageBonus;
+    if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.phase < 4 && enemy.hp > 0 && enemy.hp - amount <= 0) amount = Math.min(amount, Math.max(0, enemy.hp - enemy.maxHp * .15));
     const appliedDamage = Math.min(Math.max(0, enemy.hp), Math.max(0, amount));
     recordDamageCounter(appliedDamage, enemy);
     enemy.hp -= amount;
     enemy.hitFlash = .12;
     if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.hp > 0) {
       const ratio = enemy.hp / enemy.maxHp;
-      const nextPhase = ratio <= .32 ? 3 : ratio <= .66 ? 2 : 1;
+      const nextPhase = ratio <= .16 ? 4 : ratio <= .32 ? 3 : ratio <= .66 ? 2 : 1;
       if (nextPhase > (enemy.phase || 1)) {
-        enemy.phase = nextPhase; enemy.cooldown = .18;
-        burst(enemy.x, enemy.y, enemy.color, 30 + nextPhase * 8, 190);
-        toast(enemy.bossName.toUpperCase() + ' · FASE ' + nextPhase);
+        enemy.phase = nextPhase; enemy.cooldown = nextPhase === 4 ? .55 : .18;
+        burst(enemy.x, enemy.y, enemy.color, nextPhase === 4 ? 72 : 30 + nextPhase * 8, nextPhase === 4 ? 310 : 190);
+        if (nextPhase === 4) tone(92, .65, 'sawtooth', .045);
+        toast(enemy.bossName.toUpperCase() + (nextPhase === 4 ? ' · TRIUNFO · FORMA FINAL' : ' · FASE ' + nextPhase));
       }
     }
     if (enemy.hp <= 0) defeatEnemy(enemy, fromAbility);
@@ -3995,7 +4105,7 @@
     if (state.eclipsePhase === 'active' && state.eclipseTime <= 0) finishEclipseSpecial();
     if (state.regenLevel > 0 && state.lives < state.maxLives) {
       state.regenTimer -= dt;
-      if (state.regenTimer <= 0) { state.lives++; state.regenTimer = Math.max(16, 32 - state.regenLevel * 4); toast('NANORREPARO +1 VIDA'); updateHud(); }
+      if (state.regenTimer <= 0) { state.lives++; state.regenTimer = Math.max(16, 32 - state.regenLevel * 4) * (1 + Math.min(2.5, lateWavePressure() * .025)); toast('NANORREPARO +1 VIDA'); updateHud(); }
     }
     let dx = 0; let dy = 0;
     if (state.eclipsePhase === 'active') {
@@ -4105,14 +4215,17 @@
     if (state.automaticFireEnabled && state.eclipsePhase !== 'active' && state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = state.player.fireRate; }
     if (!state.bossWave && state.waveKills < state.enemiesRequired && state.waveGrace <= 0) {
       state.enemySpawn -= dt;
-      if (state.enemySpawn <= 0 && state.enemies.length < Math.min(42, 12 + Math.floor(state.wave * .62))) { spawnEnemy(); state.enemySpawn = Math.max(.2, .72 - state.wave * .01 - Math.floor((state.wave - 1) / 10) * .045) * random(.52, .88, 'spawnTimer'); }
+      if (state.enemySpawn <= 0 && state.enemies.length < Math.min(24, 12 + Math.floor(state.wave * .3))) { spawnEnemy(); state.enemySpawn = Math.max(.34, .72 - Math.min(state.wave, 40) * .006 - Math.floor((Math.min(state.wave, 40) - 1) / 10) * .025) * random(.78, .98, 'spawnTimer'); }
     }
     if (state.bossWave && !state.bossSpawned) { state.enemySpawn -= dt; if (state.enemySpawn <= 0) spawnBoss(); }
     if (state.miniBossTimer > 0 && !state.miniBossSpawned) {
       state.miniBossTimer -= dt;
       if (state.miniBossTimer <= 0) { state.miniBossSpawned = true; spawnBoss(true); }
     }
-    if (state.powerSpawn <= 0 && state.wave > 1) { spawnPickup(random(30, state.width - 30, 'loot'), random(40, state.height - 40, 'loot')); state.powerSpawn = random(13, 20, 'spawnTimer'); }
+    if (state.powerSpawn <= 0 && state.wave > 1) {
+      if (randomUnit('loot') < wavePickupChance()) spawnPickup(random(30, state.width - 30, 'loot'), random(40, state.height - 40, 'loot'));
+      state.powerSpawn = random(13, 20, 'spawnTimer') * (1 + Math.min(2, lateWavePressure() * .018));
+    }
     for (const bullet of state.bullets) {
       const target = bullet.assistTarget;
       if (target?.dead) bullet.assistTarget = null;
@@ -4174,6 +4287,16 @@
         const nextAngle = currentAngle + clamp(difference, -5.2 * dt, 5.2 * dt);
         bullet.vx = Math.cos(nextAngle) * speed; bullet.vy = Math.sin(nextAngle) * speed;
         if (tideSweep.time <= 0) bullet.tempestTideSweep = null;
+      }
+      if (bullet.homingTime > 0) {
+        bullet.homingTime = Math.max(0, bullet.homingTime - dt * slowFactor);
+        const target = bullet.source && !bullet.source.dead ? enemyAimTarget(bullet.source) : state.player;
+        const speed = Math.hypot(bullet.vx, bullet.vy) || 240;
+        const currentAngle = Math.atan2(bullet.vy, bullet.vx);
+        const targetAngle = Math.atan2(target.y - bullet.y, target.x - bullet.x);
+        const difference = Math.atan2(Math.sin(targetAngle - currentAngle), Math.cos(targetAngle - currentAngle));
+        const nextAngle = currentAngle + clamp(difference, -(bullet.turnRate || 1.8) * dt, (bullet.turnRate || 1.8) * dt);
+        bullet.vx = Math.cos(nextAngle) * speed; bullet.vy = Math.sin(nextAngle) * speed;
       }
       if (flameStormVortex && distance(bullet, flameStormVortex) <= flameStormVortex.radius + bullet.r) {
         bullet.flameStormVortexPull = Math.min(.52, (bullet.flameStormVortexPull || 0) + dt);
@@ -4253,18 +4376,18 @@
         enemy.ramCooldown = Math.max(0, (enemy.ramCooldown || 0) - dt);
         enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
         if (enemy.kind === 'boss') {
-          enemy.drift += dt * enemySlowFactor * (.65 + (enemy.phase || 1) * .22);
+          enemy.drift += dt * enemySlowFactor * (.65 + (enemy.phase || 1) * .12);
           if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && enemy.dashTime > 0) {
-            enemy.x += Math.cos(angle) * 420 * dt * enemySlowFactor; enemy.y += Math.sin(angle) * 420 * dt * enemySlowFactor; enemy.dashTime -= dt * enemySlowFactor;
+            enemy.x += Math.cos(angle) * 300 * dt * enemySlowFactor; enemy.y += Math.sin(angle) * 300 * dt * enemySlowFactor; enemy.dashTime -= dt * enemySlowFactor;
           } else {
             const targetY = 112 + Math.sin(enemy.drift * .8) * Math.min(35, state.height * .045);
             enemy.y += clamp(targetY - enemy.y, -enemy.speed * dt * enemySlowFactor, enemy.speed * dt * enemySlowFactor);
             const targetX = state.width / 2 + Math.sin(enemy.drift * (enemy.bossType === 'prism' ? 1.7 : 1.1)) * Math.min(state.width * .34, 260);
-            enemy.x += clamp(targetX - enemy.x, -enemy.speed * (1 + (enemy.phase - 1) * .5) * dt * enemySlowFactor, enemy.speed * (1 + (enemy.phase - 1) * .5) * dt * enemySlowFactor);
+            enemy.x += clamp(targetX - enemy.x, -enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor, enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor);
             if (enemy.bossType === 'hunter' && !enemy.isMiniBoss) {
               enemy.x += Math.cos(angle) * 36 * dt * enemySlowFactor;
               enemy.dashCooldown -= dt * enemySlowFactor;
-              if (enemy.dashCooldown <= 0) { enemy.dashTime = .55; enemy.dashCooldown = Math.max(1.5, 3.1 - enemy.phase * .5); toast('INVESTIDA DO ESPECTRO'); }
+              if (enemy.dashCooldown <= 0) { enemy.dashTime = .45; enemy.dashCooldown = Math.max(2.1, 3.8 - enemy.phase * .3); toast('INVESTIDA DO ESPECTRO'); }
             }
           }
         } else {
@@ -4275,8 +4398,10 @@
           enemy.cooldown -= dt * enemySlowFactor;
           if (enemy.cooldown <= 0 && enemy.y > 0 && enemy.y < state.height - 25) {
             enemyFire(enemy);
-            const baseCooldown = enemy.kind === 'boss' ? (enemy.isMiniBoss ? random(2.1, 2.7, 'attack') : Math.max(.48, (enemy.bossType === 'hunter' ? .92 : enemy.bossType === 'drone' ? .76 : enemy.bossType === 'prism' ? .86 : 1.1) * (1 - (enemy.phase - 1) * .16))) : enemy.kind === 'brute' || enemy.kind === 'ricochet' ? random(1.05, 1.55, 'attack') : random(1.45, 2.35, 'attack');
-            enemy.cooldown = baseCooldown * enemyUpgradeFireRateScale();
+            const baseCooldown = enemy.kind === 'boss'
+              ? (enemy.isMiniBoss ? random(2.1, 2.7, 'attack') : Math.max(.5, (bossTypes[enemy.bossType]?.attackCooldown || 1.1) * (1 - (enemy.phase - 1) * .1)))
+              : enemy.kind === 'brute' || enemy.kind === 'ricochet' ? random(1.05, 1.55, 'attack') : random(1.45, 2.35, 'attack');
+            enemy.cooldown = baseCooldown * enemyUpgradeFireRateScale() * enemyWaveFireRateScale();
           }
         }
       }
@@ -4294,15 +4419,15 @@
           }
           continue;
         }
-        if (enemy.kind !== 'hunter' || enemy.ramCooldown <= 0) {
-          damagePlayer(enemy.kind === 'boss' && enemy.phase >= 2 ? 2 : 1, mahoragaAttackType(enemy, 'impact'));
+        if (enemy.ramCooldown <= 0) {
+          damagePlayer(enemy.kind === 'boss' && enemy.phase >= 4 ? 3 : enemy.kind === 'boss' && enemy.phase >= 2 ? 2 : 1, mahoragaAttackType(enemy, 'impact'));
+          const separation = enemy.r + state.player.radius + (enemy.kind === 'hunter' ? 12 : 8);
+          enemy.x = clamp(state.player.x - Math.cos(angle) * separation, enemy.r, state.width - enemy.r);
+          enemy.y = clamp(state.player.y - Math.sin(angle) * separation, enemy.r, state.height - enemy.r);
           if (enemy.kind === 'hunter') {
             enemy.ramCooldown = 1.2;
-            const separation = enemy.r + state.player.radius + 12;
-            enemy.x = clamp(state.player.x - Math.cos(angle) * separation, enemy.r, state.width - enemy.r);
-            enemy.y = clamp(state.player.y - Math.sin(angle) * separation, enemy.r, state.height - enemy.r);
             burst(enemy.x, enemy.y, enemy.color, 8, 90);
-          }
+          } else enemy.ramCooldown = enemy.kind === 'boss' ? .9 : .62;
         }
       }
     }
@@ -4916,6 +5041,22 @@
       const n = 8; ctx.beginPath();
       for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2; const r = enemy.r * (i % 2 ? .78 : visualRandom(.91, 1.08)); const px = Math.cos(a) * r; const py = Math.sin(a) * r; if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
       ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else if (enemy.kind === 'boss' && enemy.bossType === 'storm') {
+      ctx.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; const r = enemy.r * (i % 2 ? .48 : 1.16); const px = Math.cos(a) * r; const py = Math.sin(a) * r; if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
+      ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, enemy.r * .3, 0, Math.PI * 2); ctx.stroke();
+    } else if (enemy.kind === 'boss' && enemy.bossType === 'mine') {
+      ctx.beginPath(); ctx.rect(-enemy.r * .68, -enemy.r * .68, enemy.r * 1.36, enemy.r * 1.36); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = '#fff2d6'; ctx.beginPath(); ctx.arc(0, 0, enemy.r * .35, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = '#fff2d6'; for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4; ctx.beginPath(); ctx.arc(Math.cos(a) * enemy.r * .92, Math.sin(a) * enemy.r * .92, enemy.r * .1, 0, Math.PI * 2); ctx.fill(); }
+    } else if (enemy.kind === 'boss' && enemy.bossType === 'lancer') {
+      ctx.beginPath(); ctx.moveTo(0, -enemy.r * 1.55); ctx.lineTo(enemy.r * .42, -enemy.r * .18); ctx.lineTo(enemy.r * .2, enemy.r * 1.15); ctx.lineTo(0, enemy.r * .78); ctx.lineTo(-enemy.r * .2, enemy.r * 1.15); ctx.lineTo(-enemy.r * .42, -enemy.r * .18); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = '#fff7c8'; ctx.beginPath(); ctx.moveTo(0, -enemy.r); ctx.lineTo(0, enemy.r * .8); ctx.stroke();
+    } else if (enemy.kind === 'boss' && enemy.bossType === 'mirror') {
+      ctx.beginPath(); ctx.moveTo(0, -enemy.r * 1.15); ctx.lineTo(enemy.r * .84, 0); ctx.lineTo(0, enemy.r * 1.15); ctx.lineTo(-enemy.r * .84, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = '#fff4ff'; ctx.beginPath(); ctx.moveTo(-enemy.r * .55, -enemy.r * .55); ctx.lineTo(enemy.r * .55, enemy.r * .55); ctx.moveTo(enemy.r * .55, -enemy.r * .55); ctx.lineTo(-enemy.r * .55, enemy.r * .55); ctx.stroke();
+    } else if (enemy.kind === 'boss' && enemy.bossType === 'rift') {
+      ctx.beginPath(); ctx.arc(0, 0, enemy.r * .82, -.35, Math.PI * 1.55); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, enemy.r * .48, Math.PI * .62, Math.PI * 2.48); ctx.stroke();
+      ctx.fillStyle = '#fff1fb'; ctx.beginPath(); ctx.arc(0, 0, enemy.r * .2, 0, Math.PI * 2); ctx.fill();
     } else if (enemy.kind === 'boss') {
       ctx.beginPath(); for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; const r = enemy.r * (i % 2 ? .87 : 1.2); const px = Math.cos(a) * r; const py = Math.sin(a) * r; if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); } ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = '#fff3f7'; ctx.beginPath(); ctx.arc(0, 0, 11, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = enemy.color; ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
@@ -4924,6 +5065,14 @@
       ctx.fillStyle = '#fff'; ctx.fillRect(-3, -2, 6, 4);
     }
     ctx.restore();
+    if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.phase >= 4) {
+      ctx.save(); ctx.globalAlpha = .58 + Math.sin(performance.now() / 110) * .16;
+      ctx.strokeStyle = enemy.color; ctx.shadowColor = enemy.color;
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 16; ctx.lineWidth = mobileSize(2.4);
+      ctx.setLineDash([mobileSize(7), mobileSize(4)]);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(12) + Math.sin(performance.now() / 180) * mobileSize(3), performance.now() / 500, performance.now() / 500 + Math.PI * 1.72); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
+    }
     if (enemy.dinoCutMark > 0) {
       ctx.save(); ctx.globalAlpha = clamp(enemy.dinoCutMark / .8, .3, .82);
       ctx.strokeStyle = '#9cff85'; ctx.shadowColor = '#62f58a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 8;
