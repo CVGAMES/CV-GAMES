@@ -4673,6 +4673,7 @@
           effect.vx = Math.cos(effect.angle) * speed; effect.vy = Math.sin(effect.angle) * speed;
           effect.turnTimer = random(.12, .22, 'ability');
         }
+        const bladeStart = { x: effect.x, y: effect.y };
         effect.x += effect.vx * dt; effect.y += effect.vy * dt;
         let bounced = false;
         if (effect.x < 7 || effect.x > state.width - 7) { effect.x = clamp(effect.x, 7, state.width - 7); effect.angle = Math.PI - effect.angle + random(-.52, .52, 'ability'); bounced = true; }
@@ -4688,19 +4689,27 @@
         effect.bossHitCounts = (effect.bossHitCounts || []).filter((entry) => !entry.enemy.dead);
         for (const enemy of state.enemies) {
           const cooling = effect.hitCooldowns.some((entry) => entry.enemy === enemy);
-          if (!enemy.dead && !cooling && Math.hypot(effect.x - enemy.x, effect.y - enemy.y) < enemy.r + mobileSize(25)) {
+          const hitDistance = enemy.kind === 'boss' && !bounced
+            ? distanceToSegment(enemy, bladeStart, effect)
+            : Math.hypot(effect.x - enemy.x, effect.y - enemy.y);
+          const hitReach = enemy.r + mobileSize(enemy.kind === 'boss' ? 36 : 25);
+          if (!enemy.dead && !cooling && hitDistance < hitReach) {
             let bladeDamage = effect.damage;
             let bossHit = null;
             if (enemy.kind === 'boss') {
               bossHit = effect.bossHitCounts.find((entry) => entry.enemy === enemy);
               const alreadyDealt = bossHit?.damage || 0;
-              if ((bossHit?.hits || 0) >= 4 || alreadyDealt >= enemy.maxHp * .18) continue;
-              bladeDamage = Math.min(bladeDamage * .52, Math.max(0, enemy.maxHp * .18 - alreadyDealt));
+              const bossMaxHp = Number.isFinite(enemy.maxHp) && enemy.maxHp > 0 ? enemy.maxHp : Math.max(1, enemy.hp);
+              const bossDamageCap = bossMaxHp * .14;
+              const bossDamageMultiplier = Math.max(.01, 1 + state.bossDamageBonus);
+              if ((bossHit?.hits || 0) >= 4 || alreadyDealt >= bossDamageCap) continue;
+              bladeDamage = Math.min(bladeDamage * .68, bossMaxHp * .035, (bossDamageCap - alreadyDealt) / bossDamageMultiplier);
+              if (!(bladeDamage > 0)) continue;
               if (!bossHit) { bossHit = { enemy, hits: 0, damage: 0 }; effect.bossHitCounts.push(bossHit); }
               bossHit.hits++;
-              bossHit.damage += bladeDamage;
+              bossHit.damage += bladeDamage * bossDamageMultiplier;
             }
-            damageEnemy(enemy, bladeDamage, true); effect.hitCooldowns.push({ enemy, time: enemy.kind === 'boss' ? .8 : .5 });
+            damageEnemy(enemy, bladeDamage, true); effect.hitCooldowns.push({ enemy, time: enemy.kind === 'boss' ? .38 : .5 });
             burst(effect.x, effect.y, '#fff4c7', 10, 125); burst(effect.x, effect.y, '#ffc86e', 8, 100);
           }
         }
