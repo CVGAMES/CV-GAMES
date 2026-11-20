@@ -441,7 +441,7 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-equipped-icon.starfall-eclipse-sprite { display:block; background:url('eclipse-ship.png') center / contain no-repeat; }
 .starfall-flamestorm-icon { overflow:visible; border:0; border-radius:0; background:transparent; }
 .starfall-flamestorm-icon img { display:block; width:100%; height:100%; max-width:none; object-fit:contain; mix-blend-mode:screen; }
-.starfall-equipped-icon.starfall-flamestorm-icon img { transform:translateY(-.2rem); }
+.starfall-equipped-icon.starfall-flamestorm-icon img { transform:translateY(-.35rem); }
 .starfall-equipped-icon.starfall-dino-image-wrap,.starfall-skin-icon.starfall-dino-image-wrap { overflow:hidden; border-radius:.7rem; background:radial-gradient(circle,rgba(94,255,67,.2),rgba(8,40,29,.72)); }
 .starfall-dino-image-wrap img { display:block; width:100%; height:100%; object-fit:contain; transform:scale(1.05); }
 .starfall-equipped-ship > span:last-child { display:grid; gap:.15rem; }
