@@ -329,8 +329,45 @@
 
   function upgradeCanBeOffered(upgrade) {
     const maximum = Number(upgrade.max);
-    if (Number.isFinite(maximum) && maximum > 0 && upgradeLevel(upgrade.id) >= maximum) return false;
-    return upgrade.available();
+    const currentLevel = upgrade.id === 'drone' ? state.drones : upgradeLevel(upgrade.id);
+    if (Number.isFinite(maximum) && maximum > 0 && currentLevel >= maximum) return false;
+    return typeof upgrade.available === 'function' && upgrade.available();
+  }
+  function upgradeTheme(upgrade) {
+    const id = upgrade.id;
+    if (['repair','lifeSupport','regen','salvageHeal'].includes(id)) return 'health';
+    if (['shield','armor','aegisOrbitDuration','aegisOrbitCount','aegisOrbitDamage','aegisOrbitCooldown','returnCore','mahoragaAdaptation','mahoragaGuard'].includes(id)) return 'defense';
+    if (['speed','lowHull','endlessSpeed','flashTrailDuration','flashTrailDensity','flameStormDashCore'].includes(id)) return 'mobility';
+    if (['bounty','magnet','endlessDamage'].includes(id)) return 'reward';
+    if (['damage','rapid','spread','pierce','critical','drone','volley','blast','bossDamage','flameStormVortexCore','dinoFangs','dinoStampede','dinoResonance'].includes(id)) return 'offense';
+    return 'ability';
+  }
+  function upgradeProgressLabel(upgrade, nextLevel) {
+    const maximum = Number(upgrade.max);
+    if (Number.isFinite(maximum) && maximum > 0) {
+      const currentLevel = upgrade.id === 'drone' ? state.drones : upgradeLevel(upgrade.id);
+      return `${currentLevel}/${maximum} → ${nextLevel}/${maximum}`;
+    }
+    return upgrade.stack ? `Nível ${nextLevel}` : '';
+  }
+  function createUpgradeCard(upgrade) {
+    const button = document.createElement('button');
+    const currentLevel = upgrade.id === 'drone' ? state.drones : upgradeLevel(upgrade.id);
+    const nextLevel = currentLevel + 1;
+    const maximum = Number(upgrade.max);
+    const finalLevel = Number.isFinite(maximum) && maximum > 0 && nextLevel === maximum;
+    button.type = 'button';
+    button.className = `starfall-upgrade-card${finalLevel ? ' is-final-level' : ''}`;
+    if (finalLevel) button.dataset.upgradeTheme = upgradeTheme(upgrade);
+    const progress = upgradeProgressLabel(upgrade, nextLevel);
+    button.innerHTML = `<span class="starfall-upgrade-icon" aria-hidden="true">${upgrade.icon}</span><strong>${upgrade.name}${progress ? ` · ${progress}` : ''}</strong>${finalLevel ? '<span class="starfall-upgrade-final-badge">ÚLTIMO NÍVEL</span>' : ''}<span>${upgradeDescriptionForShip(upgrade)}</span>`;
+    return button;
+  }
+  function applyUpgradeChoice(upgrade) {
+    if (state.mode !== 'upgrade' || !upgradeCanBeOffered(upgrade)) return false;
+    upgrade.apply();
+    state.upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
+    return true;
   }
 
   function readBest() { try { return Math.max(0, Number(localStorage.getItem(bestKey)) || 0); } catch { return 0; } }
@@ -1944,14 +1981,9 @@
     setMode('upgrade');
     ui.status.textContent = 'Escolha um reforço encontrado na carga de treino.';
     for (const upgrade of choices) {
-      const button = document.createElement('button');
-      button.type = 'button'; button.className = 'starfall-upgrade-card';
-      const nextUpgradeLevel = upgrade.id === 'drone' ? state.drones + 1 : upgradeLevel(upgrade.id) + 1;
-      button.innerHTML = `<span class="starfall-upgrade-icon" aria-hidden="true">${upgrade.icon}</span><strong>${upgrade.name}${upgrade.max ? ` · ${nextUpgradeLevel}/${upgrade.max}` : upgrade.stack ? ` · ${nextUpgradeLevel}` : ''}</strong><span>${upgradeDescriptionForShip(upgrade)}</span>`;
+      const button = createUpgradeCard(upgrade);
       button.addEventListener('click', () => {
-        if (state.mode !== 'upgrade') return;
-        upgrade.apply();
-        state.upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
+        if (!applyUpgradeChoice(upgrade)) return;
         if (kicker) kicker.textContent = 'SINAL DE REABASTECIMENTO';
         if (heading) heading.textContent = 'Escolha sua melhoria';
         if (copy) copy.textContent = 'Uma decisão muda sua próxima onda.';
@@ -2023,13 +2055,9 @@
       return;
     }
     for (const upgrade of choices) {
-      const button = document.createElement('button');
-      button.type = 'button'; button.className = 'starfall-upgrade-card';
-      const nextUpgradeLevel = upgrade.id === 'drone' ? state.drones + 1 : upgradeLevel(upgrade.id) + 1;
-      button.innerHTML = `<span class="starfall-upgrade-icon" aria-hidden="true">${upgrade.icon}</span><strong>${upgrade.name}${upgrade.max ? ` · ${nextUpgradeLevel}/${upgrade.max}` : upgrade.stack ? ` · ${nextUpgradeLevel}` : ''}</strong><span>${upgradeDescriptionForShip(upgrade)}</span>`;
+      const button = createUpgradeCard(upgrade);
       button.addEventListener('click', () => {
-        upgrade.apply();
-        state.upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
+        if (!applyUpgradeChoice(upgrade)) return;
         updateHud();
         toast(`${upgrade.icon} ${upgrade.name.toUpperCase()}`);
         beginNextWave();
