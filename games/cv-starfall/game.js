@@ -15,6 +15,10 @@
   const secretShipUnlockMigrationKey = 'cv-games-cv-starfall-secret-ships-v1-migrated';
   const prismaShipPasscode = 'cvgames.com.br';
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
+  const championshipProgressPrefix = 'cv-games-cv-starfall-championship-v1:';
+  const championshipStartAt = Date.parse('2026-11-21T02:59:00.000Z');
+  const championshipEndAt = Date.parse('2026-12-01T02:59:00.000Z');
+  const championshipRewardShipIds = Object.freeze(['aegis', 'chronos', 'tempest', 'flashblade']);
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
   const nicknameSettingsPrefix = 'cv-games-cv-starfall-settings-v1:';
   const missionCheckpointPrefix = 'cv-games-cv-starfall-checkpoint-v1:';
@@ -86,6 +90,13 @@
   ui.prismWheelStatus = $('[data-prism-wheel-status]');
   ui.prismSelectWrap = $('[data-prism-select-wrap]');
   ui.prismSelect = $('[data-prism-select]');
+  const championshipUi = {
+    modal: $('[data-championship-modal]'), open: $('[data-start-daily]'), close: $('[data-close-championship]'),
+    status: $('[data-championship-status]'), countdown: $('[data-championship-countdown]'), missions: $('[data-championship-missions]'),
+    tickets: $('[data-championship-tickets]'), bonus: $('[data-championship-bonus]'), start: $('[data-start-championship-run]'),
+    spin: $('[data-spin-championship]'), wheel: $('[data-championship-wheel]'), result: $('[data-championship-result]'),
+    rank: $('[data-championship-rank]'), sync: $('[data-championship-sync]'), classicDaily: $('[data-start-classic-daily]')
+  };
   const skins = [
     { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 22, cooldownQ: 24, shape: 'classic', description: 'E libera uma Explosão Nova mais ampla e poderosa. Com Q ativo, ela espalha o dano entre os inimigos ligados. Elo Estelar conecta até dez alvos por até nove segundos.' },
     { id: 'training', name: 'Ferrum', color: '#aeb5c0', accent: '#282d36', ability: '', abilityShort: '', cooldown: 0, cooldownQ: 0, shape: 'training', noAbilities: true, description: 'Nave de treino sem habilidades E ou Q. Move-se 10% mais devagar e recebe metade do dano.' },
@@ -199,6 +210,7 @@
     player: { x: 400, y: 460, radius: detectedMobileDevice ? 13 * mobileEntityScale : 13, speed: 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: '#7df7e8' },
     pointer: { active: false, pointerId: null, x: 0, y: 0 }, analog: { active: false, x: 0, y: 0 },
     dailyChallenge: false, pendingDailyChallenge: false, challengeDate: '', dailyBestScore: 0, skinBeforeDaily: '', randomStreams: null, exitReturnFocus: null, exitWasPlaying: false,
+    championshipRun: false, pendingChampionshipRun: false, championshipBestWave: 0,
     waveDamageTaken: false, enemyDamageRemainders: {}, salvageHealsThisWave: 0, lastSalvageHealWave: 0, lastRepairUpgradeWave: 0, achievementProgress: null
   };
   try {
@@ -527,7 +539,7 @@
     try { localStorage.removeItem(missionCheckpointKey(nickname)); } catch { /* A missão pode continuar sem armazenamento local. */ }
   }
   function saveMissionCheckpoint() {
-    if (!isDeveloperProfile() || state.dailyChallenge || !['playing', 'paused'].includes(state.mode)) return false;
+    if (!isDeveloperProfile() || state.dailyChallenge || state.championshipRun || !['playing', 'paused'].includes(state.mode)) return false;
     const nickname = profileNickname();
     const previous = readMissionCheckpoint();
     const bestWave = readProfileResumeWave(nickname);
@@ -626,10 +638,332 @@
   }
   function updateDailyChallengeInfo(dateKey = saoPauloDateKey()) {
     if (!ui.dailyRecord) return;
-    const best = readDailyBest(dateKey);
-    ui.dailyRecord.textContent = best
-      ? `Desafio de ${formatChallengeDate(dateKey)} · seu recorde local: onda ${best.wave} · ${best.score} pontos`
-      : `Desafio de ${formatChallengeDate(dateKey)} · mesma sequência para todos · recorde ainda não definido`;
+    const now = Date.now();
+    ui.dailyRecord.textContent = now >= championshipEndAt
+      ? `Campeonato encerrado em ${championshipLocalDateTime(championshipEndAt)} · placar final disponível no menu de missões.`
+      : championshipIsOpenNow(now)
+        ? `Campeonato aberto até ${championshipLocalDateTime(championshipEndAt)} · complete missões e concorra no Top 10.`
+        : `Missões diárias do campeonato começam em ${championshipLocalDateTime(championshipStartAt)}.`;
+  }
+  const championshipMissions = Object.freeze([
+    { id:'kills', title:'Derrube 10 inimigos', detail:'Destrua inimigos durante uma missão do campeonato.', target:10, unit:'inimigos' },
+    { id:'waves', title:'Complete 3 ondas', detail:'Conclua ondas inteiras. Cada nova onda conta uma vez.', target:3, unit:'ondas' },
+    { id:'score', title:'Marque 5.000 pontos', detail:'Some pontos derrotando inimigos e chefes.', target:5000, unit:'pontos' }
+  ]);
+  function championshipIsOpenNow(now = Date.now()) { return now >= championshipStartAt && now < championshipEndAt; }
+  function championshipLocalDateTime(timestamp) {
+    return new Intl.DateTimeFormat('pt-BR', { timeZone:'America/Sao_Paulo', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hourCycle:'h23' }).format(new Date(timestamp));
+  }
+  function championshipCountdown(timestamp, now = Date.now()) {
+    const seconds = Math.max(0, Math.ceil((timestamp - now) / 1000));
+    const days = Math.floor(seconds / 86400), hours = Math.floor(seconds % 86400 / 3600), minutes = Math.floor(seconds % 3600 / 60), rest = seconds % 60;
+    return [days ? `${days}d` : '', `${String(hours).padStart(2,'0')}h`, `${String(minutes).padStart(2,'0')}m`, `${String(rest).padStart(2,'0')}s`].filter(Boolean).join(' ');
+  }
+  function championshipProgressKey(nickname = rankNickname()) { return championshipProgressPrefix + encodeURIComponent(nickname || 'jogador'); }
+  function emptyChampionshipProgress(nickname = rankNickname()) {
+    return { nickname:nickname || 'jogador', missionDate:saoPauloDateKey(), kills:0, waves:0, score:0, claimed:[], tickets:0, unlockedShips:[], bonusDate:'' };
+  }
+  function readChampionshipProgress(nickname = rankNickname()) {
+    const fallback = emptyChampionshipProgress(nickname);
+    try {
+      const saved = JSON.parse(localStorage.getItem(championshipProgressKey(nickname)) || 'null');
+      if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return fallback;
+      return {
+        ...fallback, ...saved, nickname:nickname || 'jogador',
+        kills:Math.max(0, Math.min(10, Math.floor(Number(saved.kills) || 0))),
+        waves:Math.max(0, Math.min(3, Math.floor(Number(saved.waves) || 0))),
+        score:Math.max(0, Math.min(5000, Math.floor(Number(saved.score) || 0))),
+        tickets:Math.max(0, Math.floor(Number(saved.tickets) || 0)),
+        claimed:Array.isArray(saved.claimed) ? saved.claimed.filter((id) => championshipMissions.some((mission) => mission.id === id)) : [],
+        unlockedShips:Array.isArray(saved.unlockedShips) ? saved.unlockedShips.filter((id) => championshipRewardShipIds.includes(id)) : []
+      };
+    } catch { return fallback; }
+  }
+  function campaignShipUnlockKey(nickname = rankNickname()) { return championshipProgressPrefix + 'ships:' + encodeURIComponent(nickname || 'jogador'); }
+  function readCampaignShipUnlocks(nickname = rankNickname()) {
+    try { const ids = JSON.parse(localStorage.getItem(campaignShipUnlockKey(nickname)) || '[]'); return new Set(Array.isArray(ids) ? ids.filter((id) => championshipRewardShipIds.includes(id)) : []); }
+    catch { return new Set(); }
+  }
+  function isCampaignShipUnlocked(shipId, nickname = rankNickname()) { return readCampaignShipUnlocks(nickname).has(shipId); }
+  function saveCampaignShipUnlocks(ids, nickname = rankNickname()) {
+    const safeIds = [...new Set(ids)].filter((id) => championshipRewardShipIds.includes(id));
+    try { localStorage.setItem(campaignShipUnlockKey(nickname), JSON.stringify(safeIds)); return true; } catch { return false; }
+  }
+  let championshipProgress = readChampionshipProgress();
+  let championshipCloudSaveTimer = 0;
+  let championshipCloudReady = false;
+  function applyChampionshipProfileBonus(progress) {
+    const nickname = normalizeRankNickname(progress.nickname || rankNickname());
+    const hasProfileShip = skins.some((skin) => Array.isArray(skin.allowedProfiles) && skin.allowedProfiles.includes(nickname));
+    if (hasProfileShip && progress.bonusDate !== progress.missionDate) {
+      progress.kills = Math.min(10, progress.kills + 1);
+      progress.waves = Math.min(3, progress.waves + 1);
+      progress.score = Math.min(5000, progress.score + 250);
+      progress.bonusDate = progress.missionDate;
+    }
+    return hasProfileShip;
+  }
+  function resetChampionshipDailyProgress(progress) {
+    const today = saoPauloDateKey();
+    if (progress.missionDate !== today) {
+      progress.missionDate = today; progress.kills = 0; progress.waves = 0; progress.score = 0; progress.claimed = []; progress.bonusDate = '';
+    }
+    applyChampionshipProfileBonus(progress);
+    return progress;
+  }
+  function writeChampionshipProgressLocal() {
+    const nick = championshipProgress.nickname || rankNickname() || 'jogador';
+    championshipProgress.nickname = nick;
+    championshipProgress.unlockedShips = [...new Set([...(championshipProgress.unlockedShips || []), ...readCampaignShipUnlocks(nick)])];
+    try { localStorage.setItem(championshipProgressKey(nick), JSON.stringify(championshipProgress)); } catch { /* O progresso da rodada continua nesta sessão. */ }
+  }
+  function scheduleChampionshipCloudSave() {
+    writeChampionshipProgressLocal();
+    if (championshipCloudSaveTimer) clearTimeout(championshipCloudSaveTimer);
+    championshipCloudSaveTimer = setTimeout(() => { championshipCloudSaveTimer = 0; void saveChampionshipProgressCloud(); }, 700);
+  }
+  async function championshipPilotNickname() {
+    let session = null;
+    try { session = await window.CV_GAMES_AUTH?.getOwnerSession?.() || null; } catch { session = null; }
+    return authorizedNickname(session);
+  }
+  async function championshipHeaders(config, nickname) {
+    if (nickname !== 'educvv') return supabaseHeaders(config);
+    try {
+      const session = await window.CV_GAMES_AUTH?.getOwnerSession?.();
+      if (session?.access_token && window.CV_GAMES_AUTH?.isOwner?.(session.user)) return supabaseHeaders(config, session.access_token);
+    } catch { /* Sem sessão de dono, o RLS rejeita corretamente o envio deste nick. */ }
+    return supabaseHeaders(config);
+  }
+  async function saveChampionshipProgressCloud() {
+    const config = supabaseConfig();
+    if (!config || !championshipCloudReady || Date.now() < championshipStartAt || Date.now() >= championshipEndAt) return;
+    const nickname = await championshipPilotNickname();
+    if (!nickname) return;
+    const base = config.url.replace(/\/$/, '') + '/rest/v1/starfall_championship_progress';
+    const row = {
+      nickname, mission_date:championshipProgress.missionDate, kills:championshipProgress.kills,
+      waves:championshipProgress.waves, score:championshipProgress.score, claimed:championshipProgress.claimed,
+      tickets:championshipProgress.tickets, unlocked_ships:[...new Set([...(championshipProgress.unlockedShips || []), ...readCampaignShipUnlocks(nickname)])],
+      bonus_date:championshipProgress.bonusDate || null, updated_at:new Date().toISOString()
+    };
+    try {
+      const headers = await championshipHeaders(config, nickname);
+      const response = await fetch(base + '?on_conflict=nickname', { method:'POST', headers:Object.assign({}, headers, { 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal' }), body:JSON.stringify(row), keepalive:true });
+      if (!response.ok && championshipUi.sync) championshipUi.sync.textContent = 'Progresso salvo neste aparelho; sincronização do campeonato indisponível.';
+    } catch { if (championshipUi.sync) championshipUi.sync.textContent = 'Progresso salvo neste aparelho; sem conexão com o campeonato.'; }
+  }
+  async function loadChampionshipProgress() {
+    const nickname = rankNickname() || 'jogador';
+    championshipProgress = readChampionshipProgress(nickname);
+    resetChampionshipDailyProgress(championshipProgress);
+    const config = supabaseConfig();
+    const authorized = await championshipPilotNickname();
+    championshipCloudReady = Boolean(config && authorized);
+    if (config && authorized) {
+      const base = config.url.replace(/\/$/, '') + '/rest/v1/starfall_championship_progress?select=nickname,mission_date,kills,waves,score,claimed,tickets,unlocked_ships,bonus_date&nickname=eq.' + encodeURIComponent(authorized) + '&limit=1';
+      try {
+        const response = await fetch(base, { headers:supabaseHeaders(config) });
+        if (response.ok) {
+          const remote = (await response.json())[0];
+          if (remote) {
+            const localDate = championshipProgress.missionDate;
+            const remoteDate = String(remote.mission_date || '');
+            const sameDay = remoteDate === localDate;
+            championshipProgress = {
+              ...championshipProgress, nickname:authorized,
+              missionDate:localDate,
+              kills:sameDay ? Math.max(championshipProgress.kills, Number(remote.kills) || 0) : championshipProgress.kills,
+              waves:sameDay ? Math.max(championshipProgress.waves, Number(remote.waves) || 0) : championshipProgress.waves,
+              score:sameDay ? Math.max(championshipProgress.score, Number(remote.score) || 0) : championshipProgress.score,
+              claimed:sameDay ? [...new Set([...championshipProgress.claimed, ...(Array.isArray(remote.claimed) ? remote.claimed : [])])] : championshipProgress.claimed,
+              tickets:Math.max(championshipProgress.tickets, Number(remote.tickets) || 0),
+              unlockedShips:[...new Set([...championshipProgress.unlockedShips, ...(Array.isArray(remote.unlocked_ships) ? remote.unlocked_ships : [])])],
+              bonusDate:sameDay ? String(remote.bonus_date || championshipProgress.bonusDate) : championshipProgress.bonusDate
+            };
+            saveCampaignShipUnlocks(championshipProgress.unlockedShips, authorized);
+          }
+          if (championshipUi.sync) championshipUi.sync.textContent = 'Progresso sincronizado para este apelido.';
+        } else if (championshipUi.sync) championshipUi.sync.textContent = 'Migração do campeonato pendente; usando progresso deste aparelho.';
+      } catch { if (championshipUi.sync) championshipUi.sync.textContent = 'Sem conexão; usando progresso deste aparelho.'; }
+    } else if (championshipUi.sync) championshipUi.sync.textContent = 'Progresso salvo neste aparelho; o nick não publica no placar.';
+    resetChampionshipDailyProgress(championshipProgress);
+    writeChampionshipProgressLocal();
+    renderSkinPicker(); updateEquippedShip(); updateHud();
+    renderChampionshipMenu();
+    await refreshChampionshipRanking();
+  }
+  function championshipRewardPool() {
+    return championshipRewardShipIds.map((id) => skins.find((skin) => skin.id === id)).filter((skin) => skin && !skinUnlocked(skin));
+  }
+  function renderChampionshipShip(skin, className = 'starfall-championship-ship-art') {
+    const art = document.createElement('span');
+    art.className = className;
+    art.style.setProperty('--skin-color', skin.color);
+    art.setAttribute('aria-hidden', 'true');
+    art.innerHTML = hangarShipSvg(skin);
+    return art;
+  }
+  function renderChampionshipMenu() {
+    if (!championshipUi.modal || !championshipUi.missions) return;
+    const now = Date.now();
+    const open = championshipIsOpenNow(now);
+    const ended = now >= championshipEndAt;
+    if (championshipUi.status) championshipUi.status.textContent = ended ? 'CAMPEONATO ENCERRADO' : open ? 'CAMPEONATO EM ANDAMENTO' : 'CAMPEONATO PREPARADO';
+    if (championshipUi.countdown) championshipUi.countdown.textContent = ended
+      ? `Encerrado em ${championshipLocalDateTime(championshipEndAt)} · horário de Brasília`
+      : open ? `Termina em ${championshipCountdown(championshipEndAt, now)} · ${championshipLocalDateTime(championshipEndAt)}`
+        : `Começa em ${championshipCountdown(championshipStartAt, now)} · ${championshipLocalDateTime(championshipStartAt)} (horário de Brasília)`;
+    const hasBonus = applyChampionshipProfileBonus(championshipProgress);
+    if (championshipUi.bonus) championshipUi.bonus.textContent = hasBonus ? 'Bônus de perfil: +1 inimigo, +1 onda e +250 pontos de progresso por dia.' : 'As mesmas missões e recompensas ficam disponíveis para todos os pilotos.';
+    championshipUi.missions.replaceChildren(...championshipMissions.map((mission) => {
+      const progress = Math.min(mission.target, Number(championshipProgress[mission.id]) || 0);
+      const claimed = championshipProgress.claimed.includes(mission.id);
+      const card = document.createElement('article');
+      card.className = 'starfall-championship-mission' + (claimed ? ' is-complete' : '');
+      const title = document.createElement('strong'); title.textContent = mission.title;
+      const detail = document.createElement('small'); detail.textContent = mission.detail;
+      const meter = document.createElement('progress'); meter.max = mission.target; meter.value = progress; meter.setAttribute('aria-label', `${mission.title}: ${progress} de ${mission.target}`);
+      const label = document.createElement('span'); label.textContent = claimed ? '✓ concluída · ficha recebida' : `${progress.toLocaleString('pt-BR')} / ${mission.target.toLocaleString('pt-BR')} ${mission.unit}`;
+      card.append(title, detail, meter, label);
+      return card;
+    }));
+    if (championshipUi.tickets) championshipUi.tickets.textContent = `${championshipProgress.tickets} ${championshipProgress.tickets === 1 ? 'ficha' : 'fichas'} para a roleta`;
+    if (championshipUi.start) {
+      championshipUi.start.disabled = !open;
+      championshipUi.start.textContent = ended ? 'CAMPEONATO ENCERRADO' : open ? '▶ JOGAR MISSÃO DO CAMPEONATO' : 'ABRE ÀS 23:59';
+    }
+    const pool = championshipRewardPool();
+    if (championshipUi.spin) {
+      championshipUi.spin.disabled = !open || championshipProgress.tickets < 1 || !pool.length;
+      championshipUi.spin.textContent = pool.length ? '🎲 GIRAR A ROLETA' : 'TODAS AS NAVES DO SORTEIO JÁ FORAM LIBERADAS';
+      championshipUi.spin.hidden = ended;
+    }
+    if (championshipUi.wheel && !championshipUi.wheel.dataset.spinning) {
+      championshipUi.wheel.replaceChildren();
+      championshipUi.wheel.classList.remove('is-spinning');
+      if (pool.length) {
+        const prompt = document.createElement('span'); prompt.className = 'starfall-championship-wheel-prompt'; prompt.textContent = 'A próxima nave pode ser';
+        const art = renderChampionshipShip(pool[0]);
+        const name = document.createElement('strong'); name.textContent = '???';
+        championshipUi.wheel.append(prompt, art, name);
+      } else {
+        const empty = document.createElement('strong'); empty.textContent = 'Todas as naves elegíveis já estão no seu hangar.';
+        championshipUi.wheel.append(empty);
+      }
+    }
+  }
+  function updateChampionshipMission(metric, amount) {
+    if (!state.championshipRun || !championshipIsOpenNow()) return;
+    resetChampionshipDailyProgress(championshipProgress);
+    const mission = championshipMissions.find((item) => item.id === metric);
+    if (!mission || !Number.isFinite(Number(amount))) return;
+    const before = Math.max(0, Number(championshipProgress[metric]) || 0);
+    championshipProgress[metric] = Math.min(mission.target, before + Math.max(0, Number(amount)));
+    const newlyCompleted = championshipMissions.filter((item) => !championshipProgress.claimed.includes(item.id) && championshipProgress[item.id] >= item.target);
+    newlyCompleted.forEach((item) => {
+      championshipProgress.claimed.push(item.id);
+      championshipProgress.tickets++;
+      toast(`MISSÃO DIÁRIA CONCLUÍDA · +1 FICHA`);
+    });
+    if (championshipProgress[metric] !== before || newlyCompleted.length) {
+      scheduleChampionshipCloudSave();
+      if (championshipUi.modal && !championshipUi.modal.hidden) renderChampionshipMenu();
+    }
+  }
+  async function openChampionshipMenu() {
+    if (!['intro','gameover'].includes(state.mode) || !championshipUi.modal) return;
+    championshipUi.modal.hidden = false;
+    syncAudioVisibility();
+    await loadChampionshipProgress();
+    championshipUi.modal.querySelector('[data-close-championship]')?.focus();
+  }
+  function closeChampionshipMenu() {
+    if (!championshipUi.modal) return;
+    championshipUi.modal.hidden = true;
+    syncAudioVisibility();
+    championshipUi.open?.focus({ preventScroll:true });
+  }
+  function beginChampionshipMission() {
+    if (!championshipIsOpenNow()) { renderChampionshipMenu(); return; }
+    if (currentSkin().id === 'prisma') { toast('A PRISMA REAL NÃO CONTA NO CAMPEONATO · EQUIPE OUTRA NAVE'); return; }
+    if (championshipUi.modal) championshipUi.modal.hidden = true;
+    syncAudioVisibility();
+    if (isGenericPlayerProfile() && !selectedPilotNickname) requestPilotNickname(() => openMissionSetup(false, true));
+    else openMissionSetup(false, true);
+  }
+  async function spinChampionshipWheel() {
+    if (!championshipIsOpenNow() || championshipProgress.tickets < 1 || !championshipUi.wheel) return;
+    const pool = championshipRewardPool();
+    if (!pool.length) { renderChampionshipMenu(); return; }
+    championshipProgress.tickets--;
+    championshipUi.wheel.dataset.spinning = '1';
+    championshipUi.wheel.classList.add('is-spinning');
+    if (championshipUi.spin) championshipUi.spin.disabled = true;
+    const chosen = pool[Math.floor(Math.random() * pool.length)];
+    for (let turn = 0; turn < 18; turn++) {
+      const preview = pool[(turn + Math.floor(Math.random() * pool.length)) % pool.length];
+      championshipUi.wheel.replaceChildren(renderChampionshipShip(preview));
+      const name = document.createElement('strong'); name.textContent = preview.name; championshipUi.wheel.append(name);
+      await new Promise((resolve) => setTimeout(resolve, 90 + turn * 13));
+    }
+    const unlocked = readCampaignShipUnlocks();
+    unlocked.add(chosen.id);
+    championshipProgress.unlockedShips = [...new Set([...(championshipProgress.unlockedShips || []), chosen.id])];
+    saveCampaignShipUnlocks(unlocked);
+    championshipProgress.nickname = rankNickname() || championshipProgress.nickname;
+    scheduleChampionshipCloudSave();
+    championshipUi.wheel.replaceChildren(renderChampionshipShip(chosen));
+    const winner = document.createElement('strong'); winner.textContent = `${chosen.name} DESBLOQUEADA!`;
+    championshipUi.wheel.append(winner);
+    if (championshipUi.result) championshipUi.result.textContent = `A nave ${chosen.name} saiu da sua roleta e agora pode ser equipada no hangar.`;
+    championshipUi.wheel.classList.remove('is-spinning');
+    delete championshipUi.wheel.dataset.spinning;
+    renderSkinPicker(); updateEquippedShip(); updateControlUI();
+    renderChampionshipMenu();
+    championshipUi.wheel.replaceChildren(renderChampionshipShip(chosen), winner);
+  }
+  async function refreshChampionshipRanking() {
+    if (!championshipUi.rank) return;
+    const config = supabaseConfig();
+    if (!config) { championshipUi.rank.textContent = 'Placar do campeonato indisponível até configurar o Supabase.'; return; }
+    try {
+      const url = config.url.replace(/\/$/, '') + '/rest/v1/starfall_championship_scores?select=nickname,wave,score,ship_name&order=wave.desc,score.desc,updated_at.asc&limit=10';
+      const response = await fetch(url, { headers:supabaseHeaders(config) });
+      if (!response.ok) throw new Error('Ranking do campeonato indisponível.');
+      const rows = await response.json();
+      championshipUi.rank.replaceChildren();
+      if (!rows.length) { championshipUi.rank.textContent = 'Ainda não há resultados no campeonato.'; return; }
+      rows.forEach((row, index) => {
+        const item = document.createElement('li');
+        const pilot = document.createElement('strong'); pilot.textContent = `${index + 1}. ${displayRankNickname(row.nickname)}`;
+        const detail = document.createElement('span'); detail.textContent = `Onda ${row.wave} · ${Number(row.score).toLocaleString('pt-BR')} pts · ${row.ship_name || 'Nave'}`;
+        item.append(pilot, detail); championshipUi.rank.append(item);
+      });
+    } catch { championshipUi.rank.textContent = 'Placar compartilhado aguardando a migração do campeonato no Supabase.'; }
+  }
+  let championshipScoreQueue = Promise.resolve();
+  function queueChampionshipScore(run) {
+    championshipScoreQueue = championshipScoreQueue.then(() => submitChampionshipScore(run)).then(() => refreshChampionshipRanking()).catch(() => {});
+    return championshipScoreQueue;
+  }
+  async function submitChampionshipScore(run) {
+    if (!championshipIsOpenNow() || run?.ship_id === 'prisma') return;
+    const config = supabaseConfig();
+    if (!config) return;
+    const nickname = await championshipPilotNickname();
+    if (!nickname) return;
+    const base = config.url.replace(/\/$/, '') + '/rest/v1/starfall_championship_scores';
+    const headers = await championshipHeaders(config, nickname);
+    try {
+      const read = await fetch(base + '?select=wave,score&nickname=eq.' + encodeURIComponent(nickname) + '&limit=1', { headers, keepalive:true });
+      if (!read.ok) return;
+      const previous = (await read.json())[0];
+      const better = !previous || run.wave > previous.wave || (run.wave === previous.wave && run.score > previous.score);
+      if (!better) return;
+      const row = { nickname, wave:run.wave, score:run.score, elapsed_seconds:run.elapsed_seconds, ship_id:run.ship_id, ship_name:run.ship_name, updated_at:new Date().toISOString() };
+      await fetch(base + '?on_conflict=nickname', { method:'POST', headers:Object.assign({}, headers, { 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal' }), body:JSON.stringify(row), keepalive:true });
+    } catch { /* A missão continua mesmo se o placar estiver offline. */ }
   }
   function showDailySummary(run, result) {
     if (!ui.dailySummaryModal) return;
@@ -766,7 +1100,7 @@
   function isAllShipsProfile() { return profileNickname() === 'adm'; }
   function abilityShipsTarget() { return skins.filter((skin) => !skin.noAbilities && !skin.hiddenFromHangar && (!skin.secret || isAllShipsProfile() || hasSecretShipAccess(skin))).length; }
   function isAllUpgradesProfile() { return profileNickname() === 'educvv dev1'; }
-  function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge && state.adminNoCooldown; }
+  function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun && state.adminNoCooldown; }
   function shipCooldownSummary(skin) {
     if (skin.id === 'training') return 'sem habilidades · dano recebido reduzido em 50%';
     if (skin.id === 'mahoraga') return 'E: escudo 3s, −70% · adapta tipos diferentes por 5 ondas, até −55%';
@@ -789,6 +1123,7 @@
     if (skin.profileRestricted) return hasSecretShipAccess(skin);
     if (skin.id === 'megumi') return hasSecretShipAccess(skin);
     if (skin.ownerOnly) return hasSecretShipAccess(skin);
+    if (isCampaignShipUnlocked(skin.id)) return true;
     if (isAllShipsProfile()) return true;
     if (skin.secret) return hasSecretShipAccess(skin);
     if (accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id)) return true;
@@ -1760,7 +2095,7 @@
     state.aegisOrbit = null; state.aegisOrbitCooldown = 0; state.aegisOrbitDurationBonus = 0; state.aegisOrbitCountBonus = 0; state.aegisOrbitDamageBonus = 0; state.aegisBarrierCharges = 0; state.aegisBarrierTime = 0;
     state.tempestTideCharges = 4; state.tempestTideChargeBonus = 0; state.tempestTideDamageBonus = 0; state.tempestTideSweepBonus = 0;
     state.chronosEcho = null; state.chronosEchoQueue = []; state.chronosEchoCooldown = 0; state.chronosEchoDurationBonus = 0; state.chronosEchoDamageBonus = 0;
-    if (isAllUpgradesProfile() && !state.dailyChallenge) grantAllUpgrades();
+    if (isAllUpgradesProfile() && !state.dailyChallenge && !state.championshipRun) grantAllUpgrades();
     state.keys.clear(); state.pointer.active = false; releaseAnalog();
     if (ui.runSummary) { ui.runSummary.hidden = true; ui.runSummary.replaceChildren(); }
     renderSkinPicker();
@@ -1846,13 +2181,16 @@
     state.shields = Math.min(MAX_REGULAR_SHIELDS, MAX_TOTAL_SHIELDS - state.tempShields);
     state.lives = state.maxLives;
   }
-  function startGame(dailyChallenge = false, checkpoint = null) {
+  function startGame(dailyChallenge = false, checkpoint = null, championshipRun = false) {
     if (!isDeveloperProfile()) checkpoint = null;
     if (!['intro', 'gameover'].includes(state.mode)) return;
     refreshDeviceSizing();
     cancelAnimationFrame(state.raf);
     if (ui.dailySummaryModal) ui.dailySummaryModal.hidden = true;
     syncAudioVisibility();
+    state.championshipRun = Boolean(championshipRun && championshipIsOpenNow());
+    state.championshipBestWave = 0;
+    state.pendingChampionshipRun = false;
     if (dailyChallenge) {
       if (!state.skinBeforeDaily) state.skinBeforeDaily = state.selectedSkin;
       state.selectedSkin = 'aurora';
@@ -1881,8 +2219,9 @@
       ui.status.textContent = `Missão retomada na onda ${state.wave}. A onda começa novamente com seus pontos e melhorias guardados.`;
       toast(`MISSÃO RETOMADA · ONDA ${state.wave}`);
     } else {
-      ui.status.textContent = state.dailyChallenge ? `Desafio diário de ${formatChallengeDate(state.challengeDate)}. Boa sorte, piloto!` : isAllUpgradesProfile() ? 'Missão iniciada com todos os upgrades disponíveis.' : 'Missão iniciada. Sobreviva à primeira onda!';
+      ui.status.textContent = state.dailyChallenge ? `Desafio diário de ${formatChallengeDate(state.challengeDate)}. Boa sorte, piloto!` : state.championshipRun ? 'Missão do campeonato iniciada. Complete objetivos e concorra no placar do evento!' : isAllUpgradesProfile() ? 'Missão iniciada com todos os upgrades disponíveis.' : 'Missão iniciada. Sobreviva à primeira onda!';
       if (state.dailyChallenge) toast('DESAFIO DIÁRIO · NAVE AURORA');
+      else if (state.championshipRun) toast('CAMPEONATO · MISSÕES DIÁRIAS ATIVAS');
       else if (isAllUpgradesProfile()) toast('UPGRADES MÁXIMOS EQUIPADOS');
       recordAchievementEvent('mission');
       recordAchievementEvent('wave', state.wave);
@@ -1923,6 +2262,7 @@
   }
   function finishGame() {
     if (state.mode === 'gameover') return;
+    const championshipRun = state.championshipRun;
     state.waveEndedAt = Date.now();
     state.megumiTransformed = false; state.megumiFormWavesRemaining = 0; state.megumiTransformSource = ''; state.megumiSummonPhase = 'idle'; state.megumiCloakTime = 0; state.megumiRabbits = []; state.mahoragaAdaptationVisualTime = 0;
     ui.stage?.classList.remove('starfall-megumi-shadow-veil');
@@ -1931,16 +2271,18 @@
     if (!state.dailyChallenge) clearMissionCheckpoint();
     setMode('gameover');
     const dailyRun = state.dailyChallenge;
-    const newRecord = !dailyRun && state.score > state.best;
+    const completedChampionshipWave = Math.max(0, state.championshipBestWave);
+    const newRecord = !dailyRun && !championshipRun && state.score > state.best;
     if (newRecord) { state.best = state.score; saveBest(); }
     updateHud();
-    ui.title.textContent = dailyRun ? 'DESAFIO CONCLUÍDO' : newRecord ? 'NOVO RECORDE!' : 'A missão acabou.';
+    ui.title.textContent = dailyRun ? 'DESAFIO CONCLUÍDO' : championshipRun ? 'FIM DA RODADA DO CAMPEONATO' : newRecord ? 'NOVO RECORDE!' : 'A missão acabou.';
     ui.copy.textContent = dailyRun
       ? `Desafio de ${formatChallengeDate(state.challengeDate)}: você chegou à onda ${state.wave}, marcou ${state.score} pontos e sobreviveu por ${formatTime(state.elapsed)}.`
-      : `Você chegou à onda ${state.wave}, marcou ${state.score} pontos e sobreviveu por ${formatTime(state.elapsed)}.`;
+      : championshipRun ? `Rodada do campeonato: você concluiu ${completedChampionshipWave} ondas, marcou ${state.score} pontos e sobreviveu por ${formatTime(state.elapsed)}.`
+        : `Você chegou à onda ${state.wave}, marcou ${state.score} pontos e sobreviveu por ${formatTime(state.elapsed)}.`;
     ui.start.textContent = '↻ TENTAR DE NOVO';
-    ui.status.textContent = dailyRun ? 'Seu resultado diário foi guardado neste dispositivo.' : 'Nave perdida. Uma nova missão pode começar quando quiser.';
-    const run = createRunRecord(state.wave);
+    ui.status.textContent = dailyRun ? 'Seu resultado diário foi guardado neste dispositivo.' : championshipRun ? 'A rodada foi encerrada; o resultado do campeonato foi atualizado.' : 'Nave perdida. Uma nova missão pode começar quando quiser.';
+    const run = createRunRecord(championshipRun ? Math.max(1, state.championshipBestWave) : state.wave);
     if (ui.runSummary) {
       ui.runSummary.hidden = dailyRun;
       if (dailyRun) ui.runSummary.replaceChildren();
@@ -1954,6 +2296,11 @@
       updateDailyChallengeInfo();
       if (ui.rankStatus) ui.rankStatus.textContent = result.isRecord ? 'Novo recorde diário local!' : 'Desafio guardado neste dispositivo';
       showDailySummary(run, result);
+    } else if (championshipRun) {
+      if (state.championshipBestWave > 0 && run.ship_id !== 'prisma') queueChampionshipScore(run);
+      if (ui.rankStatus) ui.rankStatus.textContent = state.championshipBestWave > 0 ? 'Resultado enviado para o campeonato.' : 'Conclua ao menos uma onda para entrar no placar do campeonato.';
+      state.championshipRun = false;
+      state.championshipBestWave = 0;
     } else if (run.ship_id === 'prisma') {
       if (ui.rankStatus) ui.rankStatus.textContent = 'Missão com a Prisma Real: não conta para o placar. Seu recorde local foi guardado.';
     } else queueRunSubmission(run);
@@ -2046,7 +2393,11 @@
     recordAchievementEvent('wave', completedWave);
     if (state.wave > state.bestCompletedWave) { state.bestCompletedWave = state.wave; saveBestWave(); renderSkinPicker(); persistAccountShipProgress(); }
     saveNicknameCompletedWave(rankNickname(), completedWave);
-    if (!state.dailyChallenge && state.selectedSkin !== 'prisma') queueRunSubmission(createRunRecord(completedWave));
+    if (state.championshipRun) {
+      state.championshipBestWave = Math.max(state.championshipBestWave, completedWave);
+      updateChampionshipMission('waves', 1);
+      if (state.selectedSkin !== 'prisma') queueChampionshipScore(createRunRecord(completedWave));
+    } else if (!state.dailyChallenge && state.selectedSkin !== 'prisma') queueRunSubmission(createRunRecord(completedWave));
     setMode('upgrade');
     state.wave += 1;
     if (state.megumiTransformed) {
@@ -2849,7 +3200,10 @@
   function defeatEnemy(enemy, ability) {
     if (!enemy || enemy.dead) return;
     enemy.dead = true;
-    state.score += Math.round(enemy.score * (state.scoreMultiplier || 1));
+    const earnedScore = Math.round(enemy.score * (state.scoreMultiplier || 1));
+    state.score += earnedScore;
+    updateChampionshipMission('kills', 1);
+    updateChampionshipMission('score', earnedScore);
     state.waveKills += enemy.kind === 'boss' ? (enemy.isMiniBoss ? 2 : state.enemiesRequired) : 1;
     burst(enemy.x, enemy.y, enemy.color, enemy.kind === 'boss' ? 44 : 15, enemy.kind === 'boss' ? 220 : 110);
     const salvageChance = state.salvageHeal * .035 * Math.max(.06, 1 - lateWavePressure() * .015);
@@ -6831,7 +7185,7 @@
   }
   function updateAdminToolsUI() {
     if (!ui.adminTools) return;
-    const isAllowed = isDeveloperProfile() && !state.dailyChallenge;
+    const isAllowed = isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun;
     ui.adminTools.hidden = !isAllowed;
     if (!isAllowed) return;
     const missionPaused = state.mode === 'paused';
@@ -6849,7 +7203,7 @@
     }
   }
   function clearCurrentWaveForAdmin() {
-    if (!isDeveloperProfile() || state.dailyChallenge || !['playing', 'paused'].includes(state.mode)) return;
+    if (!isDeveloperProfile() || state.dailyChallenge || state.championshipRun || !['playing', 'paused'].includes(state.mode)) return;
     if (state.mode === 'playing') {
       cancelAnimationFrame(state.raf);
       state.keys.clear(); state.pointer.active = false; releaseAnalog();
@@ -6937,7 +7291,7 @@
     if (ui.eclipseCutscene) ui.eclipseCutscene.hidden = true;
   }
   function toggleAdminBuffs() {
-    if (!isDeveloperProfile() || state.dailyChallenge || !['paused', 'upgrade'].includes(state.mode)) return;
+    if (!isDeveloperProfile() || state.dailyChallenge || state.championshipRun || !['paused', 'upgrade'].includes(state.mode)) return;
     if (state.adminBuffsActive) removeAllBuffs();
     else grantAllUpgrades();
     updateHud();
@@ -6946,7 +7300,7 @@
     toast(state.adminBuffsActive ? 'TODOS OS BUFFS ATIVADOS' : 'BUFFS REMOVIDOS');
   }
   function toggleAdminCooldown() {
-    if (!isDeveloperProfile() || state.dailyChallenge || !['paused', 'upgrade'].includes(state.mode)) return;
+    if (!isDeveloperProfile() || state.dailyChallenge || state.championshipRun || !['paused', 'upgrade'].includes(state.mode)) return;
     state.adminNoCooldown = !state.adminNoCooldown;
     if (state.adminNoCooldown) state.abilityCooldown = 0;
     updateAbilityButton();
@@ -6979,7 +7333,7 @@
   }
   function syncAudioVisibility() {
     if (!ui.audio) return;
-    const modalOpen = [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.prismWheel, ui.prismRankNotice, ui.checkpointModal, ui.achievementsModal, ui.dailySummaryModal, ui.pilotNicknameModal]
+    const modalOpen = [ui.missionSetupModal, ui.exitModal, ui.settingsModal, ui.shipModal, ui.prismWheel, ui.prismRankNotice, ui.checkpointModal, ui.achievementsModal, ui.dailySummaryModal, championshipUi.modal, ui.pilotNicknameModal]
       .some((modal) => modal && !modal.hidden);
     ui.audio.classList.toggle('is-menu-hidden', modalOpen);
     if (modalOpen) {
@@ -6989,11 +7343,12 @@
       audioToggle?.setAttribute('aria-expanded', 'false');
     }
   }
-  function openMissionSetup(dailyChallenge = false) {
+  function openMissionSetup(dailyChallenge = false, championshipRun = false) {
     if (!['intro', 'gameover'].includes(state.mode) || !ui.missionSetupModal) return;
     refreshDeviceSizing();
-    if (state.preferencesConfigured) { startGame(dailyChallenge); return; }
+    if (state.preferencesConfigured) { startGame(dailyChallenge, null, championshipRun); return; }
     state.pendingDailyChallenge = dailyChallenge;
+    state.pendingChampionshipRun = championshipRun;
     ui.missionSetupModal.hidden = false;
     syncAudioVisibility();
     ui.missionSetupModal.querySelector('[data-confirm-mission-setup]')?.focus();
@@ -7002,21 +7357,25 @@
     if (!ui.missionSetupModal) return;
     ui.missionSetupModal.hidden = true;
     const dailyChallenge = state.pendingDailyChallenge;
+    const championshipRun = state.pendingChampionshipRun;
     state.pendingDailyChallenge = false;
+    state.pendingChampionshipRun = false;
     syncAudioVisibility();
     const returnTarget = ui.dailySummaryModal && !ui.dailySummaryModal.hidden
       ? ui.dailySummaryStart
-      : dailyChallenge ? ui.dailyStart : ui.start;
+      : championshipRun ? championshipUi.open : dailyChallenge ? ui.dailyStart : ui.start;
     returnTarget?.focus();
   }
   function confirmMissionSetup() {
     const dailyChallenge = state.pendingDailyChallenge;
+    const championshipRun = state.pendingChampionshipRun;
     state.pendingDailyChallenge = false;
+    state.pendingChampionshipRun = false;
     state.preferencesConfigured = true;
     saveNicknameSettings();
     if (ui.missionSetupModal) ui.missionSetupModal.hidden = true;
     syncAudioVisibility();
-    startGame(dailyChallenge);
+    startGame(dailyChallenge, null, championshipRun);
   }
   function openSavedMissionPrompt(checkpoint) {
     if (!isDeveloperProfile()) { openMissionSetup(); return; }
@@ -7093,7 +7452,7 @@
     state.exitWasPlaying = ['playing', 'paused'].includes(state.mode);
     if (state.mode === 'playing') pauseGame();
     const activeMission = ['playing', 'paused', 'upgrade'].includes(state.mode);
-    const canSaveMission = isDeveloperProfile() && ['playing', 'paused'].includes(state.mode) && !state.dailyChallenge;
+    const canSaveMission = isDeveloperProfile() && ['playing', 'paused'].includes(state.mode) && !state.dailyChallenge && !state.championshipRun;
     let saveButton = null;
     if (canSaveMission) saveButton = createExitChoiceButton('data-save-and-exit', 'SALVAR E SAIR', 'button-secondary');
     else ui.exitModal.querySelector('[data-save-and-exit]')?.remove();
@@ -7138,6 +7497,9 @@
     state.pointer.active = false;
     releaseAnalog();
     state.pendingDailyChallenge = false;
+    state.pendingChampionshipRun = false;
+    state.championshipRun = false;
+    state.championshipBestWave = 0;
     state.exitReturnFocus = null;
     state.exitWasPlaying = false;
     if (state.skinBeforeDaily) {
@@ -7149,7 +7511,7 @@
     state.dailyBestScore = 0;
     state.randomStreams = null;
     if (ui.secretUnlockDialog?.open) ui.secretUnlockDialog.close();
-    [ui.missionSetupModal, ui.exitModal, ui.checkpointModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal, ui.pilotNicknameModal]
+    [ui.missionSetupModal, ui.exitModal, ui.checkpointModal, ui.settingsModal, ui.shipModal, ui.achievementsModal, ui.dailySummaryModal, championshipUi.modal, ui.pilotNicknameModal]
       .forEach((modal) => { if (modal) modal.hidden = true; });
     resetGame();
     setMode('intro');
@@ -7253,7 +7615,13 @@
   ui.pilotNicknameForm?.addEventListener('submit', confirmPilotNickname);
   ui.pilotNicknameInput?.addEventListener('input', updatePilotNicknameFeedback);
   document.querySelectorAll('[data-cancel-pilot-nickname]').forEach((button) => button.addEventListener('click', closePilotNicknamePrompt));
-  ui.dailyStart?.addEventListener('click', () => requestPilotNickname(() => openMissionSetup(true)));
+  ui.dailyStart?.addEventListener('click', () => { void openChampionshipMenu(); });
+  championshipUi.close?.addEventListener('click', closeChampionshipMenu);
+  championshipUi.start?.addEventListener('click', beginChampionshipMission);
+  championshipUi.spin?.addEventListener('click', () => { void spinChampionshipWheel(); });
+  championshipUi.classicDaily?.addEventListener('click', () => { closeChampionshipMenu(); requestPilotNickname(() => openMissionSetup(true)); });
+  championshipUi.modal?.addEventListener('click', (event) => { if (event.target === championshipUi.modal) closeChampionshipMenu(); });
+  window.setInterval(() => { updateDailyChallengeInfo(); if (championshipUi.modal && !championshipUi.modal.hidden) renderChampionshipMenu(); }, 1000);
   document.querySelectorAll('[data-close-mission-setup]').forEach((button) => button.addEventListener('click', closeMissionSetup));
   $('[data-confirm-mission-setup]')?.addEventListener('click', confirmMissionSetup);
   ui.stop?.addEventListener('click', openExitConfirmation);
@@ -7313,7 +7681,7 @@
     const editableTarget = event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]');
     if (state.eclipsePhase === 'cinematic' || state.megumiSummonPhase === 'cinematic') { event.preventDefault(); return; }
     if (!editableTarget && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
-    if (event.code === 'KeyF' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && !state.dailyChallenge && ['playing', 'paused'].includes(state.mode) && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
+    if (event.code === 'KeyF' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun && ['playing', 'paused'].includes(state.mode) && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
       event.preventDefault(); clearCurrentWaveForAdmin(); return;
     }
     if (event.code === 'KeyR' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !editableTarget && ['playing', 'paused', 'upgrade'].includes(state.mode)) {
@@ -7397,9 +7765,8 @@
   state.achievementProgress = readAchievementProgress();
   renderAchievements(); updateDailyChallengeInfo();
   window.CV_GAMES_AUTH?.client?.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_IN') window.setTimeout(() => { loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); void refreshLeaderboard(); }, 0);
-    if (event === 'SIGNED_OUT') window.setTimeout(() => { clearAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); void refreshLeaderboard(); }, 0);
+    if (event === 'SIGNED_IN') window.setTimeout(() => { loadAccountShipProgress(); nicknameSettingsLoadPromise = loadChampionshipProgress().then(() => loadNicknameSettings()); void refreshLeaderboard(); }, 0);
+    if (event === 'SIGNED_OUT') window.setTimeout(() => { clearAccountShipProgress(); nicknameSettingsLoadPromise = loadChampionshipProgress().then(() => loadNicknameSettings()); void refreshLeaderboard(); }, 0);
   });
-  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings();
+  createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); nicknameSettingsLoadPromise = loadChampionshipProgress().then(() => loadNicknameSettings());
 })();
-
