@@ -944,7 +944,7 @@
       : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon starfall-dino-image-wrap" aria-hidden="true"><img src="saurion-raptor-skill.png" alt=""></span>'
       : skin.shape === 'prism' ? '<span class="starfall-equipped-icon starfall-prism-icon" aria-hidden="true">◇</span>'
       : skin.shape === 'megumi' ? '<span class="starfall-equipped-icon starfall-umbra-icon" aria-hidden="true"><img src="umbra-ship.png" alt=""></span>'
-      : skin.shape === 'flamestorm' ? '<span class="starfall-equipped-icon starfall-flamestorm-icon" aria-hidden="true"><img src="flamestorm-ship-normal.jpeg" alt=""></span>'
+      : skin.shape === 'flamestorm' ? '<span class="starfall-equipped-icon starfall-flamestorm-icon" aria-hidden="true"><img src="flamestorm-icon.png" alt=""></span>'
       : skin.shape === 'mahoraga' ? '<span class="starfall-equipped-icon starfall-mahoraga-sprite" aria-hidden="true"><img src="mahoraga-ship.png" alt=""></span>'
       : skin.shape === 'reflector' ? '<span class="starfall-equipped-icon starfall-redshift-icon" aria-hidden="true">' + bastiaoShipSvg(skin.color,skin.accent) + '</span>'
       : '<svg class="starfall-equipped-icon' + (skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-megumi-icon' : '') + '" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : skin.shape === 'mahoraga' ? '<circle cx="20" cy="5" r="5" fill="#2b343e" stroke="#e4c477" stroke-width="1.2"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#f4ecdb" stroke-width=".9"/><circle cx="20" cy="5" r="1.5" fill="#e4c477"/>' : skin.shape === 'megumi' ? '<circle cx="20" cy="5" r="5" fill="#211a2f" stroke="#c4b2e8" stroke-width="1"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#eee6ff" stroke-width=".7"/><circle cx="20" cy="5" r="1.5" fill="#c4b2e8"/>' : '') + '</svg>';
@@ -1578,7 +1578,7 @@
       if (concealed) icon.textContent = '?';
       else if (skin.shape === 'dino') { const image = document.createElement('img'); image.src = 'saurion-raptor-skill.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'megumi') { const image = document.createElement('img'); image.src = 'umbra-ship.png'; image.alt = ''; icon.append(image); }
-      else if (skin.shape === 'flamestorm') { icon.classList.add('starfall-flamestorm-icon'); const image = document.createElement('img'); image.src = 'flamestorm-ship-normal.jpeg'; image.alt = ''; icon.append(image); }
+      else if (skin.shape === 'flamestorm') { icon.classList.add('starfall-flamestorm-icon'); const image = document.createElement('img'); image.src = 'flamestorm-icon.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'mahoraga') icon.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 22L31 26L38 30L34 35L30 33L29 40L26 39L24 47L22 39L19 40L18 33L14 35L10 30L17 26Z" fill="#c9d0cf" stroke="#39434c" stroke-width="1.8" stroke-linejoin="round"/><circle cx="24" cy="12" r="9.5" fill="#29333d" stroke="#e4c477" stroke-width="1.8"/><circle cx="24" cy="12" r="6.2" fill="none" stroke="#eee7d8" stroke-width="1"/><path d="M24 4V20M16 12H32M18.4 6.4L29.6 17.6M29.6 6.4L18.4 17.6" fill="none" stroke="#f2ebdc" stroke-width="1.3" stroke-linecap="round"/><g fill="#e4c477" stroke="#f7efdc" stroke-width=".7"><circle cx="24" cy="1.5" r="1.7"/><circle cx="31.4" cy="4.6" r="1.7"/><circle cx="34.5" cy="12" r="1.7"/><circle cx="31.4" cy="19.4" r="1.7"/><circle cx="24" cy="22.5" r="1.7"/><circle cx="16.6" cy="19.4" r="1.7"/><circle cx="13.5" cy="12" r="1.7"/><circle cx="16.6" cy="4.6" r="1.7"/></g></svg>';
       else if (skin.shape === 'reflector') icon.innerHTML = bastiaoShipSvg(skin.color,skin.accent);
       else if (usesHangarHull) icon.innerHTML = hangarShipSvg(skin);
@@ -4765,7 +4765,7 @@
       return;
     }
     if (ship.shape === 'flamestorm') {
-      ctx.scale(1.08, 1.08);
+      ctx.scale(1.12, 1.12);
       const dash = currentSkin().id === 'flamestorm' ? state.flameStormDash : null;
       if (dash?.life > 0) {
         const frameIndex = Math.floor((dash.total - dash.life) * 12) % flameStormDashFrames.length;
