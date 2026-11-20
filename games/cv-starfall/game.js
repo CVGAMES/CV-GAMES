@@ -69,8 +69,10 @@
     damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), editDamageCounter: $('[data-edit-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), fireToggle: $('[data-fire-toggle]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), mahoragaAwakening: $('[data-mahoraga-awakening]'), mahoragaAwakeningType: $('[data-mahoraga-awakening-type]'), mahoragaAwakeningBuff: $('[data-mahoraga-awakening-buff]'), mahoragaReadout: $('[data-mahoraga-readout]'), megumiFormTimer: $('[data-megumi-form-timer]'), mahoragaReturn: $('[data-mahoraga-return]'),
     deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'),
     dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'),
-    rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
+    rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankAdminPanel: $('[data-rank-admin]'), rankAdminReset: $('[data-rank-reset]'), rankAdminStatus: $('[data-rank-admin-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
   };
+  let rankAdminSessionActive = false;
+  let rankAdminBusy = false;
   ui.prismWheel = $('[data-prism-wheel]');
   ui.prismRankNotice = $('[data-prism-rank-notice]');
   ui.checkpointModal = $('[data-checkpoint-modal]');
@@ -180,7 +182,7 @@
     flameStormQCooldown: 0, flameStormQIntangible: 0, flameStormDash: null,
     chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
-    score: 0, best: readBest(), bestCompletedWave: readBestWave(), wave: 1, lives: 3, maxLives: 6, shields: 0, tempShields: 0, invulnerable: 0, elapsed: 0,
+    score: 0, best: readBest(), bestCompletedWave: readBestWave(), wave: 1, lives: 3, maxLives: 6, shields: 0, tempShields: 0, invulnerable: 0, elapsed: 0, missionStartedAt: 0, waveStartedAt: 0, waveEndedAt: 0,
     shotCooldown: 0, waveGrace: 0, enemySpawn: 0, powerSpawn: 0, waveKills: 0,
     enemiesRequired: 6, bossWave: false, bossSpawned: false, miniBossTimer: 0, miniBossSpawned: false,
     keys: new Set(), bullets: [], enemyBullets: [], enemies: [], particles: [], pickups: [], stars: [], effects: [],
@@ -339,6 +341,7 @@
   const starfallPilotNicknameKey = 'cv-games-cv-starfall-pilot-nickname';
   function profileNickname() { return normalizeRankNickname(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || ''); }
   function rankNickname() { return normalizeRankNickname(selectedPilotNickname || profileNickname()); }
+  function isScoreAdminProfile() { return profileNickname() === 'poder'; }
   function isGenericPlayerProfile() { return !profileNickname() || profileNickname() === 'jogador'; }
   function normalizeRankNickname(value) {
     const nickname = String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
@@ -1685,7 +1688,7 @@
     if (ui.pause) ui.pause.disabled = false;
     if (ui.stop) ui.stop.disabled = false;
     if (ui.megumiCutscene) { ui.megumiCutscene.hidden = true; ui.megumiCutscene.setAttribute('aria-hidden', 'true'); }
-    state.score = 0; state.wave = 1; state.lives = 3; state.maxLives = 6; state.shields = 0; state.tempShields = 0; state.invulnerable = 1.4; state.elapsed = 0;
+    state.score = 0; state.wave = 1; state.lives = 3; state.maxLives = 6; state.shields = 0; state.tempShields = 0; state.invulnerable = 1.4; state.elapsed = 0; state.missionStartedAt = Date.now(); state.waveStartedAt = state.missionStartedAt; state.waveEndedAt = 0;
     state.shotCooldown = 0; state.automaticFireEnabled = true; state.waveGrace = .45; state.enemySpawn = .22; state.powerSpawn = 8; state.waveKills = 0;
     state.enemiesRequired = 9; state.bossWave = false; state.bossSpawned = false; state.miniBossTimer = 0; state.miniBossSpawned = false;
     state.bullets = []; state.enemyBullets = []; state.enemies = []; state.particles = []; state.pickups = []; state.effects = [];
@@ -1852,6 +1855,7 @@
   function createRunRecord(wave = state.wave) {
     return {
       wave:Math.max(1, Math.floor(Number(wave) || state.wave)), score:state.score, elapsed_seconds:Math.floor(state.elapsed),
+      wave_started_at:new Date(state.waveStartedAt || Date.now()).toISOString(), wave_ended_at:new Date(state.waveEndedAt || Date.now()).toISOString(), updated_at:new Date().toISOString(),
       ship_id:state.selectedSkin, ship_name:(skins.find((skin) => skin.id === state.selectedSkin) || currentSkin()).name,
       buff_summary: {
         dano:(state.player.damage * (1 + state.endlessDamage)).toFixed(2), velocidade:Math.round(Math.min(525, state.player.speed + state.endlessSpeed)),
@@ -1867,6 +1871,7 @@
   }
   function finishGame() {
     if (state.mode === 'gameover') return;
+    state.waveEndedAt = Date.now();
     state.megumiTransformed = false; state.megumiFormWavesRemaining = 0; state.megumiTransformSource = ''; state.megumiSummonPhase = 'idle'; state.megumiCloakTime = 0; state.megumiRabbits = []; state.mahoragaAdaptationVisualTime = 0;
     ui.stage?.classList.remove('starfall-megumi-shadow-veil');
     if (ui.megumiFormTimer) ui.megumiFormTimer.hidden = true;
@@ -1982,6 +1987,7 @@
   }
   function openUpgrade() {
     const completedWave = state.wave;
+    state.waveEndedAt = Date.now();
     const kicker = ui.upgrade.querySelector('.starfall-kicker');
     const heading = ui.upgrade.querySelector('h2');
     const copy = ui.upgrade.querySelector(':scope > p:not(.starfall-kicker)');
@@ -2034,6 +2040,7 @@
     tone(640, .2, 'triangle', .04);
   }
   function beginNextWave() {
+    state.waveStartedAt = Date.now(); state.waveEndedAt = 0;
     state.enemiesRequired = 10 + Math.floor(state.wave * 2.15) + Math.floor(state.wave / 10) * 3;
     state.waveKills = 0; state.bossWave = state.wave % 10 === 0; state.bossSpawned = false;
     const waveInCycle = state.wave % 10;
@@ -5777,6 +5784,77 @@
     else if (key.startsWith('eyJ')) headers.Authorization = 'Bearer ' + key;
     return headers;
   }
+  async function refreshRankAdminAccess() {
+    const isPowerProfile = isScoreAdminProfile();
+    if (ui.rankAdminPanel) ui.rankAdminPanel.hidden = !isPowerProfile;
+    rankAdminSessionActive = false;
+    if (!isPowerProfile) return;
+    try {
+      const session = await window.CV_GAMES_AUTH?.getPowerSession?.();
+      rankAdminSessionActive = Boolean(session?.access_token && window.CV_GAMES_AUTH?.isScoreAdmin?.(session.user));
+    } catch { rankAdminSessionActive = false; }
+    if (ui.rankAdminReset) ui.rankAdminReset.disabled = !rankAdminSessionActive || rankAdminBusy;
+    if (ui.rankAdminStatus && !rankAdminBusy) {
+      const awaitingLogin = !rankAdminSessionActive || !ui.rankAdminStatus.textContent || ui.rankAdminStatus.textContent.startsWith('Entre na conta');
+      if (awaitingLogin) ui.rankAdminStatus.textContent = rankAdminSessionActive
+        ? 'Conta Poder autenticada. Use as setas para reorganizar o Top 10.'
+        : 'Entre na conta autorizada do perfil Poder pela página Perfil para habilitar estas ações.';
+    }
+  }
+  async function callRankAdminRpc(functionName, payload) {
+    if (!isScoreAdminProfile()) throw new Error('Selecione o perfil Poder para administrar o placar.');
+    const config = supabaseConfig();
+    if (!config) throw new Error('O placar ainda não está configurado.');
+    const session = await window.CV_GAMES_AUTH?.getPowerSession?.();
+    if (!session?.access_token || !window.CV_GAMES_AUTH?.isScoreAdmin?.(session.user)) throw new Error('Entre na conta autenticada do perfil Poder.');
+    const response = await fetch(config.url.replace(/\/$/, '') + '/rest/v1/rpc/' + functionName, {
+      method:'POST',
+      headers:Object.assign({}, supabaseHeaders(config, session.access_token), { 'Content-Type':'application/json' }),
+      body:JSON.stringify(payload)
+    });
+    if (!response.ok) throw new Error('O Supabase recusou a alteração do placar. Confira a migração de administração.');
+    return response;
+  }
+  async function moveLeaderboardScore(nickname, direction) {
+    if (!rankAdminSessionActive || rankAdminBusy || ![-1, 1].includes(direction)) return;
+    rankAdminBusy = true;
+    await refreshRankAdminAccess();
+    if (ui.rankAdminStatus) ui.rankAdminStatus.textContent = 'Atualizando a posição…';
+    try {
+      await callRankAdminRpc('starfall_admin_move_score', { p_nickname:nickname, p_direction:direction });
+      await refreshLeaderboard();
+      if (ui.rankAdminStatus) ui.rankAdminStatus.textContent = 'Posição de ' + displayRankNickname(nickname) + ' atualizada.';
+    } catch (error) {
+      if (ui.rankAdminStatus) ui.rankAdminStatus.textContent = error?.message || 'Não foi possível mover este piloto.';
+    } finally {
+      rankAdminBusy = false;
+      await refreshRankAdminAccess();
+      await refreshLeaderboard();
+    }
+  }
+  async function resetLeaderboard() {
+    if (!rankAdminSessionActive || rankAdminBusy) return;
+    const confirmAction = window.CV_GAMES_DIALOG?.confirm;
+    const confirmed = typeof confirmAction === 'function'
+      ? await confirmAction({ title:'Zerar o placar do CV STARFALL?', message:'Todos os recordes compartilhados serão apagados. Essa ação não pode ser desfeita.', confirmText:'Zerar placar', cancelText:'Cancelar', tone:'danger' })
+      : window.confirm?.('Apagar todos os recordes compartilhados do CV STARFALL? Essa ação não pode ser desfeita.') === true;
+    if (!confirmed) return;
+    rankAdminBusy = true;
+    await refreshRankAdminAccess();
+    if (ui.rankAdminStatus) ui.rankAdminStatus.textContent = 'Apagando os recordes…';
+    try {
+      const response = await callRankAdminRpc('starfall_admin_reset_scores', {});
+      const deleted = await response.json();
+      await refreshLeaderboard();
+      if (ui.rankAdminStatus) ui.rankAdminStatus.textContent = 'Placar zerado. Registros removidos: ' + (Number(deleted) || 0) + '.';
+    } catch (error) {
+      if (ui.rankAdminStatus) ui.rankAdminStatus.textContent = error?.message || 'Não foi possível zerar o placar.';
+    } finally {
+      rankAdminBusy = false;
+      await refreshRankAdminAccess();
+      await refreshLeaderboard();
+    }
+  }
   function authorizedNickname(session) {
     const nickname = rankNickname();
     const names = (window.CV_STARFALL_SUPABASE?.allowedNicknames || ['educvv']).map(normalizeRankNickname);
@@ -5814,6 +5892,7 @@
     updateControlUI();
     renderAuthorizedPilots();
     updateAdminToolsUI();
+    void refreshLeaderboard();
     reconcileAbilityCollectorAchievement();
     nicknameSettingsLoadPromise = loadNicknameSettings();
   }
@@ -5856,11 +5935,24 @@
       item.append(rank, body);
 
       if (row) {
+        const actions = document.createElement('div');
+        actions.className = 'starfall-rank-actions';
         const inspect = document.createElement('button');
         inspect.type = 'button'; inspect.className = 'starfall-rank-inspect'; inspect.textContent = 'Ver detalhes';
         inspect.setAttribute('aria-label', `Ver detalhes do recorde de ${displayRankNickname(row.nickname)}`);
         inspect.addEventListener('click', () => showRankDetails(row, position));
-        item.append(inspect);
+        actions.append(inspect);
+        if (rankAdminSessionActive) {
+          const moves = document.createElement('span'); moves.className = 'starfall-rank-admin-moves';
+          const up = document.createElement('button'); up.type = 'button'; up.textContent = '↑'; up.title = 'Subir ' + displayRankNickname(row.nickname) + ' uma posição';
+          up.setAttribute('aria-label', up.title); up.disabled = rankAdminBusy || index === 0;
+          up.addEventListener('click', () => moveLeaderboardScore(row.nickname, -1));
+          const down = document.createElement('button'); down.type = 'button'; down.textContent = '↓'; down.title = 'Descer ' + displayRankNickname(row.nickname) + ' uma posição';
+          down.setAttribute('aria-label', down.title); down.disabled = rankAdminBusy || index === rows.length - 1;
+          down.addEventListener('click', () => moveLeaderboardScore(row.nickname, 1));
+          moves.append(up, down); actions.append(moves);
+        }
+        item.append(actions);
       }
       ui.rankList.append(item);
     }
@@ -5979,6 +6071,12 @@
     });
     card.append(list); return card;
   }
+  function formatRankTimestamp(value) {
+    if (!value) return 'Não registrado';
+    const date = new Date(value);
+    if (!Number.isFinite(date.getTime())) return 'Não registrado';
+    return new Intl.DateTimeFormat('pt-BR', { dateStyle:'short', timeStyle:'medium' }).format(date);
+  }
   function showRankDetails(row, position) {
     if (!ui.rankDialog) return;
     const buff = row.buff_summary && typeof row.buff_summary === 'object' ? row.buff_summary : {};
@@ -5993,7 +6091,10 @@
       makeRankMetric('Tempo de missão', formatTime(Number(row.elapsed_seconds) || 0), '◷')
     );
 
-    const sections = [];
+    const sections = [makeRankDetailCard('Horários da onda', '◷', [
+      ['Início da onda', formatRankTimestamp(row.wave_started_at)],
+      ['Fim da onda / derrota', formatRankTimestamp(row.wave_ended_at)]
+    ])];
     const upgradeCategories = [
       { title:'Canhões e ataque', icon:'✹', ids:['damage','rapid','spread','pierce','critical','volley','bossDamage','blast'] },
       { title:'Defesa da nave', icon:'🛡️', ids:['repair','shield','armor','regen','drone','lifeSupport','salvageHeal'] },
@@ -6043,10 +6144,11 @@
     if (!ui.rankDialog.open) ui.rankDialog.showModal();
   }
   async function refreshLeaderboard() {
+    await refreshRankAdminAccess();
     const config = supabaseConfig();
     if (!config) { if (ui.rankStatus) ui.rankStatus.textContent = 'Aguardando configuração do Supabase'; renderLeaderboard([]); return; }
     try {
-      const url = config.url.replace(/\/$/, '') + '/rest/v1/starfall_scores?select=nickname,wave,score,elapsed_seconds,ship_id,ship_name,buff_summary&order=wave.desc,score.desc&limit=10';
+      const url = config.url.replace(/\/$/, '') + '/rest/v1/starfall_scores?select=nickname,wave,score,elapsed_seconds,ship_id,ship_name,buff_summary,wave_started_at,wave_ended_at,rank_order&order=rank_order.asc.nullslast,wave.desc,score.desc&limit=11';
       const response = await fetch(url, { headers: supabaseHeaders(config) });
       if (!response.ok) throw new Error('Ranking indisponível');
       const rows = await response.json();
@@ -6641,6 +6743,7 @@
   document.querySelectorAll('[data-close-achievements]').forEach((button) => button.addEventListener('click', closeAchievements));
   $('[data-close-rank-dialog]')?.addEventListener('click', () => ui.rankDialog?.close());
   ui.rankDialog?.addEventListener('click', (event) => { if (event.target === ui.rankDialog) ui.rankDialog.close(); });
+  ui.rankAdminReset?.addEventListener('click', resetLeaderboard);
   ui.copyAuthorizedPilots?.addEventListener('click', copyAuthorizedPilots);
   document.querySelectorAll('[data-close-daily-summary]').forEach((button) => button.addEventListener('click', closeDailySummary));
   ui.dailySummaryStart?.addEventListener('click', () => requestPilotNickname(() => openMissionSetup(true)));
