@@ -6869,8 +6869,8 @@
   state.achievementProgress = readAchievementProgress();
   renderAchievements(); updateDailyChallengeInfo();
   window.CV_GAMES_AUTH?.client?.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_IN') window.setTimeout(() => { loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); }, 0);
-    if (event === 'SIGNED_OUT') window.setTimeout(() => { clearAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); }, 0);
+    if (event === 'SIGNED_IN') window.setTimeout(() => { loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); void refreshLeaderboard(); }, 0);
+    if (event === 'SIGNED_OUT') window.setTimeout(() => { clearAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings(); void refreshLeaderboard(); }, 0);
   });
   createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings();
 })();
