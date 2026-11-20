@@ -39,7 +39,16 @@
 .starfall-upgrade-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.65rem; width:min(100%,48rem); margin-top:.65rem; }
 .starfall-upgrade-card { display:flex; min-height:9rem; flex-direction:column; align-items:flex-start; gap:.42rem; padding:.85rem; border:1px solid rgba(137,182,255,.28); border-radius:.85rem; background:linear-gradient(145deg,rgba(32,52,93,.75),rgba(14,24,48,.95)); color:#f3f7ff; text-align:left; cursor:pointer; transition:transform .16s ease,border-color .16s ease,background .16s ease; }
 .starfall-upgrade-card:hover, .starfall-upgrade-card:focus-visible { border-color:#9fd8ff; background:linear-gradient(145deg,rgba(52,77,130,.9),rgba(17,32,63,.98)); transform:translateY(-3px); }
+.starfall-upgrade-card.is-final-level { border-color:var(--upgrade-final-border); background:linear-gradient(145deg,var(--upgrade-final-fill),rgba(14,24,48,.96)); box-shadow:inset 0 0 0 1px var(--upgrade-final-glow),0 0 18px var(--upgrade-final-glow); }
+.starfall-upgrade-card.is-final-level:hover, .starfall-upgrade-card.is-final-level:focus-visible { border-color:var(--upgrade-final-border); background:linear-gradient(145deg,var(--upgrade-final-fill),rgba(17,32,63,.98)); }
+.starfall-upgrade-card.is-final-level[data-upgrade-theme="health"] { --upgrade-final-border:#74e7a1; --upgrade-final-fill:rgba(47,154,90,.22); --upgrade-final-glow:rgba(74,225,132,.2); --upgrade-final-text:#b6f5c9; }
+.starfall-upgrade-card.is-final-level[data-upgrade-theme="defense"] { --upgrade-final-border:#75dcf4; --upgrade-final-fill:rgba(33,136,164,.22); --upgrade-final-glow:rgba(67,208,237,.2); --upgrade-final-text:#b5f2ff; }
+.starfall-upgrade-card.is-final-level[data-upgrade-theme="mobility"] { --upgrade-final-border:#8be7ed; --upgrade-final-fill:rgba(35,137,151,.22); --upgrade-final-glow:rgba(69,220,218,.2); --upgrade-final-text:#bff8f3; }
+.starfall-upgrade-card.is-final-level[data-upgrade-theme="reward"] { --upgrade-final-border:#f3ce70; --upgrade-final-fill:rgba(157,116,30,.24); --upgrade-final-glow:rgba(244,195,71,.2); --upgrade-final-text:#ffe9a6; }
+.starfall-upgrade-card.is-final-level[data-upgrade-theme="offense"] { --upgrade-final-border:#ff927d; --upgrade-final-fill:rgba(154,54,49,.24); --upgrade-final-glow:rgba(255,100,83,.2); --upgrade-final-text:#ffc0b3; }
+.starfall-upgrade-card.is-final-level[data-upgrade-theme="ability"] { --upgrade-final-border:#c29aff; --upgrade-final-fill:rgba(105,65,164,.25); --upgrade-final-glow:rgba(165,116,255,.2); --upgrade-final-text:#dfcaff; }
 .starfall-upgrade-icon { font-size:1.45rem; }
+.starfall-upgrade-final-badge { align-self:flex-start; padding:.16rem .42rem; border:1px solid var(--upgrade-final-border); border-radius:999px; background:var(--upgrade-final-glow); color:var(--upgrade-final-text); font-size:.55rem; font-weight:950; letter-spacing:.1em; }
 .starfall-upgrade-card strong { font-size:.84rem; }
 .starfall-upgrade-card span:last-child { color:#b9c8dc; font-size:.71rem; line-height:1.4; }
 .starfall-toast { position:absolute; z-index:2; top:12%; left:50%; color:#d7eeff; font-size:clamp(.95rem,3vw,1.4rem); font-weight:950; letter-spacing:.1em; opacity:0; pointer-events:none; text-align:center; text-shadow:0 2px 16px #427eff; transform:translate(-50%,-10px); }
