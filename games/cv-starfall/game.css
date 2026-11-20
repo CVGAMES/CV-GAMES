@@ -281,6 +281,18 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-rank-inspect:hover,.starfall-rank-inspect:focus-visible { border-color:#78d6ff; background:rgba(49,164,220,.25); }
 .starfall-rank-note { margin:.8rem 0 0; color:var(--muted); font-size:.75rem; line-height:1.45; }
 .starfall-rank-note strong { color:#c6e8ff; }
+.starfall-rank-admin { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:.6rem .9rem; margin-top:.85rem; padding:.85rem 1rem; border:1px solid rgba(255,191,112,.3); border-radius:.85rem; background:linear-gradient(120deg,rgba(75,48,24,.3),rgba(12,23,40,.78)); }
+.starfall-rank-admin[hidden] { display:none !important; }
+.starfall-rank-admin h3 { margin:.1rem 0 .2rem; color:#ffe0b0; font-size:.95rem; }
+.starfall-rank-admin p:not(.starfall-kicker) { margin:0; color:#bdcbe0; font-size:.68rem; line-height:1.4; }
+.starfall-rank-admin .starfall-kicker { margin:0; color:#ffc782; }
+.starfall-rank-admin [data-rank-admin-status] { grid-column:1/-1; min-height:1em; color:#e7c99f; font-size:.67rem; }
+.starfall-rank-actions { display:flex; align-items:center; gap:.35rem; }
+.starfall-rank-admin-moves { display:flex; gap:.22rem; }
+.starfall-rank-admin-moves button { display:grid; width:1.8rem; height:1.8rem; place-items:center; padding:0; border:1px solid rgba(255,191,112,.34); border-radius:.5rem; background:rgba(255,191,112,.09); color:#ffdaa7; font-size:.95rem; font-weight:900; cursor:pointer; }
+.starfall-rank-admin-moves button:hover:not(:disabled),.starfall-rank-admin-moves button:focus-visible { border-color:#ffd39a; background:rgba(255,191,112,.2); }
+.starfall-rank-admin-moves button:disabled { opacity:.38; cursor:not-allowed; }
+
 .starfall-rank-dialog { width:min(54rem,calc(100% - 1.25rem)); max-width:none; max-height:min(90dvh,52rem); padding:0; overflow:hidden; border:1px solid rgba(118,190,246,.44); border-radius:1.2rem; background:linear-gradient(150deg,#142642,#081321 78%); color:#eef5ff; box-shadow:0 28px 90px rgba(0,0,0,.56),0 0 40px rgba(75,157,229,.13); }
 .starfall-rank-dialog::backdrop { background:rgba(2,7,16,.8); backdrop-filter:blur(7px); }
 .starfall-rank-dialog-card { position:relative; display:grid; max-height:min(90dvh,52rem); gap:.8rem; overflow:auto; padding:clamp(1.1rem,3vw,1.8rem); }
@@ -754,3 +766,5 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 @keyframes starfall-megumi-cut-in { 0% { opacity:0; } 12%,88% { opacity:1; } 100% { opacity:0; } }
 @media(prefers-reduced-motion:reduce) { .starfall-megumi-cutscene,.starfall-megumi-cutscene-wheel,.starfall-megumi-cutscene-wheel img,.starfall-megumi-cutscene-shadow { animation-duration:.01ms; animation-iteration-count:1; } }
 @media(max-width:560px) { .starfall-megumi-form-timer { right:.3rem; bottom:.3rem; padding:.28rem .45rem; font-size:.52rem; } }
+
+@media (max-width:560px) { .starfall-rank-admin { grid-template-columns:1fr; padding:.75rem; } .starfall-rank-admin>.button { width:100%; } .starfall-rank-actions { flex-direction:column; align-items:flex-end; gap:.25rem; } }
