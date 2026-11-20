@@ -19,16 +19,22 @@
   const isScoreAdmin = (user) => profileClaim(user) === 'poder';
   const isAuthorizedAccount = (user) => isOwner(user) || isScoreAdmin(user);
 
-  async function getAuthorizedSession() {
+  async function getAuthorizedSession(options = {}) {
     if (!client) return null;
     const { data, error } = await client.auth.getSession();
     if (error || !data.session) return null;
-    const { data: userData, error: userError } = await client.auth.getUser(data.session.access_token);
+    let session = data.session;
+    const { data: userData, error: userError } = await client.auth.getUser(session.access_token);
     if (userError || !isAuthorizedAccount(userData.user)) {
       await client.auth.signOut({ scope: 'local' });
       return null;
     }
-    return { ...data.session, user: userData.user };
+    if (options.refreshIfClaimsChanged && profileClaim(session.user) !== profileClaim(userData.user)) {
+      const { data: refreshed, error: refreshError } = await client.auth.refreshSession({ refresh_token:session.refresh_token });
+      if (refreshError || !refreshed.session) return null;
+      session = refreshed.session;
+    }
+    return { ...session, user: userData.user };
   }
 
   async function getOwnerSession() {
@@ -36,8 +42,8 @@
     return isOwner(session?.user) ? session : null;
   }
 
-  async function getPowerSession() {
-    const session = await getAuthorizedSession();
+  async function getPowerSession(options = {}) {
+    const session = await getAuthorizedSession(options);
     return isScoreAdmin(session?.user) ? session : null;
   }
 
