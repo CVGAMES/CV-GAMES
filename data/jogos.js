@@ -196,7 +196,7 @@ window.CV_GAMES_CATALOG = [
     id: 'cv-starfall', title: 'CV STARFALL', category: 'Ação', categoryKey: 'acao',
     description: 'Pilote sua nave, sobreviva a ondas cósmicas, escolha melhorias e enfrente guardiões.', tags: ['acao', 'arcade', 'espaco', 'nave', 'sobrevivencia', 'ondas', 'melhorias', 'cv starfall'],
     type: 'Jogo online', platform: 'Navegador', href: 'games/cv-starfall/index.html', image: 'games/cv-starfall/cover.svg', fallback: '🚀',
-    rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true
+    rating: 5, addedAt: '2026-09-24', featured: true, recent: true, popular: false, pcFraco: true, multiplayer: false, exclusivo: true, updateStatus: 'EM ATUALIZAÇÃO'
   },
   {
     id: 'gx-launcher', title: 'Minecraft - GX Launcher', category: 'Aventura', categoryKey: 'aventura',
