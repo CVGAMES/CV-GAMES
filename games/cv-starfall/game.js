@@ -2101,9 +2101,9 @@
           : { x: -18, y: random(pad, state.height - pad, 'enemy') };
     const roll = randomUnit('enemy');
     let kind = 'meteor';
-    if (state.wave >= 2 && roll > .43) kind = 'drone';
-    if (state.wave >= 3 && roll > .72) kind = 'hunter';
-    if (state.wave >= 6 && roll > .87) kind = 'brute';
+    if (state.wave >= 2 && roll > .32) kind = 'drone';
+    if (state.wave >= 3 && roll > .66) kind = 'hunter';
+    if (state.wave >= 6 && roll > .855) kind = 'brute';
     if (state.wave >= 4 && roll > .985 && !state.enemies.some((enemy) => enemy.kind === 'ricochet' && !enemy.dead)) kind = 'ricochet';
     const tier = Math.floor((state.wave - 1) / 10);
     const multiplier = Math.min(2.45, 1 + (state.wave - 1) * .025 + tier * .08) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale();
@@ -2288,6 +2288,9 @@
         for (let i = -1; i <= 1; i++) shot(angle + i * .2, Math.min(350, 220 + state.wave * 2.4), 6, { bounces: 1, damage: 1 });
       } else if (enemy.kind === 'brute') {
         shot(angle, Math.min(300, 185 + state.wave * 2), 8, { explosive: true, fuse: 1.25, blastRadius: 66, damage: 1 });
+      } else if (enemy.kind === 'drone') {
+        const speed = Math.min(360, 210 + state.wave * 2.8);
+        for (let spread = -1; spread <= 1; spread++) shot(angle + spread * .12, speed, 5, { damage: 1 });
       } else shot(angle, Math.min(360, 210 + state.wave * 2.8), 5, { damage: 1 });
       tone(150, .06, 'sawtooth', .012); return;
     }
