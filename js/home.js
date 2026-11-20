@@ -82,7 +82,7 @@
       </div>
       <div class="card-body">
         <h3>${game.title}</h3>
-        ${game.development === true ? '<p class="game-development-status"><span>EM DESENVOLVIMENTO</span><span>ACESSO PRIVADO</span></p>' : ''}
+        ${game.updateStatus ? `<p class="game-development-status game-update-status"><span>${game.updateStatus}</span><small>Novas funções e placar em fase de ajustes.</small></p>` : game.development === true ? '<p class="game-development-status"><span>EM DESENVOLVIMENTO</span><span>ACESSO PRIVADO</span></p>' : ''}
         <p class="card-meta">${game.category}</p>
         <div class="stars" aria-label="Avaliação visual: ${game.rating} de 5 estrelas">${ratingStars(game.rating)}</div>
         ${localVisits > 0 ? `<p class="card-local-stats">🎮 ${localVisits} ${localStatsLabel}</p>` : ''}
