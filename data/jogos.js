@@ -309,7 +309,7 @@ window.CV_GAMES_CATALOG = [
   {
     id: 'cv-xadrez-3d', title: 'CV XADREZ ARENA 3D', category: 'Estratégia', categoryKey: 'estrategia',
     description: 'Uma experiência de xadrez em terceira dimensão na qual você controla um personagem dentro do tabuleiro, movimenta fisicamente as peças e enfrenta uma inteligência artificial em quatro níveis de dificuldade. A arena também possui combate físico entre personagens, com socos e agarrões.', tags: ['xadrez', '3d', 'arena', 'estratégia', 'cv xadrez arena 3d'],
-    type: 'Jogo em desenvolvimento', platform: 'Navegador', href: 'games/cv-xadrez-arena/portal.html', image: 'img/cv-xadrez-arena-cover.svg', fallback: '♞',
+    type: 'Jogo em desenvolvimento', platform: 'Navegador', href: 'games/cv-xadrez-arena/portal.html', image: 'games/cv-xadrez-arena/cover.jpg', fallback: '♞',
     rating: 5, addedAt: '2026-11-16', featured: true, recent: true, popular: false, pcFraco: false, multiplayer: false, private: true, development: true
   }
 ];
