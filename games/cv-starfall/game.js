@@ -4042,7 +4042,7 @@
       burst(state.player.x, state.player.y, skin.color, 76, 310); burst(state.player.x, state.player.y, '#ffffff', 28, 190); toast('EXPLOSÃO NOVA');
     } else if (skin.id === 'flashblade') {
       const angle = state.player.angle || -Math.PI / 2;
-      state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 850, vy: Math.sin(angle) * 850, angle, turnTimer: .1, life: 8, total: 8, bounces: 0, damage: 13 * state.abilityPower, hitCooldowns: [], bossHitCounts: [], trail: [{ x: state.player.x, y: state.player.y }] });
+      state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 850, vy: Math.sin(angle) * 850, angle, turnTimer: .1, life: 8, total: 8, bounces: 0, damage: 13 * state.abilityPower, hitCooldowns: [], trail: [{ x: state.player.x, y: state.player.y }] });
       burst(state.player.x, state.player.y, skin.color, 34, 195); toast('CORTE FLASH · TRAJETÓRIA INSTÁVEL');
     } else if (skin.id === 'tempest') {
       const angle = state.player.moveAngle ?? state.player.angle ?? -Math.PI / 2;
@@ -4440,20 +4440,29 @@
           }
         }
       }
-      if (enemy.kind === 'hunter') {
+      const purpleHunter = enemy.kind === 'hunter';
+      const purpleBoss = enemy.kind === 'boss' && enemy.bossType === 'hunter';
+      if (purpleHunter || purpleBoss) {
         const hunterDistance = distance(state.player, enemy);
-        if (hunterDistance <= mobileSize(104)) {
-          enemy.hunterFuse = (enemy.hunterFuse ?? .72) - dt;
+        const triggerRadius = mobileSize(purpleBoss ? 266 : 150);
+        const fuseDuration = purpleBoss ? 1.15 : .72;
+        enemy.hunterExplosionCooldown = Math.max(0, (enemy.hunterExplosionCooldown || 0) - dt);
+        if (enemy.hunterExplosionCooldown <= 0 && hunterDistance <= triggerRadius) {
+          if (enemy.hunterFuse == null) { enemy.hunterFuse = fuseDuration; enemy.hunterFuseTotal = fuseDuration; }
+          enemy.hunterFuse -= dt;
           if (enemy.hunterFuse <= 0) {
-            const blastRadius = mobileSize(112);
-            state.effects.push({ type: 'hunter-explosion', x: enemy.x, y: enemy.y, radius: blastRadius, life: .48, total: .48 });
-            burst(enemy.x, enemy.y, '#ff583b', 30, 240);
-            burst(enemy.x, enemy.y, '#ffd080', 15, 155);
-            if (hunterDistance <= blastRadius + state.player.radius) damagePlayer(1, mahoragaAttackType(enemy, 'impact'));
-            damageEnemy(enemy, enemy.hp, true);
-            continue;
+            const blastRadius = mobileSize(purpleBoss ? 250 : 170);
+            state.effects.push({ type: 'hunter-explosion', x: enemy.x, y: enemy.y, radius: blastRadius, isBossExplosion: purpleBoss, life: .62, total: .62 });
+            burst(enemy.x, enemy.y, purpleBoss ? '#c07cff' : '#ff583b', purpleBoss ? 52 : 36, purpleBoss ? 330 : 260);
+            burst(enemy.x, enemy.y, purpleBoss ? '#f5d6ff' : '#ffd080', purpleBoss ? 26 : 18, purpleBoss ? 230 : 175);
+            if (hunterDistance <= blastRadius + state.player.radius) damagePlayer(purpleBoss ? 3 : 2, mahoragaAttackType(enemy, 'impact'));
+            enemy.hunterExplosionCooldown = purpleBoss ? 5.2 : 3.6;
+            enemy.hunterFuse = null; enemy.hunterFuseTotal = null;
+            if (purpleHunter) { damageEnemy(enemy, enemy.hp, true); continue; }
           }
-        } else if (hunterDistance > mobileSize(138)) enemy.hunterFuse = null;
+        } else if (hunterDistance > triggerRadius + mobileSize(38) || enemy.hunterExplosionCooldown > 0) {
+          enemy.hunterFuse = null; enemy.hunterFuseTotal = null;
+        }
       }
       if (distance(state.player, enemy) < state.player.radius + enemy.r * .75) {
         if (state.invulnerable > 0 || stunnedByDino || stunnedByParadox || megumiShadowCloakActive() || flameStormDashActive || state.flameStormQIntangible > 0) continue;
@@ -4686,7 +4695,6 @@
         if (!previous || Math.hypot(effect.x - previous.x, effect.y - previous.y) > 9) effect.trail.push({ x: effect.x, y: effect.y });
         if (effect.trail.length > (state.performanceMode === 'light' ? 10 : 24)) effect.trail.shift();
         effect.hitCooldowns = (effect.hitCooldowns || []).filter((entry) => { entry.time -= dt; return entry.time > 0 && !entry.enemy.dead; });
-        effect.bossHitCounts = (effect.bossHitCounts || []).filter((entry) => !entry.enemy.dead);
         for (const enemy of state.enemies) {
           const cooling = effect.hitCooldowns.some((entry) => entry.enemy === enemy);
           const hitDistance = enemy.kind === 'boss' && !bounced
@@ -4695,21 +4703,13 @@
           const hitReach = enemy.r + mobileSize(enemy.kind === 'boss' ? 36 : 25);
           if (!enemy.dead && !cooling && hitDistance < hitReach) {
             let bladeDamage = effect.damage;
-            let bossHit = null;
             if (enemy.kind === 'boss') {
-              bossHit = effect.bossHitCounts.find((entry) => entry.enemy === enemy);
-              const alreadyDealt = bossHit?.damage || 0;
               const bossMaxHp = Number.isFinite(enemy.maxHp) && enemy.maxHp > 0 ? enemy.maxHp : Math.max(1, enemy.hp);
-              const bossDamageCap = bossMaxHp * .14;
               const bossDamageMultiplier = Math.max(.01, 1 + state.bossDamageBonus);
-              if ((bossHit?.hits || 0) >= 4 || alreadyDealt >= bossDamageCap) continue;
-              bladeDamage = Math.min(bladeDamage * .68, bossMaxHp * .035, (bossDamageCap - alreadyDealt) / bossDamageMultiplier);
+              bladeDamage = Math.min(bladeDamage * .3, Math.max(.1, bossMaxHp * .0075) / bossDamageMultiplier);
               if (!(bladeDamage > 0)) continue;
-              if (!bossHit) { bossHit = { enemy, hits: 0, damage: 0 }; effect.bossHitCounts.push(bossHit); }
-              bossHit.hits++;
-              bossHit.damage += bladeDamage * bossDamageMultiplier;
             }
-            damageEnemy(enemy, bladeDamage, true); effect.hitCooldowns.push({ enemy, time: enemy.kind === 'boss' ? .38 : .5 });
+            damageEnemy(enemy, bladeDamage, true); effect.hitCooldowns.push({ enemy, time: enemy.kind === 'boss' ? .42 : .5 });
             burst(effect.x, effect.y, '#fff4c7', 10, 125); burst(effect.x, effect.y, '#ffc86e', 8, 100);
           }
         }
@@ -5149,15 +5149,22 @@
       ctx.fillStyle = '#fff'; ctx.fillRect(-3, -2, 6, 4);
     }
     ctx.restore();
-    if (enemy.kind === 'hunter' && enemy.hunterFuse > 0) {
-      const fuse = clamp(enemy.hunterFuse / .72, 0, 1);
+    if ((enemy.kind === 'hunter' || (enemy.kind === 'boss' && enemy.bossType === 'hunter')) && enemy.hunterFuse > 0) {
+      const bossFuse = enemy.kind === 'boss';
+      const fuse = clamp(enemy.hunterFuse / (enemy.hunterFuseTotal || (bossFuse ? 1.15 : .72)), 0, 1);
       const pulse = .76 + Math.sin(performance.now() / (64 * fuse + 18)) * .2;
       ctx.save(); ctx.globalAlpha = (.48 + (1 - fuse) * .42) * pulse;
-      ctx.strokeStyle = fuse < .35 ? '#fff1b2' : '#ff7455'; ctx.shadowColor = '#ff392f';
+      ctx.strokeStyle = bossFuse ? (fuse < .35 ? '#fff4ff' : '#d7a0ff') : (fuse < .35 ? '#fff1b2' : '#ff7455');
+      ctx.shadowColor = bossFuse ? '#bd70ff' : '#ff392f';
       ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
       ctx.lineWidth = mobileSize(2.2 + (1 - fuse) * 1.8);
       ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(8 + (1 - fuse) * 9), -performance.now() / 180, Math.PI * 1.72 - performance.now() / 180); ctx.stroke();
-      ctx.fillStyle = '#ffd27a'; ctx.shadowBlur = 0;
+      if (bossFuse) {
+        ctx.globalAlpha *= .7; ctx.strokeStyle = '#d7a0ff'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.5);
+        ctx.setLineDash([mobileSize(7), mobileSize(6)]);
+        ctx.beginPath(); ctx.arc(enemy.x, enemy.y, mobileSize(250), 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+      }
+      ctx.fillStyle = bossFuse ? '#f0d4ff' : '#ffd27a'; ctx.shadowBlur = 0;
       for (let spark = 0; spark < 3; spark++) {
         const angle = performance.now() / 150 + spark * Math.PI * 2 / 3;
         ctx.beginPath(); ctx.arc(enemy.x + Math.cos(angle) * (enemy.r + mobileSize(12)), enemy.y + Math.sin(angle) * (enemy.r + mobileSize(12)), mobileSize(1.8 + (1 - fuse)), 0, Math.PI * 2); ctx.fill();
@@ -5702,11 +5709,15 @@
         const radius = effect.radius * (.22 + progress * .78);
         ctx.save(); ctx.globalAlpha = alpha * .76;
         const blast = ctx.createRadialGradient(effect.x, effect.y, 0, effect.x, effect.y, radius);
-        blast.addColorStop(0, 'rgba(255,245,205,.72)'); blast.addColorStop(.22, 'rgba(255,119,65,.48)');
-        blast.addColorStop(.64, 'rgba(193,35,58,.24)'); blast.addColorStop(1, 'rgba(80,16,47,0)');
+        blast.addColorStop(0, effect.isBossExplosion ? 'rgba(255,245,255,.84)' : 'rgba(255,245,205,.72)');
+        blast.addColorStop(.22, effect.isBossExplosion ? 'rgba(211,131,255,.58)' : 'rgba(255,119,65,.48)');
+        blast.addColorStop(.64, effect.isBossExplosion ? 'rgba(122,55,190,.34)' : 'rgba(193,35,58,.24)');
+        blast.addColorStop(1, effect.isBossExplosion ? 'rgba(49,14,80,0)' : 'rgba(80,16,47,0)');
         ctx.fillStyle = blast; ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#ff9d69'; ctx.shadowColor = '#ff493c'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
-        ctx.lineWidth = mobileSize(5 * alpha + 1); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = effect.isBossExplosion ? '#edc8ff' : '#ff9d69';
+        ctx.shadowColor = effect.isBossExplosion ? '#bd70ff' : '#ff493c';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(effect.isBossExplosion ? 28 : 18);
+        ctx.lineWidth = mobileSize((effect.isBossExplosion ? 8 : 5) * alpha + 1); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
         ctx.strokeStyle = '#fff2c7'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.6);
         ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'nova') {
