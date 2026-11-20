@@ -14,18 +14,31 @@
     })
     : null;
 
-  const isOwner = (user) => user?.app_metadata?.cv_profile === 'educvv';
+  const profileClaim = (user) => String(user?.app_metadata?.cv_profile || '').trim().toLocaleLowerCase('pt-BR');
+  const isOwner = (user) => profileClaim(user) === 'educvv';
+  const isScoreAdmin = (user) => profileClaim(user) === 'poder';
+  const isAuthorizedAccount = (user) => isOwner(user) || isScoreAdmin(user);
 
-  async function getOwnerSession() {
+  async function getAuthorizedSession() {
     if (!client) return null;
     const { data, error } = await client.auth.getSession();
     if (error || !data.session) return null;
     const { data: userData, error: userError } = await client.auth.getUser(data.session.access_token);
-    if (userError || !isOwner(userData.user)) {
+    if (userError || !isAuthorizedAccount(userData.user)) {
       await client.auth.signOut({ scope: 'local' });
       return null;
     }
     return { ...data.session, user: userData.user };
+  }
+
+  async function getOwnerSession() {
+    const session = await getAuthorizedSession();
+    return isOwner(session?.user) ? session : null;
+  }
+
+  async function getPowerSession() {
+    const session = await getAuthorizedSession();
+    return isScoreAdmin(session?.user) ? session : null;
   }
 
   async function signIn(email, password) {
@@ -33,11 +46,12 @@
     const normalizedEmail = String(email || '').trim().toLocaleLowerCase('pt-BR');
     const { data, error } = await client.auth.signInWithPassword({ email: normalizedEmail, password: String(password || '') });
     if (error) throw error;
-    if (!isOwner(data.user)) {
+    const { data: userData, error: userError } = await client.auth.getUser(data.session.access_token);
+    if (userError || !isAuthorizedAccount(userData.user)) {
       await client.auth.signOut({ scope: 'local' });
-      throw new Error('Esta conta não está autorizada para o perfil educvv.');
+      throw new Error('Esta conta não está autorizada para um perfil protegido do CV GAMES.');
     }
-    return data.session;
+    return { ...data.session, user: userData.user };
   }
 
   async function signOut() {
@@ -46,5 +60,6 @@
     if (error) throw error;
   }
 
-  window.CV_GAMES_AUTH = Object.freeze({ client, isOwner, getOwnerSession, signIn, signOut });
+  window.CV_GAMES_AUTH = Object.freeze({ client, isOwner, isScoreAdmin, getAuthorizedSession, getOwnerSession, getPowerSession, signIn, signOut });
 }());
+
