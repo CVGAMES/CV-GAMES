@@ -4765,6 +4765,7 @@
       return;
     }
     if (ship.shape === 'flamestorm') {
+      ctx.scale(1.08, 1.08);
       const dash = currentSkin().id === 'flamestorm' ? state.flameStormDash : null;
       if (dash?.life > 0) {
         const frameIndex = Math.floor((dash.total - dash.life) * 12) % flameStormDashFrames.length;
