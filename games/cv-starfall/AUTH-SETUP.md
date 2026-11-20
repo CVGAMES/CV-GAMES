@@ -1,6 +1,6 @@
-# Configurar o acesso do perfil educvv
+# Configurar os perfis protegidos do CV STARFALL
 
-O acesso usa Supabase Auth para proteger o recorde `educvv` e o progresso do hangar. O placar continua público para leitura; os apelidos de teste da turma podem gravar sem login enquanto esta fase de testes estiver ativa.
+O Supabase Auth protege o recorde `educvv`, as ações administrativas do perfil `Poder` e o progresso do hangar. O placar continua público para leitura; os apelidos de teste da turma podem gravar sem login enquanto esta fase de testes estiver ativa.
 
 1. Nas configurações de Authentication, desative o cadastro público de novos usuários. O acesso do perfil é somente para a conta criada pelo dono.
 2. No painel do Supabase, abra **Authentication → Users → Add user**. Crie seu usuário, confirme o e-mail e defina uma senha nova e exclusiva diretamente no painel. Não coloque a senha em arquivos, mensagens ou no GitHub.
