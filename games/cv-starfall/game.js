@@ -165,6 +165,8 @@
   const mobileEntityScale = .66;
   const particleLimit = () => state.performanceMode === 'light' ? 110 : state.mobileSizing ? 240 : Infinity;
   const initialNicknameSettings = readNicknameSettings();
+  const MAX_TOTAL_SHIELDS = 7;
+  const MAX_REGULAR_SHIELDS = 4;
   const state = {
     auroraLink: null, auroraLinkCooldown: 0, auroraLinkDurationBonus: 0, auroraLinkTargetBonus: 0, auroraLinkDamageBonus: 0,
     damageCounterEnabled: initialNicknameSettings.damageCounterEnabled, damageCounterPosition: initialNicknameSettings.damageCounterPosition, damageCounterTotal: 0, damageCounterLastHit: 0, damageCounterIdle: 0, damageCounterPopups: [], damageCounterEditing: false, damageCounterDragging: false, damageCounterEditStart: null, damageCounterEditorHadMenu: false, trainingDamageRemainder: 0,
@@ -219,6 +221,27 @@
   const visualRandom = (min, max) => min + visualRandomUnit() * (max - min);
   const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const upgradeLevel = (id) => state.upgrades[id] || 0;
+  function totalShieldCount() { return state.shields + state.tempShields; }
+  function canRestoreShield() {
+    return totalShieldCount() < MAX_TOTAL_SHIELDS
+      && (state.shields < MAX_REGULAR_SHIELDS || state.tempShields < 4);
+  }
+  function restoreOneShield() {
+    if (totalShieldCount() >= MAX_TOTAL_SHIELDS) return false;
+    if (state.shields < MAX_REGULAR_SHIELDS) state.shields++;
+    else if (state.tempShields < 4) state.tempShields++;
+    else return false;
+    return true;
+  }
+  function cooldownUpgradeCanHelp() {
+    const shipId = currentSkin().id;
+    if (shipId === 'training' || upgradeLevel('cooldown') >= 5) return false;
+    if (shipId === 'mahoraga') return state.mahoragaSlashCooldownBonus < 5;
+    if (shipId === 'prisma') return state.prismCooldownBonus < 5;
+    if (shipId === 'megumi' || shipId === 'flamestorm') return true;
+    const minimum = shipId === 'eclipse' ? 25 : 22;
+    return state.abilityBaseCooldown > minimum + .001 || state.abilityCooldown > .001;
+  }
   const upgradeDescriptionForShip = (upgrade) => upgrade.id === 'cooldown' && currentSkin().id === 'flamestorm'
     ? 'Reduz a recarga do E de 18s até 15s e a do Q de 24s até 18s com cinco Condensadores; também corta 4s da recarga atual.'
     : upgrade.description;
@@ -231,17 +254,17 @@
   function enemyUpgradeAttackScale() { return 1 + enemyUpgradeLevel() * .008; }
   function enemyUpgradeFireRateScale() { return Math.max(.88, 1 - enemyUpgradeLevel() * .01); }
   const upgradeList = [
-    { id:'damage', icon:'✹', name:'Núcleo de impacto', description:'Aumenta moderadamente o dano por disparo.', max:8, available:()=>upgradeLevel('damage')<8, apply:()=>{state.player.damage=Math.min(2.35,state.player.damage+.17);} },
-    { id:'speed', icon:'➤', name:'Propulsores vetoriais', description:'Aumenta a velocidade da nave.', max:6, available:()=>upgradeLevel('speed')<6, apply:()=>{state.player.speed=Math.min(405,state.player.speed*1.1);} },
+    { id:'damage', icon:'✹', name:'Núcleo de impacto', description:'Aumenta moderadamente o dano por disparo.', max:8, available:()=>state.player.damage<2.35&&upgradeLevel('damage')<8, apply:()=>{state.player.damage=Math.min(2.35,state.player.damage+.17);} },
+    { id:'speed', icon:'➤', name:'Propulsores vetoriais', description:'Aumenta a velocidade da nave.', max:5, available:()=>state.player.speed<405&&upgradeLevel('speed')<5, apply:()=>{state.player.speed=Math.min(405,state.player.speed*1.1);} },
     { id:'rapid', icon:'⚡', name:'Recarga cinética', description:'Reduz o intervalo entre disparos.', max:7, available:()=>upgradeLevel('rapid')<7, apply:()=>{state.player.fireRate=Math.max(.19,state.player.fireRate*.93);} },
     { id:'spread', icon:'✦', name:'Canhões laterais', description:'Adiciona um disparo ao leque da nave.', max:4, available:()=>state.player.spread<5, apply:()=>{state.player.spread=Math.min(5,state.player.spread+1);} },
     { id:'repair', icon:'♥', name:'Reparo de casco', description:'Recupera uma vida e concede proteção breve.', max:0, available:()=>state.lives<state.maxLives, apply:()=>{state.lives=Math.min(state.maxLives,state.lives+1);state.invulnerable=.8;} },
-    { id:'shield', icon:'⬡', name:'Escudo de energia', description:'Ganhe um escudo que bloqueia um impacto.', max:4, available:()=>state.shields<4, apply:()=>{state.shields=Math.min(4,state.shields+1);} },
+    { id:'shield', icon:'⬡', name:'Escudo de energia', description:'Recupera uma carga de escudo, respeitando o limite total de sete.', max:4, available:()=>upgradeLevel('shield')<4&&canRestoreShield(), apply:()=>{restoreOneShield();} },
     { id:'pierce', icon:'⌁', name:'Projétil perfurante', description:'Cada tiro atravessa mais um inimigo.', max:3, available:()=>state.pierce<3, apply:()=>{state.pierce+=1;} },
     { id:'critical', icon:'✧', name:'Mira de precisão', description:'Aumenta a chance de causar dano crítico.', max:5, available:()=>state.critChance<.4, apply:()=>{state.critChance=Math.min(.4,state.critChance+.08);} },
     { id:'drone', icon:'◈', name:'Drone auxiliar', description:'Um satélite ataca inimigos próximos e pode se sacrificar para salvar a nave.', max:3, available:()=>state.drones<3, apply:()=>{state.drones+=1;} },
     { id:'magnet', icon:'⌖', name:'Ímã gravitacional', description:'Atrai recursos de mais longe.', max:5, available:()=>upgradeLevel('magnet')<5, apply:()=>{state.magnet=Math.min(315,state.magnet+42);} },
-    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:()=>currentSkin().id!=='training'&&upgradeLevel('cooldown')<5, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else if(currentSkin().id==='megumi')state.abilityBaseCooldown=megumiTechniqueCooldownDuration(1);else if(currentSkin().id==='flamestorm')state.abilityBaseCooldown=Math.max(15,state.abilityBaseCooldown-1);else{const minimum=currentSkin().id==='eclipse'?25:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);}state.abilityCooldown=Math.max(0,state.abilityCooldown-4);} },
+    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:cooldownUpgradeCanHelp, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else if(currentSkin().id==='megumi')state.abilityBaseCooldown=megumiTechniqueCooldownDuration(1);else if(currentSkin().id==='flamestorm')state.abilityBaseCooldown=Math.max(15,state.abilityBaseCooldown-1);else{const minimum=currentSkin().id==='eclipse'?25:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);}state.abilityCooldown=Math.max(0,state.abilityCooldown-4);} },
     { id:'power', icon:'✴', name:'Amplificador de núcleo', description:'Fortalece a habilidade especial.', max:4, available:()=>currentSkin().id!=='training'&&upgradeLevel('power')<4, apply:()=>{state.abilityPower=Math.min(2,state.abilityPower+.2);} },
     { id:'armor', icon:'⬟', name:'Blindagem reativa', description:'Chance de anular um impacto recebido.', max:4, available:()=>state.armorChance<.32, apply:()=>{state.armorChance=Math.min(.32,state.armorChance+.08);} },
     { id:'regen', icon:'✚', name:'Nanorreparadores', description:'Recupera uma vida periodicamente.', max:3, available:()=>state.regenLevel<3, apply:()=>{state.regenLevel+=1;} },
@@ -301,6 +324,12 @@
     ,{ id:'endlessDamage', icon:'✹', name:'Núcleo adaptativo', description:'Reforço repetível com ganho decrescente e limite seguro de dano.', max:0, stack:true, available:()=>state.endlessDamage<1.24, apply:()=>{state.endlessDamage=Math.min(1.25,state.endlessDamage + .11 / (1 + upgradeLevel('endlessDamage') * .14));} }
     ,{ id:'endlessSpeed', icon:'➤', name:'Impulso de longo curso', description:'Aumenta a mobilidade aos poucos, com velocidade máxima controlada.', max:0, stack:true, available:()=>state.endlessSpeed<118, apply:()=>{state.endlessSpeed=Math.min(120,state.endlessSpeed + 8 / (1 + upgradeLevel('endlessSpeed') * .12));} }
   ];
+
+  function upgradeCanBeOffered(upgrade) {
+    const maximum = Number(upgrade.max);
+    if (Number.isFinite(maximum) && maximum > 0 && upgradeLevel(upgrade.id) >= maximum) return false;
+    return upgrade.available();
+  }
 
   function readBest() { try { return Math.max(0, Number(localStorage.getItem(bestKey)) || 0); } catch { return 0; } }
   function readBestWave() { try { return Math.max(0, Number(localStorage.getItem(bestWaveKey)) || 0); } catch { return 0; } }
@@ -1702,6 +1731,8 @@
     state.megumiSummonPhase = state.megumiTransformed ? 'active' : 'idle';
     if (typeof checkpoint.lastBossType === 'string') state.lastBossType = checkpoint.lastBossType;
     state.upgrades = Object.fromEntries(Object.entries(checkpoint.upgrades || {}).filter(([, level]) => Number(level) > 0).map(([id, level]) => [id, Math.floor(Number(level))]));
+    state.shields = Math.min(MAX_REGULAR_SHIELDS, Math.max(0, Math.floor(Number(state.shields) || 0)));
+    state.tempShields = Math.min(4, Math.max(0, Math.floor(Number(state.tempShields) || 0)), MAX_TOTAL_SHIELDS - state.shields);
     const player = checkpoint.player || {};
     state.player = {
       ...state.player,
@@ -1751,12 +1782,13 @@
       changed = false;
       passes++;
       for (const upgrade of upgradeList) {
-        if (!upgrade.available()) continue;
+        if (!upgradeCanBeOffered(upgrade)) continue;
         upgrade.apply();
         state.upgrades[upgrade.id] = upgradeLevel(upgrade.id) + 1;
         changed = true;
       }
     }
+    state.shields = Math.min(MAX_REGULAR_SHIELDS, MAX_TOTAL_SHIELDS - state.tempShields);
     state.lives = state.maxLives;
   }
   function startGame(dailyChallenge = false, checkpoint = null) {
@@ -1877,7 +1909,7 @@
     }
   }
   function chooseUpgradeOffers(limit = 3) {
-    const availableUpgrades = upgradeList.filter((upgrade) => upgrade.available());
+    const availableUpgrades = upgradeList.filter(upgradeCanBeOffered);
     const choices = [];
     while (availableUpgrades.length && choices.length < limit) {
       const weights = availableUpgrades.map((upgrade) => upgrade.id === 'spread' || upgrade.id === 'volley' ? 1.7 : 1);
@@ -1932,16 +1964,16 @@
     if (reward >= .68 && openFerrumBuffChoice()) return 'SUPRIMENTO · ESCOLHA UM REFORÇO';
     const prefersLife = reward < .34;
     const hasLifeRoom = state.lives < state.maxLives;
-    const hasShieldRoom = state.shields < 4;
+    const hasShieldRoom = canRestoreShield();
     if ((prefersLife && hasLifeRoom) || (!hasShieldRoom && hasLifeRoom)) {
       state.lives = Math.min(state.maxLives, state.lives + 1);
       return 'CARGA FERRUM · +1 VIDA';
     }
     if (hasShieldRoom) {
-      state.shields = Math.min(4, state.shields + 1);
+      restoreOneShield();
       return 'CARGA FERRUM · +1 ESCUDO';
     }
-    if (state.tempShields < 4) {
+    if (state.tempShields < 4 && totalShieldCount() < MAX_TOTAL_SHIELDS) {
       state.tempShields += 1;
       return 'CARGA FERRUM · +1 BARREIRA TEMPORÁRIA';
     }
@@ -2095,7 +2127,7 @@
         }
         toast('CARGA DE HABILIDADE −8s');
       }
-    } else { state.shields = Math.min(4, state.shields + 1); toast('ESCUDO DE ENERGIA +1'); }
+    } else { const restored = restoreOneShield(); toast(restored ? 'ESCUDO DE ENERGIA +1' : 'ESCUDOS NO LIMITE · +0'); }
     const color = pickup.kind === 'repair' ? '#76ffae' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff';
     burst(pickup.x, pickup.y, color, 14, 90); tone(780, .17, 'sine', .04); updateHud();
     return true;
@@ -3849,7 +3881,7 @@
     } else if (skin.id === 'chronos') {
       state.slowTime = 7.2; state.effects.push({ type: 'chronos', life: 7.2, total: 7.2 }); toast('TEMPO DOBRADO · CAMPO AMPLIADO');
     } else if (skin.id === 'aegis') {
-      state.tempShields = Math.max(state.tempShields, 3); state.effects.push({ type: 'aegis', life: 9, total: 9 }); toast('BARREIRA AEGIS · 3 IMPACTOS'); updateHud();
+      state.tempShields = Math.min(4, Math.max(state.tempShields, Math.min(3, MAX_TOTAL_SHIELDS - state.shields))); state.effects.push({ type: 'aegis', life: 9, total: 9 }); toast('BARREIRA AEGIS · ' + Math.min(3, state.tempShields) + ' IMPACTOS'); updateHud();
     } else if (skin.id === 'redshift') {
       const duration = Math.min(10, 8 + state.reflectDurationBonus);
       state.reflectTime = duration;
