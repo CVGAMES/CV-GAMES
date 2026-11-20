@@ -149,6 +149,7 @@
     { name: 'Abismo Ciano', colors: ['#061f29', '#0a2633'], stars: '170,241,255' }
   ];
   const bossTypes = {
+    aurora: { name: 'Aurora', color: '#7df7e8', attackCooldown: 1.02 },
     meteor: { name: 'Colosso de Cinzas', color: '#ff925f', attackCooldown:1.1 },
     drone: { name: 'Mãe de Enxame', color: '#ff5fa4', attackCooldown:.76 },
     brute: { name: 'Titã Âmbar', color: '#ffcf69', attackCooldown:1.1 },
@@ -160,6 +161,7 @@
     mirror: { name: 'Espelho Fraturado', color: '#d0a0ff', attackCooldown:1.12 },
     rift: { name: 'Rasgo Dimensional', color: '#ff79cf', attackCooldown:1.02 }
   };
+  const auroraBossDefaults = Object.freeze({ eCooldown:22, eRadius:360, qCooldown:24, qDuration:7, qTargets:8, qPulseInterval:.78, qPulseDamage:1.8, eOpeningDelay:2.8, qOpeningDelay:4.8 });
   function detectMobileDevice() {
     const handheldAgent = navigator.userAgentData?.mobile === true || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
     const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches || false;
@@ -2083,14 +2085,15 @@
   function beginNextWave() {
     state.waveStartedAt = Date.now(); state.waveEndedAt = 0;
     state.enemiesRequired = 10 + Math.floor(state.wave * 1.75) + Math.floor(state.wave / 10) * 2;
-    state.waveKills = 0; state.bossWave = state.wave % 10 === 0; state.bossSpawned = false;
+    state.waveKills = 0; state.bossWave = state.wave % 10 === 0 || state.wave === 15; state.bossSpawned = false;
     const waveInCycle = state.wave % 10;
     state.miniBossSpawned = false; state.miniBossTimer = !state.bossWave && (waveInCycle === 4 || waveInCycle === 8) ? 3.5 : 0;
     state.enemySpawn = .31; state.waveGrace = .4; state.powerSpawn = 7.5;
     state.waveDamageTaken = false; state.salvageHealsThisWave = 0;
     recordAchievementEvent('wave', state.wave);
-    ui.status.textContent = state.bossWave ? `Onda ${state.wave}: sinal de guardião detectado!` : `Onda ${state.wave}: novos inimigos se aproximam.`;
-    if (state.bossWave) toast(`GUARDIÃO NA ONDA ${state.wave}`);
+    const auroraWave = state.wave === 15;
+    ui.status.textContent = auroraWave ? `Onda ${state.wave}: Aurora se aproxima!` : state.bossWave ? `Onda ${state.wave}: sinal de guardião detectado!` : `Onda ${state.wave}: novos inimigos se aproximam.`;
+    if (state.bossWave && !auroraWave) toast(`GUARDIÃO NA ONDA ${state.wave}`);
   }
   function spawnEnemy() {
     const edge = Math.floor(randomUnit('enemy') * 4);
@@ -2119,8 +2122,9 @@
     state.enemies.push({ ...pos, ...config, kind, maxHp: config.hp, cooldown: config.shoot || 0, spin: random(-2, 2, 'enemy'), angle: random(0, 7, 'enemy'), ramCooldown: 0, hitFlash: 0 });
   }
   function selectBossType(isMini = false) {
+    if (!isMini && state.wave === 15) return 'aurora';
     if (!isMini && state.wave === 10) return 'drone';
-    const types = Object.keys(bossTypes);
+    const types = Object.keys(bossTypes).filter((type) => type !== 'aurora');
     const options = state.lastBossType && types.length > 1
       ? types.filter((type) => type !== state.lastBossType)
       : types;
@@ -2139,8 +2143,26 @@
       : Math.round((115 + state.wave * 9 + Math.pow(state.wave / 5, 2) * 15 + tier * 55) * .72 * enemyUpgradeHpScale() * enemyWaveHpScale());
     const boss = bossTypes[bossType];
     const radius = isMini ? random(21, 26, 'boss') : bossType === 'brute' || bossType === 'mine' ? 47 : 40;
-    state.enemies.push({ x: random(state.width * .3, state.width * .7, 'boss'), y: isMini ? -30 : -55, r: mobileSize(radius), hp, maxHp: hp, speed: (isMini ? 43 + Math.min(24, tier * 2) : 66 + Math.min(44, tier * 5)) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale(), score: isMini ? 350 + state.wave * 35 : 1900 + state.wave * 180, color: boss.color, kind: 'boss', bossType, bossName: (isMini ? 'Mini-chefe ' : '') + boss.name, isMiniBoss: isMini, phase: 1, cooldown: isMini ? 2.25 : .72, angle: 0, spin: .35, ramCooldown: 0, dashTime: 0, dashCooldown: 2.2, hitFlash: 0, drift: random(0, Math.PI * 2, 'boss') });
-    toast((isMini ? 'MINI-CHEFE: ' : '') + boss.name.toUpperCase());
+    state.enemies.push({
+      x: random(state.width * .3, state.width * .7, 'boss'), y: isMini ? -30 : -55,
+      r: mobileSize(radius), hp, maxHp: hp,
+      speed: (isMini ? 43 + Math.min(24, tier * 2) : 66 + Math.min(44, tier * 5)) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale(),
+      score: isMini ? 350 + state.wave * 35 : 1900 + state.wave * 180,
+      color: boss.color, kind: 'boss', bossType, bossName: (isMini ? 'Mini-chefe ' : '') + boss.name,
+      isMiniBoss: isMini, phase: 1, cooldown: isMini ? 2.25 : .72,
+      angle: 0, spin: .35, ramCooldown: 0, dashTime: 0, dashCooldown: 2.2, hitFlash: 0,
+      drift: random(0, Math.PI * 2, 'boss'),
+      auroraECooldown: bossType === 'aurora' ? auroraBossDefaults.eOpeningDelay : 0,
+      auroraEWarning: 0, auroraEWarningX: 0, auroraEWarningY: 0,
+      auroraQCooldown: bossType === 'aurora' ? auroraBossDefaults.qOpeningDelay : 0,
+      auroraQActive: 0, auroraQPulseTimer: 0, auroraQWarning: 0,
+      auroraQTargetX: 0, auroraQTargetY: 0, auroraReflectionCooldown: 0,
+      auroraMoveTimer: 0, auroraMoveMode: 'roam', auroraChaseAngle: 0,
+      auroraTargetX: state.width / 2, auroraTargetY: state.height / 2,
+      auroraDodgeScanTimer: 0, auroraDodgeCooldown: 0, auroraDodgeTime: 0,
+      auroraDodgeX: 0, auroraDodgeY: 0, auroraDodgeSide: 1
+    });
+    toast(bossType === 'aurora' && !isMini ? 'ENFRENTE AURORA' : (isMini ? 'MINI-CHEFE: ' : '') + boss.name.toUpperCase());
     if (!isMini) tone(90, .7, 'sawtooth', .045);
   }
   function spawnPickup(x, y, kind) {
@@ -2299,7 +2321,11 @@
     const bossShot = (a, speed, r, extras = {}) => shot(a, speed * speedScale, r, { damage: phase >= 4 ? 3 : phase >= 3 ? 2 : 1, ...extras });
     if (phase >= 4) {
       const now = performance.now() / 1000;
-      if (enemy.bossType === 'meteor') {
+      if (enemy.bossType === 'aurora') {
+        const count = 12;
+        for (let i = 0; i < count; i++) bossShot(now * .5 + i * Math.PI * 2 / count, 190 + state.wave * .3, 5, { damage: 3 });
+        for (let i = -2; i <= 2; i++) bossShot(angle + i * .14, 270 + state.wave * .4, 5, { damage: 3 });
+      } else if (enemy.bossType === 'meteor') {
         const count = 20;
         for (let i = 0; i < count; i++) bossShot(now * .7 + i * Math.PI * 2 / count, 172 + state.wave * .35, 6, { damage:3 });
         for (let i = -1; i <= 1; i++) bossShot(angle + i * .12, 285 + state.wave * .45, 7, { damage:3 });
@@ -2333,7 +2359,14 @@
       }
       tone(125, .1, 'sawtooth', .02); return;
     }
-    if (enemy.bossType === 'meteor') {
+    if (enemy.bossType === 'aurora') {
+      const spread = phase >= 3 ? 2 : phase === 2 ? 1 : 0;
+      for (let i = -spread; i <= spread; i++) bossShot(angle + i * .19, 245 + state.wave * .38, 5);
+      if (phase >= 2) {
+        bossShot(angle - .08, 295 + state.wave * .3, 4);
+        bossShot(angle + .08, 295 + state.wave * .3, 4);
+      }
+    } else if (enemy.bossType === 'meteor') {
       const start = performance.now() / 1000;
       const count = phase >= 3 ? 15 : phase === 2 ? 12 : 9;
       for (let i = 0; i < count; i++) bossShot(start + i * Math.PI * 2 / count, 175 + state.wave, 6);
@@ -2389,6 +2422,141 @@
     }
     tone(150, .06, 'sawtooth', .012);
   }
+  function updateAuroraBossMovement(enemy, dt, slowFactor) {
+    enemy.auroraMoveTimer = Math.max(0, enemy.auroraMoveTimer - dt);
+    enemy.auroraDodgeCooldown = Math.max(0, enemy.auroraDodgeCooldown - dt);
+    enemy.auroraDodgeScanTimer = Math.max(0, enemy.auroraDodgeScanTimer - dt);
+    enemy.auroraDodgeTime = Math.max(0, enemy.auroraDodgeTime - dt);
+    const margin = mobileSize(enemy.r * 1.35);
+
+    if (enemy.auroraMoveTimer <= 0) {
+      enemy.auroraMoveMode = randomUnit('boss') < .38 ? 'chase' : 'roam';
+      enemy.auroraMoveTimer = random(2.1, 3.6, 'boss');
+      enemy.auroraChaseAngle = Math.atan2(state.player.y - enemy.y, state.player.x - enemy.x) + random(-1.1, 1.1, 'boss');
+      enemy.auroraTargetX = random(margin, Math.max(margin, state.width - margin), 'boss');
+      enemy.auroraTargetY = random(margin, Math.max(margin, state.height - margin), 'boss');
+    }
+
+    if (enemy.auroraMoveMode === 'chase') {
+      enemy.auroraChaseAngle += dt * .35;
+      const orbit = mobileSize(150);
+      enemy.auroraTargetX = clamp(state.player.x + Math.cos(enemy.auroraChaseAngle) * orbit, margin, Math.max(margin, state.width - margin));
+      enemy.auroraTargetY = clamp(state.player.y + Math.sin(enemy.auroraChaseAngle) * orbit, margin, Math.max(margin, state.height - margin));
+    }
+
+    if (enemy.auroraDodgeScanTimer <= 0 && enemy.auroraDodgeCooldown <= 0) {
+      enemy.auroraDodgeScanTimer = .14;
+      let threat = null;
+      let closestApproach = Infinity;
+      for (const bullet of state.bullets) {
+        if (bullet.dead) continue;
+        const vx = bullet.vx || 0, vy = bullet.vy || 0;
+        const speedSquared = vx * vx + vy * vy;
+        if (speedSquared < 1) continue;
+        const rx = enemy.x - bullet.x, ry = enemy.y - bullet.y;
+        const travel = clamp((rx * vx + ry * vy) / speedSquared, 0, .72);
+        if (travel <= .025) continue;
+        const gap = Math.hypot(rx - vx * travel, ry - vy * travel);
+        if (gap < enemy.r + bullet.r + mobileSize(24) && gap < closestApproach) {
+          threat = bullet;
+          closestApproach = gap;
+        }
+      }
+      if (threat) {
+        const speed = Math.hypot(threat.vx, threat.vy) || 1;
+        enemy.auroraDodgeSide *= -1;
+        const side = enemy.auroraDodgeSide;
+        enemy.auroraDodgeX = clamp(enemy.x - threat.vy / speed * mobileSize(155) * side, margin, Math.max(margin, state.width - margin));
+        enemy.auroraDodgeY = clamp(enemy.y + threat.vx / speed * mobileSize(155) * side, margin, Math.max(margin, state.height - margin));
+        enemy.auroraDodgeTime = .72;
+        enemy.auroraDodgeCooldown = 1.05;
+        enemy.auroraMoveMode = 'dodge';
+        burst(enemy.x, enemy.y, '#bffff5', 5, 56);
+      }
+    }
+
+    const target = enemy.auroraDodgeTime > 0
+      ? { x: enemy.auroraDodgeX, y: enemy.auroraDodgeY }
+      : { x: enemy.auroraTargetX, y: enemy.auroraTargetY };
+    const dx = target.x - enemy.x, dy = target.y - enemy.y;
+    const gap = Math.hypot(dx, dy);
+    if (gap > mobileSize(8)) {
+      const move = Math.min(gap, enemy.speed * 1.78 * dt * slowFactor);
+      enemy.x += dx / gap * move;
+      enemy.y += dy / gap * move;
+      enemy.angle = Math.atan2(dy, dx);
+    }
+  }
+  function updateAuroraBossSkills(enemy, dt) {
+    if (enemy.kind !== 'boss' || enemy.isMiniBoss || enemy.bossType !== 'aurora') return;
+
+    enemy.auroraECooldown = Math.max(0, (enemy.auroraECooldown || 0) - dt);
+    if (enemy.auroraEWarning > 0) {
+      enemy.auroraEWarning = Math.max(0, enemy.auroraEWarning - dt);
+      if (enemy.auroraEWarning === 0) {
+        const center = { x: enemy.auroraEWarningX, y: enemy.auroraEWarningY };
+        const radius = mobileSize(auroraBossDefaults.eRadius);
+        state.effects.push({ type: 'nova', x: center.x, y: center.y, radius: 0, maxRadius: radius, color: '#7df7e8', bossAurora: true, life: .95, total: .95 });
+        burst(center.x, center.y, '#7df7e8', 76, 310);
+        burst(center.x, center.y, '#ffffff', 28, 190);
+        if (distance(state.player, center) <= radius + state.player.radius) damagePlayer(1, 'boss-aurora');
+      }
+    } else if (enemy.auroraECooldown <= 0) {
+      enemy.auroraEWarning = .92;
+      enemy.auroraEWarningX = enemy.x;
+      enemy.auroraEWarningY = enemy.y;
+      enemy.auroraECooldown = auroraBossDefaults.eCooldown;
+      toast('AURORA · EXPLOSÃO NOVA');
+      tone(360, .18, 'triangle', .035);
+    }
+
+    enemy.auroraQCooldown = Math.max(0, (enemy.auroraQCooldown || 0) - dt);
+    enemy.auroraReflectionCooldown = Math.max(0, (enemy.auroraReflectionCooldown || 0) - dt);
+    if (enemy.auroraQWarning > 0) {
+      enemy.auroraQWarning = Math.max(0, enemy.auroraQWarning - dt);
+      if (enemy.auroraQWarning === 0 && distance(state.player, { x:enemy.auroraQTargetX, y:enemy.auroraQTargetY }) <= mobileSize(72) + state.player.radius) {
+        enemy.auroraQActive = auroraBossDefaults.qDuration;
+        enemy.auroraQPulseTimer = .08;
+        state.effects.push({ type: 'aurora-link-start', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, life: .5, total: .5, phase: 0 });
+        state.effects.push({ type: 'aurora-link-wave', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, radius: Math.hypot(state.width, state.height) * 1.08, life: 1.12, total: 1.12, phase: 0 });
+        burst(enemy.auroraQTargetX, enemy.auroraQTargetY, '#7df7e8', 16, 92);
+        burst(enemy.auroraQTargetX, enemy.auroraQTargetY, '#bffff5', 8, 68);
+        toast('ELO ESTELAR · VINCULADO');
+        tone(610, .17, 'sine', .035);
+      } else if (enemy.auroraQWarning === 0) {
+        toast('ELO ESTELAR · DESVIADO');
+      }
+    }
+    if (enemy.auroraQActive > 0) {
+      enemy.auroraQActive = Math.max(0, enemy.auroraQActive - dt);
+      enemy.auroraQPulseTimer -= dt;
+      if (enemy.auroraQActive > 0 && enemy.auroraQPulseTimer <= 0) {
+        enemy.auroraQPulseTimer += auroraBossDefaults.qPulseInterval;
+        const from = { x: enemy.x, y: enemy.y };
+        const target = { x: state.player.x, y: state.player.y };
+        for (let index = 0; index < auroraBossDefaults.qTargets; index++) {
+          const nodeAngle = index * Math.PI / 4 + performance.now() / 1700;
+          const nodeRadius = mobileSize(12 + (index % 2) * 7);
+          const x2 = target.x + Math.cos(nodeAngle) * nodeRadius;
+          const y2 = target.y + Math.sin(nodeAngle) * nodeRadius;
+          const dx = x2 - from.x, dy = y2 - from.y;
+          const length = Math.hypot(dx, dy) || 1;
+          const bend = (index % 2 ? 1 : -1) * Math.min(mobileSize(22), length * .06);
+          state.effects.push({ type: 'aurora-link', x1: from.x, y1: from.y, x2, y2, cx: (from.x + x2) / 2 - dy / length * bend, cy: (from.y + y2) / 2 + dx / length * bend, life: .38, total: .38, phase: index });
+        }
+        state.effects.push({ type: 'aurora-link-node', x: target.x, y: target.y, life: .42, total: .42, phase: 0 });
+        state.effects.push({ type: 'aurora-link-wave', x: target.x, y: target.y, radius: mobileSize(54), life: .46, total: .46, phase: 0 });
+        if (distance(from, target) <= mobileSize(560) + state.player.radius) damagePlayer(auroraBossDefaults.qPulseDamage, 'boss-aurora');
+      }
+    } else if (!enemy.auroraQWarning && enemy.auroraQCooldown <= 0) {
+      enemy.auroraQWarning = .72;
+      enemy.auroraQTargetX = state.player.x;
+      enemy.auroraQTargetY = state.player.y;
+      enemy.auroraQCooldown = auroraBossDefaults.qCooldown;
+      toast('AURORA · ELO ESTELAR · SAIA DA ÁREA');
+      tone(520, .22, 'triangle', .035);
+    }
+  }
   function explodeBullet(bullet) {
     if (bullet.exploded) return;
     bullet.exploded = true; bullet.dead = true;
@@ -2420,7 +2588,7 @@
   const mahoragaAttackNames = Object.freeze({
     projectile:'PROJÉTEIS COMUNS', explosive:'EXPLOSÕES', ricochet:'TIROS RICOCHETE', impact:'COLISÕES',
     'boss-meteor':'COLOSSO DE CINZAS', 'boss-drone':'MÃE DE ENXAME', 'boss-brute':'TITÃ ÂMBAR', 'boss-hunter':'ESPECTRO ROXO', 'boss-prism':'PRISMA REBOTE',
-    'boss-storm':'ARCONTE DE ÍONS', 'boss-mine':'SEMEADOR DE MINAS', 'boss-lancer':'LANÇA SOLAR', 'boss-mirror':'ESPELHO FRATURADO', 'boss-rift':'RASGO DIMENSIONAL'
+    'boss-storm':'ARCONTE DE ÍONS', 'boss-mine':'SEMEADOR DE MINAS', 'boss-lancer':'LANÇA SOLAR', 'boss-mirror':'ESPELHO FRATURADO', 'boss-rift':'RASGO DIMENSIONAL', 'boss-aurora':'AURORA'
   });
   function mahoragaAttackType(attack, fallback = 'projectile') {
     const source = attack?.source || attack;
@@ -2707,6 +2875,16 @@
     if (enemy.kind === 'boss') amount *= 1 + state.bossDamageBonus;
     if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.phase < 4 && enemy.hp > 0 && enemy.hp - amount <= 0) amount = Math.min(amount, Math.max(0, enemy.hp - enemy.maxHp * .15));
     const appliedDamage = Math.min(Math.max(0, enemy.hp), Math.max(0, amount));
+    if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && enemy.auroraQActive > 0 && appliedDamage > 0 && enemy.auroraReflectionCooldown <= 0) {
+      enemy.auroraReflectionCooldown = 1.12;
+      const dx = state.player.x - enemy.x, dy = state.player.y - enemy.y;
+      const length = Math.hypot(dx, dy) || 1;
+      const bend = Math.min(mobileSize(24), length * .06);
+      state.effects.push({ type:'aurora-link', x1:enemy.x, y1:enemy.y, x2:state.player.x, y2:state.player.y, cx:(enemy.x + state.player.x) / 2 - dy / length * bend, cy:(enemy.y + state.player.y) / 2 + dx / length * bend, life:.4, total:.4, phase:0 });
+      state.effects.push({ type:'aurora-link-node', x:state.player.x, y:state.player.y, life:.42, total:.42, phase:0 });
+      burst(state.player.x, state.player.y, '#bffff5', 5, 56);
+      damagePlayer(1, 'boss-aurora');
+    }
     recordDamageCounter(appliedDamage, enemy);
     enemy.hp -= amount;
     enemy.hitFlash = .12;
@@ -4413,18 +4591,22 @@
         enemy.ramCooldown = Math.max(0, (enemy.ramCooldown || 0) - dt);
         enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
         if (enemy.kind === 'boss') {
-          enemy.drift += dt * enemySlowFactor * (.65 + (enemy.phase || 1) * .12);
-          if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && enemy.dashTime > 0) {
-            enemy.x += Math.cos(angle) * 300 * dt * enemySlowFactor; enemy.y += Math.sin(angle) * 300 * dt * enemySlowFactor; enemy.dashTime -= dt * enemySlowFactor;
+          if (enemy.bossType === 'aurora' && !enemy.isMiniBoss) {
+            updateAuroraBossMovement(enemy, dt, enemySlowFactor);
           } else {
-            const targetY = 112 + Math.sin(enemy.drift * .8) * Math.min(35, state.height * .045);
-            enemy.y += clamp(targetY - enemy.y, -enemy.speed * dt * enemySlowFactor, enemy.speed * dt * enemySlowFactor);
-            const targetX = state.width / 2 + Math.sin(enemy.drift * (enemy.bossType === 'prism' ? 1.7 : 1.1)) * Math.min(state.width * .34, 260);
-            enemy.x += clamp(targetX - enemy.x, -enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor, enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor);
-            if (enemy.bossType === 'hunter' && !enemy.isMiniBoss) {
-              enemy.x += Math.cos(angle) * 36 * dt * enemySlowFactor;
-              enemy.dashCooldown -= dt * enemySlowFactor;
-              if (enemy.dashCooldown <= 0) { enemy.dashTime = .45; enemy.dashCooldown = Math.max(2.1, 3.8 - enemy.phase * .3); toast('INVESTIDA DO ESPECTRO'); }
+            enemy.drift += dt * enemySlowFactor * (.65 + (enemy.phase || 1) * .12);
+            if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && enemy.dashTime > 0) {
+              enemy.x += Math.cos(angle) * 300 * dt * enemySlowFactor; enemy.y += Math.sin(angle) * 300 * dt * enemySlowFactor; enemy.dashTime -= dt * enemySlowFactor;
+            } else {
+              const targetY = 112 + Math.sin(enemy.drift * .8) * Math.min(35, state.height * .045);
+              enemy.y += clamp(targetY - enemy.y, -enemy.speed * dt * enemySlowFactor, enemy.speed * dt * enemySlowFactor);
+              const targetX = state.width / 2 + Math.sin(enemy.drift * (enemy.bossType === 'prism' ? 1.7 : 1.1)) * Math.min(state.width * .34, 260);
+              enemy.x += clamp(targetX - enemy.x, -enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor, enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor);
+              if (enemy.bossType === 'hunter' && !enemy.isMiniBoss) {
+                enemy.x += Math.cos(angle) * 36 * dt * enemySlowFactor;
+                enemy.dashCooldown -= dt * enemySlowFactor;
+                if (enemy.dashCooldown <= 0) { enemy.dashTime = .45; enemy.dashCooldown = Math.max(2.1, 3.8 - enemy.phase * .3); toast('INVESTIDA DO ESPECTRO'); }
+              }
             }
           }
         } else {
@@ -4443,6 +4625,7 @@
           }
         }
       }
+      if (enemy.kind === 'boss' && enemy.bossType === 'aurora') updateAuroraBossSkills(enemy, dt);
       const purpleHunter = enemy.kind === 'hunter';
       const purpleBoss = enemy.kind === 'boss' && enemy.bossType === 'hunter';
       if (purpleHunter || purpleBoss) {
@@ -5114,7 +5297,9 @@
   }
   function drawEnemy(enemy) {
     ctx.save(); ctx.translate(enemy.x, enemy.y); ctx.rotate(enemy.angle); ctx.shadowColor = enemy.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : enemy.kind === 'boss' ? 24 : 12; ctx.fillStyle = enemy.color; ctx.strokeStyle = '#ffeef5'; ctx.lineWidth = 1.2;
-    if (enemy.kind === 'boss' && enemy.bossType === 'drone') {
+    if (enemy.kind === 'boss' && enemy.bossType === 'aurora') {
+      // Reuses Aurora's player ship sprite, drawn at boss scale after restoring the enemy transform.
+    } else if (enemy.kind === 'boss' && enemy.bossType === 'drone') {
       ctx.beginPath(); ctx.arc(0, 0, enemy.r * .82, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.strokeStyle = '#fff2fa'; ctx.beginPath(); ctx.arc(0, 0, enemy.r * 1.16, 0, Math.PI * 2); ctx.stroke();
       for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2; ctx.fillStyle = '#fff2fa'; ctx.beginPath(); ctx.arc(Math.cos(a) * enemy.r, Math.sin(a) * enemy.r, 4, 0, Math.PI * 2); ctx.fill(); }
@@ -5152,6 +5337,37 @@
       ctx.fillStyle = '#fff'; ctx.fillRect(-3, -2, 6, 4);
     }
     ctx.restore();
+    if (enemy.kind === 'boss' && enemy.bossType === 'aurora') {
+      const auroraSkin = skins.find((skin) => skin.id === 'aurora');
+      drawShip(enemy.x, enemy.y, enemy.r * 1.12, auroraSkin, enemy.angle, 1);
+    }
+    if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && enemy.auroraEWarning > 0) {
+      const radius = mobileSize(auroraBossDefaults.eRadius);
+      const warning = clamp(enemy.auroraEWarning / .92, 0, 1);
+      const pulse = .62 + Math.sin(performance.now() / 55) * .2;
+      ctx.save(); ctx.globalAlpha = (.34 + (1 - warning) * .46) * pulse;
+      ctx.strokeStyle = '#bafff5'; ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+      ctx.lineWidth = mobileSize(2.6 + (1 - warning) * 1.8); ctx.setLineDash([mobileSize(10), mobileSize(8)]);
+      ctx.lineDashOffset = -performance.now() / 25;
+      ctx.beginPath(); ctx.arc(enemy.auroraEWarningX, enemy.auroraEWarningY, radius, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha *= .72; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.2);
+      ctx.beginPath(); ctx.arc(enemy.auroraEWarningX, enemy.auroraEWarningY, radius * .94, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
+    if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && enemy.auroraQWarning > 0) {
+      const radius = mobileSize(72);
+      const warning = clamp(enemy.auroraQWarning / .72, 0, 1);
+      const pulse = .68 + Math.sin(performance.now() / 48) * .24;
+      ctx.save(); ctx.globalAlpha = (.42 + (1 - warning) * .48) * pulse;
+      ctx.fillStyle = 'rgba(125,247,232,.08)'; ctx.beginPath(); ctx.arc(enemy.auroraQTargetX, enemy.auroraQTargetY, radius, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#eafffb'; ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
+      ctx.lineWidth = mobileSize(2.6); ctx.setLineDash([mobileSize(6), mobileSize(4)]); ctx.lineDashOffset = -performance.now() / 18;
+      ctx.beginPath(); ctx.arc(enemy.auroraQTargetX, enemy.auroraQTargetY, radius, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]); ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.5);
+      ctx.beginPath(); ctx.moveTo(enemy.auroraQTargetX - radius * .42, enemy.auroraQTargetY); ctx.lineTo(enemy.auroraQTargetX + radius * .42, enemy.auroraQTargetY);
+      ctx.moveTo(enemy.auroraQTargetX, enemy.auroraQTargetY - radius * .42); ctx.lineTo(enemy.auroraQTargetX, enemy.auroraQTargetY + radius * .42); ctx.stroke();
+      ctx.restore();
+    }
     if ((enemy.kind === 'hunter' || (enemy.kind === 'boss' && enemy.bossType === 'hunter')) && enemy.hunterFuse > 0) {
       const bossFuse = enemy.kind === 'boss';
       const fuse = clamp(enemy.hunterFuse / (enemy.hunterFuseTotal || (bossFuse ? 1.15 : .72)), 0, 1);
@@ -5724,7 +5940,8 @@
         ctx.strokeStyle = '#fff2c7'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.6);
         ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'nova') {
-        ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - mobileSize(40)), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = mobileSize(8); ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+        const novaColor = effect.color || currentSkin().color;
+        ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - mobileSize(40)), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = novaColor; ctx.lineWidth = mobileSize(8); ctx.shadowColor = novaColor; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'dino-roar') {
         const progress = 1 - alpha;
         const waveRadius = effect.radius * (.08 + progress * .92);
@@ -7185,3 +7402,4 @@
   });
   createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings();
 })();
+
