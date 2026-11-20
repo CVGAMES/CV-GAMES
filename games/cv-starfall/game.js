@@ -5806,14 +5806,19 @@
     if (!isScoreAdminProfile()) throw new Error('Selecione o perfil Poder para administrar o placar.');
     const config = supabaseConfig();
     if (!config) throw new Error('O placar ainda não está configurado.');
-    const session = await window.CV_GAMES_AUTH?.getPowerSession?.();
+    const session = await window.CV_GAMES_AUTH?.getPowerSession?.({ refreshIfClaimsChanged:true });
     if (!session?.access_token || !window.CV_GAMES_AUTH?.isScoreAdmin?.(session.user)) throw new Error('Entre na conta autenticada do perfil Poder.');
     const response = await fetch(config.url.replace(/\/$/, '') + '/rest/v1/rpc/' + functionName, {
       method:'POST',
       headers:Object.assign({}, supabaseHeaders(config, session.access_token), { 'Content-Type':'application/json' }),
       body:JSON.stringify(payload)
     });
-    if (!response.ok) throw new Error('O Supabase recusou a alteração do placar. Confira a migração de administração.');
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      let reason = detail;
+      try { const parsed = JSON.parse(detail); reason = parsed.message || parsed.details || parsed.hint || detail; } catch { /* Mantém a mensagem de texto enviada pelo Supabase. */ }
+      throw new Error(`Supabase (${response.status}): ${String(reason || 'confira a migração e a sessão autenticada.').slice(0, 220)}`);
+    }
     return response;
   }
   async function moveLeaderboardScore(nickname, direction) {
