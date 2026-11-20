@@ -17,6 +17,9 @@
   let ownerSession = null;
 
   const normalizedNickname = (value) => String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+  const authenticatedProfile = () => normalizedNickname(ownerSession?.user?.app_metadata?.cv_profile || '');
+  const isOwnerSession = () => authenticatedProfile() === 'educvv';
+  const isPowerSession = () => authenticatedProfile() === 'poder';
 
   const createElement = (tagName, className, text) => {
     const element = document.createElement(tagName);
@@ -31,24 +34,25 @@
   };
 
   const refreshOwnerAccount = async () => {
-    try { ownerSession = await accountAuth?.getOwnerSession?.() || null; } catch { ownerSession = null; }
+    try { ownerSession = await accountAuth?.getAuthorizedSession?.() || null; } catch { ownerSession = null; }
     const currentProfile = profileStore?.getProfile?.() || { nickname: 'Jogador', avatar: '🎮' };
-    const isOwner = Boolean(ownerSession);
+    const role = authenticatedProfile();
+    const isProtectedAccount = Boolean(role);
     const loginButton = document.querySelector('[data-open-owner-login]');
     const logoutButton = document.querySelector('[data-owner-logout]');
     const editButton = document.querySelector('[data-edit-profile]');
-    if (loginButton) loginButton.hidden = isOwner;
-    if (logoutButton) { logoutButton.hidden = !isOwner; logoutButton.textContent = 'Sair da conta'; }
-    if (editButton) editButton.hidden = isOwner;
-    if (isOwner && normalizedNickname(currentProfile.nickname) !== 'educvv') {
-      profileStore?.saveProfile?.({ nickname:'educvv', avatar:currentProfile.avatar });
-    } else if (!isOwner && normalizedNickname(currentProfile.nickname) === 'educvv') {
+    if (loginButton) loginButton.hidden = isProtectedAccount;
+    if (logoutButton) { logoutButton.hidden = !isProtectedAccount; logoutButton.textContent = 'Sair da conta'; }
+    if (editButton) editButton.hidden = isProtectedAccount;
+    if (role && normalizedNickname(currentProfile.nickname) !== role) {
+      profileStore?.saveProfile?.({ nickname:role, avatar:currentProfile.avatar });
+    } else if (!role && ['educvv', 'poder'].includes(normalizedNickname(currentProfile.nickname))) {
       profileStore?.saveProfile?.({ nickname:'Jogador', avatar:currentProfile.avatar });
     }
     renderProfileIdentity();
-    if (isOwner) setEditorOpen(false);
-    if (isOwner) document.querySelector('[data-owner-login-dialog]')?.close();
-    return isOwner;
+    if (isProtectedAccount) setEditorOpen(false);
+    if (isProtectedAccount) document.querySelector('[data-owner-login-dialog]')?.close();
+    return isProtectedAccount;
   };
 
   const getFavoriteIds = () => {
@@ -159,12 +163,12 @@
       ? profileStore.getProfile()
       : { nickname: 'Jogador', avatar: '🎮' };
     setText('[data-profile-name]', profile.nickname);
-    setText('[data-profile-type]', ownerSession ? 'Perfil logado' : 'Perfil local');
+    setText('[data-profile-type]', isOwnerSession() ? 'Conta educvv' : isPowerSession() ? 'Conta Poder' : 'Perfil local');
     const avatarEmoji = document.querySelector('[data-profile-avatar-emoji]');
     const ownerAvatar = document.querySelector('[data-profile-owner-avatar]');
-    if (avatarEmoji) { avatarEmoji.textContent = profile.avatar; avatarEmoji.hidden = Boolean(ownerSession); }
-    if (ownerAvatar) ownerAvatar.hidden = !ownerSession;
-    document.querySelector('[data-profile-avatar]')?.classList.toggle('is-account-avatar', Boolean(ownerSession));
+    if (avatarEmoji) { avatarEmoji.textContent = profile.avatar; avatarEmoji.hidden = isOwnerSession(); }
+    if (ownerAvatar) ownerAvatar.hidden = !isOwnerSession();
+    document.querySelector('[data-profile-avatar]')?.classList.toggle('is-account-avatar', isOwnerSession());
     selectedAvatar = profile.avatar;
     return profile;
   };
@@ -317,7 +321,7 @@
         return;
       }
       const profile = typeof profileStore?.saveProfile === 'function'
-        ? profileStore.saveProfile({ nickname: ownerSession ? 'educvv' : input?.value, avatar: selectedAvatar })
+        ? profileStore.saveProfile({ nickname: ownerSession ? authenticatedProfile() : input?.value, avatar: selectedAvatar })
         : { nickname: 'Jogador', avatar: '🎮' };
       renderProfileIdentity();
       setEditorOpen(false);
@@ -338,7 +342,7 @@
         ownerSession = await accountAuth.signIn(document.querySelector('#owner-account-email')?.value, password?.value);
         if (password) password.value = '';
         const current = profileStore?.getProfile?.() || { avatar:'🎮' };
-        profileStore?.saveProfile?.({ nickname:'educvv', avatar:current.avatar });
+        profileStore?.saveProfile?.({ nickname:authenticatedProfile(), avatar:current.avatar });
         renderProfileIdentity(); renderDashboard();
         await refreshOwnerAccount();
       } catch (error) {
@@ -354,7 +358,7 @@
         await accountAuth?.signOut?.();
         ownerSession = null;
         const current = profileStore?.getProfile?.() || { avatar:'🎮' };
-        if (normalizedNickname(current.nickname) === 'educvv') profileStore?.saveProfile?.({ nickname:'Jogador', avatar:current.avatar });
+        if (['educvv', 'poder'].includes(normalizedNickname(current.nickname))) profileStore?.saveProfile?.({ nickname:'Jogador', avatar:current.avatar });
         await refreshOwnerAccount();
       } catch {
         const logout = document.querySelector('[data-owner-logout]');
@@ -386,7 +390,7 @@
       });
       if (!confirmed) return;
       profileStore?.resetProfile?.();
-      if (ownerSession) profileStore?.saveProfile?.({ nickname:'educvv', avatar:'🎮' });
+      if (ownerSession) profileStore?.saveProfile?.({ nickname:authenticatedProfile(), avatar:'🎮' });
       achievements?.reset?.(catalog);
       renderProfileIdentity();
       setEditorOpen(false);
@@ -421,3 +425,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 }());
+
