@@ -1725,6 +1725,7 @@
     });
     state.bestCompletedWave = Math.max(beforeBestWave, Number(checkpoint.bestCompletedWave) || 0);
     state.wave = Math.max(1, Number(checkpoint.wave) || 1, profileBestWave);
+    state.waveStartedAt = Date.now(); state.waveEndedAt = 0;
     state.score = Math.max(0, Number(checkpoint.score) || 0);
     state.elapsed = Math.max(0, Number(checkpoint.elapsed) || 0);
     state.megumiTransformed = checkpoint.megumiTransformed === true && state.selectedSkin === 'megumi';
