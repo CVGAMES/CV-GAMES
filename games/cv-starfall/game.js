@@ -45,17 +45,8 @@
   flameStormBlazedSprite.src = new URL('flamestorm-ship-blazed.jpeg', document.baseURI).href;
   const flameStormVortexSprite = new Image();
   flameStormVortexSprite.src = new URL('flamestorm-vortex-active.png', document.baseURI).href;
-  const flameStormVortexIcon = document.createElement('span');
-  flameStormVortexIcon.className = 'starfall-flamestorm-q-icon';
-  flameStormVortexIcon.setAttribute('aria-hidden', 'true');
-  const flameStormVortexIconImage = new Image();
-  flameStormVortexIconImage.src = new URL('flamestorm-vortex-icon.png', document.baseURI).href;
-  flameStormVortexIconImage.alt = '';
-  flameStormVortexIcon.append(flameStormVortexIconImage);
-  const flameStormBoostIcon = new Image();
-  flameStormBoostIcon.src = new URL('flamestorm-boost.png', document.baseURI).href;
-  flameStormBoostIcon.className = 'starfall-flamestorm-skill-icon';
-  flameStormBoostIcon.alt = '';
+  const flameStormVortexIcon = '⟳';
+  const flameStormBoostIcon = '➤';
   const flameStormDashFrames = [new Image(), new Image()];
   flameStormDashFrames[0].src = new URL('flamestorm-e-frame-1.png', document.baseURI).href;
   flameStormDashFrames[1].src = new URL('flamestorm-e-frame-2.png', document.baseURI).href;
@@ -1250,7 +1241,7 @@
       if (isMahoraga) {
         if (ui.ability.firstChild !== mahoragaAdaptationIcon) ui.ability.replaceChildren(mahoragaAdaptationIcon);
       } else if (isFlameStorm) {
-        if (ui.ability.firstChild !== flameStormBoostIcon) ui.ability.replaceChildren(flameStormBoostIcon);
+        ui.ability.textContent = flameStormBoostIcon;
       } else {
         ui.ability.textContent = isMegumi ? megumiE.icon : '✦';
       }
@@ -1313,7 +1304,7 @@
       const qReady = (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
       ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
-      if (isFlameStorm) { if (ui.eclipseQ.firstChild !== flameStormVortexIcon) ui.eclipseQ.replaceChildren(flameStormVortexIcon); }
+      if (isFlameStorm) ui.eclipseQ.textContent = flameStormVortexIcon;
       else ui.eclipseQ.textContent = isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
       ui.eclipseQ.classList.toggle('is-aurora', isAurora);
       ui.eclipseQ.classList.toggle('is-aegis', isAegis);
@@ -2169,6 +2160,8 @@
   }
   function enemyFire(enemy) {
     if (megumiShadowCloakActive()) return;
+    const vortex = state.effects.find((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
+    if (vortex && (enemy.kind === 'boss' || enemy.isMiniBoss) && distance(enemy, vortex) <= vortex.radius + enemy.r) return;
     const target = enemyAimTarget(enemy);
     const angle = Math.atan2(target.y - enemy.y, target.x - enemy.x);
     const shot = (a, speed, r, extras = {}) => state.enemyBullets.push({ x: enemy.x, y: enemy.y + enemy.r * .35, vx: Math.cos(a) * speed * enemyUpgradeAttackScale(), vy: Math.sin(a) * speed * enemyUpgradeAttackScale(), r: mobileSize(r || 5), color: enemy.color, source: enemy, ...extras });
@@ -4070,6 +4063,9 @@
     }
     state.bullets = state.bullets.filter(b => b.x > -20 && b.x < state.width + 20 && b.y > -30 && b.y < state.height + 20);
     const slowFactor = state.slowTime > 0 ? .28 : 1;
+    const flameStormVortex = currentSkin().id === 'flamestorm'
+      ? state.effects.find((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0)
+      : null;
     for (const bullet of state.enemyBullets) {
       if (bullet.dead || destroyEnemyShotAtFlashTrail(bullet)) continue;
       reflectIncomingBullet(bullet);
@@ -4104,6 +4100,14 @@
         bullet.vx = Math.cos(nextAngle) * speed; bullet.vy = Math.sin(nextAngle) * speed;
         if (tideSweep.time <= 0) bullet.tempestTideSweep = null;
       }
+      if (flameStormVortex && distance(bullet, flameStormVortex) <= flameStormVortex.radius + bullet.r) {
+        bullet.flameStormVortexPull = Math.min(.52, (bullet.flameStormVortexPull || 0) + dt);
+        if (bullet.flameStormVortexPull >= .52) {
+          burst(flameStormVortex.x, flameStormVortex.y, '#ff3049', 3, 42);
+          bullet.dead = true;
+          continue;
+        }
+      } else if (bullet.flameStormVortexPull) bullet.flameStormVortexPull = 0;
       if (bullet.fuse != null) { bullet.fuse -= dt * slowFactor; if (bullet.fuse <= 0) { explodeBullet(bullet); continue; } }
       bullet.x += bullet.vx * dt * slowFactor; bullet.y += bullet.vy * dt * slowFactor;
       if (interceptWithAegisOrbit(bullet)) continue;
@@ -5041,18 +5045,18 @@
     for (const b of state.enemyBullets) {
       const swept = b.tempestTideSweep?.time > 0;
       let visualX = b.x; let visualY = b.y;
-      if (flameStormVortexVisual) {
+      if (flameStormVortexVisual && (b.flameStormVortexPull || 0) > 0) {
         const dx = b.x - flameStormVortexVisual.x; const dy = b.y - flameStormVortexVisual.y;
         const bulletDistance = Math.hypot(dx, dy);
         if (bulletDistance <= flameStormVortexVisual.radius + b.r) {
-          const progress = clamp(1 - flameStormVortexVisual.life / (flameStormVortexVisual.total || 3), 0, 1);
+          const progress = clamp((b.flameStormVortexPull || 0) / .52, 0, 1);
           const sourceAngle = Math.atan2(dy, dx);
-          const spiralAngle = sourceAngle + progress * 2.1 + Math.sin(timestamp / 115 + b.x * .013) * .12;
-          const pullStrength = .2 + progress * .75;
-          const visualRadius = Math.max(mobileSize(9), bulletDistance * (1 - pullStrength * .72));
+          const spiralAngle = sourceAngle + progress * 3.4 + Math.sin(timestamp / 115 + b.x * .013) * .12;
+          const pullStrength = .2 + progress * .8;
+          const visualRadius = Math.max(mobileSize(4), bulletDistance * (1 - pullStrength * .86));
           visualX = flameStormVortexVisual.x + Math.cos(spiralAngle) * visualRadius;
           visualY = flameStormVortexVisual.y + Math.sin(spiralAngle) * visualRadius;
-          ctx.save(); ctx.globalAlpha = (.16 + progress * .24) * clamp(flameStormVortexVisual.life / .4, 0, 1);
+          ctx.save(); ctx.globalAlpha = (.28 - progress * .1) * clamp(flameStormVortexVisual.life / .4, 0, 1);
           ctx.strokeStyle = swept ? 'rgba(197,236,255,.58)' : 'rgba(255,74,85,.62)';
           ctx.lineWidth = Math.max(1, b.r * .42); ctx.shadowColor = swept ? '#8ddfff' : '#ff3049';
           ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(5);
