@@ -439,7 +439,7 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-equipped-icon { display:grid; width:2.25rem; height:2.25rem; flex:none; place-items:center; border:1px solid color-mix(in srgb,var(--skin-color,#9fd8ff) 55%,transparent); border-radius:.7rem; color:var(--skin-color,#9fd8ff); font-size:1.35rem; text-shadow:0 0 14px currentColor; }
 .starfall-equipped-icon.starfall-redshift-icon { padding:.06rem; }
 .starfall-equipped-icon.starfall-eclipse-sprite { display:block; background:url('eclipse-ship.png') center / contain no-repeat; }
-.starfall-flamestorm-icon { overflow:hidden; border:1px solid rgba(255,94,67,.75); border-radius:50%; background:radial-gradient(circle at 50% 45%,rgba(255,69,47,.2),rgba(21,8,16,.94) 72%); }
+.starfall-flamestorm-icon { overflow:visible; border:0; border-radius:0; background:transparent; }
 .starfall-flamestorm-icon img { display:block; width:100%; height:100%; max-width:none; object-fit:contain; mix-blend-mode:screen; }
 .starfall-equipped-icon.starfall-dino-image-wrap,.starfall-skin-icon.starfall-dino-image-wrap { overflow:hidden; border-radius:.7rem; background:radial-gradient(circle,rgba(94,255,67,.2),rgba(8,40,29,.72)); }
 .starfall-dino-image-wrap img { display:block; width:100%; height:100%; object-fit:contain; transform:scale(1.05); }
@@ -691,7 +691,7 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-skin-select:disabled { opacity:.66; cursor:not-allowed; }
 .starfall-skin-select .starfall-skin-icon { display:grid; width:2.45rem; height:2.45rem; grid-row:1 / span 4; place-items:center; color:var(--skin-color,#9fd8ff); font-size:1.5rem; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--skin-color,#9fd8ff) 40%,transparent)); }
 .starfall-skin-select .starfall-hangar-hull-icon .starfall-hangar-ship-sprite { display:block; width:100%; height:100%; overflow:visible; }
-.starfall-skin-select .starfall-training-icon { border:1px solid rgba(199,207,218,.46); border-radius:.7rem; background:linear-gradient(145deg,rgba(172,181,193,.2),rgba(19,24,31,.84)); color:#cbd1da; text-shadow:0 1px 4px #111; }
+.starfall-skin-select .starfall-training-icon { border:0; border-radius:0; background:transparent; color:#cbd1da; text-shadow:0 1px 4px #111; }
 .starfall-skin-select .starfall-eclipse-sprite { display:block; background-size:contain; }
 .starfall-skin-select .starfall-dino-icon { font-size:1.7rem; }
 .starfall-skin-card.is-secret .starfall-skin-select .starfall-skin-icon { color:var(--skin-color,#c49aff); font-size:1.5rem; }
@@ -731,8 +731,9 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 }
 
 /* Umbra: dark hangar accents, the summoning ritual, and the shadow veil. */
-.starfall-skin-icon.starfall-umbra-icon,.starfall-equipped-icon.starfall-umbra-icon { overflow:hidden; border:1px solid rgba(177,157,219,.68); border-radius:50%; background:radial-gradient(circle at 50% 42%,rgba(117,95,156,.44),rgba(25,22,37,.95) 70%); color:#d6c9f1; text-shadow:0 0 12px rgba(181,156,237,.5); }
-.starfall-skin-icon.starfall-umbra-icon img,.starfall-equipped-icon.starfall-umbra-icon img { display:block; width:180%; height:180%; max-width:none; object-fit:contain; mix-blend-mode:screen; }
+.starfall-skin-icon.starfall-umbra-icon,.starfall-equipped-icon.starfall-umbra-icon { overflow:visible; border:0; border-radius:0; background:transparent; color:#d6c9f1; text-shadow:0 0 12px rgba(181,156,237,.5); }
+.starfall-skin-icon.starfall-umbra-icon img,.starfall-equipped-icon.starfall-umbra-icon img { display:block; width:100%; height:100%; max-width:none; object-fit:contain; mix-blend-mode:screen; }
+.starfall-skin-select .starfall-training-icon,.starfall-equipped-icon.starfall-training-icon { overflow:visible; border:0; border-radius:0; background:transparent; box-shadow:none; }
 .starfall-ability.is-megumi,.starfall-secondary-ability.is-megumi { border-color:rgba(177,157,219,.76); background:linear-gradient(145deg,rgba(68,56,91,.96),rgba(22,21,34,.98)); color:#e6dcff; box-shadow:0 0 16px rgba(165,135,225,.19),inset 0 0 12px rgba(209,193,245,.1); }
 .starfall-megumi-cutscene[hidden] { display:none !important; }
 .starfall-megumi-cutscene { position:absolute; z-index:12; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.55rem; overflow:hidden; isolation:isolate; background:radial-gradient(ellipse at 50% 54%,rgba(57,45,80,.52),rgba(9,8,15,.95) 58%,#030307); color:#f4efff; text-align:center; text-shadow:0 2px 18px #000; animation:starfall-megumi-cut-in 2.6s ease both; }
