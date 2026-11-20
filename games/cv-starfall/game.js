@@ -326,7 +326,7 @@
     ,{ id:'flameStormDashCore', icon:'🔥', name:'Combustão Vetorial', description:'Aumenta em 0,4 o dano do rastro do E por nível, até três níveis.', max:3, available:()=>currentSkin().id==='flamestorm'&&upgradeLevel('flameStormDashCore')<3, apply:()=>{} }
     ,{ id:'flameStormVortexCore', icon:'🌀', name:'Núcleo Carmesim', description:'Amplia o raio do Q em 12 unidades e aumenta levemente seu dano, até três níveis.', max:3, available:()=>currentSkin().id==='flamestorm'&&upgradeLevel('flameStormVortexCore')<3, apply:()=>{} }
     ,{ id:'dinoFangs', icon:'〰', name:'Ressonância jurássica', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=5;state.dinoRoarRangeBonus+=24;} }
-    ,{ id:'dinoStampede', icon:'🐾', name:'Manada ancestral', description:'Adiciona um raptor ao Estouro da Manada e fortalece a investida.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=2.5;} }
+    ,{ id:'dinoStampede', icon:'🐾', name:'Manada ancestral', description:'Adiciona um raptor ao Estouro da Manada e fortalece a investida.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=1.25;} }
     ,{ id:'dinoResonance', icon:'◷', name:'Ressonância fóssil', description:'Reduz em 2 segundos o intervalo de recarga entre as cargas de Q, até 24 segundos.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoResonance')<4, apply:()=>{state.dinoStampedeRecharge=Math.max(0,state.dinoStampedeRecharge-2);} }
     ,{ id:'prismCoreRange', icon:'◎', name:'Prisma de longo alcance', description:'Amplia o raio do Núcleo Prisma em 35 unidades por nível.', max:3, available:()=>currentSkin().id==='prisma'&&state.prismCoreRangeBonus<105, apply:()=>{state.prismCoreRangeBonus=Math.min(105,state.prismCoreRangeBonus+35);} }
     ,{ id:'prismCoreDamage', icon:'✧', name:'Refração concentrada', description:'Aumenta em 2 o dano do Núcleo Prisma por nível.', max:4, available:()=>currentSkin().id==='prisma'&&state.prismCoreDamageBonus<8, apply:()=>{state.prismCoreDamageBonus=Math.min(8,state.prismCoreDamageBonus+2);} }
@@ -2110,8 +2110,8 @@
     const hpScale = (1 + tier * .68 + Math.floor((state.wave - 1) / 20) * .36) * enemyUpgradeHpScale() * enemyWaveHpScale();
     const config = {
       meteor: { r: random(15, 23, 'enemy') + Math.min(8, tier), hp: Math.ceil((2 + Math.floor(state.wave / 8)) * hpScale), speed: random(64, 92, 'enemy') * multiplier, score: 85, color: '#f6a26f' },
-      drone: { r: 16 + Math.min(5, tier), hp: Math.ceil((3 + Math.floor(state.wave / 6)) * hpScale), speed: random(75, 102, 'enemy') * multiplier, score: 145, color: '#ff5fa4', shoot: random(1.05, 1.65, 'attack') },
-      hunter: { r: 14 + Math.min(4, tier), hp: Math.ceil((3 + Math.floor(state.wave / 5)) * hpScale), speed: Math.min(245, random(126, 153, 'enemy') * (1 + Math.min(state.wave - 1, 28) * .025)) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale(), score: 185, color: '#b68aff' },
+      drone: { r: 16 + Math.min(5, tier), hp: Math.ceil((3 + Math.floor(state.wave / 6)) * hpScale), speed: random(88, 116, 'enemy') * multiplier, score: 145, color: '#ff5fa4', shoot: random(.88, 1.3, 'attack') },
+      hunter: { r: 14 + Math.min(4, tier), hp: Math.ceil((3 + Math.floor(state.wave / 5)) * hpScale), speed: Math.min(280, random(145, 170, 'enemy') * (1 + Math.min(state.wave - 1, 28) * .026)) * enemyUpgradeSpeedScale() * enemyWaveSpeedScale(), score: 185, color: '#b68aff' },
       brute: { r: 26 + Math.min(8, tier * 2), hp: Math.ceil((8 + Math.floor(state.wave / 3)) * hpScale), speed: 49 * multiplier, score: 280, color: '#ffcf69', shoot: 1.55 },
       ricochet: { r: 17 + Math.min(6, tier), hp: Math.ceil((4 + Math.floor(state.wave / 6)) * hpScale), speed: random(72, 98, 'enemy') * multiplier, score: 210, color: '#71eaff', shoot: random(.95, 1.5, 'attack') }
     }[kind];
@@ -2998,6 +2998,7 @@
     const count = 3 + state.dinoStampedeExtra;
     const speed = Math.max(590, Math.min(740, state.width * .92));
     const mainBoss = nearestDinoTarget(state.player.x, state.player.y, true);
+    const bossDamageLedger = new Map();
     for (let index = 0; index < count; index++) {
       const lanePosition = index / Math.max(1, count - 1);
       const y = index === 0 ? clamp(state.player.y, 34, state.height - 34) : clamp(state.height * (.2 + lanePosition * .6) + random(-state.height * .04, state.height * .04, 'ability'), 34, state.height - 34);
@@ -3006,7 +3007,7 @@
       const target = index === 0 && mainBoss ? mainBoss : nearestDinoTarget(x, y, false);
       const angle = target ? Math.atan2(target.y - y, target.x - x) : fromLeft ? 0 : Math.PI;
       const life = 2.65;
-      state.effects.push({ type: 'dino-raptor', x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, angle, turnRate: 5.1, target, size: mobileSize(34), radius: mobileSize(36), damage: (13 + state.dinoStampedeDamageBonus) * state.abilityPower, life, total: life, hit: [] });
+      state.effects.push({ type: 'dino-raptor', x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, angle, turnRate: 5.1, target, size: mobileSize(34), radius: mobileSize(36), damage: (8 + state.dinoStampedeDamageBonus) * state.abilityPower, bossDamageLedger, life, total: life, hit: [] });
     }
     burst(state.player.x, state.player.y, '#75f28b', 30, 160);
     burst(state.player.x, state.player.y, '#eaffb2', 9, 100);
@@ -4041,7 +4042,7 @@
       burst(state.player.x, state.player.y, skin.color, 76, 310); burst(state.player.x, state.player.y, '#ffffff', 28, 190); toast('EXPLOSÃO NOVA');
     } else if (skin.id === 'flashblade') {
       const angle = state.player.angle || -Math.PI / 2;
-      state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 850, vy: Math.sin(angle) * 850, angle, turnTimer: .1, life: 8, total: 8, bounces: 0, damage: 16 * state.abilityPower, hitCooldowns: [], trail: [{ x: state.player.x, y: state.player.y }] });
+      state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 850, vy: Math.sin(angle) * 850, angle, turnTimer: .1, life: 8, total: 8, bounces: 0, damage: 13 * state.abilityPower, hitCooldowns: [], bossHitCounts: [], trail: [{ x: state.player.x, y: state.player.y }] });
       burst(state.player.x, state.player.y, skin.color, 34, 195); toast('CORTE FLASH · TRAJETÓRIA INSTÁVEL');
     } else if (skin.id === 'tempest') {
       const angle = state.player.moveAngle ?? state.player.angle ?? -Math.PI / 2;
@@ -4433,10 +4434,26 @@
             enemyFire(enemy);
             const baseCooldown = enemy.kind === 'boss'
               ? (enemy.isMiniBoss ? random(2.1, 2.7, 'attack') : Math.max(.5, (bossTypes[enemy.bossType]?.attackCooldown || 1.1) * (1 - (enemy.phase - 1) * .1)))
-              : enemy.kind === 'brute' || enemy.kind === 'ricochet' ? random(1.05, 1.55, 'attack') : random(1.45, 2.35, 'attack');
+              : enemy.kind === 'drone' ? random(.88, 1.35, 'attack')
+                : enemy.kind === 'brute' || enemy.kind === 'ricochet' ? random(1.05, 1.55, 'attack') : random(1.45, 2.35, 'attack');
             enemy.cooldown = baseCooldown * enemyUpgradeFireRateScale() * enemyWaveFireRateScale();
           }
         }
+      }
+      if (enemy.kind === 'hunter') {
+        const hunterDistance = distance(state.player, enemy);
+        if (hunterDistance <= mobileSize(104)) {
+          enemy.hunterFuse = (enemy.hunterFuse ?? .72) - dt;
+          if (enemy.hunterFuse <= 0) {
+            const blastRadius = mobileSize(112);
+            state.effects.push({ type: 'hunter-explosion', x: enemy.x, y: enemy.y, radius: blastRadius, life: .48, total: .48 });
+            burst(enemy.x, enemy.y, '#ff583b', 30, 240);
+            burst(enemy.x, enemy.y, '#ffd080', 15, 155);
+            if (hunterDistance <= blastRadius + state.player.radius) damagePlayer(1, mahoragaAttackType(enemy, 'impact'));
+            damageEnemy(enemy, enemy.hp, true);
+            continue;
+          }
+        } else if (hunterDistance > mobileSize(138)) enemy.hunterFuse = null;
       }
       if (distance(state.player, enemy) < state.player.radius + enemy.r * .75) {
         if (state.invulnerable > 0 || stunnedByDino || stunnedByParadox || megumiShadowCloakActive() || flameStormDashActive || state.flameStormQIntangible > 0) continue;
@@ -4453,6 +4470,7 @@
           continue;
         }
         if (enemy.ramCooldown <= 0) {
+          if (enemy.kind === 'hunter' && enemy.hunterFuse > 0) { enemy.ramCooldown = .16; continue; }
           damagePlayer(enemy.kind === 'boss' && enemy.phase >= 4 ? 3 : enemy.kind === 'boss' && enemy.phase >= 2 ? 2 : 1, mahoragaAttackType(enemy, 'impact'));
           const separation = enemy.r + state.player.radius + (enemy.kind === 'hunter' ? 12 : 8);
           enemy.x = clamp(state.player.x - Math.cos(angle) * separation, enemy.r, state.width - enemy.r);
@@ -4627,7 +4645,13 @@
         for (const enemy of state.enemies) {
           if (enemy.dead || effect.hit.includes(enemy) || Math.hypot(effect.x - enemy.x, effect.y - enemy.y) >= effect.radius + enemy.r * .7) continue;
           const markedBySaurion = enemy.dinoCutMark > 0;
-          damageEnemy(enemy, effect.damage * (markedBySaurion ? 1.3 : 1), true);
+          let raptorDamage = effect.damage * (markedBySaurion ? 1.12 : 1);
+          if (enemy.kind === 'boss') {
+            const ledger = effect.bossDamageLedger || (effect.bossDamageLedger = new Map());
+            const alreadyDealt = ledger.get(enemy) || 0;
+            raptorDamage = Math.min(raptorDamage, Math.max(0, enemy.maxHp * .24 - alreadyDealt));
+            if (raptorDamage > 0) { damageEnemy(enemy, raptorDamage, true); ledger.set(enemy, alreadyDealt + raptorDamage); }
+          } else damageEnemy(enemy, raptorDamage, true);
           effect.hit.push(enemy);
           if (effect.type === 'dino-raptor') effect.target = null;
           burst(effect.x, effect.y, markedBySaurion ? '#eaffb2' : '#9dff79', markedBySaurion ? 14 : 10, markedBySaurion ? 130 : 105);
@@ -4661,10 +4685,22 @@
         if (!previous || Math.hypot(effect.x - previous.x, effect.y - previous.y) > 9) effect.trail.push({ x: effect.x, y: effect.y });
         if (effect.trail.length > (state.performanceMode === 'light' ? 10 : 24)) effect.trail.shift();
         effect.hitCooldowns = (effect.hitCooldowns || []).filter((entry) => { entry.time -= dt; return entry.time > 0 && !entry.enemy.dead; });
+        effect.bossHitCounts = (effect.bossHitCounts || []).filter((entry) => !entry.enemy.dead);
         for (const enemy of state.enemies) {
           const cooling = effect.hitCooldowns.some((entry) => entry.enemy === enemy);
           if (!enemy.dead && !cooling && Math.hypot(effect.x - enemy.x, effect.y - enemy.y) < enemy.r + mobileSize(25)) {
-          damageEnemy(enemy, effect.damage, true); effect.hitCooldowns.push({ enemy, time: .5 });
+            let bladeDamage = effect.damage;
+            let bossHit = null;
+            if (enemy.kind === 'boss') {
+              bossHit = effect.bossHitCounts.find((entry) => entry.enemy === enemy);
+              const alreadyDealt = bossHit?.damage || 0;
+              if ((bossHit?.hits || 0) >= 4 || alreadyDealt >= enemy.maxHp * .18) continue;
+              bladeDamage = Math.min(bladeDamage * .52, Math.max(0, enemy.maxHp * .18 - alreadyDealt));
+              if (!bossHit) { bossHit = { enemy, hits: 0, damage: 0 }; effect.bossHitCounts.push(bossHit); }
+              bossHit.hits++;
+              bossHit.damage += bladeDamage;
+            }
+            damageEnemy(enemy, bladeDamage, true); effect.hitCooldowns.push({ enemy, time: enemy.kind === 'boss' ? .8 : .5 });
             burst(effect.x, effect.y, '#fff4c7', 10, 125); burst(effect.x, effect.y, '#ffc86e', 8, 100);
           }
         }
@@ -5104,6 +5140,21 @@
       ctx.fillStyle = '#fff'; ctx.fillRect(-3, -2, 6, 4);
     }
     ctx.restore();
+    if (enemy.kind === 'hunter' && enemy.hunterFuse > 0) {
+      const fuse = clamp(enemy.hunterFuse / .72, 0, 1);
+      const pulse = .76 + Math.sin(performance.now() / (64 * fuse + 18)) * .2;
+      ctx.save(); ctx.globalAlpha = (.48 + (1 - fuse) * .42) * pulse;
+      ctx.strokeStyle = fuse < .35 ? '#fff1b2' : '#ff7455'; ctx.shadowColor = '#ff392f';
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
+      ctx.lineWidth = mobileSize(2.2 + (1 - fuse) * 1.8);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(8 + (1 - fuse) * 9), -performance.now() / 180, Math.PI * 1.72 - performance.now() / 180); ctx.stroke();
+      ctx.fillStyle = '#ffd27a'; ctx.shadowBlur = 0;
+      for (let spark = 0; spark < 3; spark++) {
+        const angle = performance.now() / 150 + spark * Math.PI * 2 / 3;
+        ctx.beginPath(); ctx.arc(enemy.x + Math.cos(angle) * (enemy.r + mobileSize(12)), enemy.y + Math.sin(angle) * (enemy.r + mobileSize(12)), mobileSize(1.8 + (1 - fuse)), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
     if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.phase >= 4) {
       ctx.save();
       ctx.globalAlpha = .58 + Math.sin(performance.now() / 110) * .16;
@@ -5637,6 +5688,18 @@
         ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
         ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(1); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, .25, Math.PI * 1.7); ctx.stroke();
         ctx.restore();
+      } else if (effect.type === 'hunter-explosion') {
+        const progress = 1 - alpha;
+        const radius = effect.radius * (.22 + progress * .78);
+        ctx.save(); ctx.globalAlpha = alpha * .76;
+        const blast = ctx.createRadialGradient(effect.x, effect.y, 0, effect.x, effect.y, radius);
+        blast.addColorStop(0, 'rgba(255,245,205,.72)'); blast.addColorStop(.22, 'rgba(255,119,65,.48)');
+        blast.addColorStop(.64, 'rgba(193,35,58,.24)'); blast.addColorStop(1, 'rgba(80,16,47,0)');
+        ctx.fillStyle = blast; ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#ff9d69'; ctx.shadowColor = '#ff493c'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(18);
+        ctx.lineWidth = mobileSize(5 * alpha + 1); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#fff2c7'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.6);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'nova') {
         ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - mobileSize(40)), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = currentSkin().color; ctx.lineWidth = mobileSize(8); ctx.shadowColor = currentSkin().color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       } else if (effect.type === 'dino-roar') {
@@ -7099,4 +7162,3 @@
   });
   createDeviceIndicators(); createAdminTools(); updateDeviceTypeUI(); renderSkinPicker(); renderAuthorizedPilots(); updateEquippedShip(); updateControlUI(); updatePerformanceModeUI(); updateHud(); updateFavorite(); resize(); setMode('intro'); draw(0); refreshLeaderboard(); loadAccountShipProgress(); nicknameSettingsLoadPromise = loadNicknameSettings();
 })();
-
