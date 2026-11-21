@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Página não encontrada no CV GAMES.">
   <meta name="robots" content="noindex, follow">
   <title>Página não encontrada | CV GAMES</title>
-  <link rel="icon" href="/CV-GAMES/img/incon.png" type="image/png">
+  <link rel="icon" href="/CV-GAMES/img/cv-games-favicon-natal.png" type="image/png">
   <script>
     try {
       const savedTheme = localStorage.getItem('cv-games-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+      if (savedTheme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas';
     } catch {
       // O tema escuro definido no HTML continua como padrão seguro.
     }
@@ -24,6 +24,7 @@
     .error-card p { max-width: 35rem; margin: 1rem auto 0; color: var(--muted); }
     .error-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin-top: 1.6rem; }
   </style>
+  <link rel="stylesheet" href="/CV-GAMES/css/christmas-theme.css">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -31,7 +32,7 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="/CV-GAMES/" aria-label="CV GAMES — Início">
-        <img src="/CV-GAMES/img/onconee.png" alt="">
+        <img src="/CV-GAMES/img/cv-games-logo-natal.png" alt="">
         <span>CV GAMES</span>
       </a>
       <nav class="primary-nav" aria-label="Navegação principal">

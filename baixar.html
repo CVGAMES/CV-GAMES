@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +10,20 @@
   <meta property="og:site_name" content="CV GAMES">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/baixar.html">
-  <meta property="og:image" content="https://cvgames.com.br/img/onconee.png">
+  <meta property="og:image" content="https://cvgames.com.br/img/cv-games-logo-natal.png">
   <meta property="og:image:alt" content="Logo do CV GAMES">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Downloads de Jogos | CV GAMES">
   <meta name="twitter:description" content="Encontre os jogos disponíveis para download no CV GAMES.">
-  <meta name="twitter:image" content="https://cvgames.com.br/img/onconee.png">
+  <meta name="twitter:image" content="https://cvgames.com.br/img/cv-games-logo-natal.png">
   <meta name="twitter:image:alt" content="Logo do CV GAMES">
   <title>Downloads de Jogos | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/baixar.html">
-  <link rel="icon" href="img/incon.png" type="image/png">
+  <link rel="icon" href="img/cv-games-favicon-natal.png" type="image/png">
   <script>
     try {
       const savedTheme = localStorage.getItem('cv-games-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+      if (savedTheme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas';
     } catch {
       // O tema escuro continua como padrão se o armazenamento local não estiver disponível.
     }
@@ -33,6 +33,8 @@
   <script src="data/downloads.js" defer></script>
   <script src="js/downloads.js" defer></script>
   <script src="js/cv-wallet.js" defer></script>
+  <link rel="stylesheet" href="css/christmas-theme.css">
+  <script src="js/theme-toggle.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#downloads">Pular para os downloads</a>
@@ -40,7 +42,7 @@
   <header class="site-header" id="inicio">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="CV GAMES — Início">
-        <img src="img/onconee.png" alt="">
+        <img src="img/cv-games-logo-natal.png" alt="">
         <span>CV GAMES</span>
       </a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
@@ -55,7 +57,7 @@
       </nav>
       <div class="header-actions"><span class="cv-wallet-badge" title="Saldo CV Coin"><img src="img/cv-coin.png" alt=""><span><strong data-cv-coin-balance>0</strong><small>CV COIN</small></span></span>
         <a class="favorite-button" href="index.html?favoritos=1#jogos" aria-label="Ver favoritos" title="Ver favoritos"><span class="favorite-icon" aria-hidden="true">♥</span><span>Favoritos</span></a>
-        <button class="icon-button" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Ativar tema de Natal" title="Ativar tema de Natal">🎄</button>
       </div>
     </div>
   </header>

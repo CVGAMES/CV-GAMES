@@ -1,0 +1,797 @@
+:root[data-theme="christmas"] {
+  --bg: #071b16;
+  --bg-soft: #102b22;
+  --surface: rgba(17, 45, 35, .94);
+  --surface-solid: #15382c;
+  --surface-hover: #1e4a39;
+  --text: #fff8eb;
+  --muted: #d1dbd0;
+  --line: rgba(242, 211, 151, .24);
+  --primary: #64dfa0;
+  --primary-strong: #3bc17e;
+  --accent: #f0c66f;
+  --success: #80e6a8;
+  --shadow: 0 20px 48px rgba(0, 0, 0, .38);
+  --christmas-red: #c74758;
+  --christmas-red-soft: #742d37;
+  --christmas-gold: #f0c66f;
+  color-scheme: dark;
+}
+
+:root[data-theme="christmas"] body,
+:root[data-theme="christmas"] body.game-page {
+  background:
+    radial-gradient(circle at 12% 11%, rgba(255, 255, 255, .58) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 37% 31%, rgba(255, 255, 255, .36) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 71% 16%, rgba(255, 255, 255, .48) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 88% 53%, rgba(255, 255, 255, .3) 0 1px, transparent 1.8px),
+    radial-gradient(ellipse at 8% -8%, rgba(196, 71, 88, .24), transparent 32rem),
+    radial-gradient(ellipse at 96% 16%, rgba(55, 151, 94, .23), transparent 31rem),
+    linear-gradient(160deg, #071b16, #0b211b 52%, #101d19);
+  color: var(--text);
+}
+
+:root[data-theme="christmas"] .site-header {
+  position: sticky;
+  border-bottom-color: rgba(240, 198, 111, .34);
+  background: color-mix(in srgb, #09231b 91%, transparent);
+  box-shadow: 0 8px 26px rgba(2, 12, 8, .2);
+}
+
+:root[data-theme="christmas"] .site-footer::before { height: 9px; }
+
+:root[data-theme="christmas"] .site-header::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 4px;
+  background:
+    radial-gradient(circle, #f4d27e 0 2px, transparent 3px) 12px 0 / 54px 5px repeat-x,
+    linear-gradient(90deg, #b94152, #e5bd69 48%, #3cab70);
+  content: "";
+  opacity: .82;
+  pointer-events: none;
+}
+
+:root[data-theme="christmas"] .brand::after {
+  margin-left: -.25rem;
+  color: var(--christmas-gold);
+  content: "🎄";
+  font-size: .9rem;
+  filter: drop-shadow(0 0 8px rgba(240, 198, 111, .35));
+}
+
+:root[data-theme="christmas"] .menu-toggle,
+:root[data-theme="christmas"] .icon-button,
+:root[data-theme="christmas"] .favorite-button {
+  border-color: color-mix(in srgb, var(--christmas-gold) 35%, var(--line));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--christmas-red-soft) 33%, var(--surface)), var(--surface));
+}
+
+:root[data-theme="christmas"] .menu-toggle:hover,
+:root[data-theme="christmas"] .icon-button:hover,
+:root[data-theme="christmas"] .favorite-button:hover,
+:root[data-theme="christmas"] .favorite-button:focus-visible {
+  border-color: var(--christmas-gold);
+  box-shadow: 0 0 18px rgba(240, 198, 111, .14);
+}
+
+:root[data-theme="christmas"] .hero-panel {
+  border-color: rgba(240, 198, 111, .42);
+  background:
+    radial-gradient(ellipse at 83% 24%, rgba(53, 157, 97, .34), transparent 38%),
+    radial-gradient(ellipse at 8% 100%, rgba(190, 55, 74, .3), transparent 42%),
+    linear-gradient(120deg, rgba(12, 49, 36, .97), rgba(77, 30, 39, .9));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .36), inset 0 1px rgba(255, 255, 255, .06);
+}
+
+:root[data-theme="christmas"] .hero-panel::before {
+  position: absolute;
+  top: 0;
+  right: 1.4rem;
+  left: 1.4rem;
+  height: 20px;
+  background:
+    radial-gradient(circle, #f5d47f 0 3px, transparent 4px) 0 0 / 52px 18px repeat-x,
+    linear-gradient(180deg, transparent 8px, rgba(231, 205, 151, .42) 9px 10px, transparent 11px);
+  content: "";
+  opacity: .8;
+  pointer-events: none;
+}
+
+:root[data-theme="christmas"] .hero-panel::after {
+  border-color: rgba(240, 198, 111, .18);
+}
+
+:root[data-theme="christmas"] .hero h1 {
+  color: #fff8eb;
+  text-shadow: 0 4px 28px rgba(213, 75, 88, .22);
+}
+
+:root[data-theme="christmas"] .eyebrow,
+:root[data-theme="christmas"] .section-heading h2 {
+  color: color-mix(in srgb, var(--primary) 78%, var(--christmas-gold));
+}
+
+:root[data-theme="christmas"] .button-primary,
+:root[data-theme="christmas"] .starfall-primary,
+:root[data-theme="christmas"] .orbital-primary-button {
+  border-color: #f2d28a;
+  background: linear-gradient(115deg, #b83d51, #27784e 88%);
+  color: #fff9ec;
+  box-shadow: 0 10px 26px rgba(8, 15, 9, .32), inset 0 1px rgba(255, 255, 255, .22);
+}
+
+:root[data-theme="christmas"] .button-primary:hover,
+:root[data-theme="christmas"] .starfall-primary:hover,
+:root[data-theme="christmas"] .orbital-primary-button:hover {
+  background: linear-gradient(115deg, #d34d5e, #32935d 88%);
+  filter: brightness(1.04);
+}
+
+:root[data-theme="christmas"] .button-secondary,
+:root[data-theme="christmas"] .catalog-reset,
+:root[data-theme="christmas"] .download-clear,
+:root[data-theme="christmas"] .download-category-chip,
+:root[data-theme="christmas"] .category-chip {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--surface-solid) 86%, var(--christmas-red-soft));
+  color: var(--text);
+}
+
+:root[data-theme="christmas"] .button-secondary:hover,
+:root[data-theme="christmas"] .catalog-reset:hover,
+:root[data-theme="christmas"] .download-clear:hover,
+:root[data-theme="christmas"] .download-category-chip:hover,
+:root[data-theme="christmas"] .category-chip:hover,
+:root[data-theme="christmas"] .category-chip:focus-visible,
+:root[data-theme="christmas"] .category-chip.is-selected,
+:root[data-theme="christmas"] .category-chip[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 17%, var(--surface-solid));
+}
+
+:root[data-theme="christmas"] .search-box,
+:root[data-theme="christmas"] .search-results,
+:root[data-theme="christmas"] .download-search,
+:root[data-theme="christmas"] .search-result,
+:root[data-theme="christmas"] .download-card,
+:root[data-theme="christmas"] .game-card,
+:root[data-theme="christmas"] .central-home-card,
+:root[data-theme="christmas"] .institutional-section,
+:root[data-theme="christmas"] .institutional-hero,
+:root[data-theme="christmas"] .central-hero,
+:root[data-theme="christmas"] .central-section,
+:root[data-theme="christmas"] .central-notice,
+:root[data-theme="christmas"] .downloads-hero,
+:root[data-theme="christmas"] .download-notice,
+:root[data-theme="christmas"] .game-hero,
+:root[data-theme="christmas"] .game-details,
+:root[data-theme="christmas"] .profile-hero,
+:root[data-theme="christmas"] .profile-editor-panel,
+:root[data-theme="christmas"] .profile-privacy,
+:root[data-theme="christmas"] .profile-highlight,
+:root[data-theme="christmas"] .profile-reset-panel,
+:root[data-theme="christmas"] .update-entry,
+:root[data-theme="christmas"] .updates-pagination,
+:root[data-theme="christmas"] .cv-site-modal {
+  border-color: color-mix(in srgb, var(--christmas-gold) 25%, var(--line));
+  background-color: var(--surface);
+}
+
+:root[data-theme="christmas"] .game-card:hover,
+:root[data-theme="christmas"] .download-card:hover,
+:root[data-theme="christmas"] .central-home-card:hover,
+:root[data-theme="christmas"] .central-home-card:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .36), 0 0 22px rgba(68, 194, 123, .12);
+}
+
+:root[data-theme="christmas"] .type-badge,
+:root[data-theme="christmas"] .download-new,
+:root[data-theme="christmas"] .game-development-status span {
+  border-color: rgba(240, 198, 111, .42);
+  background: rgba(105, 45, 48, .8);
+  color: #fff0ce;
+}
+
+:root[data-theme="christmas"] .favorite-button.is-active,
+:root[data-theme="christmas"] .card-favorite[aria-pressed="true"] {
+  border-color: #ef8390;
+  background: rgba(190, 55, 74, .22);
+}
+
+:root[data-theme="christmas"] .site-footer {
+  position: relative;
+  border-top-color: rgba(240, 198, 111, .4);
+  background: linear-gradient(110deg, #102b22, #19372a 55%, #3b2026);
+}
+
+:root[data-theme="christmas"] .site-footer::before {
+  position: absolute;
+  top: -1px;
+  right: 0;
+  left: 0;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, #bd4352 0 24px, #e6c26f 24px 48px, #318352 48px 72px);
+  content: "";
+  opacity: .86;
+}
+
+:root[data-theme="christmas"] .footer-nav a:hover,
+:root[data-theme="christmas"] .updates-page .whats-new-button[aria-current="page"] {
+  color: var(--christmas-gold);
+}
+
+:root[data-theme="christmas"] .cv-wallet-badge {
+  border-color: rgba(244, 207, 117, .58);
+  background: linear-gradient(135deg, rgba(112, 68, 18, .38), rgba(19, 47, 35, .94));
+}
+
+:root[data-theme="christmas"] .central-hero,
+:root[data-theme="christmas"] .downloads-hero,
+:root[data-theme="christmas"] .institutional-hero,
+:root[data-theme="christmas"] .game-hero,
+:root[data-theme="christmas"] .profile-hero,
+:root[data-theme="christmas"] .psp-hero,
+:root[data-theme="christmas"] .starfall-intro,
+:root[data-theme="christmas"] .checkers-intro,
+:root[data-theme="christmas"] .orbital-introduction {
+  background:
+    radial-gradient(ellipse at 85% 12%, rgba(53, 157, 97, .2), transparent 43%),
+    radial-gradient(ellipse at 8% 100%, rgba(190, 55, 74, .16), transparent 48%),
+    linear-gradient(125deg, color-mix(in srgb, var(--surface-solid) 94%, transparent), color-mix(in srgb, var(--bg-soft) 88%, transparent));
+}
+
+:root[data-theme="christmas"] .starfall-intro,
+:root[data-theme="christmas"] .starfall-game-panel,
+:root[data-theme="christmas"] .starfall-help,
+:root[data-theme="christmas"] .checkers-intro,
+:root[data-theme="christmas"] .checkers-lobby,
+:root[data-theme="christmas"] .checkers-game-view,
+:root[data-theme="christmas"] .checkers-side-card,
+:root[data-theme="christmas"] .checkers-status-card,
+:root[data-theme="christmas"] .orbital-access-card,
+:root[data-theme="christmas"] .orbital-game-panel,
+:root[data-theme="christmas"] .orbital-command {
+  border-color: color-mix(in srgb, var(--christmas-gold) 30%, var(--line));
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme="christmas"] .starfall-intro .eyebrow,
+:root[data-theme="christmas"] .starfall-intro h1 span,
+:root[data-theme="christmas"] .starfall-kicker,
+:root[data-theme="christmas"] .checkers-intro .eyebrow,
+:root[data-theme="christmas"] .checkers-kicker,
+:root[data-theme="christmas"] .orbital-introduction .eyebrow {
+  color: var(--primary);
+  text-shadow: 0 0 22px rgba(85, 218, 145, .2);
+}
+
+:root[data-theme="christmas"] [class*="card"],
+:root[data-theme="christmas"] [class*="panel"],
+:root[data-theme="christmas"] [class*="section"] {
+  border-color: color-mix(in srgb, var(--christmas-gold) 18%, var(--line));
+}
+
+:root[data-theme="christmas"] input,
+:root[data-theme="christmas"] textarea,
+:root[data-theme="christmas"] select {
+  border-color: color-mix(in srgb, var(--christmas-gold) 25%, var(--line));
+  background-color: color-mix(in srgb, var(--bg-soft) 90%, #0b2119);
+  color: var(--text);
+}
+
+:root[data-theme="christmas"] ::selection {
+  background: rgba(199, 71, 88, .55);
+  color: #fff9ec;
+}
+
+:root[data-theme="christmas"] :focus-visible {
+  outline-color: var(--christmas-gold);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme="christmas"] .icon-button[data-theme-toggle] {
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  :root[data-theme="christmas"] .icon-button[data-theme-toggle]:hover {
+    transform: rotate(-7deg) scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="christmas"] *,
+  :root[data-theme="christmas"] *::before,
+  :root[data-theme="christmas"] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+/* Acabamento natalino: neve em camadas, luzes quentes e pinheiros discretos. */
+:root[data-theme="christmas"] {
+  --primary: #a8c5a5;
+  --primary-strong: #83a982;
+  --accent: #e6cf9b;
+  --line: rgba(220, 207, 168, .2);
+  --christmas-red: #89515a;
+  --christmas-red-soft: #3a2b2e;
+  --christmas-gold: #e6cf9b;
+  --surface: rgba(18, 41, 33, .96);
+  --surface-solid: #153329;
+  --surface-hover: #1d4032;
+  --shadow: 0 20px 48px rgba(0, 0, 0, .38);
+}
+
+:root[data-theme="christmas"] body,
+:root[data-theme="christmas"] body.game-page {
+  background:
+    url("../img/natal-flocos.svg") 0 0 / 180px 220px repeat,
+    radial-gradient(circle at 26px 36px, rgba(255, 250, 237, .38) 0 1px, transparent 1.8px) 0 0 / 92px 112px repeat,
+    radial-gradient(ellipse at 8% -8%, rgba(137, 81, 90, .15), transparent 32rem) center top / 100% 34rem no-repeat,
+    radial-gradient(ellipse at 96% 16%, rgba(92, 131, 91, .18), transparent 31rem) right 15% / 36rem 34rem no-repeat,
+    linear-gradient(160deg, #081a15, #0b211a 52%, #101d19) 0 0 / 100% 100% no-repeat;
+  background-attachment: fixed, fixed, fixed, fixed, fixed;
+  animation: cv-christmas-snowfall 28s linear infinite;
+}
+
+@keyframes cv-christmas-snowfall {
+  from { background-position: 0 -220px, 0 -112px, center top, right 15%, 0 0; }
+  to { background-position: 52px 660px, 38px 560px, center top, right 15%, 0 0; }
+}
+
+:root[data-theme="christmas"] .site-header {
+  border-bottom-color: rgba(230, 207, 155, .28);
+  background: color-mix(in srgb, #0b211a 94%, transparent);
+}
+
+:root[data-theme="christmas"] .site-header::before {
+  position: absolute;
+  top: 0;
+  right: 1.25rem;
+  left: 1.25rem;
+  height: 10px;
+  background:
+    radial-gradient(circle, #fff1ca 0 2px, transparent 3px) 0 1px / 54px 9px repeat-x,
+    linear-gradient(180deg, transparent 4px, rgba(225, 205, 157, .44) 5px 6px, transparent 7px);
+  content: "";
+  opacity: .76;
+  pointer-events: none;
+  animation: cv-christmas-twinkle 2.7s ease-in-out infinite alternate;
+}
+
+:root[data-theme="christmas"] .site-footer::before { height: 9px; }
+
+:root[data-theme="christmas"] .site-header::after {
+  height: 3px;
+  background:
+    radial-gradient(circle, #f7e6bc 0 2px, transparent 3px) 27px 0 / 54px 5px repeat-x,
+    linear-gradient(90deg, rgba(34, 70, 52, .8), rgba(230, 207, 155, .48), rgba(34, 70, 52, .8));
+  opacity: .75;
+  animation: cv-christmas-twinkle 3.1s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes cv-christmas-twinkle {
+  0%, 100% { opacity: .58; filter: brightness(.92); }
+  48% { opacity: .9; filter: brightness(1.18); }
+  62% { opacity: .68; filter: brightness(1); }
+}
+
+:root[data-theme="christmas"] .hero-panel {
+  border-color: rgba(230, 207, 155, .3);
+  background:
+    radial-gradient(ellipse at 82% 22%, rgba(78, 126, 86, .22), transparent 38%),
+    radial-gradient(ellipse at 8% 100%, rgba(121, 62, 70, .17), transparent 42%),
+    linear-gradient(120deg, rgba(12, 43, 32, .98), rgba(28, 45, 35, .94));
+}
+
+:root[data-theme="christmas"] .hero-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+:root[data-theme="christmas"] .hero-panel::before {
+  background:
+    radial-gradient(circle, #f7e7c2 0 2.6px, transparent 3.6px) 0 0 / 54px 18px repeat-x,
+    linear-gradient(180deg, transparent 8px, rgba(225, 205, 157, .42) 9px 10px, transparent 11px);
+  animation: cv-christmas-twinkle 2.3s ease-in-out infinite alternate;
+}
+
+:root[data-theme="christmas"] .hero-panel::after {
+  right: 1rem;
+  bottom: -.8rem;
+  width: 12.5rem;
+  height: 15rem;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(50% 0, 57% 10%, 54% 10%, 68% 26%, 63% 26%, 79% 43%, 70% 43%, 94% 66%, 63% 66%, 63% 79%, 76% 79%, 76% 86%, 24% 86%, 24% 79%, 37% 79%, 37% 66%, 6% 66%, 30% 43%, 21% 43%, 37% 26%, 32% 26%, 46% 10%, 43% 10%);
+  background:
+    radial-gradient(circle at 50% 7%, #e8d39a 0 3px, transparent 4px),
+    radial-gradient(circle at 35% 38%, rgba(230, 207, 155, .85) 0 2px, transparent 3px),
+    radial-gradient(circle at 68% 54%, rgba(230, 207, 155, .78) 0 2px, transparent 3px),
+    radial-gradient(circle at 45% 67%, rgba(230, 207, 155, .7) 0 2px, transparent 3px),
+    linear-gradient(105deg, #173c2d, #2a5a3f 50%, #143526);
+  box-shadow: none;
+  opacity: .38;
+  filter: drop-shadow(0 0 20px rgba(128, 163, 113, .18));
+  pointer-events: none;
+}
+
+:root[data-theme="christmas"] .menu-toggle,
+:root[data-theme="christmas"] .icon-button,
+:root[data-theme="christmas"] .favorite-button {
+  border-color: rgba(230, 207, 155, .25);
+  background: linear-gradient(145deg, rgba(37, 67, 51, .94), rgba(17, 42, 32, .97));
+}
+
+:root[data-theme="christmas"] .menu-toggle:hover,
+:root[data-theme="christmas"] .icon-button:hover,
+:root[data-theme="christmas"] .favorite-button:hover,
+:root[data-theme="christmas"] .favorite-button:focus-visible {
+  border-color: rgba(230, 207, 155, .72);
+  background: linear-gradient(145deg, rgba(48, 82, 61, .98), rgba(22, 49, 37, .98));
+  box-shadow: 0 0 16px rgba(230, 207, 155, .11);
+}
+
+:root[data-theme="christmas"] .button-primary,
+:root[data-theme="christmas"] .starfall-primary,
+:root[data-theme="christmas"] .orbital-primary-button {
+  border-color: rgba(230, 207, 155, .72);
+  background: linear-gradient(115deg, #26543d, #38694b);
+  color: #fff8eb;
+  box-shadow: 0 10px 26px rgba(6, 17, 11, .3), inset 0 1px rgba(255, 255, 255, .12);
+}
+
+:root[data-theme="christmas"] .button-primary:hover,
+:root[data-theme="christmas"] .starfall-primary:hover,
+:root[data-theme="christmas"] .orbital-primary-button:hover {
+  background: linear-gradient(115deg, #326649, #467b58);
+}
+
+:root[data-theme="christmas"] .site-footer {
+  background: linear-gradient(110deg, #10291f, #172f25 58%, #28272a);
+}
+
+:root[data-theme="christmas"] .site-footer::before {
+  height: 3px;
+  background:
+    radial-gradient(circle, #f7e6bc 0 2px, transparent 3px) 27px 0 / 54px 5px repeat-x,
+    linear-gradient(90deg, rgba(34, 70, 52, .8), rgba(230, 207, 155, .48), rgba(34, 70, 52, .8));
+  animation: cv-christmas-twinkle 3s ease-in-out infinite alternate;
+}
+
+:root[data-theme="christmas"] .type-badge,
+:root[data-theme="christmas"] .download-new,
+:root[data-theme="christmas"] .game-development-status span {
+  border-color: rgba(230, 207, 155, .3);
+  background: rgba(53, 45, 38, .78);
+  color: #f2e8d1;
+}
+
+:root[data-theme="christmas"] .button-secondary,
+:root[data-theme="christmas"] .catalog-reset,
+:root[data-theme="christmas"] .download-clear,
+:root[data-theme="christmas"] .download-category-chip,
+:root[data-theme="christmas"] .category-chip {
+  background: color-mix(in srgb, var(--surface-solid) 92%, #272c24);
+}
+
+:root[data-theme="christmas"] .button-secondary:hover,
+:root[data-theme="christmas"] .catalog-reset:hover,
+:root[data-theme="christmas"] .download-clear:hover,
+:root[data-theme="christmas"] .download-category-chip:hover,
+:root[data-theme="christmas"] .category-chip:hover,
+:root[data-theme="christmas"] .category-chip:focus-visible,
+:root[data-theme="christmas"] .category-chip.is-selected,
+:root[data-theme="christmas"] .category-chip[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--primary) 11%, var(--surface-solid));
+}
+
+@media (max-width: 620px) {
+  :root[data-theme="christmas"] .hero-panel::after {
+    right: -.2rem;
+    bottom: -.4rem;
+    width: 8.5rem;
+    height: 10.5rem;
+    opacity: .24;
+  }
+  :root[data-theme="christmas"] .site-header::before {
+    right: .55rem;
+    left: .55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="christmas"] body,
+  :root[data-theme="christmas"] body.game-page,
+  :root[data-theme="christmas"] .site-header::before,
+  :root[data-theme="christmas"] .site-header::after,
+  :root[data-theme="christmas"] .hero-panel::before,
+  :root[data-theme="christmas"] .site-footer::before {
+    animation: none;
+  }
+}
+/* Equilíbrio entre o azul do CV GAMES e os detalhes de Natal. */
+:root[data-theme="christmas"] {
+  --bg: #071426;
+  --bg-soft: #10233b;
+  --surface: rgba(14, 31, 52, .96);
+  --surface-solid: #132b49;
+  --surface-hover: #1b3b60;
+  --text: #f5f8ff;
+  --muted: #c1cde0;
+  --line: rgba(112, 176, 232, .24);
+  --primary: #52c4ff;
+  --primary-strong: #168fca;
+  --accent: #e8cf91;
+  --success: #8fc9a3;
+  --christmas-red: #b74759;
+  --christmas-red-soft: #512d3b;
+  --christmas-gold: #e8cf91;
+  --shadow: 0 20px 48px rgba(0, 0, 0, .4);
+}
+
+:root[data-theme="christmas"] body,
+:root[data-theme="christmas"] body.game-page {
+  background:
+    url("../img/natal-flocos.svg") 0 0 / 180px 220px repeat,
+    radial-gradient(circle at 26px 36px, rgba(255, 250, 237, .38) 0 1px, transparent 1.8px) 0 0 / 92px 112px repeat,
+    radial-gradient(ellipse at 8% -8%, rgba(180, 55, 78, .17), transparent 32rem) center top / 100% 34rem no-repeat,
+    radial-gradient(ellipse at 96% 16%, rgba(38, 128, 204, .24), transparent 31rem) right 15% / 36rem 34rem no-repeat,
+    linear-gradient(160deg, #071426, #0b1d34 52%, #091525) 0 0 / 100% 100% no-repeat;
+}
+
+:root[data-theme="christmas"] .site-header {
+  border-bottom-color: rgba(92, 179, 239, .3);
+  background: color-mix(in srgb, #081a30 95%, transparent);
+}
+
+:root[data-theme="christmas"] .site-header::after,
+:root[data-theme="christmas"] .site-footer::before {
+  background:
+    radial-gradient(circle, #f7e6bc 0 2px, transparent 3px) 27px 0 / 54px 5px repeat-x,
+    linear-gradient(90deg, rgba(174, 55, 76, .82), rgba(63, 160, 222, .72) 48%, rgba(65, 111, 79, .72));
+}
+
+:root[data-theme="christmas"] .hero-panel {
+  border-color: rgba(103, 183, 240, .32);
+  background:
+    radial-gradient(ellipse at 82% 22%, rgba(37, 126, 199, .3), transparent 39%),
+    radial-gradient(ellipse at 8% 100%, rgba(164, 54, 75, .2), transparent 42%),
+    linear-gradient(120deg, rgba(10, 34, 60, .98), rgba(17, 34, 54, .95));
+}
+
+:root[data-theme="christmas"] .menu-toggle,
+:root[data-theme="christmas"] .icon-button,
+:root[data-theme="christmas"] .favorite-button {
+  border-color: rgba(112, 183, 233, .32);
+  background: linear-gradient(145deg, rgba(27, 57, 89, .96), rgba(13, 33, 56, .98));
+}
+
+:root[data-theme="christmas"] .menu-toggle:hover,
+:root[data-theme="christmas"] .icon-button:hover,
+:root[data-theme="christmas"] .favorite-button:hover,
+:root[data-theme="christmas"] .favorite-button:focus-visible {
+  border-color: var(--christmas-gold);
+  background: linear-gradient(145deg, rgba(35, 78, 116, .98), rgba(15, 42, 70, .98));
+}
+
+:root[data-theme="christmas"] .button-primary,
+:root[data-theme="christmas"] .starfall-primary,
+:root[data-theme="christmas"] .orbital-primary-button {
+  border-color: rgba(232, 207, 145, .78);
+  background: linear-gradient(115deg, #087fb8, #1d9bd1 68%, #a63e52);
+  color: #f7fbff;
+  box-shadow: 0 10px 26px rgba(3, 14, 30, .38), inset 0 1px rgba(255, 255, 255, .2);
+}
+
+:root[data-theme="christmas"] .button-primary:hover,
+:root[data-theme="christmas"] .starfall-primary:hover,
+:root[data-theme="christmas"] .orbital-primary-button:hover {
+  background: linear-gradient(115deg, #1095d0, #32b3e6 68%, #bd4a5e);
+}
+
+:root[data-theme="christmas"] .button-secondary,
+:root[data-theme="christmas"] .catalog-reset,
+:root[data-theme="christmas"] .download-clear,
+:root[data-theme="christmas"] .download-category-chip,
+:root[data-theme="christmas"] .category-chip {
+  border-color: rgba(112, 176, 232, .25);
+  background: color-mix(in srgb, var(--surface-solid) 92%, #0b192a);
+}
+
+:root[data-theme="christmas"] .button-secondary:hover,
+:root[data-theme="christmas"] .catalog-reset:hover,
+:root[data-theme="christmas"] .download-clear:hover,
+:root[data-theme="christmas"] .download-category-chip:hover,
+:root[data-theme="christmas"] .category-chip:hover,
+:root[data-theme="christmas"] .category-chip:focus-visible,
+:root[data-theme="christmas"] .category-chip.is-selected,
+:root[data-theme="christmas"] .category-chip[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 18%, var(--surface-solid));
+}
+
+:root[data-theme="christmas"] .game-card:hover,
+:root[data-theme="christmas"] .download-card:hover,
+:root[data-theme="christmas"] .central-home-card:hover,
+:root[data-theme="christmas"] .central-home-card:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 72%, var(--christmas-gold));
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .36), 0 0 22px rgba(59, 166, 231, .15);
+}
+
+:root[data-theme="christmas"] .eyebrow,
+:root[data-theme="christmas"] .section-heading h2,
+:root[data-theme="christmas"] .starfall-intro h1 span,
+:root[data-theme="christmas"] .starfall-kicker,
+:root[data-theme="christmas"] .checkers-intro .eyebrow,
+:root[data-theme="christmas"] .checkers-kicker,
+:root[data-theme="christmas"] .orbital-introduction .eyebrow {
+  color: var(--primary);
+  text-shadow: 0 0 22px rgba(82, 196, 255, .2);
+}
+
+:root[data-theme="christmas"] .central-hero,
+:root[data-theme="christmas"] .downloads-hero,
+:root[data-theme="christmas"] .institutional-hero,
+:root[data-theme="christmas"] .game-hero,
+:root[data-theme="christmas"] .profile-hero,
+:root[data-theme="christmas"] .psp-hero,
+:root[data-theme="christmas"] .starfall-intro,
+:root[data-theme="christmas"] .checkers-intro,
+:root[data-theme="christmas"] .orbital-introduction {
+  background:
+    radial-gradient(ellipse at 85% 12%, rgba(39, 123, 193, .2), transparent 43%),
+    radial-gradient(ellipse at 8% 100%, rgba(177, 55, 78, .13), transparent 48%),
+    linear-gradient(125deg, color-mix(in srgb, var(--surface-solid) 94%, transparent), color-mix(in srgb, var(--bg-soft) 88%, transparent));
+}
+
+:root[data-theme="christmas"] .site-footer {
+  background: linear-gradient(110deg, #0d2038, #132b47 58%, #302532);
+}
+
+:root[data-theme="christmas"] input,
+:root[data-theme="christmas"] textarea,
+:root[data-theme="christmas"] select {
+  border-color: color-mix(in srgb, var(--primary) 34%, var(--line));
+  background-color: color-mix(in srgb, var(--bg-soft) 92%, #071426);
+}
+/* Apenas o botão Jogar dos cards ganha destaque natalino. */
+:root[data-theme="christmas"] .game-card .card-body > a.button[data-play-game-id] {
+  border: 1px solid rgba(241, 211, 143, .86);
+  background: linear-gradient(115deg, #874052, #ad5d60 72%, #c87a64);
+  color: #fff8ef;
+  box-shadow: 0 8px 22px rgba(112, 46, 62, .22), inset 0 1px rgba(255, 255, 255, .2);
+}
+
+:root[data-theme="christmas"] .game-card .card-body > a.button[data-play-game-id]:hover,
+:root[data-theme="christmas"] .game-card .card-body > a.button[data-play-game-id]:focus-visible {
+  background: linear-gradient(115deg, #a34c5c, #c36d68 72%, #d68a6b);
+  box-shadow: 0 0 18px rgba(202, 112, 117, .26), 0 8px 22px rgba(112, 46, 62, .2);
+}
+
+:root[data-theme="christmas"] .site-header::before,
+:root[data-theme="christmas"] .hero-panel::before,
+:root[data-theme="christmas"] .site-footer::before {
+  background:
+    radial-gradient(circle, #ff6575 0 2.8px, transparent 3.9px) 0 1px / 54px 10px repeat-x,
+    radial-gradient(circle, #58cfff 0 2.8px, transparent 3.9px) 13.5px 1px / 54px 10px repeat-x,
+    radial-gradient(circle, #ffe28d 0 2.8px, transparent 3.9px) 27px 1px / 54px 10px repeat-x,
+    radial-gradient(circle, #71e6a2 0 2.8px, transparent 3.9px) 40.5px 1px / 54px 10px repeat-x,
+    linear-gradient(180deg, transparent 4px, rgba(160, 197, 228, .5) 5px 6px, transparent 7px);
+  animation: cv-christmas-lights-bright 1.35s ease-in-out infinite alternate;
+}
+
+@keyframes cv-christmas-lights-bright {
+  0%, 100% { opacity: .58; filter: brightness(.85) saturate(1.1); }
+  45% { opacity: 1; filter: brightness(1.65) saturate(1.65) drop-shadow(0 0 5px rgba(94, 194, 255, .65)); }
+  72% { opacity: .78; filter: brightness(1.25) saturate(1.45) drop-shadow(0 0 3px rgba(255, 95, 116, .48)); }
+}
+
+:root[data-theme="christmas"] .site-footer::before { height: 9px; }
+
+:root[data-theme="christmas"] .site-header::after {
+  background: linear-gradient(90deg, #c33c52, #50b9f1 36%, #f0cf7f 68%, #65cb8b);
+  animation: cv-christmas-lights-bright 1.7s ease-in-out infinite alternate-reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="christmas"] .site-header::before,
+  :root[data-theme="christmas"] .site-header::after,
+  :root[data-theme="christmas"] .hero-panel::before,
+  :root[data-theme="christmas"] .site-footer::before {
+    animation: none;
+  }
+}
+/* Repete o vermelho suave nos outros três botões mostrados. */
+:root[data-theme="christmas"] .download-card .button-primary,
+:root[data-theme="christmas"] .downloads-hero > a.button-primary,
+:root[data-theme="christmas"] .hero-actions > a.button-primary[href="#jogos"] {
+  border: 1px solid rgba(241, 211, 143, .86);
+  background: linear-gradient(115deg, #874052, #ad5d60 72%, #c87a64);
+  color: #fff8ef;
+  box-shadow: 0 8px 22px rgba(112, 46, 62, .22), inset 0 1px rgba(255, 255, 255, .2);
+}
+
+:root[data-theme="christmas"] .download-card .button-primary:hover,
+:root[data-theme="christmas"] .download-card .button-primary:focus-visible,
+:root[data-theme="christmas"] .downloads-hero > a.button-primary:hover,
+:root[data-theme="christmas"] .downloads-hero > a.button-primary:focus-visible,
+:root[data-theme="christmas"] .hero-actions > a.button-primary[href="#jogos"]:hover,
+:root[data-theme="christmas"] .hero-actions > a.button-primary[href="#jogos"]:focus-visible {
+  background: linear-gradient(115deg, #a34c5c, #c36d68 72%, #d68a6b);
+  box-shadow: 0 0 18px rgba(202, 112, 117, .26), 0 8px 22px rgba(112, 46, 62, .2);
+}
+/* Botão principal de início do CV Starfall no tema natalino. */
+:root[data-theme="christmas"] .starfall-primary {
+  border-color: rgba(241, 211, 143, .86);
+  background: linear-gradient(115deg, #874052, #ad5d60 72%, #c87a64);
+  color: #fff8ef;
+  box-shadow: 0 8px 22px rgba(112, 46, 62, .22), inset 0 1px rgba(255, 255, 255, .2);
+}
+
+:root[data-theme="christmas"] .starfall-primary:hover,
+:root[data-theme="christmas"] .starfall-primary:focus-visible {
+  background: linear-gradient(115deg, #a34c5c, #c36d68 72%, #d68a6b);
+  box-shadow: 0 0 18px rgba(202, 112, 117, .26), 0 8px 22px rgba(112, 46, 62, .2);
+}
+/* Botões vermelhos no portal; os controles do CV Starfall mantêm as cores do jogo. */
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .button-primary,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .starfall-primary,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .orbital-primary-button {
+  border-color: rgba(241, 211, 143, .82);
+  background: linear-gradient(115deg, #874052, #ad5d60 72%, #c87a64);
+  color: #fff8ef;
+  box-shadow: 0 8px 22px rgba(112, 46, 62, .22), inset 0 1px rgba(255, 255, 255, .2);
+}
+
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .button-primary:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .button-primary:focus-visible,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .starfall-primary:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .starfall-primary:focus-visible,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .orbital-primary-button:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .orbital-primary-button:focus-visible {
+  background: linear-gradient(115deg, #a34c5c, #c36d68 72%, #d68a6b);
+  box-shadow: 0 0 18px rgba(202, 112, 117, .26), 0 8px 22px rgba(112, 46, 62, .2);
+}
+
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .button-secondary,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .catalog-reset,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .download-clear,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .download-category-chip,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .category-chip {
+  border-color: rgba(205, 112, 124, .42);
+  background: linear-gradient(145deg, rgba(82, 43, 57, .96), rgba(47, 31, 43, .98));
+  color: #fff2e9;
+}
+
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .button-secondary:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .button-secondary:focus-visible,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .catalog-reset:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .download-clear:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .download-category-chip:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .category-chip:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .category-chip:focus-visible,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .category-chip.is-selected,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .category-chip[aria-pressed="true"] {
+  border-color: rgba(239, 174, 142, .8);
+  background: linear-gradient(145deg, rgba(119, 53, 69, .98), rgba(74, 39, 52, .98));
+}
+
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .menu-toggle,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .icon-button,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .favorite-button {
+  border-color: rgba(205, 112, 124, .42);
+  background: linear-gradient(145deg, rgba(82, 43, 57, .96), rgba(47, 31, 43, .98));
+}
+
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .menu-toggle:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .icon-button:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .favorite-button:hover,
+:root[data-theme="christmas"] body:not(.cv-starfall-page) .favorite-button:focus-visible {
+  border-color: rgba(239, 174, 142, .8);
+  background: linear-gradient(145deg, rgba(119, 53, 69, .98), rgba(74, 39, 52, .98));
+}

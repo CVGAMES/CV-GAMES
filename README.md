@@ -1,6 +1,6 @@
 # CV GAMES
 
-![Logo do CV GAMES](img/onconee.png)
+![Logo do CV GAMES](img/cv-games-logo-natal.png)
 
 **CV GAMES** é um portal independente de jogos para navegador, criado e mantido por **Eduardo Valentin Carneiro**. O projeto reúne jogos originais, um catálogo de títulos de terceiros, downloads e recursos para a comunidade gamer.
 

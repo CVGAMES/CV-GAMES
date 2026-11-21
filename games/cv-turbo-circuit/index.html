@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -15,8 +15,8 @@
   <meta name="twitter:card" content="summary">
   <title>CV TURBO CIRCUIT — Corrida | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/games/cv-turbo-circuit/">
-  <link rel="icon" href="../../img/incon.png" type="image/png">
-  <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); document.documentElement.dataset.turboAccess = ['educvv dev1', 'educvv dev', 'lista'].includes(nickname) ? 'granted' : 'locked'; } catch { document.documentElement.dataset.turboAccess = 'locked'; }</script>
+  <link rel="icon" href="../../img/cv-games-favicon-natal.png" type="image/png">
+  <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas'; const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); document.documentElement.dataset.turboAccess = ['educvv dev1', 'educvv dev', 'lista'].includes(nickname) ? 'granted' : 'locked'; } catch { document.documentElement.dataset.turboAccess = 'locked'; }</script>
   <link rel="stylesheet" href="../../css/home.css">
   <link rel="stylesheet" href="../audio-controls.css">
   <link rel="stylesheet" href="game.css">
@@ -28,13 +28,15 @@
   <script src="../audio-controls.js" defer></script>
   <script src="game.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
+  <link rel="stylesheet" href="../../css/christmas-theme.css">
+  <script src="../../js/theme-toggle.js" defer></script>
 </head>
 <body class="cv-turbo-page" data-game-id="cv-turbo-circuit">
   <a class="skip-link" href="#jogo">Pular para a corrida</a>
   <header class="site-header"><div class="header-inner">
-    <a class="brand" href="../../index.html" aria-label="CV GAMES — Início"><img src="../../img/onconee.png" alt=""><span>CV GAMES</span></a>
+    <a class="brand" href="../../index.html" aria-label="CV GAMES — Início"><img src="../../img/cv-games-logo-natal.png" alt=""><span>CV GAMES</span></a>
     <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
-    <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central</a><a href="../../perfil.html">Perfil</a><button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button></nav>
+    <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central</a><a href="../../perfil.html">Perfil</a><button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar tema de Natal" title="Ativar tema de Natal">🎄</button></nav>
     <div class="header-actions"><button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV TURBO CIRCUIT aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon" aria-hidden="true">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button></div>
   </div></header>
 

@@ -70,7 +70,7 @@
     header.innerHTML = `
       <div class="header-inner">
         <a class="brand" href="index.html" aria-label="CV GAMES — Início">
-          <img src="img/onconee.png" alt="">
+          <img src="img/cv-games-logo-natal.png" alt="">
           <span>CV GAMES</span>
         </a>
         <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
@@ -81,7 +81,7 @@
           <a href="central.html" aria-label="Central Gamer">Central</a>
           <a href="index.html?favoritos=1#jogos">Favoritos</a>
           <a href="perfil.html">Perfil</a>
-          <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
+          <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar tema de Natal" title="Ativar tema de Natal">🎄</button>
         </nav>
         <div class="header-actions">
           <span class="cv-wallet-badge" title="Saldo CV Coin"><img src="img/cv-coin.png" alt=""><span><strong data-cv-coin-balance>0</strong><small>CV COIN</small></span></span>

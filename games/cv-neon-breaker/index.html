@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,7 +19,7 @@
   <meta name="twitter:image:alt" content="Capa do jogo CV NEON BREAKER">
   <title>CV NEON BREAKER — Jogo Exclusivo | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/games/cv-neon-breaker/">
-  <link rel="icon" href="../../img/incon.png" type="image/png">
+  <link rel="icon" href="../../img/cv-games-favicon-natal.png" type="image/png">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -36,7 +36,7 @@
   <script>
     try {
       const savedTheme = localStorage.getItem('cv-games-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+      if (savedTheme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas';
     } catch {
       // O tema escuro do documento continua como padrão.
     }
@@ -51,6 +51,8 @@
   <script src="../audio-controls.js" defer></script>
   <script src="game.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
+  <link rel="stylesheet" href="../../css/christmas-theme.css">
+  <script src="../../js/theme-toggle.js" defer></script>
 </head>
 <body class="cv-neon-breaker-page" data-cv-neon-breaker-state="intro">
   <a class="skip-link" href="#jogo">Pular para o jogo</a>
@@ -58,7 +60,7 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="../../index.html" aria-label="CV GAMES — Início">
-        <img src="../../img/onconee.png" alt="">
+        <img src="../../img/cv-games-logo-natal.png" alt="">
         <span>CV GAMES</span>
       </a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
@@ -68,7 +70,7 @@
         <a href="../../baixar.html">Downloads</a>
         <a href="../../central.html" aria-label="Central Gamer">Central</a>
         <a href="../../perfil.html">Perfil</a>
-        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
+        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar tema de Natal" title="Ativar tema de Natal">🎄</button>
       </nav>
       <div class="header-actions">
         <button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV NEON BREAKER aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon" aria-hidden="true">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button>

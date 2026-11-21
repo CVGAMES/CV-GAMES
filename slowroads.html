@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,9 +19,9 @@
   <meta name="twitter:image:alt" content="Capa de Slow Roads">
   <title>Slow Roads — Jogar Online | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/slowroads.html">
-  <link rel="icon" href="img/incon.png" type="image/png">
+  <link rel="icon" href="img/cv-games-favicon-natal.png" type="image/png">
   <script>
-    try { const savedTheme = localStorage.getItem('cv-games-theme'); if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme; } catch {}
+    try { const savedTheme = localStorage.getItem('cv-games-theme'); if (savedTheme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas'; } catch {}
     window.NOSW = true;
     window.GAME_CONFIG = { pokiSdkDebug: false, leaderboard: 'mockup', bundlesPath: './bundles' };
     delete Array.prototype.group;
@@ -33,6 +33,8 @@
   <script src="js/cv-wallet.js" defer></script>
   <script src="js/achievements.js" defer></script>
   <script src="js/game-page.js" defer></script>
+  <link rel="stylesheet" href="css/christmas-theme.css">
+  <script src="js/theme-toggle.js" defer></script>
 </head>
 <body class="game-page" data-game-id="slow-roads">
   <a class="skip-link" href="#jogar">Pular para o jogo</a>

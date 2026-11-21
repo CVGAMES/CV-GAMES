@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +10,20 @@
   <meta property="og:site_name" content="CV GAMES">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/novidades-2.html">
-  <meta property="og:image" content="https://cvgames.com.br/img/onconee.png">
+  <meta property="og:image" content="https://cvgames.com.br/img/cv-games-logo-natal.png">
   <meta property="og:image:alt" content="Logo do CV GAMES">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Arquivo de novidades do CV GAMES">
   <meta name="twitter:description" content="Relembre atualizações anteriores dos jogos, do catálogo e do portal CV GAMES.">
-  <meta name="twitter:image" content="https://cvgames.com.br/img/onconee.png">
+  <meta name="twitter:image" content="https://cvgames.com.br/img/cv-games-logo-natal.png">
   <title>Arquivo de novidades | CV GAMES</title>
   <link rel="canonical" href="https://cvgames.com.br/novidades-2.html">
-  <link rel="icon" href="img/incon.png" type="image/png">
+  <link rel="icon" href="img/cv-games-favicon-natal.png" type="image/png">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2670789162109248" crossorigin="anonymous"></script>
   <script>
     try {
       const savedTheme = localStorage.getItem('cv-games-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+      if (savedTheme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas';
     } catch {
       // Mantém o tema definido no HTML se o armazenamento local estiver indisponível.
     }
@@ -32,13 +32,15 @@
   <link rel="stylesheet" href="css/institutional.css">
   <script src="js/institutional.js" defer></script>
   <script src="js/cv-wallet.js" defer></script>
+  <link rel="stylesheet" href="css/christmas-theme.css">
+  <script src="js/theme-toggle.js" defer></script>
 </head>
 <body class="institutional-page updates-page">
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
   <header class="site-header" id="inicio">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="CV GAMES — Início"><img src="img/onconee.png" alt=""><span>CV GAMES</span></a>
+      <a class="brand" href="index.html" aria-label="CV GAMES — Início"><img src="img/cv-games-logo-natal.png" alt=""><span>CV GAMES</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
       <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal">
         <a href="index.html">Início</a>
@@ -47,7 +49,7 @@
         <a href="central.html" aria-label="Central Gamer">Central</a>
         <a href="index.html#categorias">Categorias</a>
         <a href="perfil.html">Perfil</a>
-        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
+        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar tema de Natal" title="Ativar tema de Natal">🎄</button>
       </nav>
       <div class="header-actions"><span class="cv-wallet-badge" title="Saldo CV Coin"><img src="img/cv-coin.png" alt=""><span><strong data-cv-coin-balance>0</strong><small>CV COIN</small></span></span>
         <a class="favorite-button" href="index.html?favoritos=1#jogos" aria-label="Ver favoritos" title="Ver favoritos"><span class="favorite-icon" aria-hidden="true">♥</span><span>Favoritos</span></a>

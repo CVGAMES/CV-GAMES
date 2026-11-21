@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,16 +10,16 @@
   <meta property="og:site_name" content="CV GAMES">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/">
-  <meta property="og:image" content="https://cvgames.com.br/img/onconee.png">
+  <meta property="og:image" content="https://cvgames.com.br/img/cv-games-logo-natal.png">
   <meta property="og:image:alt" content="Logo do CV GAMES">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="CV GAMES — Jogos Online e Downloads">
   <meta name="twitter:description" content="Jogue online, encontre jogos leves e acesse downloads no CV GAMES.">
-  <meta name="twitter:image" content="https://cvgames.com.br/img/onconee.png">
+  <meta name="twitter:image" content="https://cvgames.com.br/img/cv-games-logo-natal.png">
   <meta name="twitter:image:alt" content="Logo do CV GAMES">
   <title>CV GAMES — Jogos Online e Downloads</title>
   <link rel="canonical" href="https://cvgames.com.br/">
-  <link rel="icon" href="img/incon.png" type="image/png">
+  <link rel="icon" href="img/cv-games-favicon-natal.png" type="image/png">
   <!-- Google AdSense: conexão do site e anúncios automáticos após aprovação. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2670789162109248" crossorigin="anonymous"></script>
   <script type="application/ld+json">
@@ -35,7 +35,7 @@
   <script>
     try {
       const savedTheme = localStorage.getItem('cv-games-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+      if (savedTheme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas';
     } catch {
       // O tema escuro definido no HTML continua como padrão seguro.
     }
@@ -62,11 +62,13 @@
   <script src="js/site-dialog.js" defer></script>
   <script src="js/home.js" defer></script>
   <script src="js/brand-splash.js" defer></script>
+  <link rel="stylesheet" href="css/christmas-theme.css">
+  <script src="js/theme-toggle.js" defer></script>
 </head>
 <body>
   <div class="brand-splash" data-brand-splash role="region" aria-label="Abertura do CV GAMES">
     <div class="brand-splash-lockup">
-      <img src="img/onconee.png" alt="">
+      <img src="img/cv-games-logo-natal.png" alt="">
       <span>CV GAMES</span>
     </div>
     <button class="brand-splash-skip" type="button" data-brand-splash-skip><span aria-hidden="true">⏭</span><span>Pular abertura</span></button>
@@ -77,7 +79,7 @@
   <header class="site-header" id="inicio">
     <div class="header-inner">
       <a class="brand" href="#inicio" aria-label="CV GAMES — Início">
-        <img src="img/onconee.png" alt="">
+        <img src="img/cv-games-logo-natal.png" alt="">
         <span>CV GAMES</span>
       </a>
 
@@ -90,7 +92,7 @@
         <a href="central.html" aria-label="Central Gamer">Central</a>
         <a href="#categorias">Categorias</a>
         <a href="perfil.html">Perfil</a>
-        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
+        <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar tema de Natal" title="Ativar tema de Natal">🎄</button>
       </nav>
 
       <div class="header-actions">

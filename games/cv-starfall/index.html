@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="normal">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,11 +10,13 @@
   <meta property="og:type" content="website"><meta property="og:site_name" content="CV GAMES"><meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://cvgames.com.br/games/cv-starfall/"><meta property="og:image" content="https://cvgames.com.br/games/cv-starfall/cover.svg"><meta property="og:image:alt" content="Capa de CV STARFALL com uma nave em uma chuva de meteoros">
   <meta name="twitter:card" content="summary"><meta name="twitter:title" content="CV STARFALL — Jogo Exclusivo | CV GAMES"><meta name="twitter:description" content="Pilote, sobreviva, melhore sua nave e vença os guardiões."><meta name="twitter:image" content="https://cvgames.com.br/games/cv-starfall/cover.svg">
-  <title>CV STARFALL — Jogo Exclusivo | CV GAMES</title><link rel="canonical" href="https://cvgames.com.br/games/cv-starfall/"><link rel="icon" href="../../img/incon.png" type="image/png">
+  <title>CV STARFALL — Jogo Exclusivo | CV GAMES</title><link rel="canonical" href="https://cvgames.com.br/games/cv-starfall/"><link rel="icon" href="../../img/cv-games-favicon-natal.png" type="image/png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"CV STARFALL","url":"https://cvgames.com.br/games/cv-starfall/","image":"https://cvgames.com.br/games/cv-starfall/cover.svg","description":"Arcade espacial de sobrevivência com ondas, melhorias e chefes.","genre":"Arcade, Ação","gamePlatform":"Navegador","inLanguage":"pt-BR"}</script>
-  <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch { /* Mantém o tema escuro. */ }</script>
+  <script>try { const theme = localStorage.getItem('cv-games-theme'); if (theme === 'christmas' && (() => { try { const profile = JSON.parse(localStorage.getItem('cv-games-profile') || 'null'); const nickname = String(profile?.nickname || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR'); return nickname === 'educvv dev' || nickname === 'educvv dev1'; } catch { return false; } })()) document.documentElement.dataset.theme = 'christmas'; } catch { /* Mantém o tema escuro. */ }</script>
   <link rel="stylesheet" href="../../css/home.css"><link rel="stylesheet" href="game.css"><link rel="stylesheet" href="../audio-controls.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="../../js/supabase-config.js" defer></script><script src="../../js/account-auth.js" defer></script><script src="../../data/jogos.js" defer></script><script src="../../js/profile-store.js" defer></script><script src="../../js/cv-wallet.js" defer></script><script src="../../js/stats.js" defer></script><script src="../../js/achievements.js" defer></script><script src="../fullscreen.js" defer></script><script src="../audio-controls.js" defer></script><script src="leaderboard-config.js" defer></script><script src="game.js" defer></script>
   <script src="../../js/cv-input-capabilities.js"></script>
+  <link rel="stylesheet" href="../../css/christmas-theme.css">
+  <script src="../../js/theme-toggle.js" defer></script>
 </head>
 <body class="cv-starfall-page">
   <a class="skip-link" href="#jogo">Pular para o jogo</a>
@@ -27,9 +29,9 @@
     </div>
   </dialog>
   <header class="site-header"><div class="header-inner">
-    <a class="brand" href="../../index.html" aria-label="CV GAMES — Início"><img src="../../img/onconee.png" alt=""><span>CV GAMES</span></a>
+    <a class="brand" href="../../index.html" aria-label="CV GAMES — Início"><img src="../../img/cv-games-logo-natal.png" alt=""><span>CV GAMES</span></a>
     <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">☰</button>
-    <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central</a><a href="../../perfil.html">Perfil</a><button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button></nav>
+    <nav class="primary-nav" id="menu-principal" data-primary-nav aria-label="Navegação principal"><a href="../../index.html">Início</a><a href="../../index.html#jogos">Jogos</a><a href="../../baixar.html">Downloads</a><a href="../../central.html">Central</a><a href="../../perfil.html">Perfil</a><button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar tema de Natal" title="Ativar tema de Natal">🎄</button></nav>
     <div class="header-actions"><span class="cv-wallet-badge" title="Saldo CV Coin"><img src="../../img/cv-coin.png" alt=""><span><strong data-cv-coin-balance>0</strong><small>CV COIN</small></span></span><button class="favorite-button" type="button" data-game-favorite aria-pressed="false" aria-label="Adicionar CV STARFALL aos favoritos" title="Adicionar aos favoritos"><span class="favorite-icon" aria-hidden="true">♡</span><span class="favorite-count" data-favorite-count>0</span><span data-favorite-label>Favoritar</span></button></div>
   </div></header>
   <main class="starfall-main"><div class="container">
