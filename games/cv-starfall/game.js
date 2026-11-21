@@ -58,7 +58,7 @@
   flameStormDashFrames[0].src = new URL('flamestorm-e-frame-1.png', document.baseURI).href;
   flameStormDashFrames[1].src = new URL('flamestorm-e-frame-2.png', document.baseURI).href;
   const tigrumRaptorSprite = new Image();
-  tigrumRaptorSprite.src = new URL('saurion-raptor-skill.png', document.baseURI).href;
+  tigrumRaptorSprite.src = new URL('tigrum-q-roar.png', document.baseURI).href;
   const saurionShipFrames = Array.from({ length: 6 }, (_, index) => {
     const frame = new Image();
     frame.src = new URL('saurion-frame-' + (index + 1) + '.png', document.baseURI).href;
@@ -122,14 +122,14 @@
     { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 22, cooldownQ: 24, shape: 'blade', unlockWave: 40, description: 'E lança uma lâmina veloz que persegue alvos, ricocheteia e causa dano aumentado. Q acelera a nave em 2,6× e deixa rastros cortantes por até nove segundos.' },
     { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, cooldownQ: 28, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'E reflete projéteis. Q cria um Perímetro de Cerco móvel por 6 segundos; inimigos que cruzam os feixes recebem dano.' },
     { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Santuário Malevolente com cortes por 10 segundos. Q: Paradoxo Absoluto distorce o espaço, desacelera e interrompe inimigos próximos; ao colapsar, sentencia os alvos conforme o tempo que ficaram presos.' },
-    { id: 'saurion', name: 'Tigrum', color: '#f28a28', accent: '#ffd18a', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q causa dano extra aos alvos marcados.' },
+    { id: 'saurion', name: 'Tigrum', color: '#f28a28', accent: '#ffd18a', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q dispara três investidas de energia com forma de tigre; melhorias acrescentam investidas e reduzem a recarga de 32s até 24s.' },
     { id: 'saurion-primal', name: 'Saurion', color: '#55df35', accent: '#c6ff6b', ability: 'Chamado Primal', abilityShort: 'CHAMADO', cooldown: 40, cooldownQ: 40, shape: 'saurion-primal', secret: true, profileRestricted: true, allowedProfiles: ['educvv dev1', 'educvv dev', 'yago k'], description: 'Nave especial verde. E e Q abrem um seletor temporário para escolher um dos oito dinossauros aliados; somente uma criatura pode permanecer em campo por vez. Recarga independente de 40 segundos.' },
     { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' },
     { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 12, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz até 70% do dano. Cinco impactos do mesmo tipo concedem resistência a essa categoria por cinco ondas; cada tipo se adapta separadamente até 55%. Repetir um tipo já adaptado fortalece temporariamente o dano.' },
     { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 20, cooldownQ: 45, shape: 'megumi', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'felype j'], description: 'Nave secreta. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação; a recarga do E cai de 20 para 15 segundos com cinco melhorias. Q invoca o Guardião com a cutscene; a forma Mahoraga dura cinco ondas completas e, ao terminar, entra em recarga de 45 segundos.' },
     { id: 'flamestorm', name: 'Flame Storm', color: '#ff302e', accent: '#ffd0cb', ability: 'Propulsão Infernal', abilityShort: 'PROPULSÃO', cooldown: 18, cooldownQ: 24, shape: 'flamestorm', secret: true, profileRestricted: true, allowedProfiles: ['storm', 'educvv dev', 'educvv dev1'], description: 'Nave especial. E: avança por 5 segundos com impulso flamejante e fica intangível, rebate nas paredes e aceita correções de direção; os dois quadros de fogo ocupam o lugar da nave e o rastro fere inimigos. A recarga do E cai de 18 para 15 segundos com três Condensadores. Q: cria um vórtice carmesim por 5 segundos, puxa inimigos e absorve tiros próximos após atraí-los; a nave fica invulnerável durante o vórtice e por 0,7s após ele terminar.' }
   ];
-  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Estouro da Manada', 'saurion-primal':'Arsenal Jurássico', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim' });
+  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Investida do Tigre', 'saurion-primal':'Arsenal Jurássico', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim' });
   const megumiTechniques = Object.freeze({
     rabbits:{ id:'rabbits', name:'Fuga dos Coelhos', short:'COELHOS', icon:'🐇', description:'Cinco shikigami-armadilha se espalham, atiram e atraem inimigos.' },
     shadow:{ id:'shadow', name:'Ocultação nas Sombras', short:'SOMBRA', icon:'◑', description:'Fica invisível, dispara projéteis sombrios, atravessa as bordas e recolhe recursos.' },
@@ -144,7 +144,7 @@
     flashblade: { e:'O Corte Flash persegue alvos e ricocheteia. Dano e tempo ativo foram ajustados para limitar acertos repetidos; recarga de 22 segundos.', q:'A nave acelera em 2,6× por 6 segundos e deixa barreiras de luz no trajeto. Cada rastro dura até 9s, fere e desvia inimigos e destrói tiros que o atingem; melhorias reforçam o dano.' },
     redshift: { e:'O Escudo de Retorno reflete projéteis que atingem a nave durante a proteção. Melhorias aumentam duração e dano e reduzem a recarga.', q:'O Perímetro de Cerco acompanha a nave com feixes cortantes. Inimigos que cruzam as linhas recebem dano. Melhorias ampliam a duração de 6s para 8s e podem reduzir a recarga de 28s para 22s.' },
     eclipse: { e:'A Expansão de Domínio inicia com uma abertura cinematográfica e transforma a arena em um santuário. Os cortes cobrem a área por 10 segundos; a nave fica invulnerável durante o efeito e por alguns segundos ao final. Se for ativado durante o Paradoxo, os cortes são reforçados por 3 segundos nos inimigos atingidos pelo Q: +15% contra inimigos comuns e +8% contra chefes. O Q continua ativo normalmente.', q:'Paradoxo Absoluto abre uma distorção espacial que cobre a arena inteira. Inimigos em toda a tela ficam cada vez mais lentos e sofrem pulsos que interrompem movimento e ataques por breves instantes. Quando o campo colapsa, todos os alvos marcados recebem uma Sentença: o dano aumenta conforme o tempo que cada um permaneceu na distorção. Se usar E antes do fim, o Santuário fortalece os cortes por 3 segundos nos alvos atingidos pelo Q sem encerrar o campo; ele continua e aplica a Sentença no fim normal. Melhorias ampliam ainda mais o alcance e a duração, reforçam a supressão e o golpe final, ou reduzem a recarga.' },
-    saurion: { e:'O Rugido de Garras tem duas cargas. Atinge uma área maior, atordoa por mais tempo e marca os inimigos; garras mais fortes atingem com maior frequência.', q:'Invoca raptores em até três cargas. Eles perseguem os inimigos, priorizam alvos marcados e causam dano extra. Melhorias fortalecem as investidas e reduzem a recarga de cada carga.' },
+    saurion: { e:'O Rugido de Garras tem duas cargas. Atinge uma área maior, atordoa por mais tempo e marca os inimigos; garras mais fortes atingem com maior frequência.', q:'Dispara três investidas de energia com forma de tigre. Elas perseguem inimigos, priorizam alvos marcados e causam dano extra. Melhorias acrescentam duas investidas e reduzem o intervalo de cada carga de 32s até 24s.' },
     prisma: { e:'O Núcleo Prisma concentra luz diante da nave e libera uma onda de impacto. Inimigos próximos recebem dano e são afastados; chefes resistem parcialmente ao empurrão. Melhorias ampliam o raio, o dano e reduzem a recarga. Você também pode escolher outra habilidade no Arquivo de Ecos.', q:'A Dobra de Horizonte grava a posição da nave por 4 segundos. Ative novamente para retornar ao ponto marcado, ganhar proteção breve e liberar uma onda de chegada que causa dano e desorganiza inimigos próximos. Melhorias ampliam a janela até 6 segundos e fortalecem a onda. O espaço Q também pode receber outra habilidade escolhida.' },
     mahoraga: { e:'Adaptação Divina · escudo de 3s que reduz até 70% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais adaptam a nave contra aquele tipo por cinco ondas; cada categoria se adapta separadamente e evolui até 55%. Repetir uma adaptação concede dano extra temporário. Recarga de 14s.', q:'Espada da Exterminação · envia um talho curvo que atravessa a arena em uma faixa, destrói os tiros que cruza e atinge até oito inimigos. Causa 20 de dano no primeiro alvo e 10 nos seguintes, com dano reduzido contra chefes; as marcas ampliam em 10% o próximo golpe. Recarga de 12s.' },
     megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica. Recarga de 20 segundos, reduzida até 15 segundos com cinco melhorias.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga dura cinco ondas completas e concede uma vida extra. Ao retornar à Umbra, inicia uma recarga de 45 segundos antes de poder invocar novamente.' },
@@ -289,12 +289,15 @@
     if (shipId === 'mahoraga') return state.mahoragaSlashCooldownBonus < 5;
     if (shipId === 'prisma') return state.prismCooldownBonus < 5;
     if (shipId === 'megumi' || shipId === 'flamestorm') return true;
+    if (shipId === 'saurion') return upgradeLevel('cooldown') < 4;
     const minimum = shipId === 'eclipse' ? 25 : shipId === 'aegis' ? 27 : 22;
     return state.abilityBaseCooldown > minimum + .001 || state.abilityCooldown > .001;
   }
   const upgradeDescriptionForShip = (upgrade) => upgrade.id === 'cooldown' && currentSkin().id === 'flamestorm'
     ? 'Reduz a recarga do E de 18s até 15s e a do Q de 24s até 18s com cinco Condensadores; também corta 4s da recarga atual.'
-    : upgrade.description;
+    : upgrade.id === 'cooldown' && currentSkin().id === 'saurion'
+      ? 'Reduz a recarga do E em 1s por nível, de 16s até 12s. A recarga do Q é reduzida separadamente pelo Instinto Predador.'
+      : upgrade.description;
   function enemyUpgradeLevel() {
     const investedLevels = Object.values(state.upgrades).reduce((total, level) => total + level, 0);
     return Math.min(12, Math.floor(investedLevels / 5));
@@ -321,7 +324,7 @@
     { id:'critical', icon:'✧', name:'Mira de precisão', description:'Aumenta a chance de causar dano crítico, até 32%.', max:4, available:()=>state.critChance<.32, apply:()=>{state.critChance=Math.min(.32,state.critChance+.08);} },
     { id:'drone', icon:'◈', name:'Drone auxiliar', description:'Um satélite ataca inimigos próximos e pode se sacrificar para salvar a nave.', max:3, available:()=>state.drones<3, apply:()=>{state.drones+=1;} },
     { id:'magnet', icon:'⌖', name:'Ímã gravitacional', description:'Atrai recursos de mais longe.', max:5, available:()=>upgradeLevel('magnet')<5, apply:()=>{state.magnet=Math.min(315,state.magnet+42);} },
-    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:cooldownUpgradeCanHelp, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else if(currentSkin().id==='megumi')state.abilityBaseCooldown=megumiTechniqueCooldownDuration(1);else if(currentSkin().id==='flamestorm')state.abilityBaseCooldown=Math.max(15,state.abilityBaseCooldown-1);else{const minimum=currentSkin().id==='eclipse'?25:currentSkin().id==='aegis'?27:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);}state.abilityCooldown=Math.max(0,state.abilityCooldown-4);} },
+    { id:'cooldown', icon:'◷', name:'Condensador', description:'Reduz a recarga da habilidade especial.', max:5, available:cooldownUpgradeCanHelp, apply:()=>{if(currentSkin().id==='mahoraga')state.mahoragaSlashCooldownBonus=Math.min(5,state.mahoragaSlashCooldownBonus+1);else if(currentSkin().id==='prisma')state.prismCooldownBonus=Math.min(5,state.prismCooldownBonus+1);else if(currentSkin().id==='megumi')state.abilityBaseCooldown=megumiTechniqueCooldownDuration(1);else if(currentSkin().id==='flamestorm')state.abilityBaseCooldown=Math.max(15,state.abilityBaseCooldown-1);else if(currentSkin().id==='saurion'){state.dinoRoarRecharge=Math.max(0,state.dinoRoarRecharge-1);}else{const minimum=currentSkin().id==='eclipse'?25:currentSkin().id==='aegis'?27:22;state.abilityBaseCooldown=Math.max(minimum,state.abilityBaseCooldown*.9);}if(currentSkin().id!=='saurion')state.abilityCooldown=Math.max(0,state.abilityCooldown-4);} },
     { id:'power', icon:'✴', name:'Amplificador de núcleo', description:'Fortalece a habilidade especial.', max:4, available:()=>currentSkin().id!=='training'&&upgradeLevel('power')<4, apply:()=>{state.abilityPower=Math.min(2,state.abilityPower+.2);} },
     { id:'armor', icon:'⬟', name:'Blindagem reativa', description:'Chance de anular um impacto recebido.', max:4, available:()=>state.armorChance<.32, apply:()=>{state.armorChance=Math.min(.32,state.armorChance+.08);} },
     { id:'regen', icon:'✚', name:'Nanorreparadores', description:'Recupera uma vida periodicamente.', max:3, available:()=>state.regenLevel<3, apply:()=>{state.regenLevel+=1;} },
@@ -368,9 +371,9 @@
     ,{ id:'eclipseParadoxCooldown', icon:'⟳', name:'Paradoxo Acelerado', description:'Reduz a recarga do Q em 2 segundos por nível, de 26 até 18 segundos.', max:4, available:()=>currentSkin().id==='eclipse'&&upgradeLevel('eclipseParadoxCooldown')<4, apply:()=>{state.eclipseParadoxCooldownBonus=Math.min(4,state.eclipseParadoxCooldownBonus+1);state.eclipseParadoxCooldown=Math.max(0,state.eclipseParadoxCooldown-2);} }
     ,{ id:'flameStormDashCore', icon:'🔥', name:'Combustão Vetorial', description:'Aumenta em 0,4 o dano do rastro do E por nível, até três níveis.', max:3, available:()=>currentSkin().id==='flamestorm'&&upgradeLevel('flameStormDashCore')<3, apply:()=>{} }
     ,{ id:'flameStormVortexCore', icon:'🌀', name:'Núcleo Carmesim', description:'Amplia o raio do Q em 12 unidades e aumenta levemente seu dano, até três níveis.', max:3, available:()=>currentSkin().id==='flamestorm'&&upgradeLevel('flameStormVortexCore')<3, apply:()=>{} }
-    ,{ id:'dinoFangs', icon:'〰', name:'Ressonância jurássica', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=5;state.dinoRoarRangeBonus+=24;} }
-    ,{ id:'dinoStampede', icon:'🐾', name:'Manada ancestral', description:'Adiciona um raptor ao Estouro da Manada e fortalece a investida.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=1.25;} }
-    ,{ id:'dinoResonance', icon:'◷', name:'Ressonância fóssil', description:'Reduz em 2 segundos o intervalo de recarga entre as cargas de Q, até 24 segundos.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoResonance')<4, apply:()=>{state.dinoStampedeRecharge=Math.max(0,state.dinoStampedeRecharge-2);} }
+    ,{ id:'dinoFangs', icon:'〰', name:'Garras do Predador', description:'Aumenta o dano das garras e o alcance do Rugido de Garras.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoFangs')<4, apply:()=>{state.dinoRoarBonus+=5;state.dinoRoarRangeBonus+=24;} }
+    ,{ id:'dinoStampede', icon:'🐅', name:'Investida da Matilha', description:'Adiciona uma investida de tigre ao Q e fortalece o dano.', max:2, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoStampede')<2, apply:()=>{state.dinoStampedeExtra+=1;state.dinoStampedeDamageBonus+=1.25;} }
+    ,{ id:'dinoResonance', icon:'◷', name:'Instinto Predador', description:'Reduz em 2s a recarga de cada carga do Q, de 32s até 24s. Nunca aumenta uma recarga que já está contando.', max:4, available:()=>currentSkin().id==='saurion'&&upgradeLevel('dinoResonance')<4, apply:()=>{const nextDuration=Math.max(24,32-(upgradeLevel('dinoResonance')+1)*2);if(state.dinoStampedeRecharge>0)state.dinoStampedeRecharge=Math.min(state.dinoStampedeRecharge,nextDuration);} }
     ,{ id:'prismCoreRange', icon:'◎', name:'Prisma de longo alcance', description:'Amplia o raio do Núcleo Prisma em 35 unidades por nível.', max:3, available:()=>currentSkin().id==='prisma'&&state.prismCoreRangeBonus<105, apply:()=>{state.prismCoreRangeBonus=Math.min(105,state.prismCoreRangeBonus+35);} }
     ,{ id:'prismCoreDamage', icon:'✧', name:'Refração concentrada', description:'Aumenta em 2 o dano do Núcleo Prisma por nível.', max:4, available:()=>currentSkin().id==='prisma'&&state.prismCoreDamageBonus<8, apply:()=>{state.prismCoreDamageBonus=Math.min(8,state.prismCoreDamageBonus+2);} }
     ,{ id:'prismHorizonWindow', icon:'⌖', name:'Âncora ampliada', description:'Estende a janela para retornar pela Dobra de Horizonte em 1 segundo, até 6 segundos.', max:2, available:()=>currentSkin().id==='prisma'&&state.prismHorizonWindowBonus<2, apply:()=>{state.prismHorizonWindowBonus=Math.min(2,state.prismHorizonWindowBonus+1);} }
@@ -1472,7 +1475,7 @@
     const equippedIcon = skin.shape === 'eclipse'
       ? '<span class="starfall-equipped-icon starfall-eclipse-sprite" aria-hidden="true"></span>'
       : skin.shape === 'saurion-primal' ? '<span class="starfall-equipped-icon starfall-saurion-icon" aria-hidden="true"><img src="saurion-frame-1.png" alt=""></span>'
-      : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon starfall-dino-image-wrap" aria-hidden="true"><img src="saurion-raptor-skill.png" alt=""></span>'
+      : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon starfall-dino-image-wrap starfall-tigrum-icon" aria-hidden="true"><img src="tigrum-q-roar.png" alt=""></span>'
       : skin.shape === 'prism' ? '<span class="starfall-equipped-icon starfall-prism-icon" aria-hidden="true">◇</span>'
       : skin.shape === 'megumi' ? '<span class="starfall-equipped-icon starfall-umbra-icon" aria-hidden="true"><img src="umbra-ship.png" alt=""></span>'
       : skin.shape === 'flamestorm' ? '<span class="starfall-equipped-icon starfall-flamestorm-icon" aria-hidden="true"><img src="flamestorm-icon.png" alt=""></span>'
@@ -1876,7 +1879,7 @@
       ui.eclipseQWrap.hidden = !showQ;
       ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || (isPrimalSaurion && Boolean(state.saurionSummon)) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
       if (isFlameStorm) ui.eclipseQ.textContent = flameStormVortexIcon;
-      else ui.eclipseQ.textContent = isPrimalSaurion ? '🦖' : isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
+      else ui.eclipseQ.textContent = isSaurion ? '' : isPrimalSaurion ? '🦖' : isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
       ui.eclipseQ.classList.toggle('is-aurora', isAurora);
       ui.eclipseQ.classList.toggle('is-aegis', isAegis);
       ui.eclipseQ.classList.toggle('is-chronos', isChronos);
@@ -1903,13 +1906,15 @@
         : qActive && isRedshift ? 'Perímetro de Cerco ativo por mais ' + Math.ceil(state.redshiftPerimeter.life) + ' segundos'
           : qActive && isFlashblade ? 'Rastro de Ruptura ativo por mais ' + Math.ceil(state.flashTrail.life) + ' segundos'
         : qActive && isTempest ? 'Maré Reversa ativa · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas'
+        : qActive && isSaurion ? 'Investida do Tigre ativa · ' + dinoCharges + '/3 cargas restantes'
                : qActive && isFlameStorm ? 'Vórtice Carmesim ativo por mais ' + Math.ceil(state.effects.find((effect) => effect.type === 'flamestorm-vortex')?.life || 0) + ' segundos · invulnerável · atrai inimigos, absorve tiros e interrompe disparos de chefes no campo'
-               : !qReady ? isMahoraga ? 'Espada da Exterminação recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Paradoxo Absoluto recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando todas as cargas: ' + Math.ceil(qCooldown) + ' segundos' : isFlameStorm ? 'Vórtice Carmesim recarregando: ' + Math.ceil(qCooldown) + ' segundos' : 'Estouro da Manada sem cargas; próxima em ' + Math.ceil(qCooldown) + ' segundos'
+               : !qReady ? isMahoraga ? 'Espada da Exterminação recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAurora ? 'Elo Estelar recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isAegis ? 'Órbitas Sentinelas recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isEclipse ? 'Paradoxo Absoluto recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isChronos ? 'Eco do Futuro recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isRedshift ? 'Perímetro de Cerco recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isFlashblade ? 'Rastro de Ruptura recarregando: ' + Math.ceil(qCooldown) + ' segundos' : isTempest ? 'Maré Reversa recarregando todas as cargas: ' + Math.ceil(qCooldown) + ' segundos' : isFlameStorm ? 'Vórtice Carmesim recarregando: ' + Math.ceil(qCooldown) + ' segundos' : 'Investida do Tigre recarregando; próxima carga em ' + Math.ceil(qCooldown) + ' segundos'
                 : isFlameStorm ? 'Ativar Vórtice Carmesim · tecla Q · campo por 5s, absorve tiros puxados e impede chefes dentro da área de disparar; mantém a nave intangível por 0,7s após o fim'
                 : isMahoraga ? 'Espada da Exterminação · tecla Q · talho mundial em onda atravessa a arena, destrói tiros e atinge até oito alvos; 20 de dano no primeiro, 10 nos seguintes e dano reduzido contra chefes'
-                   : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Paradoxo Absoluto · tecla Q · distorção por toda a tela durante ' + paradoxDuration + 's; desacelera, interrompe ataques e sentencia os alvos no colapso · recarga ' + paradoxCooldown + 's' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
+                   : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Paradoxo Absoluto · tecla Q · distorção por toda a tela durante ' + paradoxDuration + 's; desacelera, interrompe ataques e sentencia os alvos no colapso · recarga ' + paradoxCooldown + 's' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Investida do Tigre · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
-      ui.eclipseQ.title = isPrimalSaurion ? 'Arsenal Jurássico · Q · permite escolher um dos oito dinossauros; só uma criatura ativa por vez · recarga 40s'
+      ui.eclipseQ.title = isSaurion ? 'Investida do Tigre · Q · três cargas; projéteis de energia em forma de tigre perseguem e atingem inimigos · recarga de ' + dinoStampedeCooldownDuration() + 's por carga'
+        : isPrimalSaurion ? 'Arsenal Jurássico · Q · permite escolher um dos oito dinossauros; só uma criatura ativa por vez · recarga 40s'
         : isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por cinco ondas com uma vida extra · recarga de 45s depois que termina'
         : isFlameStorm ? 'Vórtice Carmesim · Q · invulnerabilidade, atração, absorção de tiros e supressão de chefes por 5s · recarga de ' + flameStormVortexCooldownDuration() + 's'
         : isMahoraga ? 'Espada da Exterminação · Q · onda de corte atravessa a tela e destrói tiros no trajeto · até oito alvos, 20 de dano no primeiro e 10 nos seguintes; chefes recebem 72% do dano · marca aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
@@ -1920,7 +1925,7 @@
         : isRedshift ? 'Perímetro de Cerco · Q · ' + perimeterDuration + 's · dano ' + (4 + state.redshiftPerimeterDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + perimeterCooldown + 's'
           : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,6× · rastros até 9s · dano ' + (3 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
              : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(280 + state.tempestTideRadiusBonus)) + ' · dano ' + (3.2 + state.tempestTideDamageBonus).toFixed(1).replace('.', ',') + ' · 40% de chance de desviar tiros e redirecionar alguns contra inimigos · recarrega todas em ' + tempestTideCooldown + 's após esgotar'
-              : 'Estouro da Manada · 3 cargas · Q · recarga de ' + Math.max(24, skin.cooldownQ - upgradeLevel('dinoResonance') * 2) + 's por carga';
+                : 'Investida do Tigre · 3 cargas · Q · recarga de ' + dinoStampedeCooldownDuration() + 's por carga';
       const qActiveRemaining = isPrimalSaurion ? state.saurionSummon?.life || 0 : isAurora ? state.auroraLink?.life || 0
         : isAegis ? state.aegisOrbit?.life || 0
           : isEclipse ? state.eclipseParadox?.life || 0
@@ -2127,7 +2132,7 @@
       icon.setAttribute('aria-hidden', 'true');
       if (concealed) icon.textContent = '?';
       else if (skin.shape === 'saurion-primal') { const image = document.createElement('img'); image.src = 'saurion-frame-1.png'; image.alt = ''; icon.append(image); }
-      else if (skin.shape === 'dino') { const image = document.createElement('img'); image.src = 'saurion-raptor-skill.png'; image.alt = ''; icon.append(image); }
+      else if (skin.shape === 'dino') { icon.classList.add('starfall-tigrum-icon'); const image = document.createElement('img'); image.src = 'tigrum-q-roar.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'megumi') { const image = document.createElement('img'); image.src = 'umbra-ship.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'flamestorm') { icon.classList.add('starfall-flamestorm-icon'); const image = document.createElement('img'); image.src = 'flamestorm-icon.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'mahoraga') icon.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 22L31 26L38 30L34 35L30 33L29 40L26 39L24 47L22 39L19 40L18 33L14 35L10 30L17 26Z" fill="#c9d0cf" stroke="#39434c" stroke-width="1.8" stroke-linejoin="round"/><circle cx="24" cy="12" r="9.5" fill="#29333d" stroke="#e4c477" stroke-width="1.8"/><circle cx="24" cy="12" r="6.2" fill="none" stroke="#eee7d8" stroke-width="1"/><path d="M24 4V20M16 12H32M18.4 6.4L29.6 17.6M29.6 6.4L18.4 17.6" fill="none" stroke="#f2ebdc" stroke-width="1.3" stroke-linecap="round"/><g fill="#e4c477" stroke="#f7efdc" stroke-width=".7"><circle cx="24" cy="1.5" r="1.7"/><circle cx="31.4" cy="4.6" r="1.7"/><circle cx="34.5" cy="12" r="1.7"/><circle cx="31.4" cy="19.4" r="1.7"/><circle cx="24" cy="22.5" r="1.7"/><circle cx="16.6" cy="19.4" r="1.7"/><circle cx="13.5" cy="12" r="1.7"/><circle cx="16.6" cy="4.6" r="1.7"/></g></svg>';
@@ -3633,7 +3638,8 @@
       return choice.shipId === 'saurion' && choice.key === 'q';
     })
       ? skins.find((skin) => skin.id === 'saurion') : currentSkin();
-    return Math.max(24, source.cooldownQ - upgradeLevel('dinoResonance') * 2);
+    const configuredBase = Number.isFinite(source?.cooldownQ) ? source.cooldownQ : 32;
+    return Math.max(24, configuredBase - upgradeLevel('dinoResonance') * 2);
   }
   function advanceDinoStampedeRecharge(seconds) {
     if (hasDeveloperPerks()) { state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; return; }
@@ -3717,7 +3723,7 @@
     }
     burst(state.player.x, state.player.y, '#f28a28', 30, 160);
     burst(state.player.x, state.player.y, '#ffe3a0', 9, 100);
-    toast('ESTOURO DA MANADA · ' + count + ' RAPTORES · ' + (developerProfile ? '∞' : state.dinoStampedeCharges + '/3') + ' CARGAS');
+    toast('INVESTIDA DO TIGRE · ' + count + ' INVESTIDAS · ' + (developerProfile ? '∞' : state.dinoStampedeCharges + '/3') + ' CARGAS');
     tone(125, .28, 'sawtooth', .045);
     updateAbilityButton();
   }
@@ -4657,6 +4663,7 @@
     }
   }
   function dinoRoarCooldownDuration() {
+    if (currentSkin().id === 'saurion') return Math.max(12, 16 - Math.min(4, upgradeLevel('cooldown')));
     return Math.max(12, Math.round((state.abilityBaseCooldown || currentSkin().cooldown || 28) * .58));
   }
   function advanceDinoRoarRecharge(dt) {
@@ -6819,14 +6826,15 @@
           const spriteWidth = spriteHeight * tigrumRaptorSprite.naturalWidth / tigrumRaptorSprite.naturalHeight;
           const pulse = 1 + Math.sin(timestamp / 72 + effect.y * .02) * .035;
           ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.globalAlpha = fade * .96;
-          ctx.filter = 'hue-rotate(-90deg) saturate(1.25)';
+          ctx.filter = 'none';
           ctx.shadowColor = '#ff8a28'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
           ctx.beginPath(); ctx.ellipse(0, 0, spriteWidth * .49, spriteHeight * .48, 0, 0, Math.PI * 2); ctx.clip();
           ctx.drawImage(tigrumRaptorSprite, -spriteWidth * pulse / 2, -spriteHeight * pulse / 2, spriteWidth * pulse, spriteHeight * pulse);
           ctx.restore();
         } else {
-          const jawOpen = .28 + Math.sin(timestamp / 75 + effect.y) * .2;
-          drawDinoHead(effect.x, effect.y, effect.size, effect.angle, jawOpen, timestamp, fade * .96, { color: '#f28a28', accent: '#ffd18a' });
+          ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.globalAlpha = fade * .96;
+          ctx.font = '900 ' + mobileSize(effect.size * 1.65) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.shadowColor = '#ff8a28'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12); ctx.fillText('🐅', 0, 0); ctx.restore();
         }
       } else if (effect.type === 'eclipse-intro') {
         const progress = 1 - alpha; const maxRadius = Math.hypot(state.width, state.height) * .62;
@@ -7328,7 +7336,7 @@
     if (skin.shape === 'dino') {
       const image = document.createElement('img');
       image.className = 'starfall-rank-ship-model starfall-rank-ship-image starfall-rank-tigrum-image';
-      image.src = 'saurion-raptor-skill.png'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
+      image.src = 'tigrum-q-roar.png'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
       return image;
     }
     const svg = makeRankSvgElement('svg', { class:'starfall-rank-ship-model', viewBox:'0 0 100 110', 'aria-hidden':'true' });
@@ -7568,7 +7576,7 @@
     const isPrisma = currentSkin().id === 'prisma';
     const isTraining = currentSkin().id === 'training';
     const isMegumi = currentSkin().id === 'megumi';
-    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isAurora ? 'E Explosão Nova · Q Elo Estelar' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Estouro da Manada' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
+    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isAurora ? 'E Explosão Nova · Q Elo Estelar' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Investida do Tigre' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
     const moveInstruction = state.controlMode === 'keys' ? 'WASD/setas' : state.controlMode === 'touch' ? 'toque e arraste' : 'analógico virtual';
     if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos.';
   }
