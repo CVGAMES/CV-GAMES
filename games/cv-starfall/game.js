@@ -123,7 +123,7 @@
     { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, cooldownQ: 28, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'E reflete projéteis. Q cria um Perímetro de Cerco móvel por 6 segundos; inimigos que cruzam os feixes recebem dano.' },
     { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Santuário Malevolente com cortes por 10 segundos. Q: Paradoxo Absoluto distorce o espaço, desacelera e interrompe inimigos próximos; ao colapsar, sentencia os alvos conforme o tempo que ficaram presos.' },
     { id: 'saurion', name: 'Tigrum', color: '#f28a28', accent: '#ffd18a', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q dispara três investidas de energia com forma de tigre; melhorias acrescentam investidas e reduzem a recarga de 32s até 24s.' },
-    { id: 'saurion-primal', name: 'Saurion', color: '#55df35', accent: '#c6ff6b', ability: 'Chamado Primal', abilityShort: 'CHAMADO', cooldown: 40, cooldownQ: 40, shape: 'saurion-primal', secret: true, profileRestricted: true, allowedProfiles: ['educvv dev1', 'educvv dev', 'yago k'], description: 'Nave especial verde. E e Q abrem um seletor temporário para escolher um dos oito dinossauros aliados; somente uma criatura pode permanecer em campo por vez. Recarga independente de 40 segundos.' },
+    { id: 'saurion-primal', name: 'Saurion', color: '#55df35', accent: '#c6ff6b', ability: 'Chamado Primal', abilityShort: 'CHAMADO', cooldown: 40, cooldownQ: 40, shape: 'saurion-primal', secret: true, profileRestricted: true, allowedProfiles: ['educvv dev1', 'educvv dev', 'yago k'], description: 'Nave especial verde. E e Q invocam dinossauros diferentes do arsenal; cada habilidade tem sua própria recarga de 40 segundos e as duas criaturas podem ficar em campo ao mesmo tempo.' },
     { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' },
     { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 12, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz até 70% do dano. Cinco impactos do mesmo tipo concedem resistência a essa categoria por cinco ondas; cada tipo se adapta separadamente até 55%. Repetir um tipo já adaptado fortalece temporariamente o dano.' },
     { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 20, cooldownQ: 45, shape: 'megumi', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'felype j'], description: 'Nave secreta. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação; a recarga do E cai de 20 para 15 segundos com cinco melhorias. Q invoca o Guardião com a cutscene; a forma Mahoraga dura cinco ondas completas e, ao terminar, entra em recarga de 45 segundos.' },
@@ -149,7 +149,7 @@
     mahoraga: { e:'Adaptação Divina · escudo de 3s que reduz até 70% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais adaptam a nave contra aquele tipo por cinco ondas; cada categoria se adapta separadamente e evolui até 55%. Repetir uma adaptação concede dano extra temporário. Recarga de 14s.', q:'Espada da Exterminação · envia um talho curvo que atravessa a arena em uma faixa, destrói os tiros que cruza e atinge até oito inimigos. Causa 20 de dano no primeiro alvo e 10 nos seguintes, com dano reduzido contra chefes; as marcas ampliam em 10% o próximo golpe. Recarga de 12s.' },
     megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica. Recarga de 20 segundos, reduzida até 15 segundos com cinco melhorias.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga dura cinco ondas completas e concede uma vida extra. Ao retornar à Umbra, inicia uma recarga de 45 segundos antes de poder invocar novamente.' },
     flamestorm: { e:'Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochetes e controle de direção. O tempo de intangibilidade permanece inalterado. Recarga de 18s, reduzida até 15s.', q:'Vórtice Carmesim · dura 5 segundos, puxa inimigos e absorve tiros próximos após 0,52s. A nave mantém os 5,7 segundos de invulnerabilidade já existentes. O Núcleo Carmesim amplia levemente raio e dano. Recarga de 24s, reduzida até 18s.' },
-    'saurion-primal': { e:'Chamado Primal · durante os testes, permite escolher uma criatura entre oito dinossauros aliados. O E tem recarga própria de 40 segundos; só uma criatura pode ficar ativa por vez.', q:'Arsenal Jurássico · durante os testes, permite escolher uma criatura do mesmo arsenal, com ataques e funções próprios. O Q tem recarga própria de 40 segundos; só uma criatura pode ficar ativa por vez.' }
+    'saurion-primal': { e:'Chamado Primal · escolha um dinossauro entre oito aliados. O E tem recarga própria de 40 segundos e pode coexistir com uma criatura diferente invocada pelo Q.', q:'Arsenal Jurássico · escolha outro dinossauro do arsenal, com ataques e funções próprios. O Q tem recarga própria de 40 segundos; a mesma espécie não pode ocupar Q e E ao mesmo tempo.' }
   });
   const saurionCreatures = Object.freeze([
     { id:'spinosaurus', name:'Espinossauro', role:'controle e caça', radius:30, duration:22, attack:2, kind:'spino' },
@@ -225,7 +225,7 @@
     prismAbilityChoices: { e:'aurora:e', q:'aurora:q' }, prismAbilitySlot:'e', prismDispatchSkinId:'', prismDispatchSlot:'', prismQCooldown:0, prismHorizonAnchor:null, prismHorizonWindowBonus:0, prismHorizonDamageBonus:0, prismCoreRangeBonus:0, prismCoreDamageBonus:0, prismCooldownBonus:0, prismWheelWasPlaying:false,
     aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0, aegisBarrierCharges: 0, aegisBarrierTime: 0,
     tempestTideCharges: 4, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
-    saurionSummonCooldownE: 0, saurionSummonCooldownQ: 0, saurionSummon: null, saurionPlayerBuffTime: 0, saurionPlayerDamageBuff: 0, saurionPlayerFireRateBuff: 0,
+    saurionSummonCooldownE: 0, saurionSummonCooldownQ: 0, saurionSummons: [], saurionPlayerBuffTime: 0, saurionPlayerDamageBuff: 0, saurionPlayerFireRateBuff: 0,
     flameStormQCooldown: 0, flameStormQIntangible: 0, flameStormDash: null,
     chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
@@ -1247,7 +1247,7 @@
     if (skin.id === 'mahoraga') return 'E: escudo 3s, −70% · adapta tipos diferentes por 5 ondas, até −55%';
     if (skin.id === 'megumi') return 'Ritual Umbral · E 3 variações · 20s→15s · Q Mahoraga 5 ondas +1 vida · recarga 45s';
     if (skin.id === 'flamestorm') return 'Propulsão Infernal · E 18s→15s · dash 5s · Q 24s→18s · vórtice 5s';
-    if (skin.id === 'saurion-primal') return 'E 40s · Q 40s · invoca 1 de 8 dinossauros por até 22s';
+    if (skin.id === 'saurion-primal') return 'E 40s · Q 40s · até 2 dinossauros diferentes por 22s';
     if (hasDeveloperPerks()) return 'sem recarga';
     if (skin.id === 'prisma') return 'E e Q configuráveis no Arquivo de Ecos (G) · recarga própria até 20s · missão fora do placar';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q Paradoxo Absoluto 26s→18s';
@@ -1791,10 +1791,11 @@
     const megumiE = megumiTechnique();
     const isSaurion = skin.id === 'saurion';
     const isPrimalSaurion = skin.id === 'saurion-primal';
-    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !state.saurionSummon : isSaurion ? state.dinoRoarCharges > 0 : state.abilityCooldown <= 0;
+    const saurionESummon = isPrimalSaurion ? saurionSummonForSlot('e') : null;
+    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !saurionESummon : isSaurion ? state.dinoRoarCharges > 0 : state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
-    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0) || (isPrimalSaurion && Boolean(state.saurionSummon));
+    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0) || Boolean(saurionESummon);
     if (ui.abilityWrap) ui.abilityWrap.hidden = !showAbility;
     if (ui.ability) {
       ui.ability.classList.remove('is-prisma');
@@ -1806,7 +1807,7 @@
       ui.ability.style.setProperty('--ship-accent', skin.accent);
       ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
       ui.ability.style.setProperty('--ship-accent-rgb', colorRgbTriplet(skin.accent));
-      ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || state.megumiSummonPhase === 'cinematic' || (isPrimalSaurion && (!ready || Boolean(state.saurionSummon))) || (!ready && !active);
+      ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || state.megumiSummonPhase === 'cinematic' || (isPrimalSaurion && !ready) || (!ready && !active);
       ui.ability.setAttribute('aria-pressed', String(active));
       if (isMahoraga) {
         if (ui.ability.firstChild !== mahoragaAdaptationIcon) ui.ability.replaceChildren(mahoragaAdaptationIcon);
@@ -1817,13 +1818,13 @@
       } else {
         ui.ability.textContent = isMegumi ? megumiE.icon : '✦';
       }
-      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 70% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 70% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos · intangível, rebate nas bordas e permite corrigir a direção' : ready ? 'Ativar Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochete e direção controlável · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isPrimalSaurion ? state.saurionSummon ? state.saurionSummon.name + ' ativo · ' + Math.ceil(state.saurionSummon.life) + 's' : ready ? 'Escolher dinossauro · recarga 40s · tecla E' : 'Chamado Primal recarrega em ' + Math.ceil(state.saurionSummonCooldownE) + 's' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
+       ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 70% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 70% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos · intangível, rebate nas bordas e permite corrigir a direção' : ready ? 'Ativar Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochete e direção controlável · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isPrimalSaurion ? saurionESummon ? saurionESummon.name + ' ativo · ' + Math.ceil(saurionESummon.life) + 's' : ready ? 'Escolher dinossauro para o espaço E · recarga própria de 40s' : 'Chamado Primal recarrega em ' + Math.ceil(state.saurionSummonCooldownE) + 's' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
       const eCountdown = isMegumi
         ? state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown)) : megumiE.short
         : isMahoraga
         ? state.mahoragaParryWindow > 0 ? String(Math.ceil(state.mahoragaParryWindow)) : state.mahoragaParryCooldown > 0 ? state.mahoragaParryCooldown.toFixed(1).replace('.', ',') : state.mahoragaWheelReady ? '8/8' : ''
         : isFlameStorm && state.flameStormDash?.life > 0 ? state.flameStormDash.life.toFixed(1).replace('.', ',')
-        : isPrimalSaurion ? state.saurionSummon ? String(Math.ceil(state.saurionSummon.life)) : state.saurionSummonCooldownE > 0 ? String(Math.ceil(state.saurionSummonCooldownE)) : ''
+        : isPrimalSaurion ? saurionESummon ? String(Math.ceil(saurionESummon.life)) : state.saurionSummonCooldownE > 0 ? String(Math.ceil(state.saurionSummonCooldownE)) : ''
         : isSaurion
         ? state.dinoRoarCharges > 0 ? String(state.dinoRoarCharges) : String(Math.ceil(state.dinoRoarRecharge))
         : !hasDeveloperPerks() && state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown))
@@ -1833,7 +1834,7 @@
         ui.abilityCooldown.hidden = !eCountdown;
       }
       ui.ability.classList.toggle('is-counting', Boolean(eCountdown));
-      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −70% dano; adapta tipos diferentes por cinco ondas até 55%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Dash flamejante e intangível por 5s, com ricochetes nas bordas e direção ajustável; os quadros de fogo substituem a nave. ' : isPrimalSaurion ? 'E abre a escolha de criatura. Recarga própria de 40s; apenas uma invocação ativa por vez. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
+      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −70% dano; adapta tipos diferentes por cinco ondas até 55%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Dash flamejante e intangível por 5s, com ricochetes nas bordas e direção ajustável; os quadros de fogo substituem a nave. ' : isPrimalSaurion ? 'E escolhe uma criatura e tem recarga independente de 40s; ela pode ficar em campo junto de outra espécie invocada pelo Q. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
       const isAurora = skin.id === 'aurora';
@@ -1872,12 +1873,13 @@
       const tempestTideMax = tempestTideMaxCharges();
       const stampedeRemaining = state.effects.reduce((remaining, effect) => effect.type === 'dino-raptor' ? Math.max(remaining, effect.life) : remaining, 0);
       const tideRemaining = state.effects.reduce((remaining, effect) => effect.type === 'tempest-tide' ? Math.max(remaining, effect.life) : remaining, 0);
-      const qActive = isPrimalSaurion ? Boolean(state.saurionSummon) : isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion ? stampedeRemaining > 0 : isFlameStorm && state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
+      const saurionQSummon = isPrimalSaurion ? saurionSummonForSlot('q') : null;
+      const qActive = isPrimalSaurion ? Boolean(saurionQSummon) : isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion ? stampedeRemaining > 0 : isFlameStorm && state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
       const qCooldown = isPrimalSaurion ? state.saurionSummonCooldownQ : isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseParadoxCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : isFlameStorm ? state.flameStormQCooldown : state.dinoStampedeRecharge;
       const dinoCharges = hasDeveloperPerks() ? 3 : state.dinoStampedeCharges;
-      const qReady = isPrimalSaurion ? qCooldown <= 0 && !state.saurionSummon : (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
+      const qReady = isPrimalSaurion ? qCooldown <= 0 && !saurionQSummon : (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
-      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || (isPrimalSaurion && Boolean(state.saurionSummon)) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
+      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
       if (isFlameStorm) ui.eclipseQ.textContent = flameStormVortexIcon;
       else ui.eclipseQ.textContent = isSaurion ? '' : isPrimalSaurion ? '🦖' : isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
       ui.eclipseQ.classList.toggle('is-aurora', isAurora);
@@ -1893,9 +1895,9 @@
       ui.eclipseQ.classList.toggle('is-flamestorm', isFlameStorm);
       ui.eclipseQ.classList.remove('is-prisma');
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
-      const qLabel = isPrimalSaurion && qActive ? state.saurionSummon.name + ' ativo · ' + Math.ceil(state.saurionSummon.life) + 's · somente uma criatura por vez'
+      const qLabel = isPrimalSaurion && qActive ? saurionQSummon.name + ' ativo pelo Q · ' + Math.ceil(saurionQSummon.life) + 's'
         : isPrimalSaurion && !qReady ? 'Arsenal Jurássico recarrega em ' + Math.ceil(qCooldown) + ' segundos'
-        : isPrimalSaurion ? 'Escolher uma criatura · tecla Q · recarga própria de 40s; apenas uma invocação ativa'
+        : isPrimalSaurion ? 'Escolher dinossauro para o espaço Q · recarga própria de 40s; pode coexistir com uma espécie diferente no E'
         : isMegumi && state.megumiSummonPhase === 'cinematic' ? 'Ritual do Guardião em andamento'
         : isMegumi && !qReady ? 'Ritual do Guardião recarregando: ' + Math.ceil(qCooldown) + ' segundos'
         : isMegumi ? 'Invocar o Guardião · tecla Q · cutscene e transformação por 5 ondas com uma vida extra · recarga de 45s depois que ela termina'
@@ -1914,7 +1916,7 @@
                    : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Paradoxo Absoluto · tecla Q · distorção por toda a tela durante ' + paradoxDuration + 's; desacelera, interrompe ataques e sentencia os alvos no colapso · recarga ' + paradoxCooldown + 's' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Investida do Tigre · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
       ui.eclipseQ.title = isSaurion ? 'Investida do Tigre · Q · três cargas; projéteis de energia em forma de tigre perseguem e atingem inimigos · recarga de ' + dinoStampedeCooldownDuration() + 's por carga'
-        : isPrimalSaurion ? 'Arsenal Jurássico · Q · permite escolher um dos oito dinossauros; só uma criatura ativa por vez · recarga 40s'
+         : isPrimalSaurion ? 'Arsenal Jurássico · Q · escolha um dinossauro; pode coexistir com uma espécie diferente invocada pelo E · recarga própria 40s'
         : isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por cinco ondas com uma vida extra · recarga de 45s depois que termina'
         : isFlameStorm ? 'Vórtice Carmesim · Q · invulnerabilidade, atração, absorção de tiros e supressão de chefes por 5s · recarga de ' + flameStormVortexCooldownDuration() + 's'
         : isMahoraga ? 'Espada da Exterminação · Q · onda de corte atravessa a tela e destrói tiros no trajeto · até oito alvos, 20 de dano no primeiro e 10 nos seguintes; chefes recebem 72% do dano · marca aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
@@ -1926,7 +1928,7 @@
           : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,6× · rastros até 9s · dano ' + (3 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
              : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(280 + state.tempestTideRadiusBonus)) + ' · dano ' + (3.2 + state.tempestTideDamageBonus).toFixed(1).replace('.', ',') + ' · 40% de chance de desviar tiros e redirecionar alguns contra inimigos · recarrega todas em ' + tempestTideCooldown + 's após esgotar'
                 : 'Investida do Tigre · 3 cargas · Q · recarga de ' + dinoStampedeCooldownDuration() + 's por carga';
-      const qActiveRemaining = isPrimalSaurion ? state.saurionSummon?.life || 0 : isAurora ? state.auroraLink?.life || 0
+       const qActiveRemaining = isPrimalSaurion ? saurionQSummon?.life || 0 : isAurora ? state.auroraLink?.life || 0
         : isAegis ? state.aegisOrbit?.life || 0
           : isEclipse ? state.eclipseParadox?.life || 0
             : isChronos ? state.chronosEcho?.life || 0
@@ -1948,7 +1950,7 @@
       ui.eclipseQ.classList.toggle('is-counting', Boolean(qCountdown));
     }
     if (ui.saurionCommand) {
-      const summon = skin.id === 'saurion-primal' ? state.saurionSummon : null;
+      const summon = skin.id === 'saurion-primal' ? saurionSummons().find((active) => active.kind === 'rex' && !active.rageUsed) || saurionSummons().find((active) => active.kind === 'carno') : null;
       const command = summon?.kind === 'rex' ? 'z' : summon?.kind === 'carno' ? 'x' : '';
       ui.saurionCommand.hidden = !command || !showAbility || command === 'z' && summon.rageUsed;
       ui.saurionCommand.disabled = state.mode !== 'playing' || command === 'x' && summon.commandCooldown > 0;
@@ -2255,7 +2257,7 @@
     if (ui.mahoragaAwakening) { ui.mahoragaAwakening.hidden = true; ui.mahoragaAwakening.classList.remove('is-visible'); }
     state.prismDispatchSkinId = ''; state.prismDispatchSlot = ''; state.prismQCooldown = 0; state.prismHorizonAnchor = null; state.prismHorizonWindowBonus = 0; state.prismHorizonDamageBonus = 0; state.prismCoreRangeBonus = 0; state.prismCoreDamageBonus = 0; state.prismCooldownBonus = 0;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
-    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 300; state.singularityDuration = 7; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseParadox = null; state.eclipseParadoxCooldown = 0; state.eclipseParadoxDurationBonus = 0; state.eclipseParadoxRadiusBonus = 0; state.eclipseParadoxSuppressBonus = 0; state.eclipseParadoxDamageBonus = 0; state.eclipseParadoxCooldownBonus = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoRoarCharges = 2; state.dinoRoarRecharge = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.saurionSummonCooldownE = 0; state.saurionSummonCooldownQ = 0; state.saurionSummon = null; state.saurionPlayerBuffTime = 0; state.saurionPlayerDamageBuff = 0; state.saurionPlayerFireRateBuff = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
+    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 300; state.singularityDuration = 7; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseParadox = null; state.eclipseParadoxCooldown = 0; state.eclipseParadoxDurationBonus = 0; state.eclipseParadoxRadiusBonus = 0; state.eclipseParadoxSuppressBonus = 0; state.eclipseParadoxDamageBonus = 0; state.eclipseParadoxCooldownBonus = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoRoarCharges = 2; state.dinoRoarRecharge = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.saurionSummonCooldownE = 0; state.saurionSummonCooldownQ = 0; state.saurionSummons = []; state.saurionPlayerBuffTime = 0; state.saurionPlayerDamageBuff = 0; state.saurionPlayerFireRateBuff = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
     state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0; state.damageCounterTotal = 0; state.damageCounterLastHit = 0; state.damageCounterIdle = 0; state.damageCounterPopups = [];
     state.shipEWasCooling = false; state.shipQWasCooling = false; state.shipQChargeCount = skin.id === 'tempest' ? 4 : skin.id === 'saurion' ? 3 : null;
@@ -2791,7 +2793,7 @@
     if (megumiShadowCloakActive()) return { x:state.megumiCloakLastX, y:state.megumiCloakLastY };
     const rabbit = state.megumiRabbits.filter((shikigami) => shikigami.life > 0).sort((a, b) => distance(enemy || state.player, a) - distance(enemy || state.player, b))[0];
     if (rabbit) return rabbit;
-    const saurionDecoy = state.saurionSummon;
+    const saurionDecoy = currentSkin().id === 'saurion-primal' ? saurionSummons().find((summon) => summon.kind === 'trike' && summon.provokeTime > 0) : null;
     if (currentSkin().id === 'saurion-primal' && saurionDecoy?.kind === 'trike' && saurionDecoy.provokeTime > 0) return saurionDecoy;
     return state.player;
   }
@@ -4718,34 +4720,48 @@
     updateAbilityButton();
   }
   function openSaurionSummonPicker(key) {
-    if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing' || state.saurionSummon) return;
+    const slot = key === 'q' ? 'q' : 'e';
+    const sameSlotSummon = saurionSummonForSlot(slot);
+    if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing' || sameSlotSummon) return;
     const cooldownKey = key === 'q' ? 'saurionSummonCooldownQ' : 'saurionSummonCooldownE';
     if (state[cooldownKey] > 0) return;
     pendingSaurionSummonKey = key;
-    if (ui.saurionSummonPickerSkill) ui.saurionSummonPickerSkill.textContent = 'Invocação pela habilidade ' + key.toUpperCase() + ' · recarga própria de 40 segundos';
+    const otherSummon = saurionSummonForSlot(slot === 'q' ? 'e' : 'q');
+    if (ui.saurionSummonPickerSkill) ui.saurionSummonPickerSkill.textContent = 'Invocação pela habilidade ' + key.toUpperCase() + ' · recarga própria de 40 segundos' + (otherSummon ? ' · ' + otherSummon.name + ' já está em campo e não pode ser repetido' : ' · Q e E podem manter criaturas diferentes em campo');
+    document.querySelectorAll('[data-saurion-summon-choice]').forEach((button) => {
+      const alreadySummoned = otherSummon?.id === button.dataset.saurionSummonChoice;
+      button.disabled = Boolean(alreadySummoned);
+      button.title = alreadySummoned ? otherSummon.name + ' já está invocado pela habilidade ' + otherSummon.slot.toUpperCase() : '';
+    });
     if (ui.saurionSummonPicker) {
       ui.saurionSummonPicker.hidden = false;
-      ui.saurionSummonPicker.querySelector('[data-saurion-summon-choice]')?.focus();
+      ui.saurionSummonPicker.querySelector('[data-saurion-summon-choice]:not(:disabled)')?.focus();
     }
   }
+  function saurionSummons() { return Array.isArray(state.saurionSummons) ? state.saurionSummons : []; }
+  function saurionSummonForSlot(slot) { return saurionSummons().find((summon) => summon.slot === slot) || null; }
   function closeSaurionSummonPicker() {
     pendingSaurionSummonKey = '';
     if (ui.saurionSummonPicker) ui.saurionSummonPicker.hidden = true;
   }
   function summonSaurionCreature(key, creatureId) {
     if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing') return;
-    if (state.saurionSummon) { toast(state.saurionSummon.name.toUpperCase() + ' JÁ ESTÁ EM CAMPO'); return; }
+    const slot = key === 'q' ? 'q' : 'e';
+    if (saurionSummonForSlot(slot)) { toast('A HABILIDADE ' + slot.toUpperCase() + ' JÁ TEM UMA CRIATURA EM CAMPO'); return; }
+    const otherSummon = saurionSummonForSlot(slot === 'q' ? 'e' : 'q');
+    if (otherSummon?.id === creatureId) { toast(otherSummon.name.toUpperCase() + ' JÁ ESTÁ EM CAMPO PELA HABILIDADE ' + otherSummon.slot.toUpperCase()); return; }
     const cooldownKey = key === 'q' ? 'saurionSummonCooldownQ' : 'saurionSummonCooldownE';
     if (state[cooldownKey] > 0) return;
-    const creature = saurionCreatures.find((item) => item.id === creatureId) || saurionCreatures[Math.floor(randomUnit('ability') * saurionCreatures.length)];
+    const availableCreatures = saurionCreatures.filter((item) => item.id !== otherSummon?.id);
+    const creature = availableCreatures.find((item) => item.id === creatureId) || availableCreatures[Math.floor(randomUnit('ability') * availableCreatures.length)];
     const summon = {
-      ...creature, x:state.player.x + mobileSize(42), y:state.player.y - mobileSize(62), angle:-Math.PI / 2,
+      ...creature, slot, x:state.player.x + (slot === 'q' ? -1 : 1) * mobileSize(66), y:state.player.y - mobileSize(62), angle:-Math.PI / 2,
       life:creature.duration, total:creature.duration, hp:creature.kind === 'titan' ? 56 : creature.kind === 'trike' ? 44 : creature.kind === 'rex' ? 38 : creature.kind === 'ankyl' ? 40 : 30,
       attackCooldown:.65, stompCooldown:6, tailCooldown:creature.kind === 'spino' ? 2.5 : 10, rushCooldown:1.8,
       provokeTime:0, fearTime:0, dashTime:0, dashDirection:1, dashHit:new Set(), trampleCooldowns:new Map(), tailPose:0, commandCooldown:0, rageUsed:false
     };
     summon.maxHp = summon.hp;
-    state.saurionSummon = summon;
+    state.saurionSummons.push(summon);
     state[cooldownKey] = 40;
     burst(summon.x, summon.y, '#7dff3f', 34, 210);
     burst(summon.x, summon.y, '#d4ff8a', 14, 130);
@@ -4788,8 +4804,8 @@
     state.saurionSummonCooldownQ = Math.max(0, state.saurionSummonCooldownQ - dt);
     state.saurionPlayerBuffTime = Math.max(0, state.saurionPlayerBuffTime - dt);
     if (state.saurionPlayerBuffTime <= 0) { state.saurionPlayerDamageBuff = 0; state.saurionPlayerFireRateBuff = 0; }
-    const summon = state.saurionSummon;
-    if (!summon || currentSkin().id !== 'saurion-primal') return;
+    if (currentSkin().id !== 'saurion-primal') return;
+    for (const summon of saurionSummons().slice()) {
     summon.life -= dt;
     summon.attackCooldown -= dt;
     summon.rushCooldown -= dt;
@@ -4801,13 +4817,13 @@
     if (summon.life <= 0 || summon.hp <= 0) {
       burst(summon.x, summon.y, summon.hp <= 0 ? '#b5ff70' : '#79e543', 20, 145);
       if (summon.hp <= 0) toast(summon.name.toUpperCase() + ' VOLTOU À MANADA');
-      state.saurionSummon = null;
+      state.saurionSummons = saurionSummons().filter((active) => active !== summon);
       updateAbilityButton();
-      return;
+      continue;
     }
     const targets = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(summon, a) - distance(summon, b));
     const target = summon.kind === 'carno' ? [...targets].sort((a, b) => (b.speed || 0) - (a.speed || 0))[0] : targets[0];
-    const followX = state.player.x + Math.cos(state.elapsed * 1.7 + .5) * mobileSize(50);
+    const followX = state.player.x + Math.cos(state.elapsed * 1.7 + .5) * mobileSize(50) + (summon.slot === 'q' ? -1 : 1) * mobileSize(68);
     const followY = state.player.y - mobileSize(50) + Math.sin(state.elapsed * 2.1) * mobileSize(15);
     if ((summon.kind === 'trike' || summon.kind === 'carno') && summon.dashTime > 0) {
       const previousX = summon.x;
@@ -4896,9 +4912,9 @@
       }
     }
     summon.tailPose = Math.max(0, summon.tailPose - dt);
+    }
   }
-  function activateSaurionCommand() {
-    const summon = state.saurionSummon;
+  function activateSaurionCommand(summon = saurionSummons().find((active) => active.kind === 'rex' && !active.rageUsed) || saurionSummons().find((active) => active.kind === 'carno')) {
     if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing' || !summon) return;
     if (summon.kind === 'rex' && !summon.rageUsed) {
       summon.rageUsed = true;
@@ -5289,7 +5305,7 @@
       enemy.saurionTauntTime = Math.max(0, (enemy.saurionTauntTime || 0) - dt);
       enemy.saurionSlowTime = Math.max(0, (enemy.saurionSlowTime || 0) - dt);
       enemy.saurionAttackSlowTime = Math.max(0, (enemy.saurionAttackSlowTime || 0) - dt);
-      const saurionFear = currentSkin().id === 'saurion-primal' && enemy.saurionFearTime > 0 ? state.saurionSummon : null;
+      const saurionFear = currentSkin().id === 'saurion-primal' && enemy.saurionFearTime > 0 ? saurionSummons().filter((summon) => summon.kind === 'rex' || summon.kind === 'carno' || summon.kind === 'spino').sort((a, b) => distance(enemy, a) - distance(enemy, b))[0] || null : null;
       if (saurionFear) angle = Math.atan2(enemy.y - saurionFear.y, enemy.x - saurionFear.x);
       const flashTrailDisorient = enemy.flashTrailDisorient;
       if (flashTrailDisorient && flashTrailDisorient.time > 0) {
@@ -5440,13 +5456,14 @@
     }
     state.bullets = state.bullets.filter(b => !b.dead);
     state.enemies = state.enemies.filter(e => !e.dead && e.y > -100 && e.y < state.height + 100 && e.x > -100 && e.x < state.width + 100);
-    const saurionInterception = currentSkin().id === 'saurion-primal' ? state.saurionSummon : null;
-    if (saurionInterception) for (const bullet of state.enemyBullets) {
-      if (bullet.dead || bullet.reflected || distance(bullet, saurionInterception) >= bullet.r + mobileSize(saurionInterception.radius) * .68) continue;
+    const saurionInterceptions = currentSkin().id === 'saurion-primal' ? saurionSummons() : [];
+    if (saurionInterceptions.length) for (const bullet of state.enemyBullets) {
+      if (bullet.dead || bullet.reflected) continue;
+      const saurionInterception = saurionInterceptions.find((summon) => distance(bullet, summon) < bullet.r + mobileSize(summon.radius) * .68);
+      if (!saurionInterception) continue;
       bullet.dead = true;
       saurionInterception.hp -= Math.max(1, bullet.damage || 1);
       burst(bullet.x, bullet.y, '#9eff58', 4, 62);
-      if (saurionInterception.hp <= 0) break;
     }
     for (const bullet of state.enemyBullets) if (!bullet.dead && !bullet.reflected && !flameStormDashActive && state.flameStormQIntangible <= 0 && !(bullet.tempestTideSweep?.time > 0) && Math.hypot(bullet.x - state.player.x, bullet.y - state.player.y) < bullet.r + state.player.radius * .7) {
       if (reflectIncomingBullet(bullet)) continue;
@@ -5897,32 +5914,36 @@
     }
     drawShipThrusterTrails(size, timestamp, '#ddc58f', '#fffdf5');
   }
+
   function drawSaurionSummon(timestamp) {
-    const summon = currentSkin().id === 'saurion-primal' ? state.saurionSummon : null;
-    if (!summon) return;
-    const image = saurionDinoSprites[summon.id];
-    const fade = clamp(Math.min(summon.life / .65, summon.hp / Math.max(1, summon.maxHp * .22)), 0, 1);
-    ctx.save(); ctx.translate(summon.x, summon.y); ctx.rotate((summon.angle || -Math.PI / 2) + Math.PI / 2);
-    const height = mobileSize(summon.radius * (summon.kind === 'titan' ? 4.4 : 3.8));
-    if (image?.complete && image.naturalWidth) {
-      const width = height * image.naturalWidth / image.naturalHeight;
-      ctx.globalAlpha = fade; ctx.globalCompositeOperation = 'screen'; ctx.shadowBlur = 0;
-      ctx.drawImage(image, -width / 2, -height / 2, width, height);
-    } else {
-      ctx.fillStyle = '#2c4c21'; ctx.strokeStyle = '#a2ff56'; ctx.lineWidth = mobileSize(2);
-      ctx.beginPath(); ctx.moveTo(0, -height * .48); ctx.lineTo(height * .25, height * .3); ctx.lineTo(0, height * .48); ctx.lineTo(-height * .25, height * .3); ctx.closePath(); ctx.fill(); ctx.stroke();
-    }
-    if (summon.tailPose > 0) {
-      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade * clamp(summon.tailPose / .28, 0, 1);
-      ctx.strokeStyle = '#d8ff8d'; ctx.lineWidth = mobileSize(3); ctx.shadowColor = '#72ec3e';
-      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
-      ctx.beginPath(); ctx.arc(0, 0, height * .58, -.95, 1.2); ctx.stroke();
-    }
-    ctx.restore();
-    if (summon.hp < summon.maxHp) {
-      const width = mobileSize(48), y = summon.y - mobileSize(summon.radius + 8);
-      ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(summon.x - width / 2, y, width, mobileSize(4));
-      ctx.fillStyle = '#8cff4d'; ctx.fillRect(summon.x - width / 2, y, width * clamp(summon.hp / summon.maxHp, 0, 1), mobileSize(4));
+    const summons = currentSkin().id === 'saurion-primal' ? saurionSummons() : [];
+    for (const summon of summons) {
+      const image = saurionDinoSprites[summon.id];
+      const fade = clamp(summon.life / .5, 0, 1);
+      ctx.save(); ctx.translate(summon.x, summon.y); ctx.rotate((summon.angle || -Math.PI / 2) + Math.PI / 2);
+      const height = mobileSize(summon.radius * (summon.kind === 'titan' ? 5.2 : 4.6));
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade;
+      if (image?.complete && image.naturalWidth) {
+        const width = height * image.naturalWidth / image.naturalHeight;
+        ctx.globalAlpha = fade * .98; ctx.filter = summon.kind === 'titan' ? 'brightness(1.34) saturate(1.18)' : 'brightness(1.12) saturate(1.1)';
+        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+        ctx.drawImage(image, -width / 2, -height / 2, width, height);
+      } else {
+        ctx.filter = 'none'; ctx.fillStyle = '#2c4c21'; ctx.strokeStyle = '#a2ff56'; ctx.lineWidth = mobileSize(2);
+        ctx.beginPath(); ctx.moveTo(0, -height * .48); ctx.lineTo(height * .25, height * .3); ctx.lineTo(0, height * .48); ctx.lineTo(-height * .25, height * .3); ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
+      if (summon.tailPose > 0) {
+        ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade * clamp(summon.tailPose / .28, 0, 1);
+        ctx.strokeStyle = '#d8ff8d'; ctx.lineWidth = mobileSize(3); ctx.shadowColor = '#72ec3e';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
+        ctx.beginPath(); ctx.arc(0, 0, height * .58, -.95, 1.2); ctx.stroke();
+      }
+      ctx.restore();
+      if (summon.hp < summon.maxHp) {
+        const width = mobileSize(48), y = summon.y - mobileSize(summon.radius + 8);
+        ctx.fillStyle = 'rgba(0,0,0,.72)'; ctx.fillRect(summon.x - width / 2, y, width, mobileSize(4));
+        ctx.fillStyle = '#8cff4d'; ctx.fillRect(summon.x - width / 2, y, width * clamp(summon.hp / summon.maxHp, 0, 1), mobileSize(4));
+      }
     }
   }
   function drawShip(x, y, size, skin, angle = -Math.PI / 2, alpha = 1) {
@@ -8200,8 +8221,9 @@
     if (event.code === 'KeyE' && !event.repeat) activateAbility();
     if (event.code === 'KeyQ' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) activateSecondaryAbility();
     if ((event.code === 'KeyZ' || event.code === 'KeyX') && !event.repeat && !editableTarget && currentSkin().id === 'saurion-primal') {
-      const commandReady = event.code === 'KeyZ' ? state.saurionSummon?.kind === 'rex' : state.saurionSummon?.kind === 'carno';
-      if (commandReady) { event.preventDefault(); activateSaurionCommand(); }
+      const commandSummon = event.code === 'KeyZ' ? saurionSummons().find((summon) => summon.kind === 'rex') : saurionSummons().find((summon) => summon.kind === 'carno');
+      const commandReady = Boolean(commandSummon && (event.code === 'KeyX' ? commandSummon.commandCooldown <= 0 : !commandSummon.rageUsed));
+      if (commandReady) { event.preventDefault(); activateSaurionCommand(commandSummon); }
     }
     if (!editableTarget && state.mode === 'playing' && ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','KeyA','KeyD','KeyW','KeyS'].includes(event.code)) state.keys.add(event.code);
   });
