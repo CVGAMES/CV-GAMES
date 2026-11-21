@@ -18,7 +18,10 @@
   const championshipProgressPrefix = 'cv-games-cv-starfall-championship-v1:';
   const championshipStartAt = Date.parse('2026-12-01T03:00:00.000Z');
   const championshipEndAt = Date.parse('2027-01-01T03:00:00.000Z');
-  const championshipRewardShipIds = Object.freeze(['aegis', 'chronos', 'tempest', 'flashblade']);
+  const championshipRewardShipIds = Object.freeze([
+    'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
+    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm'
+  ]);
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
   const nicknameSettingsPrefix = 'cv-games-cv-starfall-settings-v1:';
   const missionCheckpointPrefix = 'cv-games-cv-starfall-checkpoint-v1:';
@@ -54,8 +57,19 @@
   const flameStormDashFrames = [new Image(), new Image()];
   flameStormDashFrames[0].src = new URL('flamestorm-e-frame-1.png', document.baseURI).href;
   flameStormDashFrames[1].src = new URL('flamestorm-e-frame-2.png', document.baseURI).href;
-  const saurionRaptorSprite = new Image();
-  saurionRaptorSprite.src = new URL('saurion-raptor-skill.png', document.baseURI).href;
+  const tigrumRaptorSprite = new Image();
+  tigrumRaptorSprite.src = new URL('saurion-raptor-skill.png', document.baseURI).href;
+  const saurionShipFrames = Array.from({ length: 6 }, (_, index) => {
+    const frame = new Image();
+    frame.src = new URL('saurion-frame-' + (index + 1) + '.png', document.baseURI).href;
+    return frame;
+  });
+  const saurionDinoSprites = Object.fromEntries([
+    ['spinosaurus', 'dino-spinosaurus.png'], ['triceratops', 'dino-triceratops.png'],
+    ['titanosaur', 'dino-sauropod.png'], ['tyrannosaurus', 'dino-tyrannosaurus.png'],
+    ['carnotaurus', 'dino-carnotaurus.png'], ['ankylosaurus', 'dino-ankylosaurus.png'],
+    ['therizinosaurus', 'dino-therizinosaurus.png'], ['raptor', 'saurion-raptor-skill.png']
+  ].map(([id, path]) => { const image = new Image(); image.src = new URL(path, document.baseURI).href; return [id, image]; }));
   const eclipseShrineSprite = new Image();
   eclipseShrineSprite.src = new URL('eclipse-shrine.png', document.baseURI).href;
   const eclipseDomainVideoUrl = new URL('../../CV GAMES/sprite nave sprites/video começo esnpnação de dominio.mp4', document.baseURI).href;
@@ -70,13 +84,14 @@
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
     skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')),
     shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'),
-    damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), editDamageCounter: $('[data-edit-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), fireToggle: $('[data-fire-toggle]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), mahoragaAwakening: $('[data-mahoraga-awakening]'), mahoragaAwakeningType: $('[data-mahoraga-awakening-type]'), mahoragaAwakeningBuff: $('[data-mahoraga-awakening-buff]'), mahoragaReadout: $('[data-mahoraga-readout]'), megumiFormTimer: $('[data-megumi-form-timer]'), mahoragaReturn: $('[data-mahoraga-return]'),
+    damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), editDamageCounter: $('[data-edit-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), fireToggle: $('[data-fire-toggle]'), saurionCommand: $('[data-saurion-command]'), saurionSummonPicker: $('[data-saurion-summon-picker]'), saurionSummonPickerSkill: $('[data-saurion-picker-skill]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), mahoragaAwakening: $('[data-mahoraga-awakening]'), mahoragaAwakeningType: $('[data-mahoraga-awakening-type]'), mahoragaAwakeningBuff: $('[data-mahoraga-awakening-buff]'), mahoragaReadout: $('[data-mahoraga-readout]'), megumiFormTimer: $('[data-megumi-form-timer]'), mahoragaReturn: $('[data-mahoraga-return]'),
     deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'),
     dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'),
     rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankAdminPanel: $('[data-rank-admin]'), rankAdminReset: $('[data-rank-reset]'), rankAdminStatus: $('[data-rank-admin-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
   };
   let rankAdminSessionActive = false;
   let rankAdminBusy = false;
+  let pendingSaurionSummonKey = '';
   ui.prismWheel = $('[data-prism-wheel]');
   ui.prismRankNotice = $('[data-prism-rank-notice]');
   ui.checkpointModal = $('[data-checkpoint-modal]');
@@ -93,8 +108,9 @@
   const championshipUi = {
     modal: $('[data-championship-modal]'), open: $('[data-start-daily]'), close: $('[data-close-championship]'),
     status: $('[data-championship-status]'), countdown: $('[data-championship-countdown]'), missions: $('[data-championship-missions]'),
-    tickets: $('[data-championship-tickets]'), bonus: $('[data-championship-bonus]'), start: $('[data-start-championship-run]'),
-    spin: $('[data-spin-championship]'), wheel: $('[data-championship-wheel]'), result: $('[data-championship-result]'),
+    coins: $('[data-championship-coins]'), resetCountdown: $('[data-daily-reset-countdown]'), progressCount: $('[data-championship-progress-count]'), progressBar: $('[data-championship-progress-bar]'),
+    bonus: $('[data-championship-bonus]'), start: $('[data-start-championship-run]'), spin: $('[data-spin-championship]'), spinBundle: $('[data-spin-championship-bundle]'),
+    wheel: $('[data-championship-wheel]'), prizeArt: $('[data-championship-prize-art]'), prizeName: $('[data-championship-prize-name]'), prizeDetail: $('[data-championship-prize-detail]'), prizeRarity: $('[data-championship-prize-rarity]'), result: $('[data-championship-result]'),
     rank: $('[data-championship-rank]'), sync: $('[data-championship-sync]'), classicDaily: $('[data-start-classic-daily]')
   };
   const skins = [
@@ -106,13 +122,14 @@
     { id: 'flashblade', name: 'Flashblade', color: '#ffc86e', accent: '#fff0b4', ability: 'Corte Flash', abilityShort: 'CORTE', cooldown: 22, cooldownQ: 24, shape: 'blade', unlockWave: 40, description: 'E lança uma lâmina veloz que persegue alvos, ricocheteia e causa dano aumentado. Q acelera a nave em 2,6× e deixa rastros cortantes por até nove segundos.' },
     { id: 'redshift', name: 'Bastião Rubro', color: '#d83a2e', accent: '#ffd06a', ability: 'Escudo de Retorno', abilityShort: 'RETORNO', cooldown: 30, cooldownQ: 28, shape: 'reflector', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'cypher'], description: 'E reflete projéteis. Q cria um Perímetro de Cerco móvel por 6 segundos; inimigos que cruzam os feixes recebem dano.' },
     { id: 'eclipse', name: 'Eclipse', color: '#a879ff', accent: '#e8dcff', ability: 'Expansão de Domínio', abilityShort: 'DOMÍNIO', cooldown: 30, shape: 'eclipse', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'nys'], description: 'E: abre o Santuário Malevolente com cortes por 10 segundos. Q: Paradoxo Absoluto distorce o espaço, desacelera e interrompe inimigos próximos; ao colapsar, sentencia os alvos conforme o tempo que ficaram presos.' },
-    { id: 'saurion', name: 'Saurion', color: '#42d66e', accent: '#d4ff72', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q causa dano extra aos alvos marcados.' },
+    { id: 'saurion', name: 'Tigrum', color: '#f28a28', accent: '#ffd18a', ability: 'Rugido de Garras', abilityShort: 'RUGIDO', cooldown: 28, cooldownQ: 32, shape: 'dino', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'adm', 'yago k'], description: 'E: duas cargas de Rugido atordoam uma grande área e soltam garras fortalecidas com mais frequência. Q causa dano extra aos alvos marcados.' },
+    { id: 'saurion-primal', name: 'Saurion', color: '#55df35', accent: '#c6ff6b', ability: 'Chamado Primal', abilityShort: 'CHAMADO', cooldown: 40, cooldownQ: 40, shape: 'saurion-primal', secret: true, profileRestricted: true, allowedProfiles: ['educvv dev1', 'educvv dev', 'yago k'], description: 'Nave especial verde. E e Q abrem um seletor temporário para escolher um dos oito dinossauros aliados; somente uma criatura pode permanecer em campo por vez. Recarga independente de 40 segundos.' },
     { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' },
     { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 12, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz até 70% do dano. Cinco impactos do mesmo tipo concedem resistência a essa categoria por cinco ondas; cada tipo se adapta separadamente até 55%. Repetir um tipo já adaptado fortalece temporariamente o dano.' },
     { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 20, cooldownQ: 45, shape: 'megumi', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'felype j'], description: 'Nave secreta. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação; a recarga do E cai de 20 para 15 segundos com cinco melhorias. Q invoca o Guardião com a cutscene; a forma Mahoraga dura cinco ondas completas e, ao terminar, entra em recarga de 45 segundos.' },
     { id: 'flamestorm', name: 'Flame Storm', color: '#ff302e', accent: '#ffd0cb', ability: 'Propulsão Infernal', abilityShort: 'PROPULSÃO', cooldown: 18, cooldownQ: 24, shape: 'flamestorm', secret: true, profileRestricted: true, allowedProfiles: ['storm', 'educvv dev', 'educvv dev1'], description: 'Nave especial. E: avança por 5 segundos com impulso flamejante e fica intangível, rebate nas paredes e aceita correções de direção; os dois quadros de fogo ocupam o lugar da nave e o rastro fere inimigos. A recarga do E cai de 18 para 15 segundos com três Condensadores. Q: cria um vórtice carmesim por 5 segundos, puxa inimigos e absorve tiros próximos após atraí-los; a nave fica invulnerável durante o vórtice e por 0,7s após ele terminar.' }
   ];
-  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Estouro da Manada', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim' });
+  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Estouro da Manada', 'saurion-primal':'Arsenal Jurássico', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim' });
   const megumiTechniques = Object.freeze({
     rabbits:{ id:'rabbits', name:'Fuga dos Coelhos', short:'COELHOS', icon:'🐇', description:'Cinco shikigami-armadilha se espalham, atiram e atraem inimigos.' },
     shadow:{ id:'shadow', name:'Ocultação nas Sombras', short:'SOMBRA', icon:'◑', description:'Fica invisível, dispara projéteis sombrios, atravessa as bordas e recolhe recursos.' },
@@ -131,9 +148,20 @@
     prisma: { e:'O Núcleo Prisma concentra luz diante da nave e libera uma onda de impacto. Inimigos próximos recebem dano e são afastados; chefes resistem parcialmente ao empurrão. Melhorias ampliam o raio, o dano e reduzem a recarga. Você também pode escolher outra habilidade no Arquivo de Ecos.', q:'A Dobra de Horizonte grava a posição da nave por 4 segundos. Ative novamente para retornar ao ponto marcado, ganhar proteção breve e liberar uma onda de chegada que causa dano e desorganiza inimigos próximos. Melhorias ampliam a janela até 6 segundos e fortalecem a onda. O espaço Q também pode receber outra habilidade escolhida.' },
     mahoraga: { e:'Adaptação Divina · escudo de 3s que reduz até 70% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais adaptam a nave contra aquele tipo por cinco ondas; cada categoria se adapta separadamente e evolui até 55%. Repetir uma adaptação concede dano extra temporário. Recarga de 14s.', q:'Espada da Exterminação · envia um talho curvo que atravessa a arena em uma faixa, destrói os tiros que cruza e atinge até oito inimigos. Causa 20 de dano no primeiro alvo e 10 nos seguintes, com dano reduzido contra chefes; as marcas ampliam em 10% o próximo golpe. Recarga de 12s.' },
     megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica. Recarga de 20 segundos, reduzida até 15 segundos com cinco melhorias.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga dura cinco ondas completas e concede uma vida extra. Ao retornar à Umbra, inicia uma recarga de 45 segundos antes de poder invocar novamente.' },
-    flamestorm: { e:'Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochetes e controle de direção. O tempo de intangibilidade permanece inalterado. Recarga de 18s, reduzida até 15s.', q:'Vórtice Carmesim · dura 5 segundos, puxa inimigos e absorve tiros próximos após 0,52s. A nave mantém os 5,7 segundos de invulnerabilidade já existentes. O Núcleo Carmesim amplia levemente raio e dano. Recarga de 24s, reduzida até 18s.' }
+    flamestorm: { e:'Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochetes e controle de direção. O tempo de intangibilidade permanece inalterado. Recarga de 18s, reduzida até 15s.', q:'Vórtice Carmesim · dura 5 segundos, puxa inimigos e absorve tiros próximos após 0,52s. A nave mantém os 5,7 segundos de invulnerabilidade já existentes. O Núcleo Carmesim amplia levemente raio e dano. Recarga de 24s, reduzida até 18s.' },
+    'saurion-primal': { e:'Chamado Primal · durante os testes, permite escolher uma criatura entre oito dinossauros aliados. O E tem recarga própria de 40 segundos; só uma criatura pode ficar ativa por vez.', q:'Arsenal Jurássico · durante os testes, permite escolher uma criatura do mesmo arsenal, com ataques e funções próprios. O Q tem recarga própria de 40 segundos; só uma criatura pode ficar ativa por vez.' }
   });
-  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12, flamestorm:13 });
+  const saurionCreatures = Object.freeze([
+    { id:'spinosaurus', name:'Espinossauro', role:'controle e caça', radius:30, duration:22, attack:2, kind:'spino' },
+    { id:'triceratops', name:'Tricerátops', role:'aríete e provocação', radius:33, duration:22, attack:2, kind:'trike' },
+    { id:'titanosaur', name:'Titanossauro', role:'suporte e ondas sísmicas', radius:39, duration:22, attack:6, kind:'titan' },
+    { id:'tyrannosaurus', name:'Tiranossauro Rex', role:'dano focado e fúria', radius:34, duration:22, attack:1.5, kind:'rex' },
+    { id:'carnotaurus', name:'Carnotauro', role:'perseguição e investida', radius:29, duration:22, attack:.5, kind:'carno' },
+    { id:'ankylosaurus', name:'Anquilossauro', role:'defesa e impacto', radius:33, duration:22, attack:2.8, kind:'ankyl' },
+    { id:'therizinosaurus', name:'Terizinossauro', role:'garras em área', radius:30, duration:22, attack:2.2, kind:'theri' },
+    { id:'raptor', name:'Raptor', role:'caça veloz', radius:24, duration:22, attack:1.1, kind:'raptor' }
+  ]);
+  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12, flamestorm:13, 'saurion-primal':14 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
   let secretShipUnlocks = readSecretShipUnlocks();
   let pendingSecretShipId = null;
@@ -197,6 +225,7 @@
     prismAbilityChoices: { e:'aurora:e', q:'aurora:q' }, prismAbilitySlot:'e', prismDispatchSkinId:'', prismDispatchSlot:'', prismQCooldown:0, prismHorizonAnchor:null, prismHorizonWindowBonus:0, prismHorizonDamageBonus:0, prismCoreRangeBonus:0, prismCoreDamageBonus:0, prismCooldownBonus:0, prismWheelWasPlaying:false,
     aegisOrbit: null, aegisOrbitCooldown: 0, aegisOrbitDurationBonus: 0, aegisOrbitCountBonus: 0, aegisOrbitDamageBonus: 0, aegisBarrierCharges: 0, aegisBarrierTime: 0,
     tempestTideCharges: 4, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
+    saurionSummonCooldownE: 0, saurionSummonCooldownQ: 0, saurionSummon: null, saurionPlayerBuffTime: 0, saurionPlayerDamageBuff: 0, saurionPlayerFireRateBuff: 0,
     flameStormQCooldown: 0, flameStormQIntangible: 0, flameStormDash: null,
     chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
@@ -401,9 +430,11 @@
   let selectedPilotNickname = '';
   let pendingPilotNicknameAction = null;
   let pendingUnauthorizedNickname = '';
+  let testProfileSessionShipUnlocks = new Set();
   const starfallPilotNicknameKey = 'cv-games-cv-starfall-pilot-nickname';
   function profileNickname() { return normalizeRankNickname(window.CV_GAMES_PROFILE?.getProfile?.()?.nickname || ''); }
   function rankNickname() { return normalizeRankNickname(selectedPilotNickname || profileNickname()); }
+  function isTestProfile(nickname = rankNickname()) { return normalizeRankNickname(nickname) === 'teste'; }
   function isScoreAdminProfile() { return profileNickname() === 'poder'; }
   function isGenericPlayerProfile() { return !profileNickname() || profileNickname() === 'jogador'; }
   function normalizeRankNickname(value) {
@@ -639,18 +670,21 @@
   function updateDailyChallengeInfo(dateKey = saoPauloDateKey()) {
     if (!ui.dailyRecord) return;
     const now = Date.now();
-    ui.dailyRecord.textContent = now >= championshipEndAt
+    ui.dailyRecord.textContent = isTestProfile()
+      ? 'Perfil de teste ativo: missões e roleta CV Coin liberadas; o progresso não entra no Top 10.'
+      : now >= championshipEndAt
       ? `Campeonato encerrado em ${championshipEndDisplayDateTime()} · placar final disponível no menu de missões.`
       : championshipIsOpenNow(now)
         ? `Campeonato aberto até ${championshipEndDisplayDateTime()} · complete missões e concorra no Top 10.`
         : `Missões diárias do campeonato começam em ${championshipLocalDateTime(championshipStartAt)}.`;
   }
   const championshipMissions = Object.freeze([
-    { id:'kills', title:'Derrube 10 inimigos', detail:'Destrua inimigos durante uma missão do campeonato.', target:10, unit:'inimigos' },
-    { id:'waves', title:'Complete 3 ondas', detail:'Conclua ondas inteiras. Cada nova onda conta uma vez.', target:3, unit:'ondas' },
-    { id:'score', title:'Marque 5.000 pontos', detail:'Some pontos derrotando inimigos e chefes.', target:5000, unit:'pontos' }
+    { id:'kills', title:'Derrube 10 inimigos', detail:'Destrua inimigos durante uma missão do campeonato.', target:10, unit:'inimigos', reward:25 },
+    { id:'waves', title:'Complete 3 ondas', detail:'Conclua ondas inteiras. Cada nova onda conta uma vez.', target:3, unit:'ondas', reward:35 },
+    { id:'score', title:'Marque 5.000 pontos', detail:'Some pontos derrotando inimigos e chefes.', target:5000, unit:'pontos', reward:40 }
   ]);
   function championshipIsOpenNow(now = Date.now()) { return now >= championshipStartAt && now < championshipEndAt; }
+  function championshipAccessOpen(now = Date.now()) { return isTestProfile() || championshipIsOpenNow(now); }
   function championshipLocalDateTime(timestamp) {
     return new Intl.DateTimeFormat('pt-BR', { timeZone:'America/Sao_Paulo', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hourCycle:'h23' }).format(new Date(timestamp));
   }
@@ -660,34 +694,48 @@
     const days = Math.floor(seconds / 86400), hours = Math.floor(seconds % 86400 / 3600), minutes = Math.floor(seconds % 3600 / 60), rest = seconds % 60;
     return [days ? `${days}d` : '', `${String(hours).padStart(2,'0')}h`, `${String(minutes).padStart(2,'0')}m`, `${String(rest).padStart(2,'0')}s`].filter(Boolean).join(' ');
   }
+  function nextDailyResetAt(now = Date.now()) {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone:'America/Sao_Paulo', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(new Date(now));
+    const value = (type) => Number(parts.find((part) => part.type === type)?.value) || 0;
+    return Date.UTC(value('year'), value('month') - 1, value('day') + 1, 3);
+  }
   function championshipProgressKey(nickname = rankNickname()) { return championshipProgressPrefix + encodeURIComponent(nickname || 'jogador'); }
   function emptyChampionshipProgress(nickname = rankNickname()) {
-    return { nickname:nickname || 'jogador', missionDate:saoPauloDateKey(), kills:0, waves:0, score:0, claimed:[], tickets:0, unlockedShips:[], bonusDate:'' };
+    return { nickname:nickname || 'jogador', missionDate:saoPauloDateKey(), kills:0, waves:0, score:0, claimed:[], cvCoins:0, unlockedShips:[], bonusDate:'' };
   }
   function readChampionshipProgress(nickname = rankNickname()) {
     const fallback = emptyChampionshipProgress(nickname);
     try {
       const saved = JSON.parse(localStorage.getItem(championshipProgressKey(nickname)) || 'null');
       if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return fallback;
+      const savedCoins = Object.prototype.hasOwnProperty.call(saved, 'cvCoins')
+        ? Number(saved.cvCoins)
+        : Number(saved.tickets || 0) * 50;
+      const walletCoins = window.CV_GAMES_WALLET?.getBalance?.(nickname) || 0;
       return {
         ...fallback, ...saved, nickname:nickname || 'jogador',
         kills:Math.max(0, Math.min(10, Math.floor(Number(saved.kills) || 0))),
         waves:Math.max(0, Math.min(3, Math.floor(Number(saved.waves) || 0))),
         score:Math.max(0, Math.min(5000, Math.floor(Number(saved.score) || 0))),
-        tickets:Math.max(0, Math.floor(Number(saved.tickets) || 0)),
+        cvCoins:Math.max(0, Math.min(10000000, Math.floor(Math.max(Number(savedCoins) || 0, Number(walletCoins) || 0)))),
         claimed:Array.isArray(saved.claimed) ? saved.claimed.filter((id) => championshipMissions.some((mission) => mission.id === id)) : [],
-        unlockedShips:Array.isArray(saved.unlockedShips) ? saved.unlockedShips.filter((id) => championshipRewardShipIds.includes(id)) : []
+        unlockedShips:isTestProfile(nickname) ? [] : Array.isArray(saved.unlockedShips) ? saved.unlockedShips.filter((id) => championshipRewardShipIds.includes(id)) : []
       };
     } catch { return fallback; }
   }
   function campaignShipUnlockKey(nickname = rankNickname()) { return championshipProgressPrefix + 'ships:' + encodeURIComponent(nickname || 'jogador'); }
   function readCampaignShipUnlocks(nickname = rankNickname()) {
+    if (isTestProfile(nickname)) {
+      try { localStorage.removeItem(campaignShipUnlockKey(nickname)); } catch { /* Os desbloqueios de teste só existem nesta sessão. */ }
+      return new Set(testProfileSessionShipUnlocks);
+    }
     try { const ids = JSON.parse(localStorage.getItem(campaignShipUnlockKey(nickname)) || '[]'); return new Set(Array.isArray(ids) ? ids.filter((id) => championshipRewardShipIds.includes(id)) : []); }
     catch { return new Set(); }
   }
   function isCampaignShipUnlocked(shipId, nickname = rankNickname()) { return readCampaignShipUnlocks(nickname).has(shipId); }
   function saveCampaignShipUnlocks(ids, nickname = rankNickname()) {
     const safeIds = [...new Set(ids)].filter((id) => championshipRewardShipIds.includes(id));
+    if (isTestProfile(nickname)) { testProfileSessionShipUnlocks = new Set(safeIds); return true; }
     try { localStorage.setItem(campaignShipUnlockKey(nickname), JSON.stringify(safeIds)); return true; } catch { return false; }
   }
   let championshipProgress = readChampionshipProgress();
@@ -715,8 +763,14 @@
   function writeChampionshipProgressLocal() {
     const nick = championshipProgress.nickname || rankNickname() || 'jogador';
     championshipProgress.nickname = nick;
-    championshipProgress.unlockedShips = [...new Set([...(championshipProgress.unlockedShips || []), ...readCampaignShipUnlocks(nick)])];
+    championshipProgress.unlockedShips = isTestProfile(nick)
+      ? []
+      : [...new Set([...(championshipProgress.unlockedShips || []), ...readCampaignShipUnlocks(nick)])];
+    championshipProgress.cvCoins = Math.max(0, Math.min(10000000, Math.floor(Number(championshipProgress.cvCoins) || 0)));
+    championshipProgress.coinVersion = 1;
+    championshipProgress.tickets = 0;
     try { localStorage.setItem(championshipProgressKey(nick), JSON.stringify(championshipProgress)); } catch { /* O progresso da rodada continua nesta sessão. */ }
+    window.CV_GAMES_WALLET?.setBalance?.(championshipProgress.cvCoins, nick);
   }
   function scheduleChampionshipCloudSave() {
     writeChampionshipProgressLocal();
@@ -738,14 +792,14 @@
   }
   async function saveChampionshipProgressCloud() {
     const config = supabaseConfig();
-    if (!config || !championshipCloudReady || Date.now() < championshipStartAt || Date.now() >= championshipEndAt) return;
+    if (!config || !championshipCloudReady || isTestProfile(championshipProgress.nickname) || Date.now() < championshipStartAt || Date.now() >= championshipEndAt) return;
     const nickname = await championshipPilotNickname();
     if (!nickname) return;
     const base = config.url.replace(/\/$/, '') + '/rest/v1/starfall_championship_progress';
     const row = {
       nickname, mission_date:championshipProgress.missionDate, kills:championshipProgress.kills,
       waves:championshipProgress.waves, score:championshipProgress.score, claimed:championshipProgress.claimed,
-      tickets:championshipProgress.tickets, unlocked_ships:[...new Set([...(championshipProgress.unlockedShips || []), ...readCampaignShipUnlocks(nickname)])],
+      tickets:0, cv_coins:championshipProgress.cvCoins, unlocked_ships:[...new Set([...(championshipProgress.unlockedShips || []), ...readCampaignShipUnlocks(nickname)])],
       bonus_date:championshipProgress.bonusDate || null, updated_at:new Date().toISOString()
     };
     try {
@@ -762,7 +816,7 @@
     const authorized = await championshipPilotNickname();
     championshipCloudReady = Boolean(config && authorized);
     if (config && authorized) {
-      const base = config.url.replace(/\/$/, '') + '/rest/v1/starfall_championship_progress?select=nickname,mission_date,kills,waves,score,claimed,tickets,unlocked_ships,bonus_date&nickname=eq.' + encodeURIComponent(authorized) + '&limit=1';
+      const base = config.url.replace(/\/$/, '') + '/rest/v1/starfall_championship_progress?select=nickname,mission_date,kills,waves,score,claimed,tickets,cv_coins,unlocked_ships,bonus_date&nickname=eq.' + encodeURIComponent(authorized) + '&limit=1';
       try {
         const response = await fetch(base, { headers:supabaseHeaders(config) });
         if (response.ok) {
@@ -778,8 +832,8 @@
               waves:sameDay ? Math.max(championshipProgress.waves, Number(remote.waves) || 0) : championshipProgress.waves,
               score:sameDay ? Math.max(championshipProgress.score, Number(remote.score) || 0) : championshipProgress.score,
               claimed:sameDay ? [...new Set([...championshipProgress.claimed, ...(Array.isArray(remote.claimed) ? remote.claimed : [])])] : championshipProgress.claimed,
-              tickets:Math.max(championshipProgress.tickets, Number(remote.tickets) || 0),
-              unlockedShips:[...new Set([...championshipProgress.unlockedShips, ...(Array.isArray(remote.unlocked_ships) ? remote.unlocked_ships : [])])],
+              cvCoins:Math.max(championshipProgress.cvCoins, Number(remote.cv_coins) || 0),
+              unlockedShips:isTestProfile(authorized) ? [] : [...new Set([...championshipProgress.unlockedShips, ...(Array.isArray(remote.unlocked_ships) ? remote.unlocked_ships : [])])],
               bonusDate:sameDay ? String(remote.bonus_date || championshipProgress.bonusDate) : championshipProgress.bonusDate
             };
             saveCampaignShipUnlocks(championshipProgress.unlockedShips, authorized);
@@ -795,7 +849,9 @@
     await refreshChampionshipRanking();
   }
   function championshipRewardPool() {
-    return championshipRewardShipIds.map((id) => skins.find((skin) => skin.id === id)).filter((skin) => skin && !skinUnlocked(skin));
+    return championshipRewardShipIds
+      .map((id) => skins.find((skin) => skin.id === id))
+      .filter((skin) => skin && !isCampaignShipUnlocked(skin.id));
   }
   function renderChampionshipShip(skin, className = 'starfall-championship-ship-art') {
     const art = document.createElement('span');
@@ -805,57 +861,121 @@
     art.innerHTML = hangarShipSvg(skin);
     return art;
   }
+  function setChampionshipPrize(skin, revealed = false) {
+    if (!championshipUi.prizeArt || !championshipUi.prizeName) return;
+    championshipUi.prizeArt.replaceChildren();
+    if (!skin) {
+      championshipUi.prizeName.textContent = 'Todas as naves foram liberadas';
+      if (championshipUi.prizeDetail) championshipUi.prizeDetail.textContent = 'Complete as missões para receber CV Coins e acompanhar as próximas recompensas.';
+      if (championshipUi.prizeRarity) championshipUi.prizeRarity.textContent = 'HANGAR COMPLETO';
+      return;
+    }
+    championshipUi.prizeArt.append(renderChampionshipShip(skin));
+    championshipUi.prizeName.textContent = skin.name;
+    if (championshipUi.prizeDetail) championshipUi.prizeDetail.textContent = revealed
+      ? `${skin.ability || 'Nave especial'} · liberada no hangar.`
+      : `${skin.ability || 'Nave especial'} · pode sair no sorteio.`;
+    if (championshipUi.prizeRarity) championshipUi.prizeRarity.textContent = revealed ? 'NAVE DESBLOQUEADA' : 'NAVE DE RECOMPENSA';
+  }
+  function renderChampionshipWheel(pool, selectedIndex = null, force = false) {
+    if (!championshipUi.wheel || championshipUi.wheel.dataset.spinning && !force) return;
+    championshipUi.wheel.replaceChildren();
+    championshipUi.wheel.classList.remove('is-spinning');
+    if (!pool.length) {
+      const empty = document.createElement('span');
+      empty.className = 'starfall-championship-wheel-prompt';
+      empty.textContent = 'Todas as naves sorteáveis já estão no seu hangar.';
+      championshipUi.wheel.append(empty);
+      setChampionshipPrize(null);
+      return;
+    }
+    const colors = ['#173f9a', '#192b70', '#0f337f', '#252b79', '#123e79', '#1e347c', '#0e4687', '#282b75'];
+    const slice = 360 / pool.length;
+    const stops = pool.map((_, index) => `${colors[index % colors.length]} ${index * slice}deg ${(index + 1) * slice}deg`).join(', ');
+    const rotor = document.createElement('div');
+    rotor.className = 'starfall-championship-wheel-rotor';
+    rotor.style.background = `conic-gradient(from -90deg, ${stops})`;
+    pool.forEach((skin, index) => {
+      const angle = index * slice + slice / 2;
+      const sector = document.createElement('span');
+      sector.className = 'starfall-championship-wheel-sector';
+      sector.style.setProperty('--wheel-angle', `${angle}deg`);
+      sector.style.setProperty('--wheel-counter-angle', `${-angle}deg`);
+      sector.append(renderChampionshipShip(skin));
+      const label = document.createElement('small'); label.textContent = skin.name;
+      sector.append(label);
+      rotor.append(sector);
+    });
+    championshipUi.wheel.append(rotor);
+    if (selectedIndex !== null && selectedIndex >= 0 && selectedIndex < pool.length) {
+      const stopAt = 360 * 5 - (selectedIndex * slice + slice / 2);
+      requestAnimationFrame(() => { rotor.style.transform = `rotate(${stopAt}deg)`; });
+    }
+  }
   function renderChampionshipMenu() {
     if (!championshipUi.modal || !championshipUi.missions) return;
     const now = Date.now();
-    const open = championshipIsOpenNow(now);
-    const ended = now >= championshipEndAt;
-    if (championshipUi.status) championshipUi.status.textContent = ended ? 'CAMPEONATO ENCERRADO' : open ? 'CAMPEONATO EM ANDAMENTO' : 'CAMPEONATO PREPARADO';
-    if (championshipUi.countdown) championshipUi.countdown.textContent = ended
+    const testProfile = isTestProfile(championshipProgress.nickname);
+    const open = testProfile || championshipIsOpenNow(now);
+    const ended = !testProfile && now >= championshipEndAt;
+    if (championshipUi.status) championshipUi.status.textContent = testProfile ? 'MODO DE TESTE · MISSÕES E ROLETA ATIVAS' : ended ? 'CAMPEONATO ENCERRADO' : open ? 'CAMPEONATO EM ANDAMENTO' : 'CAMPEONATO PREPARADO';
+    if (championshipUi.countdown) championshipUi.countdown.textContent = testProfile
+      ? 'Acesso liberado para testar as missões e a roleta. O perfil teste não entra no Top 10.'
+      : ended
       ? `Encerrado em ${championshipEndDisplayDateTime()} · horário de Brasília`
       : open ? `Termina em ${championshipCountdown(championshipEndAt, now)} · ${championshipEndDisplayDateTime()}`
         : `Começa em ${championshipCountdown(championshipStartAt, now)} · ${championshipLocalDateTime(championshipStartAt)} (horário de Brasília)`;
     const hasBonus = applyChampionshipProfileBonus(championshipProgress);
-    if (championshipUi.bonus) championshipUi.bonus.textContent = hasBonus ? 'Bônus de perfil: +1 inimigo, +1 onda e +250 pontos de progresso por dia.' : 'As mesmas missões e recompensas ficam disponíveis para todos os pilotos.';
+    if (championshipUi.bonus) championshipUi.bonus.textContent = testProfile ? 'Perfil de teste: CV Coins infinitas; desbloqueios da roleta duram apenas até atualizar a página.' : hasBonus ? 'Bônus de perfil: +1 inimigo, +1 onda e +250 pontos de progresso por dia.' : 'As mesmas missões e recompensas ficam disponíveis para todos os pilotos.';
+    const completedCount = championshipMissions.filter((mission) => championshipProgress.claimed.includes(mission.id)).length;
+    const coinBalance = window.CV_GAMES_WALLET
+      ? window.CV_GAMES_WALLET.getBalance(championshipProgress.nickname)
+      : Math.max(0, Number(championshipProgress.cvCoins) || 0);
+    championshipProgress.cvCoins = coinBalance;
+    if (championshipUi.coins) championshipUi.coins.textContent = coinBalance.toLocaleString('pt-BR');
+    if (championshipUi.progressCount) championshipUi.progressCount.textContent = `${completedCount}/${championshipMissions.length}`;
+    if (championshipUi.progressBar) { championshipUi.progressBar.max = championshipMissions.length; championshipUi.progressBar.value = completedCount; }
+    if (championshipUi.resetCountdown) championshipUi.resetCountdown.textContent = championshipCountdown(nextDailyResetAt(now), now);
     championshipUi.missions.replaceChildren(...championshipMissions.map((mission) => {
       const progress = Math.min(mission.target, Number(championshipProgress[mission.id]) || 0);
       const claimed = championshipProgress.claimed.includes(mission.id);
       const card = document.createElement('article');
       card.className = 'starfall-championship-mission' + (claimed ? ' is-complete' : '');
       const title = document.createElement('strong'); title.textContent = mission.title;
-      const detail = document.createElement('small'); detail.textContent = mission.detail;
+      const detail = document.createElement('small'); detail.textContent = testProfile ? 'Conte em qualquer partida do perfil de teste.' : mission.detail;
       const meter = document.createElement('progress'); meter.max = mission.target; meter.value = progress; meter.setAttribute('aria-label', `${mission.title}: ${progress} de ${mission.target}`);
-      const label = document.createElement('span'); label.textContent = claimed ? '✓ concluída · ficha recebida' : `${progress.toLocaleString('pt-BR')} / ${mission.target.toLocaleString('pt-BR')} ${mission.unit}`;
-      card.append(title, detail, meter, label);
+      const label = document.createElement('span'); label.textContent = claimed ? `✓ concluída · +${mission.reward} CV Coins` : `${progress.toLocaleString('pt-BR')} / ${mission.target.toLocaleString('pt-BR')} ${mission.unit}`;
+      const reward = document.createElement('span'); reward.className = 'starfall-championship-mission-reward';
+      const coin = document.createElement('img'); coin.src = '../../img/cv-coin.png'; coin.alt = '';
+      const amount = document.createElement('span'); amount.textContent = `+${mission.reward}`;
+      reward.append(coin, amount);
+      card.append(title, detail, meter, label, reward);
       return card;
     }));
-    if (championshipUi.tickets) championshipUi.tickets.textContent = `${championshipProgress.tickets} ${championshipProgress.tickets === 1 ? 'ficha' : 'fichas'} para a roleta`;
     if (championshipUi.start) {
       championshipUi.start.disabled = !open;
-      championshipUi.start.textContent = ended ? 'CAMPEONATO ENCERRADO' : open ? '▶ JOGAR MISSÃO DO CAMPEONATO' : 'ABRE ÀS 00:00';
+      championshipUi.start.textContent = testProfile ? '▶ JOGAR MISSÃO DE TESTE' : ended ? 'CAMPEONATO ENCERRADO' : open ? '▶ JOGAR MISSÃO DO CAMPEONATO' : 'ABRE ÀS 00:00';
     }
     const pool = championshipRewardPool();
+    const oneSpinCost = 50;
+    const bundleCount = Math.min(10, pool.length);
+    const bundleCost = Math.ceil(bundleCount * 45);
+    const wheelIsSpinning = Boolean(championshipUi.wheel?.dataset.spinning);
     if (championshipUi.spin) {
-      championshipUi.spin.disabled = !open || championshipProgress.tickets < 1 || !pool.length;
-      championshipUi.spin.textContent = pool.length ? '🎲 GIRAR A ROLETA' : 'TODAS AS NAVES DO SORTEIO JÁ FORAM LIBERADAS';
+      championshipUi.spin.disabled = !open || wheelIsSpinning || coinBalance < oneSpinCost || !pool.length;
+      championshipUi.spin.textContent = pool.length ? `1 GIRO · ${oneSpinCost} CV COINS` : 'NENHUMA NAVE DISPONÍVEL';
       championshipUi.spin.hidden = ended;
     }
-    if (championshipUi.wheel && !championshipUi.wheel.dataset.spinning) {
-      championshipUi.wheel.replaceChildren();
-      championshipUi.wheel.classList.remove('is-spinning');
-      if (pool.length) {
-        const prompt = document.createElement('span'); prompt.className = 'starfall-championship-wheel-prompt'; prompt.textContent = 'A próxima nave pode ser';
-        const art = renderChampionshipShip(pool[0]);
-        const name = document.createElement('strong'); name.textContent = '???';
-        championshipUi.wheel.append(prompt, art, name);
-      } else {
-        const empty = document.createElement('strong'); empty.textContent = 'Todas as naves elegíveis já estão no seu hangar.';
-        championshipUi.wheel.append(empty);
-      }
+    if (championshipUi.spinBundle) {
+      championshipUi.spinBundle.hidden = ended || bundleCount < 2;
+      championshipUi.spinBundle.disabled = !open || wheelIsSpinning || bundleCount < 2 || coinBalance < bundleCost;
+      championshipUi.spinBundle.textContent = bundleCount >= 2 ? `ATÉ ${bundleCount} GIROS · ${bundleCost} CV COINS` : 'SEM NAVES PARA GIRAR';
     }
+    renderChampionshipWheel(pool);
+    if (pool.length && !championshipUi.prizeRarity?.textContent.includes('DESBLOQUEADA')) setChampionshipPrize(pool[0]);
   }
   function updateChampionshipMission(metric, amount) {
-    if (!state.championshipRun || !championshipIsOpenNow()) return;
+    if ((!state.championshipRun && !isTestProfile()) || !championshipAccessOpen()) return;
     resetChampionshipDailyProgress(championshipProgress);
     const mission = championshipMissions.find((item) => item.id === metric);
     if (!mission || !Number.isFinite(Number(amount))) return;
@@ -864,8 +984,8 @@
     const newlyCompleted = championshipMissions.filter((item) => !championshipProgress.claimed.includes(item.id) && championshipProgress[item.id] >= item.target);
     newlyCompleted.forEach((item) => {
       championshipProgress.claimed.push(item.id);
-      championshipProgress.tickets++;
-      toast(`MISSÃO DIÁRIA CONCLUÍDA · +1 FICHA`);
+      championshipProgress.cvCoins = Math.min(10000000, (Number(championshipProgress.cvCoins) || 0) + item.reward);
+      toast(`MISSÃO DIÁRIA CONCLUÍDA · +${item.reward} CV COINS`);
     });
     if (championshipProgress[metric] !== before || newlyCompleted.length) {
       scheduleChampionshipCloudSave();
@@ -886,43 +1006,60 @@
     championshipUi.open?.focus({ preventScroll:true });
   }
   function beginChampionshipMission() {
-    if (!championshipIsOpenNow()) { renderChampionshipMenu(); return; }
+    if (!championshipAccessOpen()) { renderChampionshipMenu(); return; }
     if (currentSkin().id === 'prisma') { toast('A PRISMA REAL NÃO CONTA NO CAMPEONATO · EQUIPE OUTRA NAVE'); return; }
     if (championshipUi.modal) championshipUi.modal.hidden = true;
     syncAudioVisibility();
     if (isGenericPlayerProfile() && !selectedPilotNickname) requestPilotNickname(() => openMissionSetup(false, true));
     else openMissionSetup(false, true);
   }
-  async function spinChampionshipWheel() {
-    if (!championshipIsOpenNow() || championshipProgress.tickets < 1 || !championshipUi.wheel) return;
-    const pool = championshipRewardPool();
-    if (!pool.length) { renderChampionshipMenu(); return; }
-    championshipProgress.tickets--;
+  async function spinChampionshipWheel(drawAll = false) {
+    if (!championshipAccessOpen() || !championshipUi.wheel || championshipUi.wheel.dataset.spinning) return;
+    const remaining = championshipRewardPool();
+    if (!remaining.length) { renderChampionshipMenu(); return; }
+    const drawCount = drawAll ? Math.min(10, remaining.length) : 1;
+    const price = drawAll ? Math.ceil(drawCount * 45) : 50;
+    const nickname = rankNickname() || championshipProgress.nickname;
+    const wallet = window.CV_GAMES_WALLET;
+    const balance = wallet ? wallet.getBalance(nickname) : Math.max(0, Number(championshipProgress.cvCoins) || 0);
+    if (balance < price) { toast(`SALDO INSUFICIENTE · PRECISA DE ${price} CV COINS`); return; }
+    if (wallet && !wallet.spendCoins(price, nickname)) { toast(`SALDO INSUFICIENTE · PRECISA DE ${price} CV COINS`); return; }
+    championshipProgress.cvCoins = wallet ? wallet.getBalance(nickname) : balance - price;
+    championshipProgress.nickname = nickname;
     championshipUi.wheel.dataset.spinning = '1';
-    championshipUi.wheel.classList.add('is-spinning');
     if (championshipUi.spin) championshipUi.spin.disabled = true;
-    const chosen = pool[Math.floor(Math.random() * pool.length)];
-    for (let turn = 0; turn < 18; turn++) {
-      const preview = pool[(turn + Math.floor(Math.random() * pool.length)) % pool.length];
-      championshipUi.wheel.replaceChildren(renderChampionshipShip(preview));
-      const name = document.createElement('strong'); name.textContent = preview.name; championshipUi.wheel.append(name);
-      await new Promise((resolve) => setTimeout(resolve, 90 + turn * 13));
-    }
-    const unlocked = readCampaignShipUnlocks();
-    unlocked.add(chosen.id);
-    championshipProgress.unlockedShips = [...new Set([...(championshipProgress.unlockedShips || []), chosen.id])];
-    saveCampaignShipUnlocks(unlocked);
-    championshipProgress.nickname = rankNickname() || championshipProgress.nickname;
+    if (championshipUi.spinBundle) championshipUi.spinBundle.disabled = true;
     scheduleChampionshipCloudSave();
-    championshipUi.wheel.replaceChildren(renderChampionshipShip(chosen));
-    const winner = document.createElement('strong'); winner.textContent = `${chosen.name} DESBLOQUEADA!`;
-    championshipUi.wheel.append(winner);
-    if (championshipUi.result) championshipUi.result.textContent = `A nave ${chosen.name} saiu da sua roleta e agora pode ser equipada no hangar.`;
-    championshipUi.wheel.classList.remove('is-spinning');
+    const winners = [];
+    for (let draw = 0; draw < drawCount && remaining.length; draw++) {
+      const selectedIndex = Math.floor(Math.random() * remaining.length);
+      const chosen = remaining[selectedIndex];
+      renderChampionshipWheel(remaining, selectedIndex, true);
+      await new Promise((resolve) => setTimeout(resolve, 3350));
+      remaining.splice(selectedIndex, 1);
+      const unlocked = readCampaignShipUnlocks(championshipProgress.nickname);
+      unlocked.add(chosen.id);
+      if (isTestProfile(championshipProgress.nickname)) {
+        saveCampaignShipUnlocks(unlocked, championshipProgress.nickname);
+      } else {
+        championshipProgress.unlockedShips = [...new Set([...(championshipProgress.unlockedShips || []), chosen.id])];
+        saveCampaignShipUnlocks(unlocked, championshipProgress.nickname);
+      }
+      winners.push(chosen);
+      if (draw + 1 < drawCount && remaining.length) {
+        renderChampionshipWheel(remaining, null, true);
+        await new Promise((resolve) => setTimeout(resolve, 180));
+      }
+    }
     delete championshipUi.wheel.dataset.spinning;
     renderSkinPicker(); updateEquippedShip(); updateControlUI();
     renderChampionshipMenu();
-    championshipUi.wheel.replaceChildren(renderChampionshipShip(chosen), winner);
+    const lastWinner = winners[winners.length - 1];
+    setChampionshipPrize(lastWinner, true);
+    if (championshipUi.result) championshipUi.result.textContent = winners.length === 1
+      ? `${lastWinner.name} foi liberada e saiu da roleta. Custo: ${price} CV Coins.`
+      : `${winners.length} naves liberadas sem repetição: ${winners.map((skin) => skin.name).join(', ')}. Custo: ${price} CV Coins.`;
+    scheduleChampionshipCloudSave();
   }
   async function refreshChampionshipRanking() {
     if (!championshipUi.rank) return;
@@ -949,7 +1086,7 @@
     return championshipScoreQueue;
   }
   async function submitChampionshipScore(run) {
-    if (!championshipIsOpenNow() || run?.ship_id === 'prisma') return;
+    if (isTestProfile() || !championshipIsOpenNow() || run?.ship_id === 'prisma') return;
     const config = supabaseConfig();
     if (!config) return;
     const nickname = await championshipPilotNickname();
@@ -1107,6 +1244,7 @@
     if (skin.id === 'mahoraga') return 'E: escudo 3s, −70% · adapta tipos diferentes por 5 ondas, até −55%';
     if (skin.id === 'megumi') return 'Ritual Umbral · E 3 variações · 20s→15s · Q Mahoraga 5 ondas +1 vida · recarga 45s';
     if (skin.id === 'flamestorm') return 'Propulsão Infernal · E 18s→15s · dash 5s · Q 24s→18s · vórtice 5s';
+    if (skin.id === 'saurion-primal') return 'E 40s · Q 40s · invoca 1 de 8 dinossauros por até 22s';
     if (hasDeveloperPerks()) return 'sem recarga';
     if (skin.id === 'prisma') return 'E e Q configuráveis no Arquivo de Ecos (G) · recarga própria até 20s · missão fora do placar';
     if (skin.id === 'eclipse') return 'E 30s→25s com melhorias · Q Paradoxo Absoluto 26s→18s';
@@ -1121,10 +1259,11 @@
   }
   function skinUnlocked(skin) {
     if (skin.hiddenFromHangar) return false;
+    if (isTestProfile() && championshipRewardShipIds.includes(skin.id)) return isCampaignShipUnlocked(skin.id);
     if (skin.profileRestricted) return hasSecretShipAccess(skin);
+    if (isCampaignShipUnlocked(skin.id)) return true;
     if (skin.id === 'megumi') return hasSecretShipAccess(skin);
     if (skin.ownerOnly) return hasSecretShipAccess(skin);
-    if (isCampaignShipUnlocked(skin.id)) return true;
     if (isAllShipsProfile()) return true;
     if (skin.secret) return hasSecretShipAccess(skin);
     if (accountShipProgressLoaded && accountUnlockedShipIds.has(skin.id)) return true;
@@ -1216,6 +1355,7 @@
     const result = new Set(['aurora']);
     skins.forEach((skin) => {
       if (skin.hiddenFromHangar) return;
+      if (isTestProfile() && championshipRewardShipIds.includes(skin.id)) return;
       const unlocked = skin.profileRestricted ? hasSecretShipAccess(skin) : skin.ownerOnly ? hasSecretShipAccess(skin) : isAllShipsProfile()
         || (skin.secret ? hasSecretShipAccess(skin)
           : isDeveloperProfile() || !skin.unlockWave || bestWave >= skin.unlockWave);
@@ -1331,6 +1471,7 @@
     ui.equippedShip.style.setProperty('--skin-color', skin.color);
     const equippedIcon = skin.shape === 'eclipse'
       ? '<span class="starfall-equipped-icon starfall-eclipse-sprite" aria-hidden="true"></span>'
+      : skin.shape === 'saurion-primal' ? '<span class="starfall-equipped-icon starfall-saurion-icon" aria-hidden="true"><img src="saurion-frame-1.png" alt=""></span>'
       : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon starfall-dino-image-wrap" aria-hidden="true"><img src="saurion-raptor-skill.png" alt=""></span>'
       : skin.shape === 'prism' ? '<span class="starfall-equipped-icon starfall-prism-icon" aria-hidden="true">◇</span>'
       : skin.shape === 'megumi' ? '<span class="starfall-equipped-icon starfall-umbra-icon" aria-hidden="true"><img src="umbra-ship.png" alt=""></span>'
@@ -1646,35 +1787,40 @@
     const isFlameStorm = skin.id === 'flamestorm';
     const megumiE = megumiTechnique();
     const isSaurion = skin.id === 'saurion';
-    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isSaurion ? state.dinoRoarCharges > 0 : state.abilityCooldown <= 0;
+    const isPrimalSaurion = skin.id === 'saurion-primal';
+    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !state.saurionSummon : isSaurion ? state.dinoRoarCharges > 0 : state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
-    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0);
+    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0) || (isPrimalSaurion && Boolean(state.saurionSummon));
     if (ui.abilityWrap) ui.abilityWrap.hidden = !showAbility;
     if (ui.ability) {
       ui.ability.classList.remove('is-prisma');
       ui.ability.classList.toggle('is-mahoraga', isMahoraga);
       ui.ability.classList.toggle('is-megumi', isMegumi);
       ui.ability.classList.toggle('is-flamestorm', isFlameStorm);
+      ui.ability.classList.toggle('is-saurion-primal', isPrimalSaurion);
       ui.ability.style.setProperty('--ship-color', skin.color);
       ui.ability.style.setProperty('--ship-accent', skin.accent);
       ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
       ui.ability.style.setProperty('--ship-accent-rgb', colorRgbTriplet(skin.accent));
-      ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || state.megumiSummonPhase === 'cinematic' || (!ready && !active);
+      ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || state.megumiSummonPhase === 'cinematic' || (isPrimalSaurion && (!ready || Boolean(state.saurionSummon))) || (!ready && !active);
       ui.ability.setAttribute('aria-pressed', String(active));
       if (isMahoraga) {
         if (ui.ability.firstChild !== mahoragaAdaptationIcon) ui.ability.replaceChildren(mahoragaAdaptationIcon);
       } else if (isFlameStorm) {
         ui.ability.textContent = flameStormBoostIcon;
+      } else if (isPrimalSaurion) {
+        ui.ability.textContent = '🐾';
       } else {
         ui.ability.textContent = isMegumi ? megumiE.icon : '✦';
       }
-      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 70% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 70% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos · intangível, rebate nas bordas e permite corrigir a direção' : ready ? 'Ativar Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochete e direção controlável · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isSaurion ? ready ? 'Rugido de Garras · ' + state.dinoRoarCharges + ' de 2 cargas · tecla E' : 'Rugido de Garras recarregando: próxima carga em ' + Math.ceil(state.dinoRoarRecharge) + ' segundos' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
+      ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 70% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 70% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos · intangível, rebate nas bordas e permite corrigir a direção' : ready ? 'Ativar Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochete e direção controlável · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isPrimalSaurion ? state.saurionSummon ? state.saurionSummon.name + ' ativo · ' + Math.ceil(state.saurionSummon.life) + 's' : ready ? 'Escolher dinossauro · recarga 40s · tecla E' : 'Chamado Primal recarrega em ' + Math.ceil(state.saurionSummonCooldownE) + 's' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
       const eCountdown = isMegumi
         ? state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown)) : megumiE.short
         : isMahoraga
         ? state.mahoragaParryWindow > 0 ? String(Math.ceil(state.mahoragaParryWindow)) : state.mahoragaParryCooldown > 0 ? state.mahoragaParryCooldown.toFixed(1).replace('.', ',') : state.mahoragaWheelReady ? '8/8' : ''
         : isFlameStorm && state.flameStormDash?.life > 0 ? state.flameStormDash.life.toFixed(1).replace('.', ',')
+        : isPrimalSaurion ? state.saurionSummon ? String(Math.ceil(state.saurionSummon.life)) : state.saurionSummonCooldownE > 0 ? String(Math.ceil(state.saurionSummonCooldownE)) : ''
         : isSaurion
         ? state.dinoRoarCharges > 0 ? String(state.dinoRoarCharges) : String(Math.ceil(state.dinoRoarRecharge))
         : !hasDeveloperPerks() && state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown))
@@ -1684,7 +1830,7 @@
         ui.abilityCooldown.hidden = !eCountdown;
       }
       ui.ability.classList.toggle('is-counting', Boolean(eCountdown));
-      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −70% dano; adapta tipos diferentes por cinco ondas até 55%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Dash flamejante e intangível por 5s, com ricochetes nas bordas e direção ajustável; os quadros de fogo substituem a nave. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
+      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −70% dano; adapta tipos diferentes por cinco ondas até 55%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Dash flamejante e intangível por 5s, com ricochetes nas bordas e direção ajustável; os quadros de fogo substituem a nave. ' : isPrimalSaurion ? 'E abre a escolha de criatura. Recarga própria de 40s; apenas uma invocação ativa por vez. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
       const isAurora = skin.id === 'aurora';
@@ -1692,6 +1838,7 @@
       const isEclipse = skin.id === 'eclipse';
       const isChronos = skin.id === 'chronos';
       const isSaurion = skin.id === 'saurion';
+      const isPrimalSaurion = skin.id === 'saurion-primal';
       const isRedshift = skin.id === 'redshift';
       const isFlashblade = skin.id === 'flashblade';
       const isTempest = skin.id === 'tempest';
@@ -1700,7 +1847,7 @@
       const isFlameStorm = skin.id === 'flamestorm';
       ui.eclipseQWrap.style.setProperty('--ship-accent', skin.accent);
       ui.eclipseQWrap.style.setProperty('--ship-color', skin.color);
-      const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isRedshift || isFlashblade || isTempest || isMahoraga || isMegumi || isFlameStorm) && ['playing', 'paused'].includes(state.mode);
+      const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isPrimalSaurion || isRedshift || isFlashblade || isTempest || isMahoraga || isMegumi || isFlameStorm) && ['playing', 'paused'].includes(state.mode);
       const auroraLinkTime = auroraLinkDuration();
       const auroraLinkCooldown = auroraLinkCooldownDuration();
       const auroraLinkTargets = auroraLinkMaxTargets();
@@ -1722,18 +1869,19 @@
       const tempestTideMax = tempestTideMaxCharges();
       const stampedeRemaining = state.effects.reduce((remaining, effect) => effect.type === 'dino-raptor' ? Math.max(remaining, effect.life) : remaining, 0);
       const tideRemaining = state.effects.reduce((remaining, effect) => effect.type === 'tempest-tide' ? Math.max(remaining, effect.life) : remaining, 0);
-      const qActive = isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion ? stampedeRemaining > 0 : isFlameStorm && state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
-      const qCooldown = isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseParadoxCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : isFlameStorm ? state.flameStormQCooldown : state.dinoStampedeRecharge;
+      const qActive = isPrimalSaurion ? Boolean(state.saurionSummon) : isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion ? stampedeRemaining > 0 : isFlameStorm && state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
+      const qCooldown = isPrimalSaurion ? state.saurionSummonCooldownQ : isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseParadoxCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : isFlameStorm ? state.flameStormQCooldown : state.dinoStampedeRecharge;
       const dinoCharges = hasDeveloperPerks() ? 3 : state.dinoStampedeCharges;
-      const qReady = (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
+      const qReady = isPrimalSaurion ? qCooldown <= 0 && !state.saurionSummon : (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
-      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
+      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || (isPrimalSaurion && Boolean(state.saurionSummon)) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
       if (isFlameStorm) ui.eclipseQ.textContent = flameStormVortexIcon;
-      else ui.eclipseQ.textContent = isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
+      else ui.eclipseQ.textContent = isPrimalSaurion ? '🦖' : isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
       ui.eclipseQ.classList.toggle('is-aurora', isAurora);
       ui.eclipseQ.classList.toggle('is-aegis', isAegis);
       ui.eclipseQ.classList.toggle('is-chronos', isChronos);
-      ui.eclipseQ.classList.toggle('is-saurion', isSaurion);
+      ui.eclipseQ.classList.toggle('is-tigrum', isSaurion);
+      ui.eclipseQ.classList.toggle('is-saurion-primal', isPrimalSaurion);
       ui.eclipseQ.classList.toggle('is-redshift', isRedshift);
       ui.eclipseQ.classList.toggle('is-flashblade', isFlashblade);
       ui.eclipseQ.classList.toggle('is-tempest', isTempest);
@@ -1742,7 +1890,10 @@
       ui.eclipseQ.classList.toggle('is-flamestorm', isFlameStorm);
       ui.eclipseQ.classList.remove('is-prisma');
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
-      const qLabel = isMegumi && state.megumiSummonPhase === 'cinematic' ? 'Ritual do Guardião em andamento'
+      const qLabel = isPrimalSaurion && qActive ? state.saurionSummon.name + ' ativo · ' + Math.ceil(state.saurionSummon.life) + 's · somente uma criatura por vez'
+        : isPrimalSaurion && !qReady ? 'Arsenal Jurássico recarrega em ' + Math.ceil(qCooldown) + ' segundos'
+        : isPrimalSaurion ? 'Escolher uma criatura · tecla Q · recarga própria de 40s; apenas uma invocação ativa'
+        : isMegumi && state.megumiSummonPhase === 'cinematic' ? 'Ritual do Guardião em andamento'
         : isMegumi && !qReady ? 'Ritual do Guardião recarregando: ' + Math.ceil(qCooldown) + ' segundos'
         : isMegumi ? 'Invocar o Guardião · tecla Q · cutscene e transformação por 5 ondas com uma vida extra · recarga de 45s depois que ela termina'
         : qActive && isAurora ? 'Elo Estelar ativo por mais ' + Math.ceil(state.auroraLink.life) + ' segundos · até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos vinculados'
@@ -1758,7 +1909,8 @@
                 : isMahoraga ? 'Espada da Exterminação · tecla Q · talho mundial em onda atravessa a arena, destrói tiros e atinge até oito alvos; 20 de dano no primeiro, 10 nos seguintes e dano reduzido contra chefes'
                    : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Paradoxo Absoluto · tecla Q · distorção por toda a tela durante ' + paradoxDuration + 's; desacelera, interrompe ataques e sentencia os alvos no colapso · recarga ' + paradoxCooldown + 's' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Estouro da Manada · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
-      ui.eclipseQ.title = isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por cinco ondas com uma vida extra · recarga de 45s depois que termina'
+      ui.eclipseQ.title = isPrimalSaurion ? 'Arsenal Jurássico · Q · permite escolher um dos oito dinossauros; só uma criatura ativa por vez · recarga 40s'
+        : isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por cinco ondas com uma vida extra · recarga de 45s depois que termina'
         : isFlameStorm ? 'Vórtice Carmesim · Q · invulnerabilidade, atração, absorção de tiros e supressão de chefes por 5s · recarga de ' + flameStormVortexCooldownDuration() + 's'
         : isMahoraga ? 'Espada da Exterminação · Q · onda de corte atravessa a tela e destrói tiros no trajeto · até oito alvos, 20 de dano no primeiro e 10 nos seguintes; chefes recebem 72% do dano · marca aumenta o próximo golpe em 10% · recarga ' + mahoragaSlashCooldownDuration() + 's'
         : isAurora ? 'Elo Estelar · Q · pulsos a cada 0,78s · até ' + auroraLinkTargets + ' alvos · cada vida perdida pela nave causa 2 de dano aos alvos conectados · dano do pulso ' + auroraLinkDamage.toFixed(1).replace('.', ',') + ' · duração ' + auroraLinkTime + 's · recarga ' + auroraLinkCooldown + 's'
@@ -1769,7 +1921,7 @@
           : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,6× · rastros até 9s · dano ' + (3 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
              : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(280 + state.tempestTideRadiusBonus)) + ' · dano ' + (3.2 + state.tempestTideDamageBonus).toFixed(1).replace('.', ',') + ' · 40% de chance de desviar tiros e redirecionar alguns contra inimigos · recarrega todas em ' + tempestTideCooldown + 's após esgotar'
               : 'Estouro da Manada · 3 cargas · Q · recarga de ' + Math.max(24, skin.cooldownQ - upgradeLevel('dinoResonance') * 2) + 's por carga';
-      const qActiveRemaining = isAurora ? state.auroraLink?.life || 0
+      const qActiveRemaining = isPrimalSaurion ? state.saurionSummon?.life || 0 : isAurora ? state.auroraLink?.life || 0
         : isAegis ? state.aegisOrbit?.life || 0
           : isEclipse ? state.eclipseParadox?.life || 0
             : isChronos ? state.chronosEcho?.life || 0
@@ -1790,11 +1942,19 @@
       }
       ui.eclipseQ.classList.toggle('is-counting', Boolean(qCountdown));
     }
+    if (ui.saurionCommand) {
+      const summon = skin.id === 'saurion-primal' ? state.saurionSummon : null;
+      const command = summon?.kind === 'rex' ? 'z' : summon?.kind === 'carno' ? 'x' : '';
+      ui.saurionCommand.hidden = !command || !showAbility || command === 'z' && summon.rageUsed;
+      ui.saurionCommand.disabled = state.mode !== 'playing' || command === 'x' && summon.commandCooldown > 0;
+      ui.saurionCommand.textContent = command === 'z' ? 'Z · FÚRIA' : command === 'x' ? summon.commandCooldown > 0 ? 'X · ' + Math.ceil(summon.commandCooldown) + 's' : 'X · INVESTIDA' : '';
+      ui.saurionCommand.setAttribute('aria-label', command === 'z' ? 'Ativar rugido de fúria do Tiranossauro · tecla Z' : 'Ativar investida do Carnotauro · tecla X');
+    }
   }
   function prismAbilityGlyph(choice = state.prismAbilityChoices.e) {
     const { shipId, key } = prismChoiceParts(choice);
     if (shipId === 'prisma') return key === 'q' ? '⌖' : '✧';
-    const glyphs = { aurora:{ e:'✴', q:'✧' }, aegis:{ e:'⬡', q:'⬡' }, chronos:{ e:'◷', q:'◌' }, tempest:{ e:'◉', q:'↗' }, flashblade:{ e:'✧', q:'〰' }, redshift:{ e:'◈', q:'△' }, eclipse:{ e:'◉', q:'◌' }, saurion:{ e:'〰', q:'🐾' }, mahoraga:{ e:'☸', q:'斬' }, megumi:{ e:'影', q:'召' }, flamestorm:{ e:'🔥', q:'🌀' } };
+    const glyphs = { aurora:{ e:'✴', q:'✧' }, aegis:{ e:'⬡', q:'⬡' }, chronos:{ e:'◷', q:'◌' }, tempest:{ e:'◉', q:'↗' }, flashblade:{ e:'✧', q:'〰' }, redshift:{ e:'◈', q:'△' }, eclipse:{ e:'◉', q:'◌' }, saurion:{ e:'〰', q:'🐾' }, 'saurion-primal':{ e:'🐾', q:'🦖' }, mahoraga:{ e:'☸', q:'斬' }, megumi:{ e:'影', q:'召' }, flamestorm:{ e:'🔥', q:'🌀' } };
     return glyphs[shipId]?.[key] || '✧';
   }
   function updatePrismAbilityButton() {
@@ -1830,7 +1990,7 @@
       const qTimer = prismSlotCooldown('q');
       const qCountdown = !hasDeveloperPerks() && qTimer > 0 ? String(Math.ceil(qTimer)) : '';
       ui.eclipseQWrap.hidden = !show;
-      ui.eclipseQ.classList.remove('is-aurora','is-aegis','is-chronos','is-saurion','is-redshift','is-flashblade','is-tempest','is-mahoraga','is-megumi','is-flamestorm');
+      ui.eclipseQ.classList.remove('is-aurora','is-aegis','is-chronos','is-tigrum','is-redshift','is-flashblade','is-tempest','is-mahoraga','is-megumi','is-flamestorm');
       ui.eclipseQ.classList.add('is-prisma');
       ui.eclipseQ.textContent = prismAbilityGlyph(state.prismAbilityChoices.q);
       ui.eclipseQ.disabled = !qCanUse || state.eclipsePhase === 'cinematic' || state.megumiSummonPhase === 'cinematic';
@@ -1963,9 +2123,10 @@
       select.disabled = !unlocked && !skin.ownerOnly;
       const icon = document.createElement('span');
       const usesHangarHull = ['classic','training','shield','ring','wing','blade'].includes(skin.shape);
-      icon.className = 'starfall-skin-icon' + (concealed ? ' starfall-prism-icon is-concealed' : skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'dino' ? ' starfall-dino-icon starfall-dino-image-wrap' : skin.shape === 'prism' ? ' starfall-prism-icon' : skin.shape === 'training' ? ' starfall-training-icon' : skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-umbra-icon' : skin.shape === 'reflector' ? ' starfall-redshift-icon' : '') + (usesHangarHull ? ' starfall-hangar-hull-icon' : '');
+      icon.className = 'starfall-skin-icon' + (concealed ? ' starfall-prism-icon is-concealed' : skin.shape === 'eclipse' ? ' starfall-eclipse-sprite' : skin.shape === 'saurion-primal' ? ' starfall-saurion-icon' : skin.shape === 'dino' ? ' starfall-dino-icon starfall-dino-image-wrap' : skin.shape === 'prism' ? ' starfall-prism-icon' : skin.shape === 'training' ? ' starfall-training-icon' : skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-umbra-icon' : skin.shape === 'reflector' ? ' starfall-redshift-icon' : '') + (usesHangarHull ? ' starfall-hangar-hull-icon' : '');
       icon.setAttribute('aria-hidden', 'true');
       if (concealed) icon.textContent = '?';
+      else if (skin.shape === 'saurion-primal') { const image = document.createElement('img'); image.src = 'saurion-frame-1.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'dino') { const image = document.createElement('img'); image.src = 'saurion-raptor-skill.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'megumi') { const image = document.createElement('img'); image.src = 'umbra-ship.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'flamestorm') { icon.classList.add('starfall-flamestorm-icon'); const image = document.createElement('img'); image.src = 'flamestorm-icon.png'; image.alt = ''; icon.append(image); }
@@ -2089,7 +2250,7 @@
     if (ui.mahoragaAwakening) { ui.mahoragaAwakening.hidden = true; ui.mahoragaAwakening.classList.remove('is-visible'); }
     state.prismDispatchSkinId = ''; state.prismDispatchSlot = ''; state.prismQCooldown = 0; state.prismHorizonAnchor = null; state.prismHorizonWindowBonus = 0; state.prismHorizonDamageBonus = 0; state.prismCoreRangeBonus = 0; state.prismCoreDamageBonus = 0; state.prismCooldownBonus = 0;
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
-    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 300; state.singularityDuration = 7; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseParadox = null; state.eclipseParadoxCooldown = 0; state.eclipseParadoxDurationBonus = 0; state.eclipseParadoxRadiusBonus = 0; state.eclipseParadoxSuppressBonus = 0; state.eclipseParadoxDamageBonus = 0; state.eclipseParadoxCooldownBonus = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoRoarCharges = 2; state.dinoRoarRecharge = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
+    state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 300; state.singularityDuration = 7; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseParadox = null; state.eclipseParadoxCooldown = 0; state.eclipseParadoxDurationBonus = 0; state.eclipseParadoxRadiusBonus = 0; state.eclipseParadoxSuppressBonus = 0; state.eclipseParadoxDamageBonus = 0; state.eclipseParadoxCooldownBonus = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoRoarCharges = 2; state.dinoRoarRecharge = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.saurionSummonCooldownE = 0; state.saurionSummonCooldownQ = 0; state.saurionSummon = null; state.saurionPlayerBuffTime = 0; state.saurionPlayerDamageBuff = 0; state.saurionPlayerFireRateBuff = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
     state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0; state.damageCounterTotal = 0; state.damageCounterLastHit = 0; state.damageCounterIdle = 0; state.damageCounterPopups = [];
     state.shipEWasCooling = false; state.shipQWasCooling = false; state.shipQChargeCount = skin.id === 'tempest' ? 4 : skin.id === 'saurion' ? 3 : null;
@@ -2189,7 +2350,7 @@
     cancelAnimationFrame(state.raf);
     if (ui.dailySummaryModal) ui.dailySummaryModal.hidden = true;
     syncAudioVisibility();
-    state.championshipRun = Boolean(championshipRun && championshipIsOpenNow());
+    state.championshipRun = Boolean(championshipRun && championshipAccessOpen());
     state.championshipBestWave = 0;
     state.pendingChampionshipRun = false;
     if (dailyChallenge) {
@@ -2396,9 +2557,9 @@
     saveNicknameCompletedWave(rankNickname(), completedWave);
     if (state.championshipRun) {
       state.championshipBestWave = Math.max(state.championshipBestWave, completedWave);
-      updateChampionshipMission('waves', 1);
       if (state.selectedSkin !== 'prisma') queueChampionshipScore(createRunRecord(completedWave));
     } else if (!state.dailyChallenge && state.selectedSkin !== 'prisma') queueRunSubmission(createRunRecord(completedWave));
+    if (state.championshipRun || isTestProfile()) updateChampionshipMission('waves', 1);
     setMode('upgrade');
     state.wave += 1;
     if (state.megumiTransformed) {
@@ -2598,6 +2759,7 @@
     const angle = Math.atan2(target.y - state.player.y, target.x - state.player.x);
     const totalShots = state.player.spread + state.bonusShots;
     const mahoragaDamageBuff = mahoragaAdaptationActive() ? 1 + state.mahoragaDuplicateBuffBonus : 1;
+    const saurionDamageBuff = currentSkin().id === 'saurion-primal' && state.saurionPlayerBuffTime > 0 ? 1 + state.saurionPlayerDamageBuff : 1;
     const bossAssist = target.kind === 'boss' && !target.isMiniBoss;
     const bossDistance = Math.max(1, distance(state.player, target));
     const bossHalfSpread = bossAssist ? Math.atan2(Math.max(3, target.r * .45), bossDistance) : 0;
@@ -2609,7 +2771,7 @@
         : centeredShot * .16);
       const critical = randomUnit('combat') < state.critChance;
       const regularShotColor = megumiShadowCloakActive() ? '#8c78b7' : currentSkin().id === 'training' ? '#f2f5fb' : currentSkin().accent;
-      const shot = { x: state.player.x + Math.cos(direction) * mobileSize(13), y: state.player.y + Math.sin(direction) * mobileSize(13), vx: Math.cos(direction) * 510, vy: Math.sin(direction) * 510, r: mobileSize(critical ? 5 : 3.5), damage: state.player.damage * (1 + state.endlessDamage) * mahoragaDamageBuff * (critical ? 2 : 1), pierce: state.pierce, hit: [], assistTarget: bossAssist ? target : null, color: megumiShadowCloakActive() ? critical ? '#d7c8f4' : regularShotColor : critical ? '#ffe38a' : regularShotColor, megumiShadowShot:megumiShadowCloakActive() };
+      const shot = { x: state.player.x + Math.cos(direction) * mobileSize(13), y: state.player.y + Math.sin(direction) * mobileSize(13), vx: Math.cos(direction) * 510, vy: Math.sin(direction) * 510, r: mobileSize(critical ? 5 : 3.5), damage: state.player.damage * (1 + state.endlessDamage) * mahoragaDamageBuff * saurionDamageBuff * (critical ? 2 : 1), pierce: state.pierce, hit: [], assistTarget: bossAssist ? target : null, color: megumiShadowCloakActive() ? critical ? '#d7c8f4' : regularShotColor : critical ? '#ffe38a' : regularShotColor, megumiShadowShot:megumiShadowCloakActive() };
       state.bullets.push(shot);
       queueChronosEcho(shot);
     }
@@ -2624,6 +2786,8 @@
     if (megumiShadowCloakActive()) return { x:state.megumiCloakLastX, y:state.megumiCloakLastY };
     const rabbit = state.megumiRabbits.filter((shikigami) => shikigami.life > 0).sort((a, b) => distance(enemy || state.player, a) - distance(enemy || state.player, b))[0];
     if (rabbit) return rabbit;
+    const saurionDecoy = state.saurionSummon;
+    if (currentSkin().id === 'saurion-primal' && saurionDecoy?.kind === 'trike' && saurionDecoy.provokeTime > 0) return saurionDecoy;
     return state.player;
   }
   function enemyFire(enemy) {
@@ -3082,6 +3246,12 @@
     const isMahoraga = mahoragaAdaptationActive();
     const mahoragaShieldActive = isMahoraga && state.mahoragaParryWindow > 0;
     if ((!mahoragaShieldActive && state.invulnerable > 0) || (isMahoraga && state.mahoragaShieldHitCooldown > 0) || state.mode !== 'playing') return;
+    if (abilitySourceIs('flashblade') && state.flashTrail?.life > 0) {
+      // Cancel only the active dash. Trail segments are separate world effects and expire normally.
+      state.flashTrail = null;
+      updateAbilityButton();
+      toast('RASTRO DE RUPTURA INTERROMPIDO PELO IMPACTO');
+    }
     if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
     if (isMahoraga) recordMahoragaHit(attackType);
     const scaledIncomingAmount = Math.max(0, amount) * enemyWaveDamageScale();
@@ -3508,11 +3678,11 @@
       const y2 = centerY + normalY * offset + directionY * length * .5;
       const bend = visualRandom(-length * .12, length * .12);
       state.effects.push({
-        type: 'dino-claw', x1, y1, x2, y2,
+      type: 'dino-claw', x1, y1, x2, y2,
         cx: (x1 + x2) / 2 + normalX * bend,
         cy: (y1 + y2) / 2 + normalY * bend,
         width: mobileSize(Math.max(1.15, enemy.r * .065 * clawScale)),
-        life: .32, total: .32, color: claw === 0 ? '#efffc8' : '#72f58e'
+        life: .32, total: .32, color: claw === 0 ? '#fff0ce' : '#ff8a28'
       });
     }
   }
@@ -3545,8 +3715,8 @@
       const life = 2.65;
       state.effects.push({ type: 'dino-raptor', x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, angle, turnRate: 5.1, target, size: mobileSize(34), radius: mobileSize(36), damage: (8 + state.dinoStampedeDamageBonus) * state.abilityPower, bossDamageLedger, life, total: life, hit: [] });
     }
-    burst(state.player.x, state.player.y, '#75f28b', 30, 160);
-    burst(state.player.x, state.player.y, '#eaffb2', 9, 100);
+    burst(state.player.x, state.player.y, '#f28a28', 30, 160);
+    burst(state.player.x, state.player.y, '#ffe3a0', 9, 100);
     toast('ESTOURO DA MANADA · ' + count + ' RAPTORES · ' + (developerProfile ? '∞' : state.dinoStampedeCharges + '/3') + ' CARGAS');
     tone(125, .28, 'sawtooth', .045);
     updateAbilityButton();
@@ -3799,6 +3969,7 @@
     else if (currentSkin().id === 'redshift') activateRedshiftPerimeter();
     else if (currentSkin().id === 'flashblade') activateFlashTrail();
     else if (currentSkin().id === 'saurion') activateDinoStampede();
+    else if (currentSkin().id === 'saurion-primal') openSaurionSummonPicker('q');
     else if (currentSkin().id === 'tempest') activateTempestTide();
     else if (currentSkin().id === 'flamestorm') activateFlameStormVortex();
   }
@@ -4515,7 +4686,7 @@
       if (bullet.dead || bullet.reflected) continue;
       if (distance(state.player, bullet) <= radius) {
         bullet.dead = true; clearedBullets++;
-        burst(bullet.x, bullet.y, '#caff91', 5, 70);
+        burst(bullet.x, bullet.y, '#ff9b32', 5, 70);
       }
     }
     let markedTargets = 0;
@@ -4527,16 +4698,220 @@
       enemy.dinoClawBursts = 7;
       enemy.dinoClawTimer = .1;
       markedTargets++;
-      burst(enemy.x, enemy.y, '#75f28b', boss ? 6 : 4, boss ? 92 : 72);
+      burst(enemy.x, enemy.y, '#f28a28', boss ? 6 : 4, boss ? 92 : 72);
     }
-    burst(state.player.x, state.player.y, '#75f28b', 34, 260);
-    burst(state.player.x, state.player.y, '#eaffb2', 12, 150);
+    burst(state.player.x, state.player.y, '#f28a28', 34, 260);
+    burst(state.player.x, state.player.y, '#ffe3a0', 12, 150);
     const roarSummary = ['RUGIDO DE GARRAS', state.dinoRoarCharges + '/2 CARGAS'];
     if (markedTargets) roarSummary.push(markedTargets + ' ALVOS MARCADOS');
     if (clearedBullets) roarSummary.push(clearedBullets + ' PROJÉTEIS DESFEITOS');
     recordAchievementEvent('ship-ability', 'saurion');
     toast(roarSummary.join(' · '));
     tone(92, .38, 'sawtooth', .04);
+    updateAbilityButton();
+  }
+  function openSaurionSummonPicker(key) {
+    if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing' || state.saurionSummon) return;
+    const cooldownKey = key === 'q' ? 'saurionSummonCooldownQ' : 'saurionSummonCooldownE';
+    if (state[cooldownKey] > 0) return;
+    pendingSaurionSummonKey = key;
+    if (ui.saurionSummonPickerSkill) ui.saurionSummonPickerSkill.textContent = 'Invocação pela habilidade ' + key.toUpperCase() + ' · recarga própria de 40 segundos';
+    if (ui.saurionSummonPicker) {
+      ui.saurionSummonPicker.hidden = false;
+      ui.saurionSummonPicker.querySelector('[data-saurion-summon-choice]')?.focus();
+    }
+  }
+  function closeSaurionSummonPicker() {
+    pendingSaurionSummonKey = '';
+    if (ui.saurionSummonPicker) ui.saurionSummonPicker.hidden = true;
+  }
+  function summonSaurionCreature(key, creatureId) {
+    if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing') return;
+    if (state.saurionSummon) { toast(state.saurionSummon.name.toUpperCase() + ' JÁ ESTÁ EM CAMPO'); return; }
+    const cooldownKey = key === 'q' ? 'saurionSummonCooldownQ' : 'saurionSummonCooldownE';
+    if (state[cooldownKey] > 0) return;
+    const creature = saurionCreatures.find((item) => item.id === creatureId) || saurionCreatures[Math.floor(randomUnit('ability') * saurionCreatures.length)];
+    const summon = {
+      ...creature, x:state.player.x + mobileSize(42), y:state.player.y - mobileSize(62), angle:-Math.PI / 2,
+      life:creature.duration, total:creature.duration, hp:creature.kind === 'titan' ? 56 : creature.kind === 'trike' ? 44 : creature.kind === 'rex' ? 38 : creature.kind === 'ankyl' ? 40 : 30,
+      attackCooldown:.65, stompCooldown:6, tailCooldown:creature.kind === 'spino' ? 2.5 : 10, rushCooldown:1.8,
+      provokeTime:0, fearTime:0, dashTime:0, dashDirection:1, dashHit:new Set(), trampleCooldowns:new Map(), tailPose:0, commandCooldown:0, rageUsed:false
+    };
+    summon.maxHp = summon.hp;
+    state.saurionSummon = summon;
+    state[cooldownKey] = 40;
+    burst(summon.x, summon.y, '#7dff3f', 34, 210);
+    burst(summon.x, summon.y, '#d4ff8a', 14, 130);
+    for (const enemy of state.enemies) {
+      if (enemy.dead || distance(summon, enemy) > mobileSize(410) + enemy.r) continue;
+      enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .35 : .62);
+      const angle = Math.atan2(enemy.y - summon.y, enemy.x - summon.x);
+      enemy.tempestRepulse = { time:.48, total:.48, vx:Math.cos(angle) * 145, vy:Math.sin(angle) * 145, spin:(enemy.x < summon.x ? -1 : 1) * 1.3 };
+      if (summon.kind === 'spino') enemy.saurionFearTime = Math.max(enemy.saurionFearTime || 0, 2.2);
+      if (summon.kind === 'trike') { enemy.saurionTauntTime = Math.max(enemy.saurionTauntTime || 0, 25); summon.provokeTime = 25; }
+      if (summon.kind === 'rex') {
+        enemy.saurionFearTime = Math.max(enemy.saurionFearTime || 0, 25);
+        enemy.saurionAttackSlowTime = Math.max(enemy.saurionAttackSlowTime || 0, 25);
+        enemy.saurionAttackSlowFactor = .85;
+      }
+      if (summon.kind === 'carno') {
+        enemy.saurionFearTime = Math.max(enemy.saurionFearTime || 0, 4);
+        enemy.saurionSlowTime = Math.max(enemy.saurionSlowTime || 0, 25);
+      }
+      if (summon.kind === 'titan') applySaurionDamage(enemy, .10, .025);
+    }
+    if (summon.kind === 'rex' || summon.kind === 'carno') {
+      state.saurionPlayerBuffTime = Math.max(state.saurionPlayerBuffTime, 15);
+      state.saurionPlayerDamageBuff = summon.kind === 'rex' ? .12 : 0;
+      state.saurionPlayerFireRateBuff = summon.kind === 'rex' ? .18 : .14;
+    }
+    recordAchievementEvent('ship-ability', 'saurion-primal');
+    toast(creature.name.toUpperCase() + ' · ' + creature.role.toUpperCase() + ' · ' + key.toUpperCase() + ' RECARREGA EM 40s');
+    tone(126, .42, 'sawtooth', .045);
+    updateAbilityButton();
+  }
+  function applySaurionDamage(enemy, fraction, bossCap = .028) {
+    if (!enemy || enemy.dead) return;
+    const maxHp = Math.max(1, enemy.maxHp || enemy.hp || 1);
+    const damage = enemy.kind === 'boss' ? Math.min(maxHp * fraction, maxHp * bossCap) : Math.max(1, maxHp * fraction);
+    damageEnemy(enemy, damage, true);
+  }
+  function updateSaurionSummon(dt) {
+    state.saurionSummonCooldownE = Math.max(0, state.saurionSummonCooldownE - dt);
+    state.saurionSummonCooldownQ = Math.max(0, state.saurionSummonCooldownQ - dt);
+    state.saurionPlayerBuffTime = Math.max(0, state.saurionPlayerBuffTime - dt);
+    if (state.saurionPlayerBuffTime <= 0) { state.saurionPlayerDamageBuff = 0; state.saurionPlayerFireRateBuff = 0; }
+    const summon = state.saurionSummon;
+    if (!summon || currentSkin().id !== 'saurion-primal') return;
+    summon.life -= dt;
+    summon.attackCooldown -= dt;
+    summon.rushCooldown -= dt;
+    summon.stompCooldown -= dt;
+    summon.tailCooldown -= dt;
+    summon.commandCooldown = Math.max(0, summon.commandCooldown - dt);
+    summon.provokeTime = Math.max(0, summon.provokeTime - dt);
+    summon.fearTime = Math.max(0, summon.fearTime - dt);
+    if (summon.life <= 0 || summon.hp <= 0) {
+      burst(summon.x, summon.y, summon.hp <= 0 ? '#b5ff70' : '#79e543', 20, 145);
+      if (summon.hp <= 0) toast(summon.name.toUpperCase() + ' VOLTOU À MANADA');
+      state.saurionSummon = null;
+      updateAbilityButton();
+      return;
+    }
+    const targets = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(summon, a) - distance(summon, b));
+    const target = summon.kind === 'carno' ? [...targets].sort((a, b) => (b.speed || 0) - (a.speed || 0))[0] : targets[0];
+    const followX = state.player.x + Math.cos(state.elapsed * 1.7 + .5) * mobileSize(50);
+    const followY = state.player.y - mobileSize(50) + Math.sin(state.elapsed * 2.1) * mobileSize(15);
+    if ((summon.kind === 'trike' || summon.kind === 'carno') && summon.dashTime > 0) {
+      const previousX = summon.x;
+      const summonRadius = mobileSize(summon.radius);
+      if (summon.kind === 'trike') {
+        summon.x = clamp(summon.x + summon.dashDirection * mobileSize(690) * dt, summonRadius, state.width - summonRadius);
+        summon.y += (state.player.y - summon.y) * Math.min(1, dt * 3);
+      } else {
+        summon.x = clamp(summon.x + Math.cos(summon.dashAngle || summon.angle) * mobileSize(620) * dt, summonRadius, state.width - summonRadius);
+        summon.y = clamp(summon.y + Math.sin(summon.dashAngle || summon.angle) * mobileSize(620) * dt, summonRadius, state.height - summonRadius);
+      }
+      summon.dashTime -= dt;
+      for (const enemy of targets) {
+        if (summon.dashHit.has(enemy) || distance(enemy, { x:summon.x, y:summon.y }) > summonRadius + enemy.r + mobileSize(13)) continue;
+        summon.dashHit.add(enemy);
+        applySaurionDamage(enemy, summon.kind === 'carno' ? .10 : enemy.kind === 'boss' || enemy.kind === 'brute' ? .5 : 1, summon.kind === 'carno' ? .012 : .035);
+        enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .4 : .85);
+        burst((previousX + summon.x) / 2, summon.y, '#a5ff54', 8, 105);
+      }
+      if (summon.kind === 'trike' && (summon.x <= summonRadius + 1 || summon.x >= state.width - summonRadius - 1)) summon.dashTime = 0;
+      if (summon.dashTime <= 0) { summon.dashHit.clear(); if (summon.kind === 'trike') summon.rushCooldown = 5; else summon.commandCooldown = 4; }
+    } else {
+      const speed = summon.kind === 'titan' ? 2.1 : summon.kind === 'carno' ? 4.5 : summon.kind === 'raptor' ? 4 : 3.1;
+      summon.x += (followX - summon.x) * Math.min(1, dt * speed);
+      summon.y += (followY - summon.y) * Math.min(1, dt * speed);
+      if (target) summon.angle = Math.atan2(target.y - summon.y, target.x - summon.x);
+      else summon.angle = -Math.PI / 2;
+    }
+    if (summon.kind === 'titan') {
+      for (const enemy of targets) {
+        const cooldown = Math.max(0, (summon.trampleCooldowns.get(enemy) || 0) - dt);
+        if (cooldown <= 0 && distance(summon, enemy) <= mobileSize(summon.radius * .78) + enemy.r) {
+          summon.trampleCooldowns.set(enemy, 1.5);
+          applySaurionDamage(enemy, enemy.kind === 'boss' ? .06 : .75, .012);
+          enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .22 : .38);
+          const angle = Math.atan2(enemy.y - summon.y, enemy.x - summon.x);
+          enemy.tempestRepulse = { time:.24, total:.24, vx:Math.cos(angle) * 115, vy:Math.sin(angle) * 115, spin:0 };
+          burst(enemy.x, enemy.y, '#b4d96c', 5, 72);
+        } else if (cooldown > 0) summon.trampleCooldowns.set(enemy, cooldown);
+      }
+    }
+    if (summon.kind === 'trike' && summon.dashTime <= 0 && target && summon.rushCooldown <= 0) {
+      summon.dashDirection = summon.x < state.width / 2 ? 1 : -1;
+      summon.dashTime = 1.25;
+      summon.dashHit.clear();
+      burst(summon.x, summon.y, '#a5ff54', 12, 125);
+    }
+    if (summon.kind === 'titan' && summon.stompCooldown <= 0) {
+      summon.stompCooldown = 6;
+      state.effects.push({ type:'saurion-summon-wave', x:summon.x, y:summon.y, radius:0, maxRadius:mobileSize(235), life:.56, total:.56, color:'#b4d96c' });
+      for (const enemy of targets) if (distance(summon, enemy) < mobileSize(235) + enemy.r) {
+        applySaurionDamage(enemy, .10, .022);
+        enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .25 : .5);
+      }
+    }
+    if (summon.attackCooldown <= 0 && targets.length) {
+      const nearby = targets.filter((enemy) => distance(summon, enemy) <= mobileSize(summon.kind === 'theri' ? 175 : 145) + enemy.r);
+      const prey = nearby[0];
+      if (summon.kind === 'spino' && nearby.length > 3 && summon.tailCooldown <= 0) {
+        summon.tailCooldown = 2.5; summon.attackCooldown = .55;
+        nearby.forEach((enemy) => { applySaurionDamage(enemy, .5, .03); enemy.tempestRepulse = { time:.42, total:.42, vx:Math.cos(Math.atan2(enemy.y-summon.y,enemy.x-summon.x))*165, vy:Math.sin(Math.atan2(enemy.y-summon.y,enemy.x-summon.x))*165, spin:1.5 }; });
+        summon.tailPose = .5; burst(summon.x, summon.y, '#78f044', 16, 145);
+      } else if (summon.kind === 'titan' && summon.tailCooldown > 0) {
+        summon.attackCooldown = .25;
+      } else if (prey) {
+        const cooldown = summon.kind === 'carno' ? .5 : summon.kind === 'rex' ? 1.5 : summon.kind === 'raptor' ? 1.1 : summon.kind === 'ankyl' ? 2.8 : summon.kind === 'theri' ? 2.2 : 2;
+        summon.attackCooldown = cooldown;
+        if (summon.kind === 'spino') applySaurionDamage(prey, .35, .027);
+        else if (summon.kind === 'trike') { applySaurionDamage(prey, prey.kind === 'boss' || prey.kind === 'brute' ? .5 : 1, .035); prey.dinoStun = Math.max(prey.dinoStun || 0, .45); }
+        else if (summon.kind === 'titan') { summon.tailCooldown = 10; applySaurionDamage(prey, .75, .035); }
+        else if (summon.kind === 'rex') {
+          applySaurionDamage(prey, .28, .03);
+          if (prey.kind === 'boss' || prey.kind === 'brute') {
+            prey.saurionAttackSlowTime = Math.max(prey.saurionAttackSlowTime || 0, 5);
+            prey.saurionAttackSlowFactor = .5;
+            const angle = Math.atan2(prey.y - summon.y, prey.x - summon.x);
+            prey.tempestRepulse = { time:.34, total:.34, vx:Math.cos(angle) * 150, vy:Math.sin(angle) * 150, spin:1.1 };
+          }
+        }
+        else if (summon.kind === 'carno') applySaurionDamage(prey, .20, .008);
+        else if (summon.kind === 'ankyl') { applySaurionDamage(prey, .32, .024); nearby.slice(0, 4).forEach((enemy) => { if (enemy !== prey) { applySaurionDamage(enemy, .18, .018); enemy.dinoStun = Math.max(enemy.dinoStun || 0, .35); } }); }
+        else if (summon.kind === 'theri') { nearby.slice(0, 3).forEach((enemy) => applySaurionDamage(enemy, .22, .02)); }
+        else applySaurionDamage(prey, .2, .012);
+        summon.tailPose = .28;
+        burst(prey.x, prey.y, '#8dff4b', summon.kind === 'titan' ? 13 : 7, 105);
+      }
+    }
+    summon.tailPose = Math.max(0, summon.tailPose - dt);
+  }
+  function activateSaurionCommand() {
+    const summon = state.saurionSummon;
+    if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing' || !summon) return;
+    if (summon.kind === 'rex' && !summon.rageUsed) {
+      summon.rageUsed = true;
+      state.saurionPlayerBuffTime = 15;
+      state.saurionPlayerDamageBuff = .25;
+      state.saurionPlayerFireRateBuff = .25;
+      state.effects.push({ type:'saurion-summon-wave', x:state.player.x, y:state.player.y, radius:0, maxRadius:mobileSize(180), life:.56, total:.56, color:'#b4ff61' });
+      toast('RUGIDO DE FÚRIA · DANO E CADÊNCIA +25% · 15s');
+      burst(summon.x, summon.y, '#b4ff61', 17, 145);
+      tone(88, .42, 'sawtooth', .05);
+    } else if (summon.kind === 'carno' && summon.commandCooldown <= 0) {
+      summon.dashTime = .42;
+      const target = nearestEnemyFrom(summon);
+      summon.dashAngle = target ? Math.atan2(target.y - summon.y, target.x - summon.x) : summon.angle;
+      summon.commandCooldown = 4.42;
+      summon.attackCooldown = Math.min(summon.attackCooldown, .1);
+      toast('CARNOTAURO · INVESTIDA CURTA');
+      burst(summon.x, summon.y, '#a4ff48', 12, 130);
+      tone(180, .18, 'sawtooth', .035);
+    }
     updateAbilityButton();
   }
   function activateAbility() {
@@ -4555,6 +4930,10 @@
     }
     if (skin.id === 'saurion') {
       activateSaurionRoar();
+      return;
+    }
+    if (skin.id === 'saurion-primal') {
+      openSaurionSummonPicker('e');
       return;
     }
     if (skin.id === 'flamestorm') {
@@ -4609,7 +4988,7 @@
     else if (skin.id !== 'eclipse') tone(740, .22, 'triangle', .05);
   }
   function update(dt) {
-    if (state.megumiSummonPhase === 'cinematic' || state.damageCounterEditing) return;
+    if (state.megumiSummonPhase === 'cinematic' || state.damageCounterEditing || (ui.saurionSummonPicker && !ui.saurionSummonPicker.hidden)) return;
     state.elapsed += dt;
     state.damageCounterIdle = Math.min(3.2, state.damageCounterIdle + dt);
     for (const popup of state.damageCounterPopups) { popup.life -= dt; popup.y -= mobileSize(22) * dt; }
@@ -4764,6 +5143,7 @@
       }
       if (flameStormDash.life <= 0) state.flameStormDash = null;
     }
+    updateSaurionSummon(dt);
     for (const rabbit of state.megumiRabbits) {
       rabbit.life -= dt; rabbit.turnTimer -= dt;
       if (rabbit.turnTimer <= 0) { rabbit.angle += random(-rabbit.turn, rabbit.turn, 'ability'); rabbit.turnTimer = random(.35, 1.1, 'ability'); }
@@ -4781,7 +5161,7 @@
     state.megumiRabbits = state.megumiRabbits.filter((rabbit) => rabbit.life > 0);
     updateFlashTrail(dt);
     updateEclipseCuts(dt);
-    if (state.automaticFireEnabled && state.eclipsePhase !== 'active' && state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = state.player.fireRate; }
+    if (state.automaticFireEnabled && state.eclipsePhase !== 'active' && state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = Math.max(.13, state.player.fireRate * (currentSkin().id === 'saurion-primal' && state.saurionPlayerBuffTime > 0 ? 1 - state.saurionPlayerFireRateBuff : 1)); }
     if (!state.bossWave && state.waveKills < state.enemiesRequired && state.waveGrace <= 0) {
       state.enemySpawn -= dt;
       if (state.enemySpawn <= 0 && state.enemies.length < Math.min(24, 12 + Math.floor(state.wave * .3))) { spawnEnemy(); state.enemySpawn = Math.max(.34, .72 - Math.min(state.wave, 40) * .006 - Math.floor((Math.min(state.wave, 40) - 1) / 10) * .025) * random(.78, .98, 'spawnTimer'); }
@@ -4898,6 +5278,12 @@
       if (enemy.dead) continue;
       const aimTarget = enemyAimTarget(enemy);
       let angle = Math.atan2(aimTarget.y - enemy.y, aimTarget.x - enemy.x);
+      enemy.saurionFearTime = Math.max(0, (enemy.saurionFearTime || 0) - dt);
+      enemy.saurionTauntTime = Math.max(0, (enemy.saurionTauntTime || 0) - dt);
+      enemy.saurionSlowTime = Math.max(0, (enemy.saurionSlowTime || 0) - dt);
+      enemy.saurionAttackSlowTime = Math.max(0, (enemy.saurionAttackSlowTime || 0) - dt);
+      const saurionFear = currentSkin().id === 'saurion-primal' && enemy.saurionFearTime > 0 ? state.saurionSummon : null;
+      if (saurionFear) angle = Math.atan2(enemy.y - saurionFear.y, enemy.x - saurionFear.x);
       const flashTrailDisorient = enemy.flashTrailDisorient;
       if (flashTrailDisorient && flashTrailDisorient.time > 0) {
         flashTrailDisorient.time = Math.max(0, flashTrailDisorient.time - dt);
@@ -4923,7 +5309,7 @@
       const insideParadox = Boolean(paradoxField && Math.hypot(enemy.x - paradoxField.x, enemy.y - paradoxField.y) <= paradoxField.radius + enemy.r);
       const paradoxExposure = insideParadox ? paradoxField.exposure.get(enemy) || 0 : 0;
       const paradoxSlowLimit = enemy.kind === 'boss' ? .42 : .68;
-      const enemySlowFactor = slowFactor * (insideParadox ? 1 - paradoxSlowLimit * clamp(paradoxExposure / Math.min(2.2, paradoxField.total), 0, 1) : 1);
+      const enemySlowFactor = slowFactor * (insideParadox ? 1 - paradoxSlowLimit * clamp(paradoxExposure / Math.min(2.2, paradoxField.total), 0, 1) : 1) * (saurionFear ? .76 : 1) * (currentSkin().id === 'saurion-primal' && enemy.saurionSlowTime > 0 ? .82 : 1);
       enemy.dinoCutMark = Math.max(0, (enemy.dinoCutMark || 0) - dt);
       if (enemy.dinoCutMark > 0 && (enemy.dinoClawBursts || 0) > 0) {
         enemy.dinoClawTimer = Math.max(0, (enemy.dinoClawTimer || 0) - dt);
@@ -4931,7 +5317,7 @@
           emitDinoClawSet(enemy);
           const clawDamage = (1 + state.dinoRoarBonus * .02) * state.abilityPower * (enemy.kind === 'boss' ? 1.35 : 1);
           damageEnemy(enemy, clawDamage, true);
-          burst(enemy.x, enemy.y, '#caff91', enemy.kind === 'boss' ? 6 : 4, 96);
+          burst(enemy.x, enemy.y, '#ff9b35', enemy.kind === 'boss' ? 6 : 4, 96);
           enemy.dinoClawBursts--;
           enemy.dinoClawTimer = .9;
           if (enemy.dead) continue;
@@ -4969,7 +5355,7 @@
           enemy.x += Math.cos(angle) * speed * dt * enemySlowFactor; enemy.y += Math.sin(angle) * speed * dt * enemySlowFactor;
         }
         if (enemy.cooldown) {
-          enemy.cooldown -= dt * enemySlowFactor;
+          enemy.cooldown -= dt * enemySlowFactor * (currentSkin().id === 'saurion-primal' && enemy.saurionAttackSlowTime > 0 ? enemy.saurionAttackSlowFactor || .85 : 1);
           if (enemy.cooldown <= 0 && enemy.y > 0 && enemy.y < state.height - 25) {
             enemyFire(enemy);
             const baseCooldown = enemy.kind === 'boss'
@@ -5047,6 +5433,14 @@
     }
     state.bullets = state.bullets.filter(b => !b.dead);
     state.enemies = state.enemies.filter(e => !e.dead && e.y > -100 && e.y < state.height + 100 && e.x > -100 && e.x < state.width + 100);
+    const saurionInterception = currentSkin().id === 'saurion-primal' ? state.saurionSummon : null;
+    if (saurionInterception) for (const bullet of state.enemyBullets) {
+      if (bullet.dead || bullet.reflected || distance(bullet, saurionInterception) >= bullet.r + mobileSize(saurionInterception.radius) * .68) continue;
+      bullet.dead = true;
+      saurionInterception.hp -= Math.max(1, bullet.damage || 1);
+      burst(bullet.x, bullet.y, '#9eff58', 4, 62);
+      if (saurionInterception.hp <= 0) break;
+    }
     for (const bullet of state.enemyBullets) if (!bullet.dead && !bullet.reflected && !flameStormDashActive && state.flameStormQIntangible <= 0 && !(bullet.tempestTideSweep?.time > 0) && Math.hypot(bullet.x - state.player.x, bullet.y - state.player.y) < bullet.r + state.player.radius * .7) {
       if (reflectIncomingBullet(bullet)) continue;
       if (bullet.explosive && state.invulnerable <= 0) explodeBullet(bullet);
@@ -5204,10 +5598,10 @@
           } else damageEnemy(enemy, raptorDamage, true);
           effect.hit.push(enemy);
           if (effect.type === 'dino-raptor') effect.target = null;
-          burst(effect.x, effect.y, markedBySaurion ? '#eaffb2' : '#9dff79', markedBySaurion ? 14 : 10, markedBySaurion ? 130 : 105);
-          burst(effect.x, effect.y, '#e9ffd0', 5, 72);
+          burst(effect.x, effect.y, markedBySaurion ? '#ffe1a0' : '#ff9a35', markedBySaurion ? 14 : 10, markedBySaurion ? 130 : 105);
+          burst(effect.x, effect.y, '#fff0d2', 5, 72);
         }
-        if (state.particles.length < particleLimit() && visualRandomUnit() < dt * 16) state.particles.push({ x: effect.x + visualRandom(-12, 12), y: effect.y + visualRandom(-12, 12), vx: visualRandom(-32, 32), vy: visualRandom(-32, 32), life: .34, maxLife: .34, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#d4ff72' : '#50e884' });
+        if (state.particles.length < particleLimit() && visualRandomUnit() < dt * 16) state.particles.push({ x: effect.x + visualRandom(-12, 12), y: effect.y + visualRandom(-12, 12), vx: visualRandom(-32, 32), vy: visualRandom(-32, 32), life: .34, maxLife: .34, r: mobileSize(visualRandom(2, 4)), color: visualRandomUnit() < .5 ? '#ffbd55' : '#c95420' });
         if (effect.x < -100 || effect.x > state.width + 100 || effect.y < -100 || effect.y > state.height + 100) effect.life = 0;
       } else if (effect.type === 'blade') {
         effect.turnTimer -= dt;
@@ -5313,7 +5707,7 @@
           const dxHole = effect.x - pickup.x; const dyHole = effect.y - pickup.y; const d = Math.hypot(dxHole, dyHole);
           if (d < effect.radius) { const force = (120 + (1 - d / effect.radius) * 210) * dt; pickup.x += dxHole / (d || 1) * force; pickup.y += dyHole / (d || 1) * force; }
         }
-      } else if (effect.type === 'nova' || effect.type === 'prism-core-wave' || effect.type === 'prism-return-wave') effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
+      } else if (effect.type === 'nova' || effect.type === 'prism-core-wave' || effect.type === 'prism-return-wave' || effect.type === 'saurion-summon-wave') effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
       if (effect.life > 0) activeEffects.push(effect);
     }
     state.flashTrailContacts = currentFlashTrailContacts;
@@ -5334,33 +5728,33 @@
     const pulse = .92 + Math.sin(timestamp / 95) * .08;
     if (state.performanceMode !== 'light') {
       const aura = ctx.createRadialGradient(0, 0, size * .12, 0, 0, size * 1.8);
-      aura.addColorStop(0, 'rgba(92,255,117,.2)'); aura.addColorStop(.58, 'rgba(44,210,102,.12)'); aura.addColorStop(1, 'rgba(35,190,99,0)');
+      aura.addColorStop(0, 'rgba(255,151,44,.22)'); aura.addColorStop(.58, 'rgba(207,82,23,.13)'); aura.addColorStop(1, 'rgba(63,24,16,0)');
       ctx.fillStyle = aura; ctx.beginPath(); ctx.ellipse(0, 0, size * 1.65, size * 1.85, 0, 0, Math.PI * 2); ctx.fill();
     }
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     const armor = ctx.createLinearGradient(-size, -size, size, size);
-    armor.addColorStop(0, '#123d35'); armor.addColorStop(.35, color); armor.addColorStop(.72, '#168c56'); armor.addColorStop(1, '#0b382f');
+    armor.addColorStop(0, '#211514'); armor.addColorStop(.35, color); armor.addColorStop(.72, '#aa4b1d'); armor.addColorStop(1, '#281412');
     for (const side of [-1, 1]) {
-      ctx.fillStyle = '#14613e'; ctx.strokeStyle = accent; ctx.lineWidth = size * .055;
+      ctx.fillStyle = '#743417'; ctx.strokeStyle = accent; ctx.lineWidth = size * .055;
       ctx.beginPath(); ctx.moveTo(side * size * .48, -size * .48); ctx.lineTo(side * size * 1.02, -size * .94); ctx.lineTo(side * size * .86, -size * .28); ctx.lineTo(side * size * 1.24, size * .02); ctx.lineTo(side * size * .61, size * .18); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#a9ff74'; ctx.beginPath(); ctx.moveTo(side * size * .73, -size * .58); ctx.lineTo(side * size * .96, -size * .8); ctx.lineTo(side * size * .85, -size * .39); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#ffb74a'; ctx.beginPath(); ctx.moveTo(side * size * .73, -size * .58); ctx.lineTo(side * size * .96, -size * .8); ctx.lineTo(side * size * .85, -size * .39); ctx.closePath(); ctx.fill();
     }
     ctx.fillStyle = armor; ctx.strokeStyle = accent; ctx.lineWidth = size * .075; ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .32;
     ctx.beginPath(); ctx.moveTo(0, -size * 1.38); ctx.quadraticCurveTo(size * .78, -size * 1.16, size * .72, -size * .48); ctx.lineTo(size * .92, -size * .08); ctx.quadraticCurveTo(size * .73, size * .28, size * .35, size * .27); ctx.lineTo(0, size * .1); ctx.lineTo(-size * .35, size * .27); ctx.quadraticCurveTo(-size * .73, size * .28, -size * .92, -size * .08); ctx.lineTo(-size * .72, -size * .48); ctx.quadraticCurveTo(-size * .78, -size * 1.16, 0, -size * 1.38); ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.shadowBlur = 0;
-    ctx.fillStyle = '#071d1c'; ctx.beginPath(); ctx.moveTo(-size * .66, size * .02); ctx.quadraticCurveTo(0, size * .27, size * .66, size * .02); ctx.lineTo(size * .48, size * (.34 + jawOpen * .2)); ctx.quadraticCurveTo(0, size * (.48 + jawOpen * .45), -size * .48, size * (.34 + jawOpen * .2)); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#171113'; ctx.beginPath(); ctx.moveTo(-size * .66, size * .02); ctx.quadraticCurveTo(0, size * .27, size * .66, size * .02); ctx.lineTo(size * .48, size * (.34 + jawOpen * .2)); ctx.quadraticCurveTo(0, size * (.48 + jawOpen * .45), -size * .48, size * (.34 + jawOpen * .2)); ctx.closePath(); ctx.fill();
     const jaw = ctx.createLinearGradient(0, size * .18, 0, size * 1.03);
-    jaw.addColorStop(0, accent); jaw.addColorStop(.32, '#5bea7a'); jaw.addColorStop(1, '#106546');
-    ctx.fillStyle = jaw; ctx.strokeStyle = '#caff8e'; ctx.lineWidth = size * .045;
+    jaw.addColorStop(0, accent); jaw.addColorStop(.32, '#e87825'); jaw.addColorStop(1, '#713018');
+    ctx.fillStyle = jaw; ctx.strokeStyle = '#ffd18a'; ctx.lineWidth = size * .045;
     ctx.beginPath(); ctx.moveTo(-size * .58, size * (.28 + jawOpen * .18)); ctx.quadraticCurveTo(0, size * (.44 + jawOpen * .38), size * .58, size * (.28 + jawOpen * .18)); ctx.lineTo(size * .42, size * (.79 + jawOpen * .4)); ctx.quadraticCurveTo(0, size * (.98 + jawOpen * .48), -size * .42, size * (.79 + jawOpen * .4)); ctx.closePath(); ctx.fill(); ctx.stroke();
     for (const side of [-1, 1]) {
       ctx.fillStyle = '#f4ffd4'; ctx.beginPath(); ctx.moveTo(side * size * .48, size * .08); ctx.lineTo(side * size * .31, size * .08); ctx.lineTo(side * size * .42, size * (.33 + jawOpen * .12)); ctx.closePath(); ctx.fill();
       ctx.beginPath(); ctx.moveTo(side * size * .34, size * (.38 + jawOpen * .2)); ctx.lineTo(side * size * .2, size * (.38 + jawOpen * .2)); ctx.lineTo(side * size * .3, size * (.54 + jawOpen * .25)); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#08251d'; ctx.beginPath(); ctx.ellipse(side * size * .43, -size * .34, size * .22, size * .16, side * -.16, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#dcff7a'; ctx.shadowColor = '#c9ff70'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .18; ctx.beginPath(); ctx.ellipse(side * size * .45, -size * .34, size * .09, size * .08 * pulse, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
-      ctx.fillStyle = '#baff7c'; ctx.beginPath(); ctx.ellipse(side * size * .3, -size * .56, size * .075, size * .055, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#180f11'; ctx.beginPath(); ctx.ellipse(side * size * .43, -size * .34, size * .22, size * .16, side * -.16, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffc14d'; ctx.shadowColor = '#ff8a28'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .18; ctx.beginPath(); ctx.ellipse(side * size * .45, -size * .34, size * .09, size * .08 * pulse, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ff9a35'; ctx.beginPath(); ctx.ellipse(side * size * .3, -size * .56, size * .075, size * .055, 0, 0, Math.PI * 2); ctx.fill();
     }
-    ctx.strokeStyle = '#d8ff9b'; ctx.globalAlpha *= .8; ctx.lineWidth = size * .035; ctx.beginPath(); ctx.moveTo(-size * .28, -size * .91); ctx.quadraticCurveTo(0, -size * 1.02, size * .28, -size * .91); ctx.stroke();
+    ctx.strokeStyle = '#ffc468'; ctx.globalAlpha *= .8; ctx.lineWidth = size * .035; ctx.beginPath(); ctx.moveTo(-size * .28, -size * .91); ctx.quadraticCurveTo(0, -size * 1.02, size * .28, -size * .91); ctx.stroke();
   }
   function drawDinoHead(x, y, size, angle, jawOpen, timestamp, alpha = 1, skin = currentSkin()) {
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.globalAlpha = alpha;
@@ -5372,7 +5766,7 @@
     const baseAlpha = ctx.globalAlpha;
     if (state.performanceMode !== 'light') {
       const aura = ctx.createRadialGradient(0, 0, size * .18, 0, 0, size * 2.15);
-      aura.addColorStop(0, 'rgba(68,238,112,.18)'); aura.addColorStop(.62, 'rgba(54,196,100,.08)'); aura.addColorStop(1, 'rgba(30,150,76,0)');
+      aura.addColorStop(0, 'rgba(255,132,35,.2)'); aura.addColorStop(.62, 'rgba(189,69,22,.09)'); aura.addColorStop(1, 'rgba(49,22,17,0)');
       ctx.fillStyle = aura; ctx.beginPath(); ctx.ellipse(0, 0, size * 1.9, size * 2.05, 0, 0, Math.PI * 2); ctx.fill();
     }
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
@@ -5382,58 +5776,66 @@
       const engineX = side * size * .47;
       const flameLength = size * (1.18 + Math.sin(timestamp / 48 + side) * .13);
       const flame = ctx.createLinearGradient(engineX, size * .62, engineX, size * .62 + flameLength);
-      flame.addColorStop(0, 'rgba(228,255,157,.96)'); flame.addColorStop(.26, 'rgba(91,255,119,.82)'); flame.addColorStop(.72, 'rgba(39,215,126,.42)'); flame.addColorStop(1, 'rgba(31,174,121,0)');
+      flame.addColorStop(0, 'rgba(255,231,161,.98)'); flame.addColorStop(.26, 'rgba(255,151,43,.86)'); flame.addColorStop(.72, 'rgba(201,72,24,.48)'); flame.addColorStop(1, 'rgba(50,20,18,0)');
       ctx.fillStyle = flame; ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .38;
       ctx.beginPath(); ctx.moveTo(engineX - size * .14, size * .48); ctx.quadraticCurveTo(engineX - size * .21, size * 1.08, engineX, size * .62 + flameLength); ctx.quadraticCurveTo(engineX + size * .21, size * 1.08, engineX + size * .14, size * .48); ctx.closePath(); ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.fillStyle = '#092b27'; ctx.strokeStyle = accent; ctx.lineWidth = size * .07;
+      ctx.fillStyle = '#1b1215'; ctx.strokeStyle = accent; ctx.lineWidth = size * .07;
       ctx.beginPath(); ctx.rect(engineX - size * .18, size * .43, size * .36, size * .37); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#aaff85'; ctx.globalAlpha *= pulse; ctx.beginPath(); ctx.ellipse(engineX, size * .61, size * .075, size * .13, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha /= pulse;
+      ctx.fillStyle = '#ffc253'; ctx.globalAlpha *= pulse; ctx.beginPath(); ctx.ellipse(engineX, size * .61, size * .075, size * .13, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha /= pulse;
     }
 
     // Swept, armored wings with small claw-like tips keep the dinosaur theme while reading as a ship.
     const wing = ctx.createLinearGradient(0, -size * .65, 0, size * .72);
-    wing.addColorStop(0, '#a7ff77'); wing.addColorStop(.28, color); wing.addColorStop(.72, '#167d52'); wing.addColorStop(1, '#0b3a36');
+    wing.addColorStop(0, '#ffd078'); wing.addColorStop(.28, color); wing.addColorStop(.72, '#a5481d'); wing.addColorStop(1, '#1a1114');
     for (const side of [-1, 1]) {
       ctx.fillStyle = wing; ctx.strokeStyle = accent; ctx.lineWidth = size * .055;
       ctx.beginPath(); ctx.moveTo(side * size * .23, -size * .57); ctx.quadraticCurveTo(side * size * .72, -size * .48, side * size * 1.2, -size * .04); ctx.lineTo(side * size * 1.34, size * .38); ctx.lineTo(side * size * 1.05, size * .28); ctx.lineTo(side * size * 1.17, size * .73); ctx.lineTo(side * size * .66, size * .51); ctx.quadraticCurveTo(side * size * .39, size * .39, side * size * .25, size * .18); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#d8ff98'; ctx.globalAlpha = baseAlpha * .84;
+      ctx.save(); ctx.beginPath(); ctx.moveTo(side * size * .23, -size * .57); ctx.quadraticCurveTo(side * size * .72, -size * .48, side * size * 1.2, -size * .04); ctx.lineTo(side * size * 1.34, size * .38); ctx.lineTo(side * size * 1.05, size * .28); ctx.lineTo(side * size * 1.17, size * .73); ctx.lineTo(side * size * .66, size * .51); ctx.quadraticCurveTo(side * size * .39, size * .39, side * size * .25, size * .18); ctx.closePath(); ctx.clip();
+      ctx.globalAlpha = baseAlpha * .82; ctx.strokeStyle = '#171114'; ctx.lineWidth = size * .105;
+      for (let stripe = 0; stripe < 3; stripe++) { const x = .43 + stripe * .2, y = -.29 + stripe * .17; ctx.beginPath(); ctx.moveTo(side * size * x, size * y); ctx.lineTo(side * size * (x + .2), size * (y + .19)); ctx.stroke(); }
+      ctx.restore();
+      ctx.fillStyle = '#ffbf59'; ctx.globalAlpha = baseAlpha * .84;
       ctx.beginPath(); ctx.moveTo(side * size * 1.02, size * .26); ctx.lineTo(side * size * 1.34, size * .38); ctx.lineTo(side * size * 1.17, size * .73); ctx.closePath(); ctx.fill();
-      ctx.globalAlpha = baseAlpha * .72; ctx.strokeStyle = '#baff8c'; ctx.lineWidth = size * .035;
+      ctx.globalAlpha = baseAlpha * .72; ctx.strokeStyle = '#ffe0a0'; ctx.lineWidth = size * .035;
       ctx.beginPath(); ctx.moveTo(side * size * .44, -size * .27); ctx.quadraticCurveTo(side * size * .84, size * .02, side * size * 1.05, size * .47); ctx.stroke();
       ctx.globalAlpha = baseAlpha;
-      ctx.fillStyle = '#082b2b'; ctx.beginPath(); ctx.ellipse(side * size * .76, size * .13, size * .12, size * .07, side * .18, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#171114'; ctx.beginPath(); ctx.ellipse(side * size * .76, size * .13, size * .12, size * .07, side * .18, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = accent; ctx.shadowColor = accent; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .12; ctx.beginPath(); ctx.arc(side * size * .76, size * .13, size * .045, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
     }
 
     // Central armored fuselage: pointed nose, cockpit and a short row of dorsal plates.
     ctx.globalAlpha = baseAlpha;
     const hull = ctx.createLinearGradient(-size * .46, -size, size * .46, size * .92);
-    hull.addColorStop(0, '#dcff9a'); hull.addColorStop(.2, color); hull.addColorStop(.56, '#168b56'); hull.addColorStop(1, '#073b37');
-    ctx.fillStyle = hull; ctx.strokeStyle = '#caff91'; ctx.lineWidth = size * .075; ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .28;
+    hull.addColorStop(0, '#ffe1a0'); hull.addColorStop(.2, color); hull.addColorStop(.56, '#a9491c'); hull.addColorStop(1, '#1d1114');
+    ctx.fillStyle = hull; ctx.strokeStyle = accent; ctx.lineWidth = size * .075; ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .28;
     ctx.beginPath(); ctx.moveTo(0, -size * 1.55); ctx.lineTo(size * .3, -size * .93); ctx.lineTo(size * .42, -size * .31); ctx.lineTo(size * .34, size * .48); ctx.lineTo(size * .19, size * .82); ctx.lineTo(0, size * 1.02); ctx.lineTo(-size * .19, size * .82); ctx.lineTo(-size * .34, size * .48); ctx.lineTo(-size * .42, -size * .31); ctx.lineTo(-size * .3, -size * .93); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
+    ctx.save(); ctx.beginPath(); ctx.moveTo(0, -size * 1.55); ctx.lineTo(size * .3, -size * .93); ctx.lineTo(size * .42, -size * .31); ctx.lineTo(size * .34, size * .48); ctx.lineTo(size * .19, size * .82); ctx.lineTo(0, size * 1.02); ctx.lineTo(-size * .19, size * .82); ctx.lineTo(-size * .34, size * .48); ctx.lineTo(-size * .42, -size * .31); ctx.lineTo(-size * .3, -size * .93); ctx.closePath(); ctx.clip();
+    ctx.strokeStyle = '#171114'; ctx.lineWidth = size * .105; ctx.lineCap = 'round';
+    for (let stripe = 0; stripe < 4; stripe++) { const y = -.79 + stripe * .34; ctx.beginPath(); ctx.moveTo(-size * .34, size * y); ctx.lineTo(-size * .12, size * (y + .23)); ctx.moveTo(size * .34, size * y); ctx.lineTo(size * .12, size * (y + .23)); ctx.stroke(); }
+    ctx.restore();
 
     // The nose has a raptor-mask brow; the inset canopy remains visibly cockpit-like.
-    ctx.fillStyle = '#082b2d'; ctx.strokeStyle = '#92ff88'; ctx.lineWidth = size * .045;
+    ctx.fillStyle = '#191115'; ctx.strokeStyle = '#ffb94f'; ctx.lineWidth = size * .045;
     ctx.beginPath(); ctx.moveTo(0, -size * 1.24); ctx.quadraticCurveTo(size * .25, -size * .9, size * .2, -size * .52); ctx.quadraticCurveTo(0, -size * .37, -size * .2, -size * .52); ctx.quadraticCurveTo(-size * .25, -size * .9, 0, -size * 1.24); ctx.closePath(); ctx.fill(); ctx.stroke();
     const canopy = ctx.createLinearGradient(0, -size * 1.12, 0, -size * .51);
-    canopy.addColorStop(0, '#d5ff9b'); canopy.addColorStop(.18, '#52f3bd'); canopy.addColorStop(.55, '#0d6570'); canopy.addColorStop(1, '#092c3b');
+    canopy.addColorStop(0, '#ffe5aa'); canopy.addColorStop(.18, '#ff9a35'); canopy.addColorStop(.55, '#6b2c1d'); canopy.addColorStop(1, '#1b1115');
     ctx.fillStyle = canopy; ctx.beginPath(); ctx.moveTo(0, -size * 1.12); ctx.quadraticCurveTo(size * .16, -size * .88, size * .13, -size * .58); ctx.quadraticCurveTo(0, -size * .46, -size * .13, -size * .58); ctx.quadraticCurveTo(-size * .16, -size * .88, 0, -size * 1.12); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = 'rgba(231,255,186,.9)'; ctx.lineWidth = size * .025; ctx.beginPath(); ctx.moveTo(-size * .09, -size * .96); ctx.quadraticCurveTo(0, -size * .89, size * .08, -size * .75); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,225,160,.92)'; ctx.lineWidth = size * .025; ctx.beginPath(); ctx.moveTo(-size * .09, -size * .96); ctx.quadraticCurveTo(0, -size * .89, size * .08, -size * .75); ctx.stroke();
 
-    // Emerald eyes and swept dorsal fins act as the signature saurian markings.
+    // Amber eyes, dark stripes and swept fins give the hull its Tigrum identity.
     for (const side of [-1, 1]) {
-      ctx.globalAlpha = baseAlpha; ctx.fillStyle = '#062621'; ctx.beginPath(); ctx.ellipse(side * size * .29, -size * .67, size * .115, size * .075, side * -.22, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#e6ff83'; ctx.shadowColor = '#baff63'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .14; ctx.beginPath(); ctx.ellipse(side * size * .3, -size * .67, size * .052, size * .046 * pulse, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
-      ctx.fillStyle = '#caff88'; ctx.beginPath(); ctx.moveTo(side * size * .16, size * .08); ctx.lineTo(side * size * .35, size * .31); ctx.lineTo(side * size * .16, size * .27); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = baseAlpha; ctx.fillStyle = '#181014'; ctx.beginPath(); ctx.ellipse(side * size * .29, -size * .67, size * .115, size * .075, side * -.22, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffc253'; ctx.shadowColor = '#ff8a28'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .14; ctx.beginPath(); ctx.ellipse(side * size * .3, -size * .67, size * .052, size * .046 * pulse, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffb64b'; ctx.beginPath(); ctx.moveTo(side * size * .16, size * .08); ctx.lineTo(side * size * .35, size * .31); ctx.lineTo(side * size * .16, size * .27); ctx.closePath(); ctx.fill();
     }
     for (let plate = 0; plate < 4; plate++) {
       const y = -size * .18 + plate * size * .2;
       const plateSize = size * (.14 - plate * .012);
-      ctx.globalAlpha = baseAlpha; ctx.fillStyle = plate % 2 ? '#60ed81' : '#dcff91'; ctx.strokeStyle = '#1a9a61'; ctx.lineWidth = size * .025;
+      ctx.globalAlpha = baseAlpha; ctx.fillStyle = plate % 2 ? '#9d471e' : '#ffc15d'; ctx.strokeStyle = '#211417'; ctx.lineWidth = size * .025;
       ctx.beginPath(); ctx.moveTo(-plateSize, y + plateSize * .5); ctx.lineTo(0, y - plateSize); ctx.lineTo(plateSize, y + plateSize * .5); ctx.closePath(); ctx.fill(); ctx.stroke();
     }
-    ctx.fillStyle = 'rgba(206,255,148,.78)'; ctx.beginPath(); ctx.ellipse(0, size * .59, size * .1, size * .19, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,175,68,.82)'; ctx.beginPath(); ctx.ellipse(0, size * .59, size * .1, size * .19, 0, 0, Math.PI * 2); ctx.fill();
   }
   function drawShipThrusterTrails(size, timestamp, glowColor, coreColor) {
     const baseAlpha = ctx.globalAlpha;
@@ -5488,6 +5890,34 @@
     }
     drawShipThrusterTrails(size, timestamp, '#ddc58f', '#fffdf5');
   }
+  function drawSaurionSummon(timestamp) {
+    const summon = currentSkin().id === 'saurion-primal' ? state.saurionSummon : null;
+    if (!summon) return;
+    const image = saurionDinoSprites[summon.id];
+    const fade = clamp(Math.min(summon.life / .65, summon.hp / Math.max(1, summon.maxHp * .22)), 0, 1);
+    ctx.save(); ctx.translate(summon.x, summon.y); ctx.rotate((summon.angle || -Math.PI / 2) + Math.PI / 2);
+    const height = mobileSize(summon.radius * (summon.kind === 'titan' ? 4.4 : 3.8));
+    if (image?.complete && image.naturalWidth) {
+      const width = height * image.naturalWidth / image.naturalHeight;
+      ctx.globalAlpha = fade; ctx.globalCompositeOperation = 'screen'; ctx.shadowBlur = 0;
+      ctx.drawImage(image, -width / 2, -height / 2, width, height);
+    } else {
+      ctx.fillStyle = '#2c4c21'; ctx.strokeStyle = '#a2ff56'; ctx.lineWidth = mobileSize(2);
+      ctx.beginPath(); ctx.moveTo(0, -height * .48); ctx.lineTo(height * .25, height * .3); ctx.lineTo(0, height * .48); ctx.lineTo(-height * .25, height * .3); ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
+    if (summon.tailPose > 0) {
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade * clamp(summon.tailPose / .28, 0, 1);
+      ctx.strokeStyle = '#d8ff8d'; ctx.lineWidth = mobileSize(3); ctx.shadowColor = '#72ec3e';
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
+      ctx.beginPath(); ctx.arc(0, 0, height * .58, -.95, 1.2); ctx.stroke();
+    }
+    ctx.restore();
+    if (summon.hp < summon.maxHp) {
+      const width = mobileSize(48), y = summon.y - mobileSize(summon.radius + 8);
+      ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(summon.x - width / 2, y, width, mobileSize(4));
+      ctx.fillStyle = '#8cff4d'; ctx.fillRect(summon.x - width / 2, y, width * clamp(summon.hp / summon.maxHp, 0, 1), mobileSize(4));
+    }
+  }
   function drawShip(x, y, size, skin, angle = -Math.PI / 2, alpha = 1) {
     const ship = skin && typeof skin === 'object' ? skin : currentSkin();
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.globalAlpha = alpha;
@@ -5522,6 +5952,28 @@
       ctx.shadowColor = ship.color;
       ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 11;
       ctx.drawImage(eclipseSprite, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight);
+      ctx.restore();
+      return;
+    }
+    if (ship.shape === 'saurion-primal') {
+      const now = performance.now();
+      for (const side of [-1, 1]) {
+        const engineX = side * size * .38;
+        const length = size * (.38 + .07 * Math.sin(now / 66 + side));
+        const flame = ctx.createLinearGradient(engineX, size * .78, engineX, size * .78 + length);
+        flame.addColorStop(0, 'rgba(226,255,164,.86)'); flame.addColorStop(.28, 'rgba(125,255,54,.76)'); flame.addColorStop(1, 'rgba(51,190,34,0)');
+        ctx.globalAlpha = alpha * .68; ctx.fillStyle = flame;
+        ctx.beginPath(); ctx.moveTo(engineX - size * .11, size * .75); ctx.quadraticCurveTo(engineX - size * .15, size * .94, engineX, size * .78 + length); ctx.quadraticCurveTo(engineX + size * .15, size * .94, engineX + size * .11, size * .75); ctx.closePath(); ctx.fill();
+      }
+      const frame = saurionShipFrames[Math.floor(now / 120) % saurionShipFrames.length];
+      if (frame?.complete && frame.naturalWidth) {
+        const spriteSize = size * 3.5;
+        ctx.globalAlpha = alpha; ctx.globalCompositeOperation = 'screen'; ctx.shadowBlur = 0;
+        ctx.drawImage(frame, -spriteSize / 2, -spriteSize / 2, spriteSize, spriteSize);
+      } else {
+        ctx.globalAlpha = alpha; ctx.fillStyle = '#193f20'; ctx.strokeStyle = ship.accent; ctx.lineWidth = Math.max(1.4, size * .08);
+        ctx.beginPath(); ctx.moveTo(0, -size * 1.5); ctx.lineTo(size * .95, size * .52); ctx.lineTo(0, size * .82); ctx.lineTo(-size * .95, size * .52); ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
       ctx.restore();
       return;
     }
@@ -5758,7 +6210,7 @@
     }
     if (enemy.dinoCutMark > 0) {
       ctx.save(); ctx.globalAlpha = clamp(enemy.dinoCutMark / .8, .3, .82);
-      ctx.strokeStyle = '#9cff85'; ctx.shadowColor = '#62f58a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 8;
+      ctx.strokeStyle = '#ffad45'; ctx.shadowColor = '#e76220'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 8;
       ctx.lineWidth = mobileSize(1.4); ctx.setLineDash([mobileSize(3), mobileSize(6)]);
       ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(5), performance.now() / 500, performance.now() / 500 + Math.PI * 1.55); ctx.stroke();
       ctx.setLineDash([]);
@@ -5775,10 +6227,10 @@
     }
     if (enemy.dinoStun > 0) {
       ctx.save(); ctx.globalAlpha = .58 + Math.sin(performance.now() / 65 + enemy.x) * .16;
-      ctx.strokeStyle = '#eaffb2'; ctx.shadowColor = '#aaff82'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10;
+      ctx.strokeStyle = '#ffd17a'; ctx.shadowColor = '#ee7626'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 10;
       ctx.lineWidth = mobileSize(1.5); ctx.setLineDash([mobileSize(4), mobileSize(4)]);
       ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(8), 0, Math.PI * 2); ctx.stroke();
-      ctx.setLineDash([]); ctx.fillStyle = '#eaffb2';
+      ctx.setLineDash([]); ctx.fillStyle = '#ffc15a';
       for (let spark = 0; spark < 3; spark++) {
         const spin = performance.now() / 260 + spark * Math.PI * 2 / 3;
         const sx = enemy.x + Math.cos(spin) * (enemy.r + mobileSize(10));
@@ -5994,6 +6446,7 @@
       ctx.save(); ctx.globalAlpha = fade * .48 * pulse; ctx.strokeStyle = '#c5afe9'; ctx.lineWidth = mobileSize(1.5); ctx.setLineDash([mobileSize(3), mobileSize(4)]); ctx.beginPath(); ctx.arc(rabbit.x, rabbit.y, state.player.radius * .92 + mobileSize(7), -timestamp / 240 + rabbit.index, Math.PI * 2 - timestamp / 240 + rabbit.index); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
       drawShip(rabbit.x, rabbit.y, state.player.radius * (.72 + (rabbit.index === 0 ? .16 : 0)), megumiSkin, rabbit.angle, fade * (rabbit.index === 0 ? .96 : .68));
     }
+    drawSaurionSummon(timestamp);
     for (const p of state.particles) { ctx.globalAlpha = clamp(p.life / p.maxLife, 0, 1); ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
     ctx.globalAlpha = 1;
     drawAuroraLinkTrails(timestamp);
@@ -6015,7 +6468,11 @@
     }
     for (const effect of state.effects) {
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
-      if (effect.type === 'flamestorm-vortex') {
+      if (effect.type === 'saurion-summon-wave') {
+        ctx.save(); ctx.globalAlpha = alpha * .6; ctx.strokeStyle = effect.color || '#8bff4b'; ctx.lineWidth = mobileSize(2.3); ctx.shadowColor = effect.color || '#8bff4b';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .11; ctx.fillStyle = effect.color || '#8bff4b'; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      } else if (effect.type === 'flamestorm-vortex') {
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
         ctx.globalAlpha = alpha * .9; ctx.rotate(effect.rotation);
         if (flameStormVortexSprite.complete && flameStormVortexSprite.naturalWidth) {
@@ -6303,19 +6760,19 @@
         const waveAlpha = Math.sin(Math.PI * Math.min(1, progress * 1.08)) * .8 + alpha * .14;
         ctx.save();
         const wave = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, waveRadius - mobileSize(56)), effect.x, effect.y, waveRadius);
-        wave.addColorStop(0, 'rgba(190,255,119,0)'); wave.addColorStop(.76, 'rgba(88,244,131,.045)'); wave.addColorStop(.94, 'rgba(88,244,131,.2)'); wave.addColorStop(1, 'rgba(234,255,178,.48)');
+        wave.addColorStop(0, 'rgba(24,14,16,0)'); wave.addColorStop(.76, 'rgba(186,75,27,.07)'); wave.addColorStop(.94, 'rgba(244,119,35,.22)'); wave.addColorStop(1, 'rgba(255,211,138,.54)');
         ctx.globalAlpha = waveAlpha; ctx.fillStyle = wave;
         ctx.beginPath(); ctx.arc(effect.x, effect.y, waveRadius, 0, Math.PI * 2); ctx.fill();
-        ctx.lineCap = 'round'; ctx.shadowColor = '#7aff91'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(20);
+        ctx.lineCap = 'round'; ctx.shadowColor = '#f07925'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(20);
         for (let ring = 0; ring < 3; ring++) {
           const ringRadius = waveRadius * (1 - ring * .11);
-          ctx.globalAlpha = waveAlpha * (.9 - ring * .22); ctx.strokeStyle = ring === 1 ? '#eaffb2' : '#63f5a2'; ctx.lineWidth = mobileSize(ring === 0 ? 4 : 2);
+          ctx.globalAlpha = waveAlpha * (.9 - ring * .22); ctx.strokeStyle = ring === 1 ? '#171114' : ring === 2 ? '#ffe1a0' : '#f28a28'; ctx.lineWidth = mobileSize(ring === 0 ? 4 : 2);
           ctx.beginPath(); ctx.arc(effect.x, effect.y, ringRadius, 0, Math.PI * 2); ctx.stroke();
         }
         const coreFlash = clamp(1 - progress * 4.5, 0, 1);
-        ctx.shadowBlur = 0; ctx.globalAlpha = coreFlash * .52; ctx.fillStyle = '#eaffb2';
+        ctx.shadowBlur = 0; ctx.globalAlpha = coreFlash * .52; ctx.fillStyle = '#ffe1a0';
         ctx.beginPath(); ctx.arc(effect.x, effect.y, mobileSize(18 + progress * 32), 0, Math.PI * 2); ctx.fill();
-        ctx.globalAlpha = waveAlpha * .18; ctx.fillStyle = '#70f69b';
+        ctx.globalAlpha = waveAlpha * .2; ctx.fillStyle = '#181114';
         ctx.beginPath(); ctx.arc(effect.x, effect.y, waveRadius * .62, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       } else if (effect.type === 'dino-claw') {
@@ -6323,13 +6780,13 @@
         const dx = effect.x2 - effect.x1; const dy = effect.y2 - effect.y1; const length = Math.hypot(dx, dy) || 1;
         const ux = dx / length; const uy = dy / length; const nx = -uy; const ny = ux;
         ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        ctx.globalAlpha = fade * .5; ctx.strokeStyle = '#103d29'; ctx.shadowColor = '#52fa8d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 11;
+        ctx.globalAlpha = fade * .62; ctx.strokeStyle = '#171114'; ctx.shadowColor = '#ed7122'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 11;
         ctx.lineWidth = effect.width * 3.2; strokeDinoClawPath(effect);
         ctx.globalAlpha = fade * .9; ctx.strokeStyle = effect.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 8;
         ctx.lineWidth = effect.width * 1.9; strokeDinoClawPath(effect);
-        ctx.globalAlpha = fade; ctx.strokeStyle = '#f1ffd2'; ctx.shadowColor = '#caff91'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 5;
+        ctx.globalAlpha = fade; ctx.strokeStyle = '#fff0ce'; ctx.shadowColor = '#ff9a35'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : 5;
         ctx.lineWidth = effect.width * .58; strokeDinoClawPath(effect);
-        ctx.shadowBlur = 0; ctx.fillStyle = '#eaffb2'; ctx.globalAlpha = fade * .8;
+        ctx.shadowBlur = 0; ctx.fillStyle = '#ffbd55'; ctx.globalAlpha = fade * .8;
         for (const end of [{ x: effect.x1, y: effect.y1, sign: 1 }, { x: effect.x2, y: effect.y2, sign: -1 }]) {
           const tipLength = effect.width * 3.2;
           const baseX = end.x + ux * tipLength * end.sign; const baseY = end.y + uy * tipLength * end.sign;
@@ -6342,33 +6799,34 @@
         const fade = clamp(Math.min(progress * 9, alpha * 3.2), 0, 1);
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle + Math.PI / 2);
         const trail = ctx.createLinearGradient(0, effect.size * .35, 0, effect.size * 3.2);
-        trail.addColorStop(0, 'rgba(226,255,157,.7)'); trail.addColorStop(.22, 'rgba(113,255,135,.48)'); trail.addColorStop(.68, 'rgba(49,219,126,.17)'); trail.addColorStop(1, 'rgba(29,177,128,0)');
-        ctx.globalAlpha = fade * .78; ctx.fillStyle = trail; ctx.shadowColor = '#48ef80'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15);
+        trail.addColorStop(0, 'rgba(255,219,140,.78)'); trail.addColorStop(.22, 'rgba(255,136,34,.55)'); trail.addColorStop(.56, 'rgba(24,15,17,.42)'); trail.addColorStop(1, 'rgba(83,35,20,0)');
+        ctx.globalAlpha = fade * .78; ctx.fillStyle = trail; ctx.shadowColor = '#ef7222'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15);
         ctx.beginPath(); ctx.moveTo(-effect.size * .3, effect.size * .48); ctx.quadraticCurveTo(-effect.size * .18, effect.size * 1.85, 0, effect.size * 3.05); ctx.quadraticCurveTo(effect.size * .18, effect.size * 1.85, effect.size * .3, effect.size * .48); ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0;
-        ctx.globalAlpha = fade * .72; ctx.strokeStyle = '#bfff87'; ctx.lineWidth = mobileSize(1.7);
+        ctx.globalAlpha = fade * .72; ctx.strokeStyle = '#ffe1a0'; ctx.lineWidth = mobileSize(1.7);
         ctx.beginPath(); ctx.ellipse(0, effect.size * .32, effect.size * .95, effect.size * .3, timestamp / 190 + effect.y * .01, .15, Math.PI * 1.78); ctx.stroke();
-        ctx.globalAlpha = fade * .4; ctx.strokeStyle = '#53f6ad'; ctx.lineWidth = mobileSize(1.1);
+        ctx.globalAlpha = fade * .42; ctx.strokeStyle = '#181114'; ctx.lineWidth = mobileSize(1.3);
         ctx.beginPath(); ctx.ellipse(0, effect.size * .58, effect.size * .7, effect.size * .23, -timestamp / 240 - effect.x * .01, Math.PI, Math.PI * 2.72); ctx.stroke();
         for (let spark = 0; spark < 3; spark++) {
           const orbit = timestamp / 155 + spark * Math.PI * 2 / 3 + effect.y * .02;
           const sx = Math.cos(orbit) * effect.size * (.42 + spark * .08);
           const sy = effect.size * (.9 + spark * .57) + Math.sin(orbit) * effect.size * .17;
-          ctx.globalAlpha = fade * (.55 - spark * .1); ctx.fillStyle = spark === 0 ? '#f2ffbd' : '#8dff9f';
+          ctx.globalAlpha = fade * (.55 - spark * .1); ctx.fillStyle = spark === 0 ? '#fff0ce' : '#ff9a35';
           ctx.beginPath(); ctx.arc(sx, sy, mobileSize(1.8 + spark * .45), 0, Math.PI * 2); ctx.fill();
         }
         ctx.restore();
-        if (saurionRaptorSprite.complete && saurionRaptorSprite.naturalWidth) {
+        if (tigrumRaptorSprite.complete && tigrumRaptorSprite.naturalWidth) {
           const spriteHeight = mobileSize(effect.size * 1.85);
-          const spriteWidth = spriteHeight * saurionRaptorSprite.naturalWidth / saurionRaptorSprite.naturalHeight;
+          const spriteWidth = spriteHeight * tigrumRaptorSprite.naturalWidth / tigrumRaptorSprite.naturalHeight;
           const pulse = 1 + Math.sin(timestamp / 72 + effect.y * .02) * .035;
           ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.globalAlpha = fade * .96;
-          ctx.shadowColor = '#52ff22'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+          ctx.filter = 'hue-rotate(-90deg) saturate(1.25)';
+          ctx.shadowColor = '#ff8a28'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
           ctx.beginPath(); ctx.ellipse(0, 0, spriteWidth * .49, spriteHeight * .48, 0, 0, Math.PI * 2); ctx.clip();
-          ctx.drawImage(saurionRaptorSprite, -spriteWidth * pulse / 2, -spriteHeight * pulse / 2, spriteWidth * pulse, spriteHeight * pulse);
+          ctx.drawImage(tigrumRaptorSprite, -spriteWidth * pulse / 2, -spriteHeight * pulse / 2, spriteWidth * pulse, spriteHeight * pulse);
           ctx.restore();
         } else {
           const jawOpen = .28 + Math.sin(timestamp / 75 + effect.y) * .2;
-          drawDinoHead(effect.x, effect.y, effect.size, effect.angle, jawOpen, timestamp, fade * .96, { color: '#42d66e', accent: '#d4ff72' });
+          drawDinoHead(effect.x, effect.y, effect.size, effect.angle, jawOpen, timestamp, fade * .96, { color: '#f28a28', accent: '#ffd18a' });
         }
       } else if (effect.type === 'eclipse-intro') {
         const progress = 1 - alpha; const maxRadius = Math.hypot(state.width, state.height) * .62;
@@ -6869,7 +7327,7 @@
     }
     if (skin.shape === 'dino') {
       const image = document.createElement('img');
-      image.className = 'starfall-rank-ship-model starfall-rank-ship-image starfall-rank-saurion-image';
+      image.className = 'starfall-rank-ship-model starfall-rank-ship-image starfall-rank-tigrum-image';
       image.src = 'saurion-raptor-skill.png'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
       return image;
     }
@@ -7102,6 +7560,7 @@
     const isEclipse = currentSkin().id === 'eclipse';
     const isChronos = currentSkin().id === 'chronos';
     const isSaurion = currentSkin().id === 'saurion';
+    const isPrimalSaurion = currentSkin().id === 'saurion-primal';
     const isRedshift = currentSkin().id === 'redshift';
     const isFlashblade = currentSkin().id === 'flashblade';
     const isTempest = currentSkin().id === 'tempest';
@@ -7109,7 +7568,7 @@
     const isPrisma = currentSkin().id === 'prisma';
     const isTraining = currentSkin().id === 'training';
     const isMegumi = currentSkin().id === 'megumi';
-    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isAurora ? 'E Explosão Nova · Q Elo Estelar' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isSaurion ? 'E Rugido · Q Estouro da Manada' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
+    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isAurora ? 'E Explosão Nova · Q Elo Estelar' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Estouro da Manada' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
     const moveInstruction = state.controlMode === 'keys' ? 'WASD/setas' : state.controlMode === 'touch' ? 'toque e arraste' : 'analógico virtual';
     if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos.';
   }
@@ -7309,6 +7768,17 @@
     toast(state.adminNoCooldown ? 'HABILIDADES SEM RECARGA' : 'RECARGA DAS HABILIDADES ATIVADA');
   }
   window.addEventListener('cv-games-profile-change', handleProfileChange);
+  window.addEventListener('cv-games-wallet-change', (event) => {
+    const nickname = normalizeRankNickname(championshipProgress.nickname || rankNickname());
+    const changedNickname = normalizeRankNickname(event.detail?.nickname || '');
+    if (!changedNickname || changedNickname !== nickname) return;
+    const balance = Math.max(0, Math.min(10000000, Math.floor(Number(event.detail?.balance) || 0)));
+    if (balance === Number(championshipProgress.cvCoins || 0)) return;
+    championshipProgress.cvCoins = balance;
+    writeChampionshipProgressLocal();
+    if (championshipCloudReady && !isTestProfile(nickname)) scheduleChampionshipCloudSave();
+    if (championshipUi.modal && !championshipUi.modal.hidden) renderChampionshipMenu();
+  });
   function refreshDeviceSizing() {
     state.mobileSizing = detectMobileDevice();
     const maxParticles = particleLimit();
@@ -7597,6 +8067,14 @@
   ui.prismWheel?.addEventListener('click', (event) => { if (event.target === ui.prismWheel) closePrismWheel(); });
   document.querySelectorAll('[data-close-prism-rank-notice]').forEach((button) => button.addEventListener('click', closePrismRankNotice));
   ui.prismRankNotice?.addEventListener('click', (event) => { if (event.target === ui.prismRankNotice) closePrismRankNotice(); });
+  document.querySelectorAll('[data-close-saurion-picker]').forEach((button) => button.addEventListener('click', closeSaurionSummonPicker));
+  document.querySelectorAll('[data-saurion-summon-choice]').forEach((button) => button.addEventListener('click', () => {
+    const key = pendingSaurionSummonKey;
+    const creatureId = button.dataset.saurionSummonChoice;
+    closeSaurionSummonPicker();
+    if (key) summonSaurionCreature(key, creatureId);
+  }));
+  ui.saurionSummonPicker?.addEventListener('click', (event) => { if (event.target === ui.saurionSummonPicker) closeSaurionSummonPicker(); });
   ui.eclipseSkipCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', () => {
     state.eclipseSkipVideoEnabled = checkbox.checked;
     ui.eclipseSkipCheckboxes.forEach((item) => { item.checked = checkbox.checked; });
@@ -7620,6 +8098,7 @@
   championshipUi.close?.addEventListener('click', closeChampionshipMenu);
   championshipUi.start?.addEventListener('click', beginChampionshipMission);
   championshipUi.spin?.addEventListener('click', () => { void spinChampionshipWheel(); });
+  championshipUi.spinBundle?.addEventListener('click', () => { void spinChampionshipWheel(true); });
   championshipUi.classicDaily?.addEventListener('click', () => { closeChampionshipMenu(); requestPilotNickname(() => openMissionSetup(true)); });
   championshipUi.modal?.addEventListener('click', (event) => { if (event.target === championshipUi.modal) closeChampionshipMenu(); });
   window.setInterval(() => { updateDailyChallengeInfo(); if (championshipUi.modal && !championshipUi.modal.hidden) renderChampionshipMenu(); }, 1000);
@@ -7672,12 +8151,17 @@
   }
   bindAbilityControl(ui.ability, activateAbility);
   bindAbilityControl(ui.eclipseQ, activateSecondaryAbility);
+  bindAbilityControl(ui.saurionCommand, activateSaurionCommand);
   ui.mahoragaReturn?.addEventListener('click', () => deactivateMahoragaForm());
   ui.fireToggle?.addEventListener('click', toggleAutomaticFire);
   ui.favorite?.addEventListener('click', toggleFavorite);
   window.addEventListener('keydown', (event) => {
     const textEntryTarget = event.target.closest?.('input,textarea,select,[contenteditable="true"]');
     if (textEntryTarget && event.code !== 'Escape') return;
+    if (ui.saurionSummonPicker && !ui.saurionSummonPicker.hidden) {
+      if (event.code === 'Escape') { event.preventDefault(); closeSaurionSummonPicker(); }
+      return;
+    }
     if (event.code === 'Escape' && ui.pilotNicknameModal && !ui.pilotNicknameModal.hidden) { event.preventDefault(); closePilotNicknamePrompt(); return; }
     const editableTarget = event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]');
     if (state.eclipsePhase === 'cinematic' || state.megumiSummonPhase === 'cinematic') { event.preventDefault(); return; }
@@ -7707,6 +8191,10 @@
     }
     if (event.code === 'KeyE' && !event.repeat) activateAbility();
     if (event.code === 'KeyQ' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) activateSecondaryAbility();
+    if ((event.code === 'KeyZ' || event.code === 'KeyX') && !event.repeat && !editableTarget && currentSkin().id === 'saurion-primal') {
+      const commandReady = event.code === 'KeyZ' ? state.saurionSummon?.kind === 'rex' : state.saurionSummon?.kind === 'carno';
+      if (commandReady) { event.preventDefault(); activateSaurionCommand(); }
+    }
     if (!editableTarget && state.mode === 'playing' && ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','KeyA','KeyD','KeyW','KeyS'].includes(event.code)) state.keys.add(event.code);
   });
   window.addEventListener('keyup', (event) => { state.keys.delete(event.code); });

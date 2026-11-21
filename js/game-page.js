@@ -84,6 +84,7 @@
           <button class="icon-button nav-theme-toggle" type="button" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">🌙</button>
         </nav>
         <div class="header-actions">
+          <span class="cv-wallet-badge" title="Saldo CV Coin"><img src="img/cv-coin.png" alt=""><span><strong data-cv-coin-balance>0</strong><small>CV COIN</small></span></span>
           <a class="favorite-button" href="index.html?favoritos=1#jogos" aria-label="Ver favoritos" title="Ver favoritos"><span class="favorite-icon" aria-hidden="true">♥</span><span class="favorite-count" data-favorite-count>0</span><span>Favoritos</span></a>
         </div>
       </div>
@@ -241,6 +242,7 @@
 
   const init = () => {
     if (!game) return;
+    if (window.CV_GAMES_WALLET?.refresh) window.CV_GAMES_WALLET.refresh();
     if (typeof stats?.registerAccess === 'function') stats.registerAccess(game.id);
     renderHeader();
     renderFooter();

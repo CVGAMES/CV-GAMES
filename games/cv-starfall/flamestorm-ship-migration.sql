@@ -7,5 +7,5 @@ alter table public.starfall_settings
   add constraint starfall_settings_selected_ship_check
   check (selected_ship is null or selected_ship in (
     'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
-    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm'
+    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm', 'saurion-primal'
   ));

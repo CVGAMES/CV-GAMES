@@ -79,4 +79,3 @@ grant execute on function public.starfall_admin_reset_scores() to authenticated;
 grant execute on function public.starfall_admin_move_score(text, integer) to authenticated;
 
 commit;
-

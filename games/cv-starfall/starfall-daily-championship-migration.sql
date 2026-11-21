@@ -16,11 +16,22 @@ create table if not exists public.starfall_championship_progress (
   claimed text[] not null default '{}'
     check (claimed <@ array['kills', 'waves', 'score']::text[]),
   tickets integer not null default 0 check (tickets >= 0),
+  cv_coins integer not null default 0 check (cv_coins between 0 and 10000000),
   unlocked_ships text[] not null default '{}'
-    check (unlocked_ships <@ array['aegis', 'chronos', 'tempest', 'flashblade']::text[]),
+    check (unlocked_ships <@ array['aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade', 'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm']::text[]),
   bonus_date date,
   updated_at timestamptz not null default now()
 );
+
+-- Converte o saldo antigo de fichas uma única vez para CV Coins.
+alter table public.starfall_championship_progress
+  add column if not exists cv_coins integer not null default 0
+  check (cv_coins between 0 and 10000000);
+
+update public.starfall_championship_progress
+set cv_coins = greatest(cv_coins, least(10000000::bigint, tickets::bigint * 50)::integer),
+    tickets = 0
+where tickets > 0;
 
 create table if not exists public.starfall_championship_scores (
   nickname text primary key check (nickname = lower(btrim(nickname)) and nickname in (

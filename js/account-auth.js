@@ -68,4 +68,3 @@
 
   window.CV_GAMES_AUTH = Object.freeze({ client, isOwner, isScoreAdmin, getAuthorizedSession, getOwnerSession, getPowerSession, signIn, signOut });
 }());
-
