@@ -921,6 +921,7 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-saurion-choice-grid { display:grid; width:100%; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; }
 .starfall-saurion-choice { display:grid; grid-template-columns:2.7rem minmax(0,1fr); align-items:center; gap:.55rem; min-width:0; min-height:4.4rem; padding:.48rem .62rem; border:1px solid rgba(142,255,79,.28); border-radius:.8rem; background:linear-gradient(145deg,rgba(45,87,43,.48),rgba(8,20,20,.88)); color:#eaffdf; text-align:left; cursor:pointer; transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease; }
 .starfall-saurion-choice:hover,.starfall-saurion-choice:focus-visible { transform:translateY(-2px); border-color:#b9ff79; background:linear-gradient(145deg,rgba(68,132,48,.6),rgba(8,24,17,.95)); box-shadow:0 0 16px rgba(118,255,72,.18); outline:none; }
+.starfall-saurion-choice:disabled { opacity:.42; cursor:not-allowed; filter:grayscale(.55); transform:none; box-shadow:none; }
 .starfall-saurion-choice img { width:2.55rem; height:3.45rem; object-fit:contain; }
 .starfall-saurion-choice span { display:grid; min-width:0; gap:.18rem; }
 .starfall-saurion-choice strong { overflow:hidden; font-size:.78rem; text-overflow:ellipsis; white-space:nowrap; }
