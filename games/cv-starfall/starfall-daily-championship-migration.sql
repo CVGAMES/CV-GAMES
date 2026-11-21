@@ -1,7 +1,7 @@
 -- Campeonato de missões diárias do CV STARFALL.
 -- Cria tabelas novas; não altera nem apaga placares, perfis ou desbloqueios existentes.
 -- Janela do evento em horário de Brasília (UTC-3):
--- início 20/11/2026 23:59; encerramento 30/11/2026 23:59.
+-- início 01/12/2026 00:00; encerramento ao fim de 31/12/2026.
 
 create table if not exists public.starfall_championship_progress (
   nickname text primary key check (nickname = lower(btrim(nickname)) and nickname in (
@@ -47,8 +47,8 @@ drop policy if exists "Approved pilots can add championship progress" on public.
 create policy "Approved pilots can add championship progress"
   on public.starfall_championship_progress for insert to anon, authenticated
   with check (
-    now() >= timestamptz '2026-11-21 02:59:00+00'
-    and now() < timestamptz '2026-12-01 02:59:00+00'
+    now() >= timestamptz '2026-12-01 03:00:00+00'
+    and now() < timestamptz '2027-01-01 03:00:00+00'
     and (
       nickname in ('cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a')
       or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
@@ -63,8 +63,8 @@ create policy "Approved pilots can update championship progress"
     or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
   )
   with check (
-    now() >= timestamptz '2026-11-21 02:59:00+00'
-    and now() < timestamptz '2026-12-01 02:59:00+00'
+    now() >= timestamptz '2026-12-01 03:00:00+00'
+    and now() < timestamptz '2027-01-01 03:00:00+00'
     and (
       nickname in ('cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a')
       or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
@@ -79,8 +79,8 @@ drop policy if exists "Approved pilots can add championship scores" on public.st
 create policy "Approved pilots can add championship scores"
   on public.starfall_championship_scores for insert to anon, authenticated
   with check (
-    now() >= timestamptz '2026-11-21 02:59:00+00'
-    and now() < timestamptz '2026-12-01 02:59:00+00'
+    now() >= timestamptz '2026-12-01 03:00:00+00'
+    and now() < timestamptz '2027-01-01 03:00:00+00'
     and (
       nickname in ('cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a')
       or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
@@ -95,8 +95,8 @@ create policy "Approved pilots can update championship scores"
     or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
   )
   with check (
-    now() >= timestamptz '2026-11-21 02:59:00+00'
-    and now() < timestamptz '2026-12-01 02:59:00+00'
+    now() >= timestamptz '2026-12-01 03:00:00+00'
+    and now() < timestamptz '2027-01-01 03:00:00+00'
     and (
       nickname in ('cypher', 'nys', 'kauan b', 'eduardo f', 'luiz g', 'yago k', 'johnata h', 'felype j', 'joao p', 'natan r', 'ismail s', 'brendo t', 'adryan v', 'storm', 'hiago a')
       or (nickname = 'educvv' and (select auth.jwt() -> 'app_metadata' ->> 'cv_profile') = 'educvv')
