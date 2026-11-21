@@ -16,8 +16,8 @@
   const prismaShipPasscode = 'cvgames.com.br';
   const dailyBestPrefix = 'cv-games-cv-starfall-daily:';
   const championshipProgressPrefix = 'cv-games-cv-starfall-championship-v1:';
-  const championshipStartAt = Date.parse('2026-11-21T02:59:00.000Z');
-  const championshipEndAt = Date.parse('2026-12-01T02:59:00.000Z');
+  const championshipStartAt = Date.parse('2026-12-01T03:00:00.000Z');
+  const championshipEndAt = Date.parse('2027-01-01T03:00:00.000Z');
   const championshipRewardShipIds = Object.freeze(['aegis', 'chronos', 'tempest', 'flashblade']);
   const achievementStoragePrefix = 'cv-games-cv-starfall-achievements:';
   const nicknameSettingsPrefix = 'cv-games-cv-starfall-settings-v1:';
@@ -640,9 +640,9 @@
     if (!ui.dailyRecord) return;
     const now = Date.now();
     ui.dailyRecord.textContent = now >= championshipEndAt
-      ? `Campeonato encerrado em ${championshipLocalDateTime(championshipEndAt)} · placar final disponível no menu de missões.`
+      ? `Campeonato encerrado em ${championshipEndDisplayDateTime()} · placar final disponível no menu de missões.`
       : championshipIsOpenNow(now)
-        ? `Campeonato aberto até ${championshipLocalDateTime(championshipEndAt)} · complete missões e concorra no Top 10.`
+        ? `Campeonato aberto até ${championshipEndDisplayDateTime()} · complete missões e concorra no Top 10.`
         : `Missões diárias do campeonato começam em ${championshipLocalDateTime(championshipStartAt)}.`;
   }
   const championshipMissions = Object.freeze([
@@ -654,6 +654,7 @@
   function championshipLocalDateTime(timestamp) {
     return new Intl.DateTimeFormat('pt-BR', { timeZone:'America/Sao_Paulo', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hourCycle:'h23' }).format(new Date(timestamp));
   }
+  function championshipEndDisplayDateTime() { return championshipLocalDateTime(championshipEndAt - 60_000); }
   function championshipCountdown(timestamp, now = Date.now()) {
     const seconds = Math.max(0, Math.ceil((timestamp - now) / 1000));
     const days = Math.floor(seconds / 86400), hours = Math.floor(seconds % 86400 / 3600), minutes = Math.floor(seconds % 3600 / 60), rest = seconds % 60;
@@ -811,8 +812,8 @@
     const ended = now >= championshipEndAt;
     if (championshipUi.status) championshipUi.status.textContent = ended ? 'CAMPEONATO ENCERRADO' : open ? 'CAMPEONATO EM ANDAMENTO' : 'CAMPEONATO PREPARADO';
     if (championshipUi.countdown) championshipUi.countdown.textContent = ended
-      ? `Encerrado em ${championshipLocalDateTime(championshipEndAt)} · horário de Brasília`
-      : open ? `Termina em ${championshipCountdown(championshipEndAt, now)} · ${championshipLocalDateTime(championshipEndAt)}`
+      ? `Encerrado em ${championshipEndDisplayDateTime()} · horário de Brasília`
+      : open ? `Termina em ${championshipCountdown(championshipEndAt, now)} · ${championshipEndDisplayDateTime()}`
         : `Começa em ${championshipCountdown(championshipStartAt, now)} · ${championshipLocalDateTime(championshipStartAt)} (horário de Brasília)`;
     const hasBonus = applyChampionshipProfileBonus(championshipProgress);
     if (championshipUi.bonus) championshipUi.bonus.textContent = hasBonus ? 'Bônus de perfil: +1 inimigo, +1 onda e +250 pontos de progresso por dia.' : 'As mesmas missões e recompensas ficam disponíveis para todos os pilotos.';
@@ -831,7 +832,7 @@
     if (championshipUi.tickets) championshipUi.tickets.textContent = `${championshipProgress.tickets} ${championshipProgress.tickets === 1 ? 'ficha' : 'fichas'} para a roleta`;
     if (championshipUi.start) {
       championshipUi.start.disabled = !open;
-      championshipUi.start.textContent = ended ? 'CAMPEONATO ENCERRADO' : open ? '▶ JOGAR MISSÃO DO CAMPEONATO' : 'ABRE ÀS 23:59';
+      championshipUi.start.textContent = ended ? 'CAMPEONATO ENCERRADO' : open ? '▶ JOGAR MISSÃO DO CAMPEONATO' : 'ABRE ÀS 00:00';
     }
     const pool = championshipRewardPool();
     if (championshipUi.spin) {
