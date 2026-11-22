@@ -35,6 +35,15 @@
   const favoritesKey = 'cv-games-favorites';
   const eclipseSprite = new Image();
   eclipseSprite.src = new URL('eclipse-ship.png', document.baseURI).href;
+  const vultureShipSprite = new Image();
+  vultureShipSprite.src = new URL('vulture-ship.png', document.baseURI).href;
+  const vultureEvolutionSprite = new Image();
+  vultureEvolutionSprite.src = new URL('vulture-evolution.png', document.baseURI).href;
+  const vultureScrapSprites = Array.from({ length:5 }, (_, index) => {
+    const image = new Image();
+    image.src = new URL('vulture-scrap-' + (index + 1) + '.png', document.baseURI).href;
+    return image;
+  });
   const umbraShipSprite = new Image();
   umbraShipSprite.src = new URL('umbra-ship.png', document.baseURI).href;
   const mahoragaShipSprite = new Image();
@@ -81,13 +90,13 @@
   const ui = {
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'), eclipseCutscene: $('[data-eclipse-cutscene]'), eclipseVideo: $('[data-eclipse-video]'), megumiCutscene: $('[data-megumi-cutscene]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
-    zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
+    zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), vultureUlt: $('[data-vulture-ult]'), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
     skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')),
     shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'),
     damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), editDamageCounter: $('[data-edit-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), fireToggle: $('[data-fire-toggle]'), saurionCommand: $('[data-saurion-command]'), saurionSummonPicker: $('[data-saurion-summon-picker]'), saurionSummonPickerSkill: $('[data-saurion-picker-skill]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), mahoragaAwakening: $('[data-mahoraga-awakening]'), mahoragaAwakeningType: $('[data-mahoraga-awakening-type]'), mahoragaAwakeningBuff: $('[data-mahoraga-awakening-buff]'), mahoragaReadout: $('[data-mahoraga-readout]'), megumiFormTimer: $('[data-megumi-form-timer]'), mahoragaReturn: $('[data-mahoraga-return]'),
     deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'),
     dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'),
-    rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankAdminPanel: $('[data-rank-admin]'), rankAdminReset: $('[data-rank-reset]'), rankAdminStatus: $('[data-rank-admin-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]')
+    rankList: $('[data-rank-list]'), rankStatus: $('[data-rank-status]'), rankAdminPanel: $('[data-rank-admin]'), rankAdminReset: $('[data-rank-reset]'), rankAdminStatus: $('[data-rank-admin-status]'), rankDialog: $('[data-rank-dialog]'), rankDialogTitle: $('[data-rank-dialog-title]'), rankDialogKicker: $('[data-rank-dialog-kicker]'), rankDialogSummary: $('[data-rank-dialog-summary]'), rankDetailOverview: $('[data-rank-detail-overview]'), rankDetailSections: $('[data-rank-detail-sections]'), authorizedPilots: $('[data-authorized-pilots]'), authorizedPilotList: $('[data-authorized-pilot-list]'), copyAuthorizedPilots: $('[data-copy-authorized-pilots]'), authorizedPilotsStatus: $('[data-authorized-pilots-status]'), vultureScrapHud: $('[data-vulture-scrap-hud]'), vultureScrapCount: $('[data-vulture-scrap-count]'), vultureScrapFill: $('[data-vulture-scrap-fill]'), vultureScrapLabel: $('[data-vulture-scrap-label]')
   };
   let rankAdminSessionActive = false;
   let rankAdminBusy = false;
@@ -127,9 +136,10 @@
     { id: 'prisma', name: 'Prisma Real', color: '#59e9f2', accent: '#ffe29a', ability: 'Núcleo Prisma', abilityShort: 'PRISMA', cooldown: 28, cooldownQ: 28, shape: 'prism', secret: true, ownerOnly: true, description: 'Nave secreta da conta educvv. Configure uma habilidade para E e outra para Q no Arquivo de Ecos, aberto pela tecla G. Esta nave não envia resultados ao placar.' },
     { id: 'mahoraga', name: 'Mahoraga', color: '#c9d0cf', accent: '#e4c477', ability: 'Adaptação Divina', abilityShort: 'ADAPTAÇÃO', cooldown: 14, cooldownQ: 12, shape: 'mahoraga', hiddenFromHangar: true, description: 'Forma interna da Umbra. E cria um escudo por 3 segundos que reduz até 70% do dano. Cinco impactos do mesmo tipo concedem resistência a essa categoria por cinco ondas; cada tipo se adapta separadamente até 55%. Repetir um tipo já adaptado fortalece temporariamente o dano.' },
     { id: 'megumi', name: 'Umbra', color: '#373448', accent: '#a99acb', ability: 'Ritual Umbral', abilityShort: 'UMBRAL', cooldown: 20, cooldownQ: 45, shape: 'megumi', secret: true, allowedProfiles: ['educvv dev', 'educvv dev1', 'felype j'], description: 'Nave secreta. E sorteia uma técnica sombria: Fuga dos Coelhos, Ocultação nas Sombras ou explosão elétrica de Nue. O ícone mostra a variação; a recarga do E cai de 20 para 15 segundos com cinco melhorias. Q invoca o Guardião com a cutscene; a forma Mahoraga dura cinco ondas completas e, ao terminar, entra em recarga de 45 segundos.' },
-    { id: 'flamestorm', name: 'Flame Storm', color: '#ff302e', accent: '#ffd0cb', ability: 'Propulsão Infernal', abilityShort: 'PROPULSÃO', cooldown: 18, cooldownQ: 24, shape: 'flamestorm', secret: true, profileRestricted: true, allowedProfiles: ['storm', 'educvv dev', 'educvv dev1'], description: 'Nave especial. E: avança por 5 segundos com impulso flamejante e fica intangível, rebate nas paredes e aceita correções de direção; os dois quadros de fogo ocupam o lugar da nave e o rastro fere inimigos. A recarga do E cai de 18 para 15 segundos com três Condensadores. Q: cria um vórtice carmesim por 5 segundos, puxa inimigos e absorve tiros próximos após atraí-los; a nave fica invulnerável durante o vórtice e por 0,7s após ele terminar.' }
+    { id: 'flamestorm', name: 'Flame Storm', color: '#ff302e', accent: '#ffd0cb', ability: 'Propulsão Infernal', abilityShort: 'PROPULSÃO', cooldown: 18, cooldownQ: 24, shape: 'flamestorm', secret: true, profileRestricted: true, allowedProfiles: ['storm', 'educvv dev', 'educvv dev1'], description: 'Nave especial. E: avança por 5 segundos com impulso flamejante e fica intangível, rebate nas paredes e aceita correções de direção; os dois quadros de fogo ocupam o lugar da nave e o rastro fere inimigos. A recarga do E cai de 18 para 15 segundos com três Condensadores. Q: cria um vórtice carmesim por 5 segundos, puxa inimigos e absorve tiros próximos após atraí-los; a nave fica invulnerável durante o vórtice e por 0,7s após ele terminar.' },
+    { id: 'vulture', name: 'Vulture', color: '#ff7133', accent: '#ffbd67', ability: 'Dobra Espacial', abilityShort: 'DOBRA', cooldown: 24, cooldownQ: 24, shape: 'vulture', secret: true, description: 'Nave especial de sucata. E: 3 dobras seguidas; cada uso teleporta e camufla por 2s, confundindo inimigos. Após as três, recarrega por 24s (22s com melhoria). Toque Q dispara; segure Q para consumir 3 sucatas e recuperar 1 escudo. Com 8 sucatas, toque Q dispara o canhão carregado ou G ativa a evolução por 6s. Durante G, só o campo e a explosão final atacam.' }
   ];
-  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Investida do Tigre', 'saurion-primal':'Arsenal Jurássico', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim' });
+  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Investida do Tigre', 'saurion-primal':'Arsenal Jurássico', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim', vulture:'Canhão / Absorção' });
   const megumiTechniques = Object.freeze({
     rabbits:{ id:'rabbits', name:'Fuga dos Coelhos', short:'COELHOS', icon:'🐇', description:'Cinco shikigami-armadilha se espalham, atiram e atraem inimigos.' },
     shadow:{ id:'shadow', name:'Ocultação nas Sombras', short:'SOMBRA', icon:'◑', description:'Fica invisível, dispara projéteis sombrios, atravessa as bordas e recolhe recursos.' },
@@ -149,7 +159,8 @@
     mahoraga: { e:'Adaptação Divina · escudo de 3s que reduz até 70% do dano recebido. Cada impacto preenche um dos 8 segmentos da roda. Cinco golpes iguais adaptam a nave contra aquele tipo por cinco ondas; cada categoria se adapta separadamente e evolui até 55%. Repetir uma adaptação concede dano extra temporário. Recarga de 14s.', q:'Espada da Exterminação · envia um talho curvo que atravessa a arena em uma faixa, destrói os tiros que cruza e atinge até oito inimigos. Causa 20 de dano no primeiro alvo e 10 nos seguintes, com dano reduzido contra chefes; as marcas ampliam em 10% o próximo golpe. Recarga de 12s.' },
     megumi: { e:'A cada uso, a nave sorteia uma técnica: Fuga dos Coelhos cria cinco iscas armadas que atraem inimigos; Ocultação nas Sombras deixa você invisível, permite atravessar as bordas, mantém seus tiros sombrios e deixa você recolher recursos; Nue libera uma explosão elétrica em área. O ícone mostra a próxima técnica. Recarga de 20 segundos, reduzida até 15 segundos com cinco melhorias.', q:'Invoca o Guardião com uma cutscene sombria. Depois do ritual, a forma Mahoraga dura cinco ondas completas e concede uma vida extra. Ao retornar à Umbra, inicia uma recarga de 45 segundos antes de poder invocar novamente.' },
     flamestorm: { e:'Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochetes e controle de direção. O tempo de intangibilidade permanece inalterado. Recarga de 18s, reduzida até 15s.', q:'Vórtice Carmesim · dura 5 segundos, puxa inimigos e absorve tiros próximos após 0,52s. A nave mantém os 5,7 segundos de invulnerabilidade já existentes. O Núcleo Carmesim amplia levemente raio e dano. Recarga de 24s, reduzida até 18s.' },
-    'saurion-primal': { e:'Chamado Primal · escolha um dinossauro entre oito aliados. O E tem recarga própria de 40 segundos e pode coexistir com uma criatura diferente invocada pelo Q.', q:'Arsenal Jurássico · escolha outro dinossauro do arsenal, com ataques e funções próprios. O Q tem recarga própria de 40 segundos; a mesma espécie não pode ocupar Q e E ao mesmo tempo.' }
+    'saurion-primal': { e:'Chamado Primal · escolha um dinossauro entre oito aliados. O E tem recarga própria de 40 segundos e pode coexistir com uma criatura diferente invocada pelo Q.', q:'Arsenal Jurássico · escolha outro dinossauro do arsenal, com ataques e funções próprios. O Q tem recarga própria de 40 segundos; a mesma espécie não pode ocupar Q e E ao mesmo tempo.' },
+    vulture: { e:'Dobra Espacial · 3 usos seguidos por recarga; cada teleporte camufla por 2s e faz inimigos perderem o alvo. A recarga de 24s (22s com melhoria) começa após o terceiro uso.', q:'Canhão / Absorção · toque Q para disparar; segure por meio segundo para criar um campo que consome 3 sucatas e recupera 1 escudo (recarga própria curta). Com 8 sucatas, toque Q dispara o canhão carregado mesmo se Q estiver recarregando; segurar Q ainda permite absorver. G consome a carga e evolui a nave por 6s: reduz dano em 35%, atrai inimigos e termina com uma explosão. Durante G, os tiros e habilidades ficam suspensos. A contagem para sobrecarga dura 10s. Se o tempo acabar, o tiro é forçado, remove os escudos e deixa a nave imóvel por 1,8s e vulnerável por 2,6s.' }
   });
   const saurionCreatures = Object.freeze([
     { id:'spinosaurus', name:'Espinossauro', role:'controle e caça', radius:30, duration:22, attack:2, kind:'spino' },
@@ -161,7 +172,7 @@
     { id:'therizinosaurus', name:'Terizinossauro', role:'garras em área', radius:30, duration:22, attack:2.2, kind:'theri' },
     { id:'raptor', name:'Raptor', role:'caça veloz', radius:24, duration:22, attack:1.1, kind:'raptor' }
   ]);
-  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12, flamestorm:13, 'saurion-primal':14 });
+  const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12, flamestorm:13, 'saurion-primal':14, vulture:15 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
   let secretShipUnlocks = readSecretShipUnlocks();
   let pendingSecretShipId = null;
@@ -227,6 +238,7 @@
     tempestTideCharges: 4, tempestTideChargeBonus: 0, tempestTideDamageBonus: 0, tempestTideSweepBonus: 0,
     saurionSummonCooldownE: 0, saurionSummonCooldownQ: 0, saurionSummons: [], saurionPlayerBuffTime: 0, saurionPlayerDamageBuff: 0, saurionPlayerFireRateBuff: 0,
     flameStormQCooldown: 0, flameStormQIntangible: 0, flameStormDash: null,
+    vultureQCooldown: 0, vultureCloakTime: 0, vultureEvolutionTime: 0, vultureUltPulseCooldown:0, vultureAbsorbCooldown:0, vultureFoldCharges:3, vultureFoldRecharge:0, vultureQPressStartedAt:0, vultureQPressSource:'', vultureQPressPointerId:null, vultureQPressHoldTriggered:false, vultureFoldRangeBonus: 0, vulturePulseRadiusBonus: 0, vulturePulseDamageBonus: 0, vultureScrap:0, vultureOverloadCountdown:0, vultureOverloadTime:0, vultureVulnerableTime:0, vultureVulnerableHitCooldown:0,
     chronosEcho: null, chronosEchoQueue: [], chronosEchoCooldown: 0, chronosEchoDurationBonus: 0, chronosEchoDamageBonus: 0,
     mode: 'intro', lastTime: 0, raf: 0, width: 800, height: 560, dpr: 1,
     score: 0, best: readBest(), bestCompletedWave: readBestWave(), wave: 1, lives: 3, maxLives: 6, shields: 0, tempShields: 0, invulnerable: 0, elapsed: 0, missionStartedAt: 0, waveStartedAt: 0, waveEndedAt: 0,
@@ -295,6 +307,8 @@
   }
   const upgradeDescriptionForShip = (upgrade) => upgrade.id === 'cooldown' && currentSkin().id === 'flamestorm'
     ? 'Reduz a recarga do E de 18s até 15s e a do Q de 24s até 18s com cinco Condensadores; também corta 4s da recarga atual.'
+    : upgrade.id === 'cooldown' && currentSkin().id === 'vulture'
+      ? 'Reduz a recarga do E de 24s até 22s e também corta 4s da recarga atual.'
     : upgrade.id === 'cooldown' && currentSkin().id === 'saurion'
       ? 'Reduz a recarga do E em 1s por nível, de 16s até 12s. A recarga do Q é reduzida separadamente pelo Instinto Predador.'
       : upgrade.description;
@@ -380,6 +394,10 @@
     ,{ id:'prismHorizonDamage', icon:'✹', name:'Pulso de retorno', description:'Aumenta em 2 o dano da onda liberada ao retornar pela Dobra de Horizonte.', max:3, available:()=>currentSkin().id==='prisma'&&state.prismHorizonDamageBonus<6, apply:()=>{state.prismHorizonDamageBonus=Math.min(6,state.prismHorizonDamageBonus+2);} }
     ,{ id:'prismCooldown', icon:'⟳', name:'Ressonância real', description:'Reduz em 2 segundos a recarga compartilhada das habilidades escolhidas, até 20 segundos.', max:4, available:()=>currentSkin().id==='prisma'&&state.prismCooldownBonus<4, apply:()=>{state.prismCooldownBonus=Math.min(4,state.prismCooldownBonus+1);state.abilityBaseCooldown=prismCooldownDuration();state.abilityCooldown=Math.min(state.abilityCooldown,state.abilityBaseCooldown);} }
     ,{ id:'prismResonance', icon:'◇', name:'Espectro refinado', description:'Fortalece em 12% as habilidades próprias e copiadas da Prisma Real, até 36%.', max:3, available:()=>currentSkin().id==='prisma'&&upgradeLevel('prismResonance')<3, apply:()=>{state.abilityPower=Math.min(2.5,state.abilityPower+.12);} }
+    ,{ id:'vultureFoldRange', icon:'⌖', name:'Dobra de longo alcance', description:'Aumenta a distância da Dobra Espacial em 50 unidades por nível, até três vezes.', max:3, available:()=>currentSkin().id==='vulture'&&upgradeLevel('vultureFoldRange')<3, apply:()=>{state.vultureFoldRangeBonus=Math.min(150,state.vultureFoldRangeBonus+50);} }
+    ,{ id:'vulturePulseRadius', icon:'◎', name:'Campo de compressão', description:'Aumenta o raio do impacto do Canhão Gravitacional em 12 unidades por nível, até três níveis.', max:3, available:()=>currentSkin().id==='vulture'&&upgradeLevel('vulturePulseRadius')<3, apply:()=>{state.vulturePulseRadiusBonus=Math.min(36,state.vulturePulseRadiusBonus+12);} }
+    ,{ id:'vulturePulseDamage', icon:'✦', name:'Núcleo devorador', description:'Aumenta em 2 o dano do Canhão Gravitacional e do disparo forçado por nível, até três níveis.', max:3, available:()=>currentSkin().id==='vulture'&&upgradeLevel('vulturePulseDamage')<3, apply:()=>{state.vulturePulseDamageBonus=Math.min(6,state.vulturePulseDamageBonus+2);} }
+    ,{ id:'vulturePulseCooldown', icon:'⟳', name:'Ciclo de sucata', description:'Reduz a recarga do Q em 2 segundos por nível, de 24s até 18s.', max:3, available:()=>currentSkin().id==='vulture'&&upgradeLevel('vulturePulseCooldown')<3, apply:()=>{state.vultureQCooldown=Math.min(state.vultureQCooldown,Math.max(18,24-(upgradeLevel('vulturePulseCooldown')+1)*2));} }
     ,{ id:'salvageHeal', icon:'✚', name:'Recuperação de destroços', description:'Inimigos destruídos podem liberar energia de reparo.', max:4, available:()=>state.salvageHeal<4, apply:()=>{state.salvageHeal+=1;} }
     ,{ id:'endlessDamage', icon:'✹', name:'Núcleo adaptativo', description:'Reforço repetível com ganho decrescente, limitado a +60% de dano.', max:0, stack:true, available:()=>state.endlessDamage<.6, apply:()=>{state.endlessDamage=Math.min(.6,state.endlessDamage + .11 / (1 + upgradeLevel('endlessDamage') * .14));} }
     ,{ id:'endlessSpeed', icon:'➤', name:'Impulso de longo curso', description:'Aumenta a mobilidade aos poucos, com velocidade máxima controlada.', max:0, stack:true, available:()=>state.endlessSpeed<118, apply:()=>{state.endlessSpeed=Math.min(120,state.endlessSpeed + 8 / (1 + upgradeLevel('endlessSpeed') * .12));} }
@@ -395,9 +413,9 @@
     const id = upgrade.id;
     if (['repair','lifeSupport','regen','salvageHeal'].includes(id)) return 'health';
     if (['shield','armor','aegisOrbitDuration','aegisOrbitCount','aegisOrbitDamage','aegisOrbitCooldown','returnCore','mahoragaAdaptation','mahoragaGuard'].includes(id)) return 'defense';
-    if (['speed','lowHull','endlessSpeed','flashTrailDuration','flashTrailDensity','flameStormDashCore'].includes(id)) return 'mobility';
+    if (['speed','lowHull','endlessSpeed','flashTrailDuration','flashTrailDensity','flameStormDashCore','vultureFoldRange'].includes(id)) return 'mobility';
     if (['bounty','magnet','endlessDamage'].includes(id)) return 'reward';
-    if (['damage','rapid','spread','pierce','critical','drone','volley','blast','bossDamage','flameStormVortexCore','dinoFangs','dinoStampede','dinoResonance'].includes(id)) return 'offense';
+    if (['damage','rapid','spread','pierce','critical','drone','volley','blast','bossDamage','flameStormVortexCore','dinoFangs','dinoStampede','dinoResonance','vulturePulseDamage','vulturePulseRadius'].includes(id)) return 'offense';
     return 'ability';
   }
   function upgradeProgressLabel(upgrade, nextLevel) {
@@ -1247,6 +1265,7 @@
     if (skin.id === 'mahoraga') return 'E: escudo 3s, −70% · adapta tipos diferentes por 5 ondas, até −55%';
     if (skin.id === 'megumi') return 'Ritual Umbral · E 3 variações · 20s→15s · Q Mahoraga 5 ondas +1 vida · recarga 45s';
     if (skin.id === 'flamestorm') return 'Propulsão Infernal · E 18s→15s · dash 5s · Q 24s→18s · vórtice 5s';
+    if (skin.id === 'vulture') return 'Dobra Espacial · E 3 cargas · 24s→22s após esgotar · Q 24s→18s · G Ult com 8 sucatas';
     if (skin.id === 'saurion-primal') return 'E 40s · Q 40s · até 2 dinossauros diferentes por 22s';
     if (hasDeveloperPerks()) return 'sem recarga';
     if (skin.id === 'prisma') return 'E e Q configuráveis no Arquivo de Ecos (G) · recarga própria até 20s · missão fora do placar';
@@ -1287,7 +1306,7 @@
   function readSkin(preferredId = '') {
     try {
       const savedId = preferredId || localStorage.getItem('cv-games-cv-starfall-skin');
-      const id = savedId === 'mahoraga' ? 'megumi' : savedId;
+      const id = savedId === 'mahoraga' ? 'megumi' : savedId === 'eclipse09' ? 'vulture' : savedId;
       if (savedId !== id && id) { try { localStorage.setItem('cv-games-cv-starfall-skin', id); } catch { /* A forma interna migra somente nesta sessão. */ } }
       const skin = skins.find((item) => item.id === id);
       if (!skin) return 'aurora';
@@ -1314,9 +1333,10 @@
     return options[Math.floor(randomUnit('ability') * options.length)] || 'rabbits';
   }
   function megumiShadowCloakActive() { return state.megumiCloakTime > 0; }
+  function vultureCloakActive() { return currentSkin().id === 'vulture' && state.vultureCloakTime > 0; }
   function prismChoiceParts(choice = state.prismAbilityChoices[state.prismAbilitySlot]) {
     const [shipId, key] = String(choice || 'aurora:e').split(':');
-    return { shipId: skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar) ? shipId : 'aurora', key: key === 'q' ? 'q' : 'e' };
+    return { shipId: skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar && (!skin.profileRestricted || skinUnlocked(skin))) ? shipId : 'aurora', key: key === 'q' ? 'q' : 'e' };
   }
   function prismChoiceName(choice = state.prismAbilityChoices[state.prismAbilitySlot]) {
     const { shipId, key } = prismChoiceParts(choice);
@@ -1326,7 +1346,7 @@
   function setPrismChoice(choice, slot = state.prismAbilitySlot) {
     if (!['e','q'].includes(slot)) return;
     const [shipId, key] = String(choice || '').split(':');
-    if (!skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar) || !['e','q'].includes(key)) return;
+    if (!skins.some((skin) => skin.id === shipId && !skin.noAbilities && !skin.hiddenFromHangar && (!skin.profileRestricted || skinUnlocked(skin))) || !['e','q'].includes(key)) return;
     state.prismAbilityChoices[slot] = choice;
     try { localStorage.setItem(prismAbilityChoiceKey, JSON.stringify(state.prismAbilityChoices)); } catch { /* As escolhas ficam nesta sessão. */ }
   }
@@ -1470,6 +1490,7 @@
   function updateEquippedShip() {
     if (!ui.equippedShip) return;
     const skin = currentSkin();
+    ui.panel?.classList.toggle('is-vulture-hud', skin.id === 'vulture');
     const silhouettes = { classic: 'M20 3 L34 35 L20 28 L6 35 Z', blade: 'M20 2 L24 16 L36 33 L20 27 L4 33 L16 16 Z', wing: 'M20 2 L25 16 L37 30 L25 27 L20 38 L15 27 L3 30 L15 16 Z', shield: 'M20 2 L32 17 L29 32 L20 37 L11 32 L8 17 Z', ring: 'M20 3 L34 35 L20 28 L6 35 Z', reflector: 'M20 2 L33 10 L37 23 L28 34 L20 38 L12 34 L3 23 L7 10 Z', prism: 'M20 2 L34 13 L30 31 L20 38 L10 31 L6 13 Z', training: 'M20 2 L25 12 L38 28 L29 27 L25 36 L20 32 L15 36 L11 27 L2 28 L15 12 Z', megumi:'M20 2 L27 15 L37 27 L27 25 L23 36 L20 31 L17 36 L13 25 L3 27 L13 15 Z', mahoraga: 'M20 10 L23 13 L30 14 L36 18 L33 22 L29 20 L28 26 L24 25 L22 33 L20 36 L18 33 L16 25 L12 26 L11 20 L7 22 L4 18 L10 14 L17 13 Z' };
     ui.equippedShip.style.setProperty('--skin-color', skin.color);
     const equippedIcon = skin.shape === 'eclipse'
@@ -1479,6 +1500,7 @@
       : skin.shape === 'prism' ? '<span class="starfall-equipped-icon starfall-prism-icon" aria-hidden="true">◇</span>'
       : skin.shape === 'megumi' ? '<span class="starfall-equipped-icon starfall-umbra-icon" aria-hidden="true"><img src="umbra-ship.png" alt=""></span>'
       : skin.shape === 'flamestorm' ? '<span class="starfall-equipped-icon starfall-flamestorm-icon" aria-hidden="true"><img src="flamestorm-icon.png" alt=""></span>'
+      : skin.shape === 'vulture' ? '<span class="starfall-equipped-icon starfall-vulture-icon" aria-hidden="true"><img src="vulture-ship.png" alt=""></span>'
       : skin.shape === 'mahoraga' ? '<span class="starfall-equipped-icon starfall-mahoraga-sprite" aria-hidden="true"><img src="mahoraga-ship.png" alt=""></span>'
       : skin.shape === 'reflector' ? '<span class="starfall-equipped-icon starfall-redshift-icon" aria-hidden="true">' + bastiaoShipSvg(skin.color,skin.accent) + '</span>'
       : '<svg class="starfall-equipped-icon' + (skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-megumi-icon' : skin.shape === 'training' ? ' starfall-training-icon' : '') + '" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : skin.shape === 'mahoraga' ? '<circle cx="20" cy="5" r="5" fill="#2b343e" stroke="#e4c477" stroke-width="1.2"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#f4ecdb" stroke-width=".9"/><circle cx="20" cy="5" r="1.5" fill="#e4c477"/>' : skin.shape === 'megumi' ? '<circle cx="20" cy="5" r="5" fill="#211a2f" stroke="#c4b2e8" stroke-width="1"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#eee6ff" stroke-width=".7"/><circle cx="20" cy="5" r="1.5" fill="#c4b2e8"/>' : '') + '</svg>';
@@ -1730,6 +1752,38 @@
       ui.healthFill.parentElement?.style.setProperty('--health-segment', (100 / state.maxLives) + '%');
     }
     updateAbilityButton();
+    updateVultureScrapHud();
+  }
+  function updateVultureScrapHud() {
+    if (!ui.vultureScrapHud) return;
+    const isVulture = currentSkin().id === 'vulture';
+    const show = isVulture && ['playing','paused','upgrade'].includes(state.mode);
+    ui.vultureScrapHud.hidden = !show;
+    if (!show) return;
+    const count = Math.min(8, state.vultureScrap || 0);
+    const overloadShot = state.vultureOverloadTime > 0;
+    const vulnerable = state.vultureVulnerableTime > 0;
+    const countdownActive = count >= 8 && state.vultureOverloadCountdown > 0;
+    const countdownSeconds = Math.ceil(state.vultureOverloadCountdown);
+    const overloaded = overloadShot || vulnerable;
+    const shownCount = overloadShot ? 8 : count;
+    ui.vultureScrapCount.textContent = shownCount + '/8';
+    ui.vultureScrapFill.style.width = (shownCount / 8 * 66) + '%';
+    ui.vultureScrapLabel.textContent = overloadShot ? 'SOBRECARGA · DISPARO' : vulnerable ? 'NÚCLEO VULNERÁVEL' : countdownActive ? 'ULT OU DISPARO EM ' + countdownSeconds + 's' : count >= 6 ? 'NÚCLEO CARREGANDO' : 'SUCATA · Q DISPARA / SEGURE PARA ABSORVER';
+    const timer = ui.vultureScrapHud.querySelector('[data-vulture-scrap-timer]');
+    if (timer) { timer.hidden = !countdownActive; timer.textContent = countdownActive ? countdownSeconds + 's' : ''; }
+    ui.vultureScrapHud.setAttribute('aria-label', 'Sucata da Vulture: ' + count + ' de 8 · ' + ui.vultureScrapLabel.textContent);
+    ui.vultureScrapHud.classList.toggle('is-overloaded', overloaded);
+    ui.vultureScrapHud.classList.toggle('is-countdown', countdownActive);
+    ui.vultureScrapHud.classList.toggle('is-charged', count >= 6 && !overloaded);
+    ui.stage?.classList.toggle('starfall-vulture-overloaded', overloaded);
+    if (ui.vultureUlt) {
+      const ultVisible = isVulture && count >= 8 && state.vultureOverloadCountdown > 0 && state.vultureEvolutionTime <= 0 && state.vultureOverloadTime <= 0;
+      ui.vultureUlt.hidden = !ultVisible;
+      ui.vultureUlt.disabled = !ultVisible || state.mode !== 'playing';
+      ui.vultureUlt.classList.toggle('is-ready', ultVisible && state.mode === 'playing');
+      ui.vultureUlt.setAttribute('aria-label', 'Ativar Devoradora de Estrelas · gastar 8 sucatas · evolução por 6 segundos · tecla G');
+    }
   }
   function updateMahoragaFormControls() {
     const active = state.megumiTransformed && ['playing', 'paused', 'upgrade'].includes(state.mode);
@@ -1788,26 +1842,28 @@
     const isMahoraga = skin.id === 'mahoraga';
     const isMegumi = skin.id === 'megumi';
     const isFlameStorm = skin.id === 'flamestorm';
+    const isVulture = skin.id === 'vulture';
     const megumiE = megumiTechnique();
     const isSaurion = skin.id === 'saurion';
     const isPrimalSaurion = skin.id === 'saurion-primal';
     const saurionESummon = isPrimalSaurion ? saurionSummonForSlot('e') : null;
-    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !saurionESummon : isSaurion ? state.dinoRoarCharges > 0 : state.abilityCooldown <= 0;
+    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !saurionESummon : isSaurion ? state.dinoRoarCharges > 0 : isVulture ? state.vultureFoldCharges > 0 && state.vultureEvolutionTime <= 0 : state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
-    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0) || Boolean(saurionESummon);
+    const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0) || (isVulture && state.vultureCloakTime > 0) || Boolean(saurionESummon);
     if (ui.abilityWrap) ui.abilityWrap.hidden = !showAbility;
     if (ui.ability) {
       ui.ability.classList.remove('is-prisma');
       ui.ability.classList.toggle('is-mahoraga', isMahoraga);
       ui.ability.classList.toggle('is-megumi', isMegumi);
       ui.ability.classList.toggle('is-flamestorm', isFlameStorm);
+      ui.ability.classList.toggle('is-vulture', isVulture);
       ui.ability.classList.toggle('is-saurion-primal', isPrimalSaurion);
       ui.ability.style.setProperty('--ship-color', skin.color);
       ui.ability.style.setProperty('--ship-accent', skin.accent);
       ui.ability.style.setProperty('--ship-color-rgb', colorRgbTriplet(skin.color));
       ui.ability.style.setProperty('--ship-accent-rgb', colorRgbTriplet(skin.accent));
-      ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || state.megumiSummonPhase === 'cinematic' || (isPrimalSaurion && !ready) || (!ready && !active);
+      ui.ability.disabled = state.mode !== 'playing' || eclipseIntro || eclipseActive || state.megumiSummonPhase === 'cinematic' || (isPrimalSaurion && !ready) || (isVulture && (state.vultureEvolutionTime > 0 || !ready)) || (!isVulture && !ready && !active);
       ui.ability.setAttribute('aria-pressed', String(active));
       if (isMahoraga) {
         if (ui.ability.firstChild !== mahoragaAdaptationIcon) ui.ability.replaceChildren(mahoragaAdaptationIcon);
@@ -1816,14 +1872,15 @@
       } else if (isPrimalSaurion) {
         ui.ability.textContent = '🐾';
       } else {
-        ui.ability.textContent = isMegumi ? megumiE.icon : '✦';
+      ui.ability.textContent = isMegumi ? megumiE.icon : isVulture ? '⌖' : '✦';
       }
-       ui.ability.setAttribute('aria-label', isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 70% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 70% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos · intangível, rebate nas bordas e permite corrigir a direção' : ready ? 'Ativar Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochete e direção controlável · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isPrimalSaurion ? saurionESummon ? saurionESummon.name + ' ativo · ' + Math.ceil(saurionESummon.life) + 's' : ready ? 'Escolher dinossauro para o espaço E · recarga própria de 40s' : 'Chamado Primal recarrega em ' + Math.ceil(state.saurionSummonCooldownE) + 's' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
+       ui.ability.setAttribute('aria-label', isVulture ? state.vultureEvolutionTime > 0 ? 'Dobra Espacial bloqueada durante a Ult' : state.vultureFoldCharges > 0 ? (active ? 'Camuflagem Cósmica ativa · ' : '') + 'Dobra Espacial · ' + state.vultureFoldCharges + ' de 3 usos restantes · tecla E' : 'Dobra Espacial recarregando: ' + Math.ceil(state.vultureFoldRecharge) + ' segundos' : isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 70% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 70% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos · intangível, rebate nas bordas e permite corrigir a direção' : ready ? 'Ativar Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochete e direção controlável · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isPrimalSaurion ? saurionESummon ? saurionESummon.name + ' ativo · ' + Math.ceil(saurionESummon.life) + 's' : ready ? 'Escolher dinossauro para o espaço E · recarga própria de 40s' : 'Chamado Primal recarrega em ' + Math.ceil(state.saurionSummonCooldownE) + 's' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
       const eCountdown = isMegumi
         ? state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown)) : megumiE.short
         : isMahoraga
         ? state.mahoragaParryWindow > 0 ? String(Math.ceil(state.mahoragaParryWindow)) : state.mahoragaParryCooldown > 0 ? state.mahoragaParryCooldown.toFixed(1).replace('.', ',') : state.mahoragaWheelReady ? '8/8' : ''
         : isFlameStorm && state.flameStormDash?.life > 0 ? state.flameStormDash.life.toFixed(1).replace('.', ',')
+        : isVulture ? state.vultureFoldCharges > 0 ? state.vultureFoldCharges + '/3' : String(Math.ceil(state.vultureFoldRecharge))
         : isPrimalSaurion ? saurionESummon ? String(Math.ceil(saurionESummon.life)) : state.saurionSummonCooldownE > 0 ? String(Math.ceil(state.saurionSummonCooldownE)) : ''
         : isSaurion
         ? state.dinoRoarCharges > 0 ? String(state.dinoRoarCharges) : String(Math.ceil(state.dinoRoarRecharge))
@@ -1834,7 +1891,7 @@
         ui.abilityCooldown.hidden = !eCountdown;
       }
       ui.ability.classList.toggle('is-counting', Boolean(eCountdown));
-      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −70% dano; adapta tipos diferentes por cinco ondas até 55%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Dash flamejante e intangível por 5s, com ricochetes nas bordas e direção ajustável; os quadros de fogo substituem a nave. ' : isPrimalSaurion ? 'E escolhe uma criatura e tem recarga independente de 40s; ela pode ficar em campo junto de outra espécie invocada pelo Q. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
+      ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −70% dano; adapta tipos diferentes por cinco ondas até 55%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Dash flamejante e intangível por 5s, com ricochetes nas bordas e direção ajustável; os quadros de fogo substituem a nave. ' : isVulture ? 'Dobra Espacial · 3 usos seguidos por recarga · cada uso teleporta e deixa a nave invisível por 2s; inimigos perdem o alvo e param de atirar. ' : isPrimalSaurion ? 'E escolhe uma criatura e tem recarga independente de 40s; ela pode ficar em campo junto de outra espécie invocada pelo Q. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
       const isAurora = skin.id === 'aurora';
@@ -1849,9 +1906,10 @@
       const isMahoraga = skin.id === 'mahoraga';
       const isMegumi = skin.id === 'megumi';
       const isFlameStorm = skin.id === 'flamestorm';
+      const isVulture = skin.id === 'vulture';
       ui.eclipseQWrap.style.setProperty('--ship-accent', skin.accent);
       ui.eclipseQWrap.style.setProperty('--ship-color', skin.color);
-      const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isPrimalSaurion || isRedshift || isFlashblade || isTempest || isMahoraga || isMegumi || isFlameStorm) && ['playing', 'paused'].includes(state.mode);
+      const showQ = (isAurora || isAegis || isEclipse || isChronos || isSaurion || isPrimalSaurion || isRedshift || isFlashblade || isTempest || isMahoraga || isMegumi || isFlameStorm || isVulture) && ['playing', 'paused'].includes(state.mode);
       const auroraLinkTime = auroraLinkDuration();
       const auroraLinkCooldown = auroraLinkCooldownDuration();
       const auroraLinkTargets = auroraLinkMaxTargets();
@@ -1874,14 +1932,16 @@
       const stampedeRemaining = state.effects.reduce((remaining, effect) => effect.type === 'dino-raptor' ? Math.max(remaining, effect.life) : remaining, 0);
       const tideRemaining = state.effects.reduce((remaining, effect) => effect.type === 'tempest-tide' ? Math.max(remaining, effect.life) : remaining, 0);
       const saurionQSummon = isPrimalSaurion ? saurionSummonForSlot('q') : null;
-      const qActive = isPrimalSaurion ? Boolean(saurionQSummon) : isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion ? stampedeRemaining > 0 : isFlameStorm && state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
-      const qCooldown = isPrimalSaurion ? state.saurionSummonCooldownQ : isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseParadoxCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : isFlameStorm ? state.flameStormQCooldown : state.dinoStampedeRecharge;
+      const qActive = isPrimalSaurion ? Boolean(saurionQSummon) : isAurora ? Boolean(state.auroraLink && state.auroraLink.life > 0) : isAegis ? Boolean(state.aegisOrbit && state.aegisOrbit.life > 0) : isEclipse ? Boolean(state.eclipseParadox?.life > 0) : isChronos ? Boolean(state.chronosEcho && state.chronosEcho.life > 0) : isRedshift ? Boolean(state.redshiftPerimeter && state.redshiftPerimeter.life > 0) : isFlashblade ? Boolean(state.flashTrail && state.flashTrail.life > 0) : isTempest ? tideRemaining > 0 : isSaurion ? stampedeRemaining > 0 : isFlameStorm ? state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0) : isVulture && state.effects.some((effect) => ['vulture-pulse','vulture-horizon-shot','vulture-absorb-field'].includes(effect.type) && effect.life > 0);
+      const qCooldown = isPrimalSaurion ? state.saurionSummonCooldownQ : isAurora ? state.auroraLinkCooldown : isAegis ? state.aegisOrbitCooldown : isEclipse ? state.eclipseParadoxCooldown : isChronos ? state.chronosEchoCooldown : isRedshift ? state.redshiftPerimeterCooldown : isFlashblade ? state.flashTrailCooldown : isTempest ? state.tempestTideCooldown : isMahoraga ? state.mahoragaSlashCooldown : isMegumi ? state.megumiSummonCooldown : isFlameStorm ? state.flameStormQCooldown : isVulture ? state.vultureQCooldown : state.dinoStampedeRecharge;
       const dinoCharges = hasDeveloperPerks() ? 3 : state.dinoStampedeCharges;
-      const qReady = isPrimalSaurion ? qCooldown <= 0 && !saurionQSummon : (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
+       const vultureAbsorptionReady = state.vultureScrap >= 3 && state.vultureAbsorbCooldown <= 0 && canRestoreShield();
+      const vultureChargedReady = state.vultureScrap >= 8 && state.vultureOverloadCountdown > 0;
+      const qReady = isVulture ? state.vultureEvolutionTime <= 0 && state.vultureOverloadTime <= 0 && (vultureChargedReady || qCooldown <= 0 || vultureAbsorptionReady) : isPrimalSaurion ? qCooldown <= 0 && !saurionQSummon : (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
-      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm) && qActive) || !qReady;
+      ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || (isVulture && state.vultureEvolutionTime > 0) || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm || isVulture) && qActive) || !qReady;
       if (isFlameStorm) ui.eclipseQ.textContent = flameStormVortexIcon;
-      else ui.eclipseQ.textContent = isSaurion ? '' : isPrimalSaurion ? '🦖' : isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : '✦';
+      else ui.eclipseQ.textContent = isSaurion ? '' : isPrimalSaurion ? '🦖' : isAurora ? '✴' : isAegis ? '⬡' : isEclipse ? '⊗' : isChronos ? '◷' : isRedshift ? '△' : isFlashblade ? '✧' : isTempest ? '↗' : isMahoraga ? '斬' : isMegumi ? '召' : isVulture ? '✹' : '✦';
       ui.eclipseQ.classList.toggle('is-aurora', isAurora);
       ui.eclipseQ.classList.toggle('is-aegis', isAegis);
       ui.eclipseQ.classList.toggle('is-chronos', isChronos);
@@ -1893,9 +1953,17 @@
       ui.eclipseQ.classList.toggle('is-mahoraga', isMahoraga);
       ui.eclipseQ.classList.toggle('is-megumi', isMegumi);
       ui.eclipseQ.classList.toggle('is-flamestorm', isFlameStorm);
+      ui.eclipseQ.classList.toggle('is-vulture', isVulture);
       ui.eclipseQ.classList.remove('is-prisma');
       ui.eclipseQ.setAttribute('aria-pressed', String(qActive));
-      const qLabel = isPrimalSaurion && qActive ? saurionQSummon.name + ' ativo pelo Q · ' + Math.ceil(saurionQSummon.life) + 's'
+      const qLabel = isVulture && state.vultureEvolutionTime > 0 ? 'Ult Devoradora de Estrelas ativa · ataques próprios suspensos até a explosão final'
+         : isVulture && qActive ? 'Canhão ou absorção da Vulture em andamento'
+         : isVulture && vultureChargedReady ? 'Toque Q: canhão carregado · segure Q: absorver 3 sucatas e recuperar escudo · G: evoluir por 6s · sobrecarga em ' + Math.ceil(state.vultureOverloadCountdown) + 's'
+        : isVulture && qCooldown > 0 ? 'Canhão recarregando: ' + Math.ceil(qCooldown) + 's · segure Q para absorver se houver 3 sucatas e espaço de escudo'
+        : isVulture && vultureAbsorptionReady ? 'Toque Q para disparar · segure Q por meio segundo para absorver 3 sucatas e recuperar 1 escudo'
+        : isVulture && state.vultureScrap >= 3 && !canRestoreShield() ? 'Escudos no limite · Q dispara; segurar Q não consome sucata'
+        : isVulture ? 'Toque Q para disparar o Canhão Gravitacional · segure Q para absorver 3 sucatas e recuperar 1 escudo · recarga ' + vulturePulseCooldownDuration() + 's'
+        : isPrimalSaurion && qActive ? saurionQSummon.name + ' ativo pelo Q · ' + Math.ceil(saurionQSummon.life) + 's'
         : isPrimalSaurion && !qReady ? 'Arsenal Jurássico recarrega em ' + Math.ceil(qCooldown) + ' segundos'
         : isPrimalSaurion ? 'Escolher dinossauro para o espaço Q · recarga própria de 40s; pode coexistir com uma espécie diferente no E'
         : isMegumi && state.megumiSummonPhase === 'cinematic' ? 'Ritual do Guardião em andamento'
@@ -1915,7 +1983,8 @@
                 : isMahoraga ? 'Espada da Exterminação · tecla Q · talho mundial em onda atravessa a arena, destrói tiros e atinge até oito alvos; 20 de dano no primeiro, 10 nos seguintes e dano reduzido contra chefes'
                    : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Paradoxo Absoluto · tecla Q · distorção por toda a tela durante ' + paradoxDuration + 's; desacelera, interrompe ataques e sentencia os alvos no colapso · recarga ' + paradoxCooldown + 's' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Investida do Tigre · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
-      ui.eclipseQ.title = isSaurion ? 'Investida do Tigre · Q · três cargas; projéteis de energia em forma de tigre perseguem e atingem inimigos · recarga de ' + dinoStampedeCooldownDuration() + 's por carga'
+       ui.eclipseQ.title = isVulture ? state.vultureEvolutionTime > 0 ? 'Ult ativa: o canhão e a absorção estão suspensos até a explosão final' : state.vultureScrap >= 8 ? 'Toque Q: canhão carregado consome as 8 sucatas · segure Q: absorve 3 sucatas e recupera 1 escudo · G: Ult transforma por 6s · sobrecarga em ' + Math.ceil(state.vultureOverloadCountdown) + 's' : 'Toque Q dispara; segure Q por meio segundo para absorver 3 sucatas e recuperar 1 escudo · recarga do disparo ' + vulturePulseCooldownDuration() + 's'
+        : isSaurion ? 'Investida do Tigre · Q · três cargas; projéteis de energia em forma de tigre perseguem e atingem inimigos · recarga de ' + dinoStampedeCooldownDuration() + 's por carga'
          : isPrimalSaurion ? 'Arsenal Jurássico · Q · escolha um dinossauro; pode coexistir com uma espécie diferente invocada pelo E · recarga própria 40s'
         : isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por cinco ondas com uma vida extra · recarga de 45s depois que termina'
         : isFlameStorm ? 'Vórtice Carmesim · Q · invulnerabilidade, atração, absorção de tiros e supressão de chefes por 5s · recarga de ' + flameStormVortexCooldownDuration() + 's'
@@ -1928,7 +1997,7 @@
           : isFlashblade ? 'Rastro de Ruptura · Q · impulso 2,6× · rastros até 9s · dano ' + (3 + state.flashTrailDamageBonus).toFixed(1).replace('.', ',') + ' · recarga de ' + trailCooldown + 's'
              : isTempest ? 'Maré Reversa · Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas · alcance ' + Math.round(mobileSize(280 + state.tempestTideRadiusBonus)) + ' · dano ' + (3.2 + state.tempestTideDamageBonus).toFixed(1).replace('.', ',') + ' · 40% de chance de desviar tiros e redirecionar alguns contra inimigos · recarrega todas em ' + tempestTideCooldown + 's após esgotar'
                 : 'Investida do Tigre · 3 cargas · Q · recarga de ' + dinoStampedeCooldownDuration() + 's por carga';
-       const qActiveRemaining = isPrimalSaurion ? saurionQSummon?.life || 0 : isAurora ? state.auroraLink?.life || 0
+       const qActiveRemaining = isVulture ? state.effects.reduce((remaining, effect) => ['vulture-pulse','vulture-horizon-shot','vulture-absorb-field'].includes(effect.type) ? Math.max(remaining, effect.life) : remaining, 0) : isPrimalSaurion ? saurionQSummon?.life || 0 : isAurora ? state.auroraLink?.life || 0
         : isAegis ? state.aegisOrbit?.life || 0
           : isEclipse ? state.eclipseParadox?.life || 0
             : isChronos ? state.chronosEcho?.life || 0
@@ -1940,6 +2009,8 @@
         ? String(Math.ceil(qActiveRemaining))
         : isTempest
         ? tempestTideCharges > 0 ? tempestTideCharges + '/' + tempestTideMax : String(Math.ceil(qCooldown))
+        : isVulture && vultureChargedReady ? String(Math.ceil(state.vultureOverloadCountdown)) + 's'
+        : isVulture && vultureAbsorptionReady && qCooldown > 0 ? 'SEGURE'
         : (!hasDeveloperPerks() || isMegumi) && qCooldown > 0
         ? String(Math.ceil(qCooldown))
         : qActive && qActiveRemaining > 0 ? String(Math.ceil(qActiveRemaining)) : '';
@@ -2108,13 +2179,21 @@
       detail.append(kicker, heading, description); ui.shipDetailsList.append(detail);
     }
     ui.shipDetailsCooldowns.textContent = 'Recargas e melhorias · ' + shipCooldownSummary(skin);
+    if (skin.id === 'vulture') {
+      const lore = document.createElement('section'); lore.className = 'starfall-rank-detail-card starfall-ship-detail-card starfall-vulture-lore';
+      const kicker = document.createElement('small'); kicker.className = 'starfall-ship-detail-key'; kicker.textContent = 'ORIGEM';
+      const heading = document.createElement('h3'); heading.textContent = 'Astra Vulture · O Devorador de Estrelas';
+      const description = document.createElement('p'); description.textContent = 'Uma caçadora experimental que absorve destroços para alimentar seus escudos e o núcleo gravitacional. Quando o núcleo acumula sucata demais, a nave evolui e libera um disparo carregado, mas fica exposta durante a sobrecarga. “Quando as estrelas caem, nós encontramos o caminho.”';
+      lore.append(kicker, heading, description); ui.shipDetailsList.append(lore);
+    }
     if (typeof ui.shipDetailsDialog.showModal === 'function') ui.shipDetailsDialog.showModal();
     else ui.shipDetailsDialog.setAttribute('open', '');
   }
   function renderSkinPicker() {
     if (!ui.skinPicker) return;
     ui.skinPicker.replaceChildren();
-    skins.forEach((skin) => {
+    const pickerSkins = [...skins].sort((a, b) => Number(Boolean(a.ownerOnly)) - Number(Boolean(b.ownerOnly)));
+    pickerSkins.forEach((skin) => {
       if (skin.hiddenFromHangar) return;
       if (skin.profileRestricted && !skinUnlocked(skin)) return;
       const unlocked = skinUnlocked(skin);
@@ -2134,6 +2213,7 @@
       icon.setAttribute('aria-hidden', 'true');
       if (concealed) icon.textContent = '?';
       else if (skin.shape === 'saurion-primal') { const image = document.createElement('img'); image.src = 'saurion-frame-1.png'; image.alt = ''; icon.append(image); }
+      else if (skin.shape === 'vulture') { icon.classList.add('starfall-vulture-icon'); const image = document.createElement('img'); image.src = 'vulture-ship.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'dino') { icon.classList.add('starfall-tigrum-icon'); const image = document.createElement('img'); image.src = 'tigrum-q-roar.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'megumi') { const image = document.createElement('img'); image.src = 'umbra-ship.png'; image.alt = ''; icon.append(image); }
       else if (skin.shape === 'flamestorm') { icon.classList.add('starfall-flamestorm-icon'); const image = document.createElement('img'); image.src = 'flamestorm-icon.png'; image.alt = ''; icon.append(image); }
@@ -2239,6 +2319,8 @@
     megumiCutsceneTimer = 0;
     state.megumiTechnique = rollMegumiTechnique(''); state.megumiSummonCooldown = 0; state.megumiTransformed = false; state.megumiFormWavesRemaining = 0; state.megumiSummonPhase = 'idle'; state.megumiTransformSource = ''; state.megumiCloakTime = 0; state.megumiRabbits = [];
     ui.stage?.classList.remove('starfall-megumi-shadow-veil');
+    ui.stage?.classList.remove('starfall-vulture-cloaked');
+    ui.stage?.classList.remove('starfall-vulture-overloaded');
     if (ui.megumiFormTimer) ui.megumiFormTimer.hidden = true;
     if (ui.pause) ui.pause.disabled = false;
     if (ui.stop) ui.stop.disabled = false;
@@ -2252,6 +2334,7 @@
     state.player = { x: state.width / 2, y: state.height * .78, radius: mobileSize(13), speed: skin.id === 'training' ? 234 : 260, damage: 1, fireRate: .34, spread: 1, angle: -Math.PI / 2, moveAngle: -Math.PI / 2, color: skin.color, accent: skin.accent, shape: skin.shape };
     state.upgrades = {}; state.abilityCooldown = 0; state.abilityBaseCooldown = skin.cooldown; state.abilityPower = 1; state.slowTime = 0; state.adminNoCooldown = isDeveloperProfile(); state.adminBuffsActive = false;
     state.flameStormQCooldown = 0; state.flameStormQIntangible = 0; state.flameStormDash = null;
+    state.vultureQCooldown = 0; state.vultureCloakTime = 0; state.vultureEvolutionTime = 0; state.vultureUltPulseCooldown = 0; state.vultureAbsorbCooldown = 0; state.vultureFoldCharges = 3; state.vultureFoldRecharge = 0; state.vultureQPressStartedAt = 0; state.vultureQPressSource = ''; state.vultureQPressPointerId = null; state.vultureQPressHoldTriggered = false; state.vultureFoldRangeBonus = 0; state.vulturePulseRadiusBonus = 0; state.vulturePulseDamageBonus = 0; state.vultureScrap = 0; state.vultureOverloadCountdown = 0; state.vultureOverloadTime = 0; state.vultureVulnerableTime = 0; state.vultureVulnerableHitCooldown = 0;
     state.mahoragaParryWindow = 0; state.mahoragaParryCooldown = 0; state.mahoragaShieldHitCooldown = 0; state.mahoragaResistanceType = ''; state.mahoragaResistanceUntilWave = 0; state.mahoragaResistancePower = 0; state.mahoragaCycleStartWave = state.wave; state.mahoragaWheelSegments = 0; state.mahoragaWheelReady = false; state.mahoragaAdaptationVisualTime = 0; state.mahoragaSlashCooldown = 0; state.mahoragaSlashCooldownBonus = 0; state.mahoragaProgress = {}; state.mahoragaAdaptationLevels = {}; state.mahoragaAdaptationWaves = {}; state.mahoragaDamageRemainders = {}; state.mahoragaLastType = ''; state.mahoragaDuplicateBuffTime = 0; state.mahoragaDuplicateBuffBonus = 0; state.mahoragaReviveUsed = false;
     if (mahoragaAwakeningTimer) window.clearTimeout(mahoragaAwakeningTimer);
     if (ui.mahoragaAwakening) { ui.mahoragaAwakening.hidden = true; ui.mahoragaAwakening.classList.remove('is-visible'); }
@@ -2703,6 +2786,21 @@
   function collectPickup(pickup) {
     if (!pickup || pickup.dead) return false;
     pickup.dead = true;
+    if (pickup.kind === 'vulture-scrap' && currentSkin().id === 'vulture') {
+      state.vultureScrap = Math.min(8, state.vultureScrap + 1);
+      const image = vultureScrapSprites[pickup.scrapType];
+      const colors = ['#ff7133','#ff9f52','#d9c2b8','#ffb244','#7e727a'];
+      burst(pickup.x, pickup.y, colors[pickup.scrapType] || '#ff8a3d', 9, 70);
+      if (image?.complete && image.naturalWidth) state.effects.push({ type:'vulture-scrap-collect', x:pickup.x, y:pickup.y, image, life:.4, total:.4 });
+      if (state.vultureScrap >= 8 && state.vultureOverloadCountdown <= 0) {
+        state.vultureOverloadCountdown = 10;
+        toast('NÚCLEO NO LIMITE · 10s PARA USAR Q OU G');
+        tone(540, .24, 'sawtooth', .045);
+        updateHud();
+      }
+      else { tone(740 + state.vultureScrap * 18, .12, 'triangle', .04); updateHud(); }
+      return true;
+    }
     if (pickup.kind === 'repair') { state.lives = Math.min(state.maxLives, state.lives + 1); toast('CASCO REPARADO +1 VIDA'); }
     else if (pickup.kind === 'charge') {
       if (currentSkin().id === 'training') {
@@ -2762,7 +2860,7 @@
     return state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(source, a) - distance(source, b))[0] || null;
   }
   function fireAt(target) {
-    if (!target) return;
+    if (!target || (currentSkin().id === 'vulture' && state.vultureEvolutionTime > 0)) return;
     const angle = Math.atan2(target.y - state.player.y, target.x - state.player.x);
     const totalShots = state.player.spread + state.bonusShots;
     const mahoragaDamageBuff = mahoragaAdaptationActive() ? 1 + state.mahoragaDuplicateBuffBonus : 1;
@@ -2791,6 +2889,16 @@
   }
   function enemyAimTarget(enemy = null) {
     if (megumiShadowCloakActive()) return { x:state.megumiCloakLastX, y:state.megumiCloakLastY };
+    if (vultureCloakActive()) {
+      if (enemy && (!enemy.vultureSearchTarget || distance(enemy, enemy.vultureSearchTarget) < mobileSize(24))) {
+        const margin = mobileSize(42);
+        enemy.vultureSearchTarget = {
+          x:random(margin, Math.max(margin, state.width - margin), 'attack'),
+          y:random(margin, Math.max(margin, state.height - margin), 'attack')
+        };
+      }
+      return enemy?.vultureSearchTarget || { x:state.width * .5, y:state.height * .5 };
+    }
     const rabbit = state.megumiRabbits.filter((shikigami) => shikigami.life > 0).sort((a, b) => distance(enemy || state.player, a) - distance(enemy || state.player, b))[0];
     if (rabbit) return rabbit;
     const saurionDecoy = currentSkin().id === 'saurion-primal' ? saurionSummons().find((summon) => summon.kind === 'trike' && summon.provokeTime > 0) : null;
@@ -2798,7 +2906,9 @@
     return state.player;
   }
   function enemyFire(enemy) {
-    if (megumiShadowCloakActive()) return;
+    if (megumiShadowCloakActive() || vultureCloakActive()) return;
+    const vultureField = activeVultureUltField();
+    if (vultureField && distance(enemy, vultureField) <= vultureField.radius + enemy.r) return;
     const vortex = state.effects.find((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0);
     if (vortex && (enemy.kind === 'boss' || enemy.isMiniBoss) && distance(enemy, vortex) <= vortex.radius + enemy.r) return;
     const target = enemyAimTarget(enemy);
@@ -3249,19 +3359,23 @@
     updateHud();
   }
   function damagePlayer(amount = 1, attackType = 'projectile') {
-    if (megumiShadowCloakActive() || (currentSkin().id === 'flamestorm' && (state.flameStormDash?.life > 0 || state.flameStormQIntangible > 0))) return;
+    if (megumiShadowCloakActive() || vultureCloakActive() || (currentSkin().id === 'flamestorm' && (state.flameStormDash?.life > 0 || state.flameStormQIntangible > 0))) return;
     const isMahoraga = mahoragaAdaptationActive();
     const mahoragaShieldActive = isMahoraga && state.mahoragaParryWindow > 0;
-    if ((!mahoragaShieldActive && state.invulnerable > 0) || (isMahoraga && state.mahoragaShieldHitCooldown > 0) || state.mode !== 'playing') return;
+    const vultureVulnerable = currentSkin().id === 'vulture' && state.vultureVulnerableTime > 0;
+    if ((!mahoragaShieldActive && !vultureVulnerable && state.invulnerable > 0) || (isMahoraga && state.mahoragaShieldHitCooldown > 0) || state.mode !== 'playing') return;
+    if (vultureVulnerable && state.vultureVulnerableHitCooldown > 0) return;
+    if (vultureVulnerable) state.vultureVulnerableHitCooldown = .42;
     if (abilitySourceIs('flashblade') && state.flashTrail?.life > 0) {
       // Cancel only the active dash. Trail segments are separate world effects and expire normally.
       state.flashTrail = null;
       updateAbilityButton();
       toast('RASTRO DE RUPTURA INTERROMPIDO PELO IMPACTO');
     }
-    if (randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
+    if (!vultureVulnerable && randomUnit('combat') < state.armorChance) { state.invulnerable = .28; toast('BLINDAGEM REATIVA'); tone(480, .1, 'triangle', .025); return; }
     if (isMahoraga) recordMahoragaHit(attackType);
-    const scaledIncomingAmount = Math.max(0, amount) * enemyWaveDamageScale();
+    const vultureUltimateGuard = currentSkin().id === 'vulture' && state.vultureEvolutionTime > 0;
+    const scaledIncomingAmount = Math.max(0, amount) * enemyWaveDamageScale() * (vultureVulnerable ? 1.35 : 1) * (vultureUltimateGuard ? .65 : 1);
     let remaining;
     const adaptationReduction = isMahoraga ? mahoragaResistanceFor(attackType) : 0;
     const matchingResistance = isMahoraga && adaptationReduction > 0;
@@ -3311,7 +3425,7 @@
       state.lives = 1;
       reflectAuroraLinkDamage(Math.max(0, livesBeforeSave - state.lives));
       if (mahoragaShieldActive) state.mahoragaShieldHitCooldown = .42;
-      else state.invulnerable = 1.35;
+      else state.invulnerable = vultureVulnerable ? 0 : 1.35;
       burst(state.player.x, state.player.y, currentSkin().color, 24, 170);
       updateHud();
       return;
@@ -3321,7 +3435,7 @@
     state.lives = Math.max(0, state.lives - remaining);
     reflectAuroraLinkDamage(Math.max(0, livesBeforeHit - state.lives));
     if (mahoragaShieldActive) state.mahoragaShieldHitCooldown = .42;
-    else state.invulnerable = 1.35;
+    else state.invulnerable = vultureVulnerable ? 0 : 1.35;
     burst(state.player.x, state.player.y, '#ff6687', 22, 160); tone(120, .23, 'sawtooth', .05); updateHud();
     if (state.lives <= 0) {
       if (state.megumiTransformed && !state.mahoragaReviveUsed) {
@@ -3395,6 +3509,12 @@
     } else if (enemy.isMiniBoss) {
       spawnPickup(enemy.x, enemy.y, 'charge'); toast('MINI-CHEFE DESTRUÍDO');
     } else if (randomUnit('loot') < Math.max(.006, .1 * Math.max(.06, 1 - lateWavePressure() * .015))) spawnPickup(enemy.x, enemy.y);
+    if (currentSkin().id === 'vulture') {
+      const scrapDrops = enemy.kind === 'boss' ? (enemy.isMiniBoss ? 2 : 3) : randomUnit('loot') < Math.max(.08, .16 - lateWavePressure() * .001) ? 1 : 0;
+      for (let index = 0; index < scrapDrops; index++) {
+        spawnVultureScrapPickup(enemy.x + random(-mobileSize(26), mobileSize(26), 'loot'), enemy.y + random(-mobileSize(22), mobileSize(22), 'loot'));
+      }
+    }
     updateHud();
   }
   function damageEnemy(enemy, amount, fromAbility) {
@@ -3428,6 +3548,13 @@
         burst(enemy.x, enemy.y, enemy.color, nextPhase === 4 ? 72 : 30 + nextPhase * 8, nextPhase === 4 ? 310 : 190);
         if (nextPhase === 4) tone(92, .65, 'sawtooth', .045);
         toast(enemy.bossName.toUpperCase() + (nextPhase === 4 ? ' · TRIUNFO · FORMA FINAL' : ' · FASE ' + nextPhase));
+         if (currentSkin().id === 'vulture' && randomUnit('loot') < .75) spawnVultureScrapPickup(enemy.x + random(-mobileSize(20), mobileSize(20), 'loot'), enemy.y + random(-mobileSize(18), mobileSize(18), 'loot'));
+      }
+    }
+    if (currentSkin().id === 'vulture' && enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.hp > 0) {
+      if (state.elapsed >= (enemy.vultureScrapDropAt || 0)) {
+        enemy.vultureScrapDropAt = state.elapsed + 1.15;
+        if (randomUnit('loot') < .22) spawnVultureScrapPickup(enemy.x + random(-mobileSize(24), mobileSize(24), 'loot'), enemy.y + random(-mobileSize(18), mobileSize(18), 'loot'));
       }
     }
     if (enemy.hp <= 0) defeatEnemy(enemy, fromAbility);
@@ -3980,10 +4107,170 @@
     else if (currentSkin().id === 'saurion-primal') openSaurionSummonPicker('q');
     else if (currentSkin().id === 'tempest') activateTempestTide();
     else if (currentSkin().id === 'flamestorm') activateFlameStormVortex();
+    else if (currentSkin().id === 'vulture') activateVultureQ();
+  }
+  function vultureFoldCooldownDuration() { return Math.max(22, Math.min(24, Number(state.abilityBaseCooldown) || 24)); }
+  function vulturePulseCooldownDuration() { return Math.max(18, 24 - upgradeLevel('vulturePulseCooldown') * 2); }
+  function vulturePulseRadius() { return mobileSize(74 + state.vulturePulseRadiusBonus); }
+  function activateVultureFold() {
+    if (currentSkin().id !== 'vulture' || state.mode !== 'playing' || state.vultureEvolutionTime > 0 || state.vultureFoldCharges <= 0) return false;
+    state.vultureFoldCharges--;
+    if (state.vultureFoldCharges <= 0) {
+      if (hasDeveloperPerks()) state.vultureFoldCharges = 3;
+      else state.vultureFoldRecharge = vultureFoldCooldownDuration();
+    }
+    const angle = Number.isFinite(state.player.moveAngle) ? state.player.moveAngle : Number.isFinite(state.player.angle) ? state.player.angle : -Math.PI / 2;
+    const start = { x:state.player.x, y:state.player.y };
+    const range = Math.min(mobileSize(285 + state.vultureFoldRangeBonus), Math.hypot(state.width, state.height) * .7);
+    state.player.x = clamp(state.player.x + Math.cos(angle) * range, state.player.radius + 8, state.width - state.player.radius - 8);
+    state.player.y = clamp(state.player.y + Math.sin(angle) * range, state.player.radius + 8, state.height - state.player.radius - 8);
+    state.vultureCloakTime = 2;
+    state.effects.push({ type:'vulture-fold', x:start.x, y:start.y, life:.42, total:.42, color:'#ff7133' });
+    state.effects.push({ type:'vulture-fold', x:state.player.x, y:state.player.y, life:.5, total:.5, color:'#ffd16c' });
+    burst(start.x, start.y, '#ff7133', 12, 125);
+    burst(state.player.x, state.player.y, '#ffd16c', 16, 145);
+    toast('DOBRA ESPACIAL · CAMUFLAGEM CÓSMICA');
+    updateAbilityButton();
+    return true;
+  }
+  function vultureTargets() {
+    return state.enemies.filter((enemy) => !enemy.dead)
+      .sort((a, b) => (a.kind === 'boss' ? -1 : 0) - (b.kind === 'boss' ? -1 : 0) || distance(state.player, a) - distance(state.player, b));
+  }
+  function fireVultureGravityShot({ forced = false, charged = false } = {}) {
+    const target = vultureTargets()[0] || null;
+    const aimAngle = target
+      ? Math.atan2(target.y - state.player.y, target.x - state.player.x)
+      : Number.isFinite(state.player.moveAngle) ? state.player.moveAngle : state.player.angle || -Math.PI / 2;
+    const empowered = forced || charged;
+     const shotDamage = charged ? 50 : forced ? 32 : 13;
+     state.effects.push({ type:'vulture-horizon-shot', x:state.player.x + Math.cos(aimAngle) * mobileSize(18), y:state.player.y + Math.sin(aimAngle) * mobileSize(18), angle:aimAngle, target, hit:false, forced, charged:empowered, damage:shotDamage + state.vulturePulseDamageBonus, impactRadius:vulturePulseRadius() * (empowered ? 1.5 : 1), life:.82, total:.82 });
+    state.effects.push({ type:'vulture-pulse', x:state.player.x, y:state.player.y, radius:0, maxRadius:mobileSize(empowered ? 125 : 85), life:empowered ? .48 : .35, total:empowered ? .48 : .35 });
+    burst(state.player.x, state.player.y, '#ff7133', empowered ? 30 : 18, empowered ? 190 : 125);
+    burst(state.player.x, state.player.y, '#ffd16c', empowered ? 16 : 8, 95);
+    if (forced) toast('SOBRECARGA · CANHÃO GRAVITACIONAL FORÇADO');
+    else if (charged) toast('CANHÃO CARREGADO · 8 SUCATAS CONSUMIDAS');
+    else toast('CANHÃO GRAVITACIONAL DISPARADO');
+    tone(empowered ? 105 : 165, empowered ? .4 : .25, 'sawtooth', .05);
+  }
+  function triggerVultureOverload() {
+    state.vultureScrap = 0;
+    state.vultureOverloadCountdown = 0;
+    state.vultureQPressStartedAt = 0; state.vultureQPressSource = ''; state.vultureQPressPointerId = null; state.vultureQPressHoldTriggered = false;
+    state.shields = 0;
+    state.tempShields = 0;
+    state.aegisBarrierCharges = 0;
+    state.aegisBarrierTime = 0;
+    state.vultureOverloadTime = 1.8;
+    state.vultureVulnerableTime = 2.6;
+    state.vultureVulnerableHitCooldown = 0;
+    state.vultureCloakTime = 0;
+    state.invulnerable = 0;
+    fireVultureGravityShot({ forced:true });
+    state.vultureQCooldown = hasDeveloperPerks() ? 0 : vulturePulseCooldownDuration();
+    updateHud();
+  }
+  function activateVultureQ() {
+    const hasFullCharge = state.vultureScrap >= 8 && state.vultureOverloadCountdown > 0;
+    if (currentSkin().id !== 'vulture' || state.mode !== 'playing' || state.vultureEvolutionTime > 0 || (!hasFullCharge && state.vultureQCooldown > 0) || state.vultureOverloadTime > 0 || state.effects.some((effect) => effect.type === 'vulture-horizon-shot' && effect.life > 0)) return;
+    if (hasFullCharge) {
+      fireVultureGravityShot({ charged:true });
+      state.vultureScrap = 0;
+      state.vultureOverloadCountdown = 0;
+    } else fireVultureGravityShot();
+    state.vultureQCooldown = hasDeveloperPerks() ? 0 : vulturePulseCooldownDuration();
+    recordAchievementEvent('ship-ability', 'vulture');
+    updateHud();
+  }
+  function activateVultureAbsorption() {
+    if (currentSkin().id !== 'vulture' || state.mode !== 'playing' || state.vultureEvolutionTime > 0 || state.vultureOverloadTime > 0) return false;
+    if (state.vultureAbsorbCooldown > 0) { toast('ABSORÇÃO RECARREGANDO · ' + Math.ceil(state.vultureAbsorbCooldown) + 's'); return false; }
+    if (state.vultureScrap < 3) { toast('ABSORÇÃO INDISPONÍVEL · PRECISA DE 3 SUCATAS'); return false; }
+    if (!canRestoreShield()) { toast('ESCUDOS NO LIMITE · SUCATA PRESERVADA'); return false; }
+    state.vultureScrap -= 3;
+    restoreOneShield();
+    if (state.vultureScrap < 8) state.vultureOverloadCountdown = 0;
+    state.vultureAbsorbCooldown = 3.2;
+    state.effects.push({ type:'vulture-absorb-field', x:state.player.x, y:state.player.y, radius:0, maxRadius:mobileSize(128), rotation:0, life:.82, total:.82 });
+    burst(state.player.x, state.player.y, '#ff9a45', 20, 135);
+    burst(state.player.x, state.player.y, '#ffe0a0', 9, 72);
+    toast('ABSORÇÃO DE DESTROÇOS · −3 SUCATAS · +1 ESCUDO');
+    tone(620, .22, 'triangle', .05);
+    updateHud();
+    return true;
+  }
+  function beginVultureQPress(source, pointerId = null) {
+    if (currentSkin().id !== 'vulture' || state.mode !== 'playing' || state.vultureEvolutionTime > 0 || state.vultureOverloadTime > 0 || state.vultureQPressStartedAt) return false;
+    state.vultureQPressStartedAt = performance.now();
+    state.vultureQPressSource = source;
+    state.vultureQPressPointerId = pointerId;
+    state.vultureQPressHoldTriggered = false;
+    return true;
+  }
+  function finishVultureQPress(source, pointerId = null, allowTap = true) {
+    if (!state.vultureQPressStartedAt || state.vultureQPressSource !== source || (source === 'pointer' && state.vultureQPressPointerId !== pointerId)) return false;
+    const held = state.vultureQPressHoldTriggered || performance.now() - state.vultureQPressStartedAt >= 460;
+    const holdTriggered = state.vultureQPressHoldTriggered;
+    state.vultureQPressStartedAt = 0; state.vultureQPressSource = ''; state.vultureQPressPointerId = null; state.vultureQPressHoldTriggered = false;
+    if (!held && allowTap) activateVultureQ();
+    else if (held && !holdTriggered && allowTap) activateVultureAbsorption();
+    updateAbilityButton();
+    return true;
+  }
+  function updateVultureQPress() {
+    if (!state.vultureQPressStartedAt || state.vultureQPressHoldTriggered || performance.now() - state.vultureQPressStartedAt < 460) return;
+    state.vultureQPressHoldTriggered = true;
+    activateVultureAbsorption();
+    updateAbilityButton();
+  }
+  function activateVultureUltimate() {
+    if (currentSkin().id !== 'vulture' || state.mode !== 'playing' || state.vultureScrap < 8 || state.vultureOverloadCountdown <= 0 || state.vultureOverloadTime > 0 || state.vultureEvolutionTime > 0) return;
+    state.vultureScrap = 0;
+    state.vultureOverloadCountdown = 0;
+    state.vultureCloakTime = 0;
+    state.vultureEvolutionTime = 6;
+    state.vultureUltPulseCooldown = .35;
+    state.vultureQPressStartedAt = 0; state.vultureQPressSource = ''; state.vultureQPressPointerId = null; state.vultureQPressHoldTriggered = false;
+    state.effects.push({ type:'vulture-ult-field', x:state.player.x, y:state.player.y, radius:Math.min(state.width, state.height) * .62, pulseCooldown:.35, rotation:0, life:6, total:6 });
+    burst(state.player.x, state.player.y, '#ff8b35', 38, 210);
+    burst(state.player.x, state.player.y, '#ffe0a0', 18, 145);
+    toast('DEVORADORA DE ESTRELAS · EVOLUÇÃO POR 6s');
+    tone(86, .58, 'sawtooth', .055);
+    recordAchievementEvent('ship-ability', 'vulture');
+    updateHud();
+  }
+  function activeVultureUltField() {
+    if (currentSkin().id !== 'vulture' || state.vultureEvolutionTime <= 0) return null;
+    return state.effects.find((effect) => effect.type === 'vulture-ult-field' && effect.life > 0) || null;
+  }
+  function finishVultureUltimate() {
+    if (currentSkin().id !== 'vulture') return;
+    const radius = Math.min(state.width, state.height) * .62;
+    state.effects.push({ type:'vulture-ult-burst', x:state.player.x, y:state.player.y, radius, life:.72, total:.72 });
+    for (const enemy of state.enemies) {
+      if (enemy.dead || distance(state.player, enemy) > radius + enemy.r) continue;
+       damageEnemy(enemy, enemy.kind === 'boss' ? 18 : 28, true);
+    }
+    burst(state.player.x, state.player.y, '#ffe0a0', 44, 275);
+    burst(state.player.x, state.player.y, '#ff7330', 30, 235);
+    toast('DEVORADORA DE ESTRELAS · COLAPSO FINAL');
+    tone(72, .46, 'sawtooth', .05);
+    updateHud();
+  }
+  function spawnVultureScrapPickup(x, y) {
+    if (currentSkin().id !== 'vulture' || state.vultureScrap >= 8 || state.vultureEvolutionTime > 0) return;
+    const scrapType = Math.floor(randomUnit('loot') * vultureScrapSprites.length);
+    state.pickups.push({ x, y, kind:'vulture-scrap', scrapType, r:mobileSize(13), life:18, spin:random(-.35,.35,'loot') });
   }
   function flameStormVortexCooldownDuration() { return Math.max(18, 24 - upgradeLevel('cooldown') * 1.2); }
   function flameStormVortexRadius() { return mobileSize(265 + upgradeLevel('flameStormVortexCore') * 12); }
   function flameStormVortexPulseDamage() { return 3.4 + upgradeLevel('flameStormVortexCore') * .15; }
+  function flameStormVortexVisualOpacity(effect) {
+    const elapsed = effect.total - effect.life;
+    const fadeDuration = Math.min(.85, effect.total);
+    const fadeStart = effect.total - fadeDuration;
+    return elapsed <= fadeStart ? 1 : clamp((effect.total - elapsed) / fadeDuration, 0, 1);
+  }
   function activateFlameStormVortex() {
     if (currentSkin().id !== 'flamestorm' || state.mode !== 'playing' || state.flameStormQCooldown > 0 || state.effects.some((effect) => effect.type === 'flamestorm-vortex' && effect.life > 0)) return;
     const skin = currentSkin();
@@ -4245,7 +4532,7 @@
   }
   function shipRechargeIcon(which, skin = currentSkin()) {
     if (which !== 'q') return '✦';
-    return ({ aurora:'✴', aegis:'⬡', eclipse:'◉', chronos:'◷', tempest:'↗', flashblade:'✧', redshift:'△', saurion:'✦', flamestorm:'🌀' })[skin.id] || '✦';
+    return ({ aurora:'✴', aegis:'⬡', eclipse:'◉', chronos:'◷', tempest:'↗', flashblade:'✧', redshift:'△', saurion:'✦', flamestorm:'🌀', vulture:'✧' })[skin.id] || '✦';
   }
   function shipQRechargeState(skin = currentSkin()) {
     if (skin.id === 'aurora') return { cooldown: state.auroraLinkCooldown, charges: null };
@@ -4257,6 +4544,7 @@
     if (skin.id === 'redshift') return { cooldown: state.redshiftPerimeterCooldown, charges: null };
     if (skin.id === 'saurion') return { cooldown: state.dinoStampedeRecharge, charges: state.dinoStampedeCharges };
     if (skin.id === 'flamestorm') return { cooldown: state.flameStormQCooldown, charges: null };
+    if (skin.id === 'vulture') return { cooldown: state.vultureQCooldown, charges: null };
     return { cooldown: 0, charges: null };
   }
   function showShipRechargeFlash(which, iconOffsetX = 0, skin = currentSkin()) {
@@ -4943,6 +5231,12 @@
     const developerProfile = hasDeveloperPerks();
     if (state.mode !== 'playing') return;
     const skin = currentSkin();
+    if (skin.id === 'vulture') {
+      if (state.vultureEvolutionTime > 0) return;
+      if (activateVultureFold()) recordAchievementEvent('ship-ability', 'vulture');
+      updateAbilityButton();
+      return;
+    }
     if (skin.id === 'mahoraga') {
       activateMahoragaAdaptation();
       return;
@@ -5018,6 +5312,23 @@
     state.damageCounterPopups = state.damageCounterPopups.filter((popup) => popup.life > 0);
     state.invulnerable = Math.max(0, state.invulnerable - dt);
     state.flameStormQIntangible = Math.max(0, state.flameStormQIntangible - dt);
+    state.vultureCloakTime = Math.max(0, state.vultureCloakTime - dt);
+    if (state.vultureFoldCharges < 3 && state.vultureFoldRecharge > 0) {
+      state.vultureFoldRecharge = Math.max(0, state.vultureFoldRecharge - dt);
+      if (state.vultureFoldRecharge <= 0) state.vultureFoldCharges = 3;
+    }
+    const vultureEvolutionWasActive = state.vultureEvolutionTime > 0;
+    state.vultureEvolutionTime = Math.max(0, state.vultureEvolutionTime - dt);
+    state.vultureAbsorbCooldown = Math.max(0, state.vultureAbsorbCooldown - dt);
+    if (vultureEvolutionWasActive && state.vultureEvolutionTime <= 0) finishVultureUltimate();
+    state.vultureOverloadTime = Math.max(0, state.vultureOverloadTime - dt);
+    state.vultureVulnerableTime = Math.max(0, state.vultureVulnerableTime - dt);
+    state.vultureVulnerableHitCooldown = Math.max(0, state.vultureVulnerableHitCooldown - dt);
+    if (currentSkin().id === 'vulture' && state.vultureScrap >= 8 && state.mode === 'playing') {
+      state.vultureOverloadCountdown = Math.max(0, state.vultureOverloadCountdown - dt);
+      if (state.vultureOverloadCountdown <= 0) triggerVultureOverload();
+    } else if (state.vultureScrap < 8) state.vultureOverloadCountdown = 0;
+    updateVultureQPress();
     state.mahoragaAdaptationVisualTime = Math.max(0, state.mahoragaAdaptationVisualTime - dt);
     state.mahoragaShieldHitCooldown = Math.max(0, state.mahoragaShieldHitCooldown - dt);
     state.mahoragaDuplicateBuffTime = Math.max(0, state.mahoragaDuplicateBuffTime - dt);
@@ -5043,6 +5354,8 @@
       if (state.megumiCloakTime === 0) toast('A SOMBRA SE DISSIPA');
     }
     ui.stage?.classList.toggle('starfall-megumi-shadow-veil', megumiShadowCloakActive());
+    ui.stage?.classList.toggle('starfall-vulture-cloaked', vultureCloakActive());
+    updateVultureScrapHud();
     state.mahoragaSlashCooldown = Math.max(0, state.mahoragaSlashCooldown - dt);
     state.mahoragaParryWindow = Math.max(0, state.mahoragaParryWindow - dt);
     state.mahoragaParryCooldown = Math.max(0, state.mahoragaParryCooldown - dt);
@@ -5057,6 +5370,7 @@
       }
     }
     state.eclipseParadoxCooldown = Math.max(0, state.eclipseParadoxCooldown - dt);
+    state.vultureQCooldown = hasDeveloperPerks() ? 0 : Math.max(0, state.vultureQCooldown - dt);
     state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - dt);
     state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - dt);
     advanceTempestTideRecharge(dt);
@@ -5097,6 +5411,7 @@
       const inputLength = Math.hypot(dx, dy);
       if (inputLength > 1) { dx /= inputLength; dy /= inputLength; }
     }
+    if (currentSkin().id === 'vulture' && state.vultureOverloadTime > 0) { dx = 0; dy = 0; state.pointer.active = false; }
     const flameStormDash = currentSkin().id === 'flamestorm' && state.flameStormDash?.life > 0 ? state.flameStormDash : null;
     const flameStormDashActive = Boolean(flameStormDash);
     if (flameStormDashActive) {
@@ -5184,7 +5499,7 @@
     state.megumiRabbits = state.megumiRabbits.filter((rabbit) => rabbit.life > 0);
     updateFlashTrail(dt);
     updateEclipseCuts(dt);
-    if (state.automaticFireEnabled && state.eclipsePhase !== 'active' && state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = Math.max(.13, state.player.fireRate * (currentSkin().id === 'saurion-primal' && state.saurionPlayerBuffTime > 0 ? 1 - state.saurionPlayerFireRateBuff : 1)); }
+    if (state.automaticFireEnabled && state.eclipsePhase !== 'active' && !(currentSkin().id === 'vulture' && (state.vultureOverloadTime > 0 || state.vultureEvolutionTime > 0)) && state.shotCooldown <= 0 && state.enemies.length) { fireAt(nearestEnemy()); state.shotCooldown = Math.max(.13, state.player.fireRate * (currentSkin().id === 'saurion-primal' && state.saurionPlayerBuffTime > 0 ? 1 - state.saurionPlayerFireRateBuff : 1)); }
     if (!state.bossWave && state.waveKills < state.enemiesRequired && state.waveGrace <= 0) {
       state.enemySpawn -= dt;
       if (state.enemySpawn <= 0 && state.enemies.length < Math.min(24, 12 + Math.floor(state.wave * .3))) { spawnEnemy(); state.enemySpawn = Math.max(.34, .72 - Math.min(state.wave, 40) * .006 - Math.floor((Math.min(state.wave, 40) - 1) / 10) * .025) * random(.78, .98, 'spawnTimer'); }
@@ -5297,8 +5612,10 @@
       destroyEnemyShotAtFlashTrail(bullet);
     }
     state.enemyBullets = state.enemyBullets.filter(b => !b.dead);
+    const vultureUltField = activeVultureUltField();
     for (const enemy of state.enemies) {
       if (enemy.dead) continue;
+      const insideVultureUlt = Boolean(vultureUltField && distance(enemy, vultureUltField) <= vultureUltField.radius + enemy.r);
       const aimTarget = enemyAimTarget(enemy);
       let angle = Math.atan2(aimTarget.y - enemy.y, aimTarget.x - enemy.x);
       enemy.saurionFearTime = Math.max(0, (enemy.saurionFearTime || 0) - dt);
@@ -5332,7 +5649,7 @@
       const insideParadox = Boolean(paradoxField && Math.hypot(enemy.x - paradoxField.x, enemy.y - paradoxField.y) <= paradoxField.radius + enemy.r);
       const paradoxExposure = insideParadox ? paradoxField.exposure.get(enemy) || 0 : 0;
       const paradoxSlowLimit = enemy.kind === 'boss' ? .42 : .68;
-      const enemySlowFactor = slowFactor * (insideParadox ? 1 - paradoxSlowLimit * clamp(paradoxExposure / Math.min(2.2, paradoxField.total), 0, 1) : 1) * (saurionFear ? .76 : 1) * (currentSkin().id === 'saurion-primal' && enemy.saurionSlowTime > 0 ? .82 : 1);
+      const enemySlowFactor = slowFactor * (insideParadox ? 1 - paradoxSlowLimit * clamp(paradoxExposure / Math.min(2.2, paradoxField.total), 0, 1) : 1) * (insideVultureUlt ? enemy.kind === 'boss' ? .12 : .08 : 1) * (saurionFear ? .76 : 1) * (currentSkin().id === 'saurion-primal' && enemy.saurionSlowTime > 0 ? .82 : 1);
       enemy.dinoCutMark = Math.max(0, (enemy.dinoCutMark || 0) - dt);
       if (enemy.dinoCutMark > 0 && (enemy.dinoClawBursts || 0) > 0) {
         enemy.dinoClawTimer = Math.max(0, (enemy.dinoClawTimer || 0) - dt);
@@ -5359,14 +5676,14 @@
             updateAuroraBossMovement(enemy, dt, enemySlowFactor);
           } else {
             enemy.drift += dt * enemySlowFactor * (.65 + (enemy.phase || 1) * .12);
-            if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && enemy.dashTime > 0) {
+          if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && enemy.dashTime > 0 && !insideVultureUlt && !vultureCloakActive()) {
               enemy.x += Math.cos(angle) * 300 * dt * enemySlowFactor; enemy.y += Math.sin(angle) * 300 * dt * enemySlowFactor; enemy.dashTime -= dt * enemySlowFactor;
             } else {
               const targetY = 112 + Math.sin(enemy.drift * .8) * Math.min(35, state.height * .045);
               enemy.y += clamp(targetY - enemy.y, -enemy.speed * dt * enemySlowFactor, enemy.speed * dt * enemySlowFactor);
               const targetX = state.width / 2 + Math.sin(enemy.drift * (enemy.bossType === 'prism' ? 1.7 : 1.1)) * Math.min(state.width * .34, 260);
               enemy.x += clamp(targetX - enemy.x, -enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor, enemy.speed * (1 + (enemy.phase - 1) * .12) * dt * enemySlowFactor);
-              if (enemy.bossType === 'hunter' && !enemy.isMiniBoss) {
+              if (enemy.bossType === 'hunter' && !enemy.isMiniBoss && !insideVultureUlt && !vultureCloakActive()) {
                 enemy.x += Math.cos(angle) * 36 * dt * enemySlowFactor;
                 enemy.dashCooldown -= dt * enemySlowFactor;
                 if (enemy.dashCooldown <= 0) { enemy.dashTime = .45; enemy.dashCooldown = Math.max(2.1, 3.8 - enemy.phase * .3); toast('INVESTIDA DO ESPECTRO'); }
@@ -5377,7 +5694,8 @@
           const speed = enemy.kind === 'hunter' || enemy.kind === 'ricochet' ? enemy.speed : enemy.speed * .82;
           enemy.x += Math.cos(angle) * speed * dt * enemySlowFactor; enemy.y += Math.sin(angle) * speed * dt * enemySlowFactor;
         }
-        if (enemy.cooldown) {
+        if (insideVultureUlt || vultureCloakActive()) enemy.cooldown = Math.max(enemy.cooldown || 0, .7);
+        else if (enemy.cooldown) {
           enemy.cooldown -= dt * enemySlowFactor * (currentSkin().id === 'saurion-primal' && enemy.saurionAttackSlowTime > 0 ? enemy.saurionAttackSlowFactor || .85 : 1);
           if (enemy.cooldown <= 0 && enemy.y > 0 && enemy.y < state.height - 25) {
             enemyFire(enemy);
@@ -5389,17 +5707,20 @@
           }
         }
       }
-      if (enemy.kind === 'boss' && enemy.bossType === 'aurora') updateAuroraBossSkills(enemy, dt);
+      if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && !insideVultureUlt && !vultureCloakActive()) updateAuroraBossSkills(enemy, dt);
       const purpleHunter = enemy.kind === 'hunter';
       const purpleBoss = enemy.kind === 'boss' && enemy.bossType === 'hunter';
-      if (purpleHunter || purpleBoss) {
+      if ((purpleHunter || purpleBoss) && (insideVultureUlt || vultureCloakActive())) {
+        enemy.hunterFuse = null;
+        enemy.hunterFuseTotal = null;
+      } else if (purpleHunter || purpleBoss) {
         const hunterDistance = distance(state.player, enemy);
         const triggerRadius = mobileSize(purpleBoss ? 266 : 150);
         const fuseDuration = purpleBoss ? 1.15 : .72;
         enemy.hunterExplosionCooldown = Math.max(0, (enemy.hunterExplosionCooldown || 0) - dt);
         if (enemy.hunterExplosionCooldown <= 0 && hunterDistance <= triggerRadius) {
           if (enemy.hunterFuse == null) { enemy.hunterFuse = fuseDuration; enemy.hunterFuseTotal = fuseDuration; }
-          enemy.hunterFuse -= dt;
+          enemy.hunterFuse -= dt * enemySlowFactor;
           if (enemy.hunterFuse <= 0) {
             const blastRadius = mobileSize(purpleBoss ? 250 : 170);
             state.effects.push({ type: 'hunter-explosion', x: enemy.x, y: enemy.y, radius: blastRadius, isBossExplosion: purpleBoss, life: .62, total: .62 });
@@ -5415,7 +5736,7 @@
         }
       }
       if (distance(state.player, enemy) < state.player.radius + enemy.r * .75) {
-        if (state.invulnerable > 0 || stunnedByDino || stunnedByParadox || megumiShadowCloakActive() || flameStormDashActive || state.flameStormQIntangible > 0) continue;
+        if ((state.invulnerable > 0 && !(currentSkin().id === 'vulture' && state.vultureVulnerableTime > 0)) || stunnedByDino || stunnedByParadox || megumiShadowCloakActive() || vultureCloakActive() || flameStormDashActive || state.flameStormQIntangible > 0) continue;
         if (state.reflectTime > 0) {
           if (!state.reflectContacts.has(enemy)) {
             state.reflectContacts.add(enemy);
@@ -5467,13 +5788,13 @@
     }
     for (const bullet of state.enemyBullets) if (!bullet.dead && !bullet.reflected && !flameStormDashActive && state.flameStormQIntangible <= 0 && !(bullet.tempestTideSweep?.time > 0) && Math.hypot(bullet.x - state.player.x, bullet.y - state.player.y) < bullet.r + state.player.radius * .7) {
       if (reflectIncomingBullet(bullet)) continue;
-      if (bullet.explosive && state.invulnerable <= 0) explodeBullet(bullet);
-      else if (bullet.explosive) { bullet.dead = true; burst(bullet.x, bullet.y, '#d9b9ff', 10, 115); }
+      if (bullet.explosive && (state.invulnerable <= 0 || (currentSkin().id === 'vulture' && state.vultureVulnerableTime > 0))) explodeBullet(bullet);
+      else if (bullet.explosive) { bullet.dead = true; burst(bullet.x, bullet.y, '#ffb54a', 10, 115); }
       else { bullet.dead = true; if (!megumiShadowCloakActive()) damagePlayer(bullet.damage || 1, mahoragaAttackType(bullet)); }
     }
     state.enemyBullets = state.enemyBullets.filter(b => !b.dead);
     state.droneCooldown -= dt;
-    if (state.drones && state.droneCooldown <= 0) {
+    if (state.drones && state.droneCooldown <= 0 && !(currentSkin().id === 'vulture' && state.vultureEvolutionTime > 0)) {
       state.droneCooldown = .42;
       for (let i = 0; i < state.drones; i++) {
         const angle = performance.now() / 800 + i * Math.PI * 2 / state.drones;
@@ -5502,7 +5823,57 @@
     const currentFlashTrailContacts = new Set();
     for (const effect of state.effects) {
       effect.life -= dt;
-      if (effect.type === 'flamestorm-vortex' && effect.life > 0) {
+      if (effect.type === 'vulture-pulse' && effect.life > 0) {
+        effect.radius = effect.maxRadius * clamp(1 - effect.life / effect.total, 0, 1);
+      } else if (effect.type === 'vulture-absorb-field' && effect.life > 0) {
+        effect.x = state.player.x; effect.y = state.player.y; effect.rotation += dt * 4.4;
+        effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
+      } else if (effect.type === 'vulture-ult-field' && effect.life > 0 && state.vultureEvolutionTime > 0) {
+        effect.x = state.player.x; effect.y = state.player.y; effect.rotation += dt * 1.15;
+        for (const enemy of state.enemies) {
+          if (enemy.dead) continue;
+          const dx = state.player.x - enemy.x, dy = state.player.y - enemy.y, d = Math.hypot(dx, dy) || 1;
+          if (d > effect.radius + enemy.r) continue;
+          const safeDistance = state.player.radius + enemy.r + mobileSize(82);
+          const forceScale = enemy.kind === 'boss' ? .72 : 1;
+          const pushOut = d < safeDistance;
+          const strength = pushOut
+            ? Math.min(26, (safeDistance - d) * .8) * forceScale * dt
+            : Math.min(12, 2 + (d - safeDistance) * .045) * forceScale * dt;
+          const pullDirection = pushOut ? -1 : 1;
+          enemy.x = clamp(enemy.x + dx / d * strength * pullDirection, enemy.r, state.width - enemy.r);
+          enemy.y = clamp(enemy.y + dy / d * strength * pullDirection, enemy.r, state.height - enemy.r);
+        }
+        state.vultureUltPulseCooldown -= dt;
+        if (state.vultureUltPulseCooldown <= 0) {
+          state.vultureUltPulseCooldown = .88;
+          for (const enemy of state.enemies) {
+            if (enemy.dead || distance(state.player, enemy) > effect.radius + enemy.r) continue;
+            damageEnemy(enemy, enemy.kind === 'boss' ? 1.35 : 2.35, true);
+            burst(enemy.x, enemy.y, '#ffad4a', enemy.kind === 'boss' ? 5 : 3, enemy.kind === 'boss' ? 68 : 44);
+          }
+        }
+      } else if (effect.type === 'vulture-horizon-shot' && effect.life > 0 && !effect.hit) {
+        if (!effect.target || effect.target.dead) effect.target = state.enemies.filter((enemy) => !enemy.dead && distance(effect, enemy) < mobileSize(650)).sort((a, b) => (a.kind === 'boss' ? -1 : 0) - (b.kind === 'boss' ? -1 : 0) || distance(effect, a) - distance(effect, b))[0] || null;
+        if (effect.target) effect.angle = Math.atan2(effect.target.y - effect.y, effect.target.x - effect.x);
+        const speed = mobileSize(effect.charged ? 1120 : 900);
+        effect.x += Math.cos(effect.angle) * speed * dt;
+        effect.y += Math.sin(effect.angle) * speed * dt;
+        const hit = effect.target && !effect.target.dead && distance(effect, effect.target) <= effect.target.r + mobileSize(12) ? effect.target : null;
+        if (hit) {
+          damageEnemy(hit, effect.damage * (hit.kind === 'boss' ? (effect.forced ? .72 : .62) : 1), true);
+          effect.hit = true; effect.life = Math.min(effect.life, .16);
+          const impactRadius = effect.impactRadius || mobileSize(74);
+          state.effects.push({ type:'vulture-impact', x:hit.x, y:hit.y, life:.38, total:.38, radius:impactRadius });
+          for (const nearby of state.enemies) {
+            if (nearby === hit || nearby.dead || distance(hit, nearby) > impactRadius + nearby.r) continue;
+            damageEnemy(nearby, effect.damage * (nearby.kind === 'boss' ? .18 : .42), true);
+          }
+          burst(hit.x, hit.y, effect.charged ? '#ffc45d' : '#ff8738', hit.kind === 'boss' ? 24 : 16, hit.kind === 'boss' ? 210 : 155);
+        }
+        if (effect.x < 8 || effect.x > state.width - 8 || effect.y < 8 || effect.y > state.height - 8) effect.life = 0;
+        if (state.particles.length < particleLimit() && visualRandomUnit() < dt * 19) state.particles.push({ x:effect.x, y:effect.y, vx:visualRandom(-22,22), vy:visualRandom(-22,22), life:.24, maxLife:.24, r:mobileSize(2.5), color:visualRandomUnit() < .5 ? '#ff7133' : '#ffd16c' });
+      } else if (effect.type === 'flamestorm-vortex' && effect.life > 0) {
         effect.x = state.player.x; effect.y = state.player.y; effect.rotation += dt * 8.2; effect.damageClock -= dt;
         for (const enemy of state.enemies) {
           if (enemy.dead) continue;
@@ -5914,7 +6285,6 @@
     }
     drawShipThrusterTrails(size, timestamp, '#ddc58f', '#fffdf5');
   }
-
   function drawSaurionSummon(timestamp) {
     const summons = currentSkin().id === 'saurion-primal' ? saurionSummons() : [];
     for (const summon of summons) {
@@ -5949,6 +6319,26 @@
   function drawShip(x, y, size, skin, angle = -Math.PI / 2, alpha = 1) {
     const ship = skin && typeof skin === 'object' ? skin : currentSkin();
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.globalAlpha = alpha;
+    if (ship.shape === 'vulture') {
+      const now = performance.now();
+      const evolved = state.vultureEvolutionTime > 0 && vultureEvolutionSprite.complete && vultureEvolutionSprite.naturalWidth;
+      const sprite = evolved ? vultureEvolutionSprite : vultureShipSprite;
+      const spriteHeight = size * (evolved ? 5.1 : 9.1);
+      const spriteWidth = spriteHeight * (sprite.naturalWidth || 1) / (sprite.naturalHeight || 1);
+      drawShipThrusterTrails(size * (evolved ? 1.18 : .98), now, '#ff7133', '#ffd16c');
+      if (sprite.complete && sprite.naturalWidth) {
+        ctx.globalAlpha = alpha * (evolved ? .97 : .9);
+        ctx.globalCompositeOperation = 'screen';
+        ctx.shadowBlur = 0;
+        ctx.drawImage(sprite, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight);
+        ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
+      } else {
+        ctx.fillStyle = '#171221'; ctx.strokeStyle = ship.accent; ctx.lineWidth = Math.max(1.5, size * .1);
+        ctx.beginPath(); ctx.moveTo(0, -size * 1.4); ctx.lineTo(size, size * .52); ctx.lineTo(0, size * .8); ctx.lineTo(-size, size * .52); ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
+      ctx.restore();
+      return;
+    }
     if (ship.shape === 'eclipse' && eclipseSprite.complete && eclipseSprite.naturalWidth) {
       const now = performance.now();
       const spriteHeight = size * 4.65;
@@ -6058,6 +6448,7 @@
       if (flameStormNormalSprite.complete && flameStormNormalSprite.naturalWidth) {
         const spriteWidth = size * 3.42, spriteHeight = spriteWidth * flameStormNormalSprite.naturalHeight / flameStormNormalSprite.naturalWidth;
         ctx.save(); ctx.rotate(Math.PI / 2); ctx.globalCompositeOperation = 'screen'; ctx.shadowBlur = 0;
+        ctx.filter = 'saturate(1.38) brightness(1.2) contrast(1.12)';
         ctx.drawImage(flameStormNormalSprite, -spriteWidth / 2, -spriteHeight / 2, spriteWidth, spriteHeight);
         ctx.restore();
       } else {
@@ -6420,7 +6811,16 @@
     ctx.strokeStyle = 'rgba(129,160,255,.045)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(state.width / 2, 0); ctx.lineTo(state.width / 2, state.height); ctx.moveTo(0, state.height / 2); ctx.lineTo(state.width, state.height / 2); ctx.stroke();
     drawEclipseParadoxField(timestamp);
     for (const pickup of state.pickups) {
-      const color = pickup.kind === 'repair' ? '#72ffad' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff'; ctx.save(); ctx.translate(pickup.x, pickup.y); ctx.rotate(pickup.spin); ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(16); ctx.strokeStyle = color; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.moveTo(0, -pickup.r); ctx.lineTo(pickup.r, 0); ctx.lineTo(0, pickup.r); ctx.lineTo(-pickup.r, 0); ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0; ctx.fillStyle = color; ctx.font = 'bold ' + mobileSize(12) + 'px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pickup.kind === 'repair' ? '+' : pickup.kind === 'charge' ? '◷' : '⬡', 0, 0); ctx.restore();
+      if (pickup.kind === 'vulture-scrap') {
+        const sprite = vultureScrapSprites[pickup.scrapType];
+        ctx.save(); ctx.translate(pickup.x, pickup.y); ctx.rotate(pickup.spin * .35);
+        ctx.shadowColor = '#ff813e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
+        if (sprite?.complete && sprite.naturalWidth) { const size = mobileSize(30); ctx.drawImage(sprite, -size / 2, -size / 2, size, size); }
+        else { ctx.fillStyle = '#ff813e'; ctx.beginPath(); ctx.arc(0, 0, pickup.r * .72, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
+      } else {
+        const color = pickup.kind === 'repair' ? '#72ffad' : pickup.kind === 'charge' ? '#ffe38a' : '#75bdff'; ctx.save(); ctx.translate(pickup.x, pickup.y); ctx.rotate(pickup.spin); ctx.shadowColor = color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(16); ctx.strokeStyle = color; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.moveTo(0, -pickup.r); ctx.lineTo(pickup.r, 0); ctx.lineTo(0, pickup.r); ctx.lineTo(-pickup.r, 0); ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0; ctx.fillStyle = color; ctx.font = 'bold ' + mobileSize(12) + 'px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pickup.kind === 'repair' ? '+' : pickup.kind === 'charge' ? '◷' : '⬡', 0, 0); ctx.restore();
+      }
     }
     for (const b of state.bullets) {
       if (b.chronosEchoShot || b.aegisSentinelShot || b.megumiShadowShot || b.megumiRabbitShot) { ctx.strokeStyle = b.megumiShadowShot || b.megumiRabbitShot ? 'rgba(192,168,231,.7)' : b.aegisSentinelShot ? 'rgba(168,229,255,.82)' : 'rgba(214,196,255,.76)'; ctx.lineWidth = Math.max(1, b.r * .7); ctx.beginPath(); ctx.moveTo(b.x - b.vx * .035, b.y - b.vy * .035); ctx.lineTo(b.x, b.y); ctx.stroke(); }
@@ -6496,22 +6896,79 @@
     }
     for (const effect of state.effects) {
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
-      if (effect.type === 'saurion-summon-wave') {
+      if (effect.type === 'vulture-scrap-collect') {
+        const size = mobileSize(24 + (1 - alpha) * 18);
+        ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = alpha; ctx.shadowColor = '#ff813e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
+        if (effect.image?.complete && effect.image.naturalWidth) ctx.drawImage(effect.image, effect.x - size / 2, effect.y - size / 2, size, size);
+        else { ctx.fillStyle = '#ff813e'; ctx.beginPath(); ctx.arc(effect.x, effect.y, size * .3, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
+      } else if (effect.type === 'vulture-absorb-field') {
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.rotation); ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha * .82; ctx.strokeStyle = '#ffad55'; ctx.shadowColor = '#ff813e'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15); ctx.lineWidth = mobileSize(2.4);
+        ctx.beginPath(); ctx.arc(0, 0, effect.radius, -.18, Math.PI * 1.62); ctx.stroke();
+        ctx.globalAlpha = alpha * .52; ctx.strokeStyle = '#ffe4a8'; ctx.lineWidth = mobileSize(1.2); ctx.setLineDash([mobileSize(3), mobileSize(5)]); ctx.lineDashOffset = -effect.rotation * 18;
+        ctx.beginPath(); ctx.arc(0, 0, effect.radius * .72, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        for (let shard = 0; shard < 5; shard++) { const angle = shard * Math.PI * .4 + effect.rotation * 1.7; const inner = effect.radius * .38, outer = effect.radius * .92; ctx.globalAlpha = alpha * .58; ctx.strokeStyle = shard % 2 ? '#ff853a' : '#ffe0a0'; ctx.lineWidth = mobileSize(1.3); ctx.beginPath(); ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner); ctx.lineTo(Math.cos(angle) * outer, Math.sin(angle) * outer); ctx.stroke(); }
+        ctx.restore();
+      } else if (effect.type === 'vulture-ult-field' && state.vultureEvolutionTime > 0) {
+        const fade = clamp(effect.life / .7, 0, 1); const pulse = .9 + Math.sin(timestamp / 110) * .1;
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.rotation); ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = fade * pulse;
+        ctx.strokeStyle = '#ff8735'; ctx.shadowColor = '#ff9b39'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(24); ctx.lineWidth = mobileSize(3.2);
+        ctx.beginPath(); ctx.arc(0, 0, effect.radius, timestamp / 900, timestamp / 900 + Math.PI * 1.65); ctx.stroke();
+        ctx.globalAlpha = fade * .72; ctx.strokeStyle = '#ffe3a0'; ctx.lineWidth = mobileSize(1.4); ctx.setLineDash([mobileSize(8), mobileSize(10)]); ctx.lineDashOffset = -timestamp / 22;
+        ctx.beginPath(); ctx.arc(0, 0, effect.radius * .84, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        ctx.globalAlpha = fade * .22; const fieldGlow = ctx.createRadialGradient(0, 0, effect.radius * .25, 0, 0, effect.radius); fieldGlow.addColorStop(0, 'rgba(255,169,67,.02)'); fieldGlow.addColorStop(1, 'rgba(255,115,43,.32)'); ctx.fillStyle = fieldGlow; ctx.beginPath(); ctx.arc(0, 0, effect.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      } else if (effect.type === 'vulture-ult-burst') {
+        const progress = 1 - alpha; const radius = effect.radius * (.08 + progress * .92);
+        ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = alpha * .14; ctx.fillStyle = '#ff9838'; ctx.fillRect(0, 0, state.width, state.height);
+        ctx.translate(effect.x, effect.y); ctx.globalAlpha = alpha * .86; ctx.strokeStyle = '#ffe5a2'; ctx.shadowColor = '#ff8c36'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(24); ctx.lineWidth = mobileSize(4 * alpha + 1);
+        ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .62; ctx.strokeStyle = '#ff762e'; ctx.lineWidth = mobileSize(2); ctx.setLineDash([mobileSize(7), mobileSize(9)]); ctx.lineDashOffset = timestamp / 18; ctx.beginPath(); ctx.arc(0, 0, radius * .76, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      } else if (effect.type === 'vulture-fold') {
+        const foldProgress = 1 - alpha;
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha * .82; ctx.strokeStyle = effect.color; ctx.shadowColor = effect.color; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15);
+        ctx.lineWidth = mobileSize(2.5); ctx.beginPath(); ctx.ellipse(0, 0, mobileSize(12 + foldProgress * 32), mobileSize(23 + foldProgress * 14), foldProgress * 2.2, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .36; ctx.lineWidth = mobileSize(1); ctx.beginPath(); ctx.ellipse(0, 0, mobileSize(7 + foldProgress * 20), mobileSize(15 + foldProgress * 8), -foldProgress * 2.5, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'vulture-pulse') {
+        ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = alpha * .22;
+        const glow = ctx.createRadialGradient(effect.x, effect.y, effect.radius * .65, effect.x, effect.y, effect.radius);
+        glow.addColorStop(0, 'rgba(255,155,45,0)'); glow.addColorStop(.72, 'rgba(255,155,45,.05)'); glow.addColorStop(1, 'rgba(255,113,51,.28)');
+        ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = alpha * .8; ctx.strokeStyle = '#ffd16c'; ctx.shadowColor = '#ff7133'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(17);
+        ctx.lineWidth = mobileSize(3.2 * alpha + 1); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .45; ctx.strokeStyle = '#ffcc7a'; ctx.lineWidth = mobileSize(1.1); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .94, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'vulture-horizon-shot') {
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha * (effect.charged ? .9 : .58); ctx.fillStyle = effect.charged ? '#ffb62e' : '#ff7133'; ctx.shadowColor = effect.charged ? '#ffe27a' : '#ff9c38'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(effect.charged ? 30 : 14);
+        ctx.beginPath(); ctx.moveTo(mobileSize(effect.charged ? 34 : 25), 0); ctx.lineTo(-mobileSize(effect.charged ? 18 : 14), -mobileSize(effect.charged ? 11 : 7)); ctx.lineTo(-mobileSize(10), 0); ctx.lineTo(-mobileSize(effect.charged ? 18 : 14), mobileSize(effect.charged ? 11 : 7)); ctx.closePath(); ctx.fill();
+        ctx.globalAlpha = alpha; ctx.fillStyle = '#fff2cf'; ctx.beginPath(); ctx.arc(0, 0, mobileSize(effect.charged ? 9.5 : 5.5), 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = alpha * .82; ctx.strokeStyle = '#ffca5c'; ctx.lineWidth = mobileSize(effect.charged ? 2.8 : 1.8); ctx.beginPath(); ctx.moveTo(-mobileSize(6), 0); ctx.lineTo(-mobileSize(effect.charged ? 52 : 29), 0); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'vulture-impact') {
+        const impactRadius = effect.radius * (1 - alpha * .55);
+        ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = alpha * .8; ctx.strokeStyle = '#ffe0a0'; ctx.shadowColor = '#ff7133'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(13); ctx.lineWidth = mobileSize(2.5);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, impactRadius, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'saurion-summon-wave') {
         ctx.save(); ctx.globalAlpha = alpha * .6; ctx.strokeStyle = effect.color || '#8bff4b'; ctx.lineWidth = mobileSize(2.3); ctx.shadowColor = effect.color || '#8bff4b';
         ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke();
         ctx.globalAlpha = alpha * .11; ctx.fillStyle = effect.color || '#8bff4b'; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       } else if (effect.type === 'flamestorm-vortex') {
+        const vortexOpacity = flameStormVortexVisualOpacity(effect);
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
-        ctx.globalAlpha = alpha * .9; ctx.rotate(effect.rotation);
+        ctx.globalAlpha = vortexOpacity * .9; ctx.rotate(effect.rotation);
         if (flameStormVortexSprite.complete && flameStormVortexSprite.naturalWidth) {
           const size = effect.radius * 2.18;
+          ctx.globalCompositeOperation = 'source-over';
           ctx.drawImage(flameStormVortexSprite, -size / 2, -size / 2, size, size);
+          ctx.globalCompositeOperation = 'screen';
         } else {
           for (let arm = 0; arm < 4; arm++) { ctx.beginPath(); ctx.arc(0, 0, effect.radius * (.34 + arm * .16), arm * Math.PI * .5, arm * Math.PI * .5 + Math.PI * 1.42); ctx.strokeStyle = arm % 2 ? '#ffb164' : '#ff283d'; ctx.lineWidth = mobileSize(10 - arm); ctx.stroke(); }
         }
-        ctx.rotate(-effect.rotation * 1.8); ctx.globalAlpha = alpha * .6; ctx.strokeStyle = '#ff493b'; ctx.lineWidth = mobileSize(2.4); ctx.shadowColor = '#ff342d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15);
+        ctx.rotate(-effect.rotation * 1.8); ctx.globalAlpha = vortexOpacity * .6; ctx.strokeStyle = '#ff493b'; ctx.lineWidth = mobileSize(2.4); ctx.shadowColor = '#ff342d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(15);
         ctx.beginPath(); ctx.arc(0, 0, effect.radius * (.91 + .035 * Math.sin(timestamp / 80)), 0, Math.PI * 2); ctx.stroke();
-        ctx.globalAlpha = alpha * .45; ctx.strokeStyle = '#ffd08a'; ctx.lineWidth = mobileSize(1.2); ctx.beginPath(); ctx.arc(0, 0, effect.radius * .76, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = vortexOpacity * .45; ctx.strokeStyle = '#ffd08a'; ctx.lineWidth = mobileSize(1.2); ctx.beginPath(); ctx.arc(0, 0, effect.radius * .76, 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
       } else if (effect.type === 'flamestorm-trail') {
         if (effect.points.length > 1) {
@@ -7022,7 +7479,7 @@
     const playerSkin = currentSkin();
     const flameStormQActive = playerSkin.id === 'flamestorm' && state.flameStormQIntangible > 0;
     const keepMegumiVisible = playerSkin.id === 'megumi';
-    if (!eclipseActive && !megumiShadowCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || keepMegumiVisible || flameStormQActive || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, playerSkin, state.player.angle);
+    if (!eclipseActive && !megumiShadowCloakActive() && !vultureCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || keepMegumiVisible || flameStormQActive || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, playerSkin, state.player.angle);
     if (currentSkin().id === 'mahoraga' && state.mahoragaParryWindow > 0) {
       const windowRatio = clamp(state.mahoragaParryWindow / 3, 0, 1);
       ctx.save(); ctx.globalAlpha = .46 + Math.sin(timestamp / 130) * .12; ctx.strokeStyle = '#f7e5bb'; ctx.lineWidth = mobileSize(2.4);
@@ -7468,7 +7925,7 @@
     const upgradeCategories = [
       { title:'Canhões e ataque', icon:'✹', ids:['damage','rapid','spread','pierce','critical','volley','bossDamage','blast'] },
       { title:'Defesa da nave', icon:'🛡️', ids:['repair','shield','armor','regen','drone','lifeSupport','salvageHeal'] },
-      { title:'Habilidades especiais', icon:'✦', ids:['cooldown','power','gravityWell','auroraLinkDuration','auroraLinkTargets','auroraLinkDamage','auroraLinkCooldown','aegisOrbitDuration','aegisOrbitCount','aegisOrbitDamage','aegisOrbitCooldown','chronosEchoDuration','chronosEchoDamage','chronosEchoCooldown','tempestTideRadius','tempestTideForce','tempestTideCapacity','tempestTideDamage','tempestTideSweep','tempestTideCooldown','returnCore','redshiftPerimeterDuration','redshiftPerimeterDamage','redshiftPerimeterRange','redshiftPerimeterCooldown','flashTrailDuration','flashTrailDamage','flashTrailDensity','flashTrailCooldown','eclipseVeil','eclipseCooldown','eclipseDamage','eclipseParadoxDuration','eclipseParadoxRadius','eclipseParadoxSuppress','eclipseParadoxSentence','eclipseParadoxCooldown','dinoFangs','dinoStampede','dinoResonance'] },
+      { title:'Habilidades especiais', icon:'✦', ids:['cooldown','power','gravityWell','auroraLinkDuration','auroraLinkTargets','auroraLinkDamage','auroraLinkCooldown','aegisOrbitDuration','aegisOrbitCount','aegisOrbitDamage','aegisOrbitCooldown','chronosEchoDuration','chronosEchoDamage','chronosEchoCooldown','tempestTideRadius','tempestTideForce','tempestTideCapacity','tempestTideDamage','tempestTideSweep','tempestTideCooldown','returnCore','redshiftPerimeterDuration','redshiftPerimeterDamage','redshiftPerimeterRange','redshiftPerimeterCooldown','flashTrailDuration','flashTrailDamage','flashTrailDensity','flashTrailCooldown','eclipseVeil','eclipseCooldown','eclipseDamage','eclipseParadoxDuration','eclipseParadoxRadius','eclipseParadoxSuppress','eclipseParadoxSentence','eclipseParadoxCooldown','dinoFangs','dinoStampede','dinoResonance','vultureFoldRange','vulturePulseRadius','vulturePulseDamage','vulturePulseCooldown'] },
       { title:'Chama Carmesim', icon:'🔥', ids:['flameStormDashCore','flameStormVortexCore'] },
       { title:'Mobilidade e recursos', icon:'➤', ids:['speed','lowHull','magnet','bounty','endlessDamage','endlessSpeed'] }
     ];
@@ -7597,9 +8054,11 @@
     const isPrisma = currentSkin().id === 'prisma';
     const isTraining = currentSkin().id === 'training';
     const isMegumi = currentSkin().id === 'megumi';
-    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isAurora ? 'E Explosão Nova · Q Elo Estelar' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Investida do Tigre' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
+    const isVulture = currentSkin().id === 'vulture';
+    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isVulture ? 'E dobra (3 cargas por recarga) · toque Q dispara · segure Q absorve sucata e recupera escudo · G Ult com 8 sucatas' : isAurora ? 'E Explosão Nova · Q Elo Estelar' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Investida do Tigre' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
     const moveInstruction = state.controlMode === 'keys' ? 'WASD/setas' : state.controlMode === 'touch' ? 'toque e arraste' : 'analógico virtual';
-    if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos.';
+    const vultureTestHint = isVulture && profileNickname() === 'educvv dev' ? ' · V adiciona 8 sucatas para teste' : '';
+    if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos' + vultureTestHint + '.';
   }
   function createDeviceIndicators() {
     [ui.missionSetupModal, ui.settingsModal].forEach((modal) => {
@@ -8172,6 +8631,41 @@
       activate();
     });
   }
+  function bindVultureAwareQControl(button) {
+    if (!button) return;
+    let touchActivationAt = 0;
+    let suppressVultureClickUntil = 0;
+    button.addEventListener('pointerdown', (event) => {
+      if (currentSkin().id === 'vulture') {
+        if (event.button !== undefined && event.button !== 0) return;
+        event.preventDefault();
+        if (beginVultureQPress('pointer', event.pointerId)) {
+          try { button.setPointerCapture(event.pointerId); } catch { /* O toque pode perder a captura ao trocar de tela. */ }
+        }
+        return;
+      }
+      if (!event.pointerType || event.pointerType === 'mouse') return;
+      event.preventDefault();
+      touchActivationAt = performance.now();
+      activateSecondaryAbility();
+    }, { passive:false });
+    button.addEventListener('pointerup', (event) => {
+      if (currentSkin().id !== 'vulture') return;
+      if (finishVultureQPress('pointer', event.pointerId)) suppressVultureClickUntil = performance.now() + 800;
+    });
+    button.addEventListener('pointercancel', (event) => {
+      if (currentSkin().id === 'vulture') finishVultureQPress('pointer', event.pointerId, false);
+    });
+    button.addEventListener('click', (event) => {
+      if (currentSkin().id === 'vulture') {
+        if (event.detail > 0 && performance.now() < suppressVultureClickUntil) return;
+        activateVultureQ();
+        return;
+      }
+      if (event.detail > 0 && touchActivationAt > 0 && performance.now() - touchActivationAt < 800) return;
+      activateSecondaryAbility();
+    });
+  }
   function toggleAutomaticFire() {
     if (!['playing', 'paused', 'upgrade'].includes(state.mode)) return;
     state.automaticFireEnabled = !state.automaticFireEnabled;
@@ -8179,8 +8673,9 @@
     updateAbilityButton();
   }
   bindAbilityControl(ui.ability, activateAbility);
-  bindAbilityControl(ui.eclipseQ, activateSecondaryAbility);
+  bindVultureAwareQControl(ui.eclipseQ);
   bindAbilityControl(ui.saurionCommand, activateSaurionCommand);
+  ui.vultureUlt?.addEventListener('click', activateVultureUltimate);
   ui.mahoragaReturn?.addEventListener('click', () => deactivateMahoragaForm());
   ui.fireToggle?.addEventListener('click', toggleAutomaticFire);
   ui.favorite?.addEventListener('click', toggleFavorite);
@@ -8197,6 +8692,9 @@
     if (!editableTarget && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
     if (event.code === 'KeyF' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun && ['playing', 'paused'].includes(state.mode) && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
       event.preventDefault(); clearCurrentWaveForAdmin(); return;
+    }
+    if (event.code === 'KeyV' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && profileNickname() === 'educvv dev' && currentSkin().id === 'vulture' && state.mode === 'playing' && !state.dailyChallenge && !state.championshipRun && state.vultureEvolutionTime <= 0 && state.vultureOverloadTime <= 0 && !editableTarget) {
+      event.preventDefault(); state.vultureScrap = 8; state.vultureOverloadCountdown = 10; updateHud(); toast('TESTE VULTURE · 8 SUCATAS · Q OU G EM 10s'); tone(540, .2, 'sawtooth', .04); return;
     }
     if (event.code === 'KeyR' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !editableTarget && ['playing', 'paused', 'upgrade'].includes(state.mode)) {
       event.preventDefault(); toggleAutomaticFire(); return;
@@ -8215,11 +8713,15 @@
     if (event.code === 'Escape' || event.code === 'KeyP') { if (state.mode === 'playing' || state.mode === 'paused') pauseGame(); }
     if (event.code === 'Enter' && ['intro', 'gameover'].includes(state.mode) && (!ui.shipModal || ui.shipModal.hidden) && !event.target.closest('button,[role="dialog"],input,select,textarea')) beginMissionFlow();
     if (event.code === 'KeyG' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
+      if (currentSkin().id === 'vulture') { event.preventDefault(); activateVultureUltimate(); return; }
       if (deactivateMahoragaForm()) { event.preventDefault(); return; }
       openPrismWheel();
     }
     if (event.code === 'KeyE' && !event.repeat) activateAbility();
-    if (event.code === 'KeyQ' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) activateSecondaryAbility();
+    if (event.code === 'KeyQ' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
+      if (currentSkin().id === 'vulture') { event.preventDefault(); beginVultureQPress('keyboard'); }
+      else activateSecondaryAbility();
+    }
     if ((event.code === 'KeyZ' || event.code === 'KeyX') && !event.repeat && !editableTarget && currentSkin().id === 'saurion-primal') {
       const commandSummon = event.code === 'KeyZ' ? saurionSummons().find((summon) => summon.kind === 'rex') : saurionSummons().find((summon) => summon.kind === 'carno');
       const commandReady = Boolean(commandSummon && (event.code === 'KeyX' ? commandSummon.commandCooldown <= 0 : !commandSummon.rageUsed));
@@ -8227,8 +8729,8 @@
     }
     if (!editableTarget && state.mode === 'playing' && ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','KeyA','KeyD','KeyW','KeyS'].includes(event.code)) state.keys.add(event.code);
   });
-  window.addEventListener('keyup', (event) => { state.keys.delete(event.code); });
-  window.addEventListener('blur', () => { state.keys.clear(); state.pointer.active = false; releaseAnalog(); if (state.mode === 'playing' && state.eclipsePhase !== 'cinematic' && state.megumiSummonPhase !== 'cinematic') pauseGame(); });
+  window.addEventListener('keyup', (event) => { state.keys.delete(event.code); if (event.code === 'KeyQ') finishVultureQPress('keyboard'); });
+  window.addEventListener('blur', () => { finishVultureQPress('keyboard', null, false); finishVultureQPress('pointer', state.vultureQPressPointerId, false); state.keys.clear(); state.pointer.active = false; releaseAnalog(); if (state.mode === 'playing' && state.eclipsePhase !== 'cinematic' && state.megumiSummonPhase !== 'cinematic') pauseGame(); });
   window.addEventListener('pagehide', () => { if (state.mode === 'playing' && state.eclipsePhase !== 'cinematic' && state.megumiSummonPhase !== 'cinematic') pauseGame(); else if (state.mode === 'paused') saveMissionCheckpoint(); });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && state.mode === 'playing' && state.eclipsePhase !== 'cinematic' && state.megumiSummonPhase !== 'cinematic') {

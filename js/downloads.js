@@ -124,10 +124,6 @@
   };
 
   const init = () => {
-    const themeButton = document.querySelector('[data-theme-toggle]');
-    setTheme(document.documentElement.dataset.theme || 'dark');
-    themeButton?.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
-
     const input = document.querySelector('[data-download-search]');
     input?.addEventListener('input', () => { filters.query = input.value; renderDownloads(); });
 

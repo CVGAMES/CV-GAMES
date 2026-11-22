@@ -402,21 +402,16 @@
 
 :root[data-theme="christmas"] .hero-panel::after {
   right: 1rem;
-  bottom: -.8rem;
-  width: 12.5rem;
-  height: 15rem;
+  bottom: -.2rem;
+  width: 18.5rem;
+  height: 19.2rem;
   border: 0;
   border-radius: 0;
-  clip-path: polygon(50% 0, 57% 10%, 54% 10%, 68% 26%, 63% 26%, 79% 43%, 70% 43%, 94% 66%, 63% 66%, 63% 79%, 76% 79%, 76% 86%, 24% 86%, 24% 79%, 37% 79%, 37% 66%, 6% 66%, 30% 43%, 21% 43%, 37% 26%, 32% 26%, 46% 10%, 43% 10%);
-  background:
-    radial-gradient(circle at 50% 7%, #e8d39a 0 3px, transparent 4px),
-    radial-gradient(circle at 35% 38%, rgba(230, 207, 155, .85) 0 2px, transparent 3px),
-    radial-gradient(circle at 68% 54%, rgba(230, 207, 155, .78) 0 2px, transparent 3px),
-    radial-gradient(circle at 45% 67%, rgba(230, 207, 155, .7) 0 2px, transparent 3px),
-    linear-gradient(105deg, #173c2d, #2a5a3f 50%, #143526);
+  clip-path: none;
+  background: url("../img/arvore-de-natal.png") center bottom / contain no-repeat;
   box-shadow: none;
-  opacity: .38;
-  filter: drop-shadow(0 0 20px rgba(128, 163, 113, .18));
+  opacity: .96;
+  filter: drop-shadow(0 0 16px rgba(232, 207, 145, .22));
   pointer-events: none;
 }
 
@@ -493,10 +488,10 @@
 @media (max-width: 620px) {
   :root[data-theme="christmas"] .hero-panel::after {
     right: -.2rem;
-    bottom: -.4rem;
-    width: 8.5rem;
-    height: 10.5rem;
-    opacity: .24;
+    bottom: -.2rem;
+    width: 12rem;
+    height: 12.5rem;
+    opacity: .9;
   }
   :root[data-theme="christmas"] .site-header::before {
     right: .55rem;
@@ -582,16 +577,17 @@
 :root[data-theme="christmas"] .button-primary,
 :root[data-theme="christmas"] .starfall-primary,
 :root[data-theme="christmas"] .orbital-primary-button {
-  border-color: rgba(232, 207, 145, .78);
-  background: linear-gradient(115deg, #087fb8, #1d9bd1 68%, #a63e52);
-  color: #f7fbff;
-  box-shadow: 0 10px 26px rgba(3, 14, 30, .38), inset 0 1px rgba(255, 255, 255, .2);
+  border-color: rgba(82, 196, 255, .56);
+  background: var(--primary);
+  color: #052339;
+  box-shadow: 0 10px 25px rgba(49, 176, 233, .25);
 }
 
 :root[data-theme="christmas"] .button-primary:hover,
 :root[data-theme="christmas"] .starfall-primary:hover,
 :root[data-theme="christmas"] .orbital-primary-button:hover {
-  background: linear-gradient(115deg, #1095d0, #32b3e6 68%, #bd4a5e);
+  background: var(--primary-strong);
+  color: #f7fbff;
 }
 
 :root[data-theme="christmas"] .button-secondary,

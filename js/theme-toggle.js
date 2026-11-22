@@ -2,40 +2,31 @@
   'use strict';
 
   const key = 'cv-games-theme';
-  const profileKey = 'cv-games-profile';
+  const preferenceVersionKey = 'cv-games-theme-choice-version';
+  const preferenceVersion = '2';
   const root = document.documentElement;
-  const allowedProfiles = new Set(['educvv dev', 'educvv dev1']);
-
-  function normalizeNickname(value) {
-    return String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
-  }
-
-  function hasThemeAccess() {
-    try {
-      const profile = JSON.parse(localStorage.getItem(profileKey) || 'null');
-      return allowedProfiles.has(normalizeNickname(profile?.nickname));
-    } catch {
-      return false;
-    }
-  }
 
   function readTheme() {
-    if (!hasThemeAccess()) return 'normal';
     try {
-      return localStorage.getItem(key) === 'christmas' ? 'christmas' : 'normal';
+      // The first visit after this update starts in Christmas mode for every profile.
+      // After that, keep the user's explicit choice between Christmas and normal.
+      if (localStorage.getItem(preferenceVersionKey) !== preferenceVersion) {
+        localStorage.setItem(key, 'christmas');
+        localStorage.setItem(preferenceVersionKey, preferenceVersion);
+        return 'christmas';
+      }
+      return localStorage.getItem(key) === 'normal' ? 'normal' : 'christmas';
     } catch {
-      return root.dataset.theme === 'christmas' ? 'christmas' : 'normal';
+      return root.dataset.theme === 'normal' ? 'normal' : 'christmas';
     }
   }
 
   function syncButtons() {
-    const canUseTheme = hasThemeAccess();
-    const isChristmas = canUseTheme && root.dataset.theme === 'christmas';
+    const isChristmas = root.dataset.theme === 'christmas';
     const icon = isChristmas ? '🏠' : '🎄';
     const label = isChristmas ? 'Voltar ao tema normal' : 'Ativar tema de Natal';
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
-      button.hidden = !canUseTheme;
-      if (!canUseTheme) return;
+      button.hidden = false;
       if (button.textContent !== icon) button.textContent = icon;
       if (button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
       if (button.title !== label) button.title = label;
@@ -45,22 +36,23 @@
   }
 
   function applyTheme(theme, persist) {
-    const canUseTheme = hasThemeAccess();
-    const next = canUseTheme && theme === 'christmas' ? 'christmas' : 'normal';
+    const next = theme === 'normal' ? 'normal' : 'christmas';
     root.dataset.theme = next;
-    if (persist || !canUseTheme) {
-      try { localStorage.setItem(key, next); } catch { /* A preferência fica ativa nesta página. */ }
+    if (persist) {
+      try {
+        localStorage.setItem(key, next);
+        localStorage.setItem(preferenceVersionKey, preferenceVersion);
+      } catch { /* A preferência continua ativa nesta página. */ }
     }
     syncButtons();
     window.dispatchEvent(new CustomEvent('cv-games-theme-change', { detail: { theme: next } }));
   }
 
-  function refreshForProfileChange() {
-    if (!hasThemeAccess()) applyTheme('normal', true);
-    else applyTheme(readTheme(), false);
+  function refreshTheme() {
+    applyTheme(readTheme(), false);
   }
 
-  applyTheme(readTheme(), true);
+  applyTheme(readTheme(), false);
 
   document.addEventListener('click', (event) => {
     const button = event.target && event.target.closest
@@ -70,17 +62,11 @@
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    if (!hasThemeAccess()) {
-      applyTheme('normal', true);
-      return;
-    }
     applyTheme(root.dataset.theme === 'christmas' ? 'normal' : 'christmas', true);
   }, true);
 
-  window.addEventListener('cv-games-profile-change', refreshForProfileChange);
   window.addEventListener('storage', (event) => {
-    if (event.key === profileKey) refreshForProfileChange();
-    else if (event.key === key) applyTheme(event.newValue, false);
+    if (event.key === key || event.key === preferenceVersionKey) refreshTheme();
   });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncButtons, { once: true });

@@ -139,15 +139,15 @@ revoke all on function public.starfall_admin_move_score(text, integer) from publ
 grant execute on function public.starfall_admin_reset_scores() to authenticated;
 grant execute on function public.starfall_admin_move_score(text, integer) to authenticated;
 
--- Progresso privado do hangar: códigos 1-14 identificam as naves pela ordem atual.
+-- Progresso privado do hangar: códigos 1-15 identificam as naves pela ordem atual.
 -- 1 Aurora, 2 Aegis, 3 Chronos, 4 Tempestade, 5 Flashblade,
 -- 6 Bastião Rubro, 7 Eclipse, 8 Tigrum (ID interno saurion), 9 Prisma Real (somente educvv),
 -- 10 Ferrum, 11 reservado para a forma interna Mahoraga, 12 Umbra,
--- 13 Flame Storm, 14 Saurion.
+-- 13 Flame Storm, 14 Saurion, 15 Vulture.
 create table if not exists public.starfall_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   unlocked_ships smallint[] not null default array[1]::smallint[],
-  selected_ship smallint not null default 1 check (selected_ship between 1 and 14),
+  selected_ship smallint not null default 1 check (selected_ship between 1 and 15),
   best_completed_wave integer not null default 0 check (best_completed_wave >= 0),
   updated_at timestamptz not null default now()
 );
@@ -155,7 +155,7 @@ create table if not exists public.starfall_profiles (
 -- Atualiza a faixa para incluir Prisma Real, Ferrum e Umbra em projetos já existentes.
 alter table public.starfall_profiles drop constraint if exists starfall_profiles_selected_ship_check;
 alter table public.starfall_profiles add constraint starfall_profiles_selected_ship_check
-  check (selected_ship between 1 and 14);
+  check (selected_ship between 1 and 15);
 
 alter table public.starfall_profiles enable row level security;
 
@@ -187,10 +187,10 @@ create table if not exists public.starfall_settings (
   setup_complete boolean not null default false,
   selected_ship text check (selected_ship is null or selected_ship in (
     'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
-    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm', 'saurion-primal'
+    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm', 'saurion-primal', 'vulture'
   )),
   unlocked_special_ships text[] not null default '{}'
-    check (unlocked_special_ships <@ array['redshift', 'eclipse', 'saurion', 'megumi']::text[]),
+    check (unlocked_special_ships <@ array['redshift', 'eclipse', 'saurion', 'megumi', 'vulture']::text[]),
   updated_at timestamptz not null default now()
 );
 
@@ -209,11 +209,11 @@ alter table public.starfall_settings drop constraint if exists starfall_settings
 alter table public.starfall_settings add constraint starfall_settings_selected_ship_check
   check (selected_ship is null or selected_ship in (
     'aurora', 'training', 'aegis', 'chronos', 'tempest', 'flashblade',
-    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm', 'saurion-primal'
+    'redshift', 'eclipse', 'saurion', 'megumi', 'flamestorm', 'saurion-primal', 'vulture'
   ));
 alter table public.starfall_settings drop constraint if exists starfall_settings_unlocked_special_ships_check;
 alter table public.starfall_settings add constraint starfall_settings_unlocked_special_ships_check
-  check (unlocked_special_ships <@ array['redshift', 'eclipse', 'saurion', 'megumi']::text[]);
+  check (unlocked_special_ships <@ array['redshift', 'eclipse', 'saurion', 'megumi', 'vulture']::text[]);
 
 -- Mantém a lista atualizada mesmo se a tabela já tiver sido criada anteriormente.
 alter table public.starfall_settings drop constraint if exists starfall_settings_nickname_check;
