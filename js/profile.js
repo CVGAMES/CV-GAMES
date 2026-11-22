@@ -297,12 +297,6 @@
     prepareMenu();
     refreshOwnerAccount();
 
-    const themeButton = document.querySelector('[data-theme-toggle]');
-    setTheme(document.documentElement.dataset.theme || 'dark');
-    themeButton?.addEventListener('click', () => {
-      setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-    });
-
     document.querySelector('[data-edit-profile]')?.addEventListener('click', () => setEditorOpen(true));
     document.querySelector('[data-cancel-profile]')?.addEventListener('click', () => setEditorOpen(false));
 

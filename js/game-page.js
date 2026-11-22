@@ -270,11 +270,6 @@
       refreshFavoriteInterface();
     });
 
-    const themeButton = document.querySelector('[data-theme-toggle]');
-    setTheme(document.documentElement.dataset.theme || 'dark');
-    themeButton?.addEventListener('click', () => {
-      setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-    });
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

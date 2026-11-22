@@ -91,10 +91,6 @@
   }
 
   function init() {
-    setTheme(document.documentElement.dataset.theme || 'dark');
-    document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-      setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-    });
     prepareMenu();
     renderExclusiveGames();
   }
