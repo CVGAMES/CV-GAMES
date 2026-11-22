@@ -124,7 +124,7 @@
     rank: $('[data-championship-rank]'), sync: $('[data-championship-sync]'), classicDaily: $('[data-start-classic-daily]')
   };
   const skins = [
-    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 22, cooldownQ: 24, shape: 'classic', description: 'E libera uma Explosão Nova mais ampla e poderosa. Q conecta até dez alvos por até nove segundos. Ao causar dano e conectar alvos, carregue seis segmentos e pressione G para ativar a Constelação da Hipernova.' },
+    { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 22, cooldownQ: 24, shape: 'classic', description: 'E libera uma Explosão Nova mais ampla e poderosa. Q conecta até dez alvos por até nove segundos. Acertos efetivos de Q e E carregam seis segmentos; com a barra cheia, G ativa a Coroa da Hipernova por 8 segundos, ligando todos os inimigos à constelação.' },
     { id: 'training', name: 'Ferrum', color: '#aeb5c0', accent: '#282d36', ability: '', abilityShort: '', cooldown: 0, cooldownQ: 0, shape: 'training', noAbilities: true, description: 'Nave de treino sem habilidades E ou Q. Move-se 10% mais devagar e recebe metade do dano.' },
     { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 30, cooldownQ: 36, shape: 'shield', unlockWave: 10, description: 'E concede uma carga temporária de escudo por 9 segundos. Q invoca até quatro Órbitas Sentinelas: cada fragmento intercepta um tiro e o converte em projétil teleguiado; os fragmentos intactos são lançados contra inimigos ao final.' },
     { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 22, cooldownQ: 24, shape: 'ring', unlockWave: 20, description: 'E desacelera fortemente inimigos e projéteis por mais tempo. Q cria Ecos do Futuro que repetem os disparos após curto atraso, com dano aumentado.' },
@@ -148,7 +148,7 @@
   });
   let megumiCutsceneTimer = 0;
   const shipAbilityDetails = Object.freeze({
-    aurora: { e:'A Explosão Nova causa mais dano em uma área maior ao redor da nave; sua recarga é de 22 segundos.', q:'Conecta até dez alvos por 7 segundos, com pulsos a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada vida perdida pela nave durante o Elo causa 2 de dano a cada alvo conectado. Melhorias prolongam a duração até 9s e aumentam o dano dos pulsos até 3; a recarga cai de 24s para 18s. O dano e as conexões também carregam a ult G.' },
+    aurora: { e:'Explosão Nova · causa dano em uma área ao redor da nave. Um acerto efetivo carrega um segmento do G; durante a Coroa da Hipernova, E converge as estrelas restantes na área atingida para a finalização. Com carga parcial do G, toque E duas vezes rapidamente: a segunda ativação consome as cargas, empurra os inimigos e redireciona tiros próximos em direções aleatórias; essa variação não causa dano direto. Recarga: 22s.', q:'Elo Estelar · conecta até dez alvos por 7s e pulsa a cada 0,78s. Contra um chefe sozinho, concentra os pulsos nele. Cada vida perdida pela Aurora durante o Elo causa 2 de dano a cada alvo conectado. Melhorias prolongam a duração até 9s, elevam o dano dos pulsos até 3 e reduzem a recarga de 24s para 18s. Acertos efetivos carregam o G; durante a ult, o Elo guia os disparos das estrelas pelos alvos conectados.' },
     aegis: { e:'A Barreira Aegis concede uma carga temporária de escudo por 9 segundos. A recarga vai de 30s a 27s com melhorias.', q:'Três sentinelas orbitam por 5 segundos. Cada uma intercepta um tiro comum e o converte em um disparo teleguiado; as restantes atacam ao final. O Q não concede invulnerabilidade contínua. Melhorias chegam a 6s, quatro sentinelas e dano 5; a recarga cai de 36s para 33s.' },
     chronos: { e:'A Dobra Temporal desacelera fortemente inimigos e projéteis em toda a arena por 7,2 segundos, criando espaço para atacar e esquivar.', q:'Ecos repetem os disparos da nave após 0,30s. Melhorias aumentam a duração de 6s para 8s e o dano dos ecos de 70% para 85%; a recarga cai de 24s para 18s.' },
     tempest: { e:'O Poço Negro é disparado na direção da nave e curva suavemente conforme ela se move. A singularidade puxa inimigos por 7 segundos e causa dano periódico reduzido; melhorias prolongam a duração até 10s.', q:'A Maré Reversa afasta inimigos, causa mais dano, desvia tiros comuns em 40% das vezes e redireciona alguns contra os adversários. Também protege a nave por um instante. Começa com quatro cargas, pode chegar a seis; ao gastar todas, recupera o conjunto após 24s, ou 18s com melhorias.' },
@@ -232,8 +232,9 @@
   const VULTURE_Q_DOUBLE_TAP_MS = 750;
   const VULTURE_ULT_POWER_SECONDS = 10;
   const VULTURE_ULT_COLLAPSE_SECONDS = 6;
+  const AURORA_E_DOUBLE_TAP_MS = 560;
   const state = {
-    auroraLink: null, auroraLinkCooldown: 0, auroraLinkDurationBonus: 0, auroraLinkTargetBonus: 0, auroraLinkDamageBonus: 0, auroraUltCharge: 0, auroraUlt: null,
+    auroraLink: null, auroraLinkCooldown: 0, auroraLinkDurationBonus: 0, auroraLinkTargetBonus: 0, auroraLinkDamageBonus: 0, auroraUltCharge: 0, auroraUlt: null, auroraEFirstTapAt: 0, auroraEFirstTapCharge: 0,
     damageCounterEnabled: initialNicknameSettings.damageCounterEnabled, damageCounterPosition: initialNicknameSettings.damageCounterPosition, damageCounterTotal: 0, damageCounterLastHit: 0, damageCounterIdle: 0, damageCounterPopups: [], damageCounterEditing: false, damageCounterDragging: false, damageCounterEditStart: null, damageCounterEditorHadMenu: false, trainingDamageRemainder: 0,
     eclipseSkipVideoEnabled: initialNicknameSettings.eclipseSkipVideo,
     shipEWasCooling: false, shipQWasCooling: false, shipQChargeCount: null,
@@ -1726,6 +1727,7 @@
   function setMode(mode) {
     state.mode = mode;
     document.body.dataset.cvStarfallState = mode;
+    document.documentElement.classList.toggle('cv-game-active', ['playing', 'paused', 'upgrade', 'gameover'].includes(mode));
     ui.overlay.hidden = !['intro', 'gameover', 'paused'].includes(mode);
     const menuActions = [ui.dailyStart, ui.dailyRecord, ui.overlay?.querySelector('[data-open-ships]'), ui.overlay?.querySelector('[data-open-achievements]')];
     menuActions.forEach((item) => { if (item) item.hidden = mode === 'paused'; });
@@ -1829,7 +1831,9 @@
       return;
     }
     const charge = clamp(state.auroraUltCharge || 0, 0, 6);
-    const ready = charge >= 6 && !state.auroraUlt;
+    const active = Boolean(state.auroraUlt);
+    const ready = charge >= 6 && !active;
+    const buttonVisible = ready || active;
     ui.auroraUltSegments.forEach((segment, index) => {
       const fill = clamp(charge - index, 0, 1);
       segment.style.setProperty('--charge-fill', (fill * 100) + '%');
@@ -1838,12 +1842,15 @@
     });
     if (ui.auroraUltCount) ui.auroraUltCount.textContent = Math.floor(charge + .0001) + '/6';
     ui.auroraUltMeter?.classList.toggle('is-charged', ready);
+    ui.auroraUltMeter?.classList.toggle('is-active', active);
     if (ui.auroraUlt) {
-      ui.auroraUlt.hidden = false;
-      ui.auroraUlt.disabled = !ready || state.mode !== 'playing';
+      ui.auroraUlt.hidden = !buttonVisible;
+      ui.auroraUlt.disabled = !ready || active || state.mode !== 'playing';
       ui.auroraUlt.classList.toggle('is-ready', ready && state.mode === 'playing');
-      ui.auroraUlt.setAttribute('aria-label', ready ? 'Ativar Constelação da Hipernova · tecla G' : 'Constelação da Hipernova · carga ' + Math.floor(charge) + ' de 6');
-      ui.auroraUlt.title = ready ? 'G · Constelação da Hipernova · conecta até 6 alvos e encerra com uma explosão' : 'Constelação da Hipernova · cause dano para carregar ' + Math.floor(charge) + ' de 6';
+      ui.auroraUlt.classList.toggle('is-active', active);
+      ui.auroraUlt.setAttribute('aria-label', active ? 'Coroa da Hipernova ativa · ' + Math.ceil(state.auroraUlt.life) + ' segundos restantes' : ready ? 'Ativar Coroa da Hipernova · tecla G' : 'Coroa da Hipernova · carga ' + Math.floor(charge) + ' de 6');
+      const activeMarks = active ? state.auroraUlt.markedTargets.filter((entry) => entry.enemy && !entry.enemy.dead && entry.expiresAt > state.elapsed).length : 0;
+      ui.auroraUlt.title = active ? 'Coroa da Hipernova · ' + Math.ceil(state.auroraUlt.life) + 's restantes · ' + state.auroraUlt.constellationTargets.length + ' inimigos ligados · ' + activeMarks + ' marcados · use E para convergir as estrelas' : ready ? 'G · Coroa da Hipernova · liga todos os inimigos por 8 segundos; finalize com E ou aguarde a hipernova' : 'Coroa da Hipernova · acerte com Q ou E para carregar ' + Math.floor(charge) + ' de 6';
     }
   }
   function updateMahoragaFormControls() {
@@ -1905,11 +1912,13 @@
     const isMegumi = skin.id === 'megumi';
     const isFlameStorm = skin.id === 'flamestorm';
     const isVulture = skin.id === 'vulture';
+    const isAurora = skin.id === 'aurora';
     const megumiE = megumiTechnique();
     const isSaurion = skin.id === 'saurion';
     const isPrimalSaurion = skin.id === 'saurion-primal';
     const saurionESummon = isPrimalSaurion ? saurionSummonForSlot('e') : null;
-    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !saurionESummon : isSaurion ? state.dinoRoarCharges > 0 : isVulture ? state.vultureFoldCharges > 0 && (state.vultureEvolutionTime <= 0 || vultureUltPowerActive()) : state.abilityCooldown <= 0;
+    const auroraRepulseWindow = isAurora && !state.auroraUlt && state.auroraUltCharge > 0 && state.auroraUltCharge < 6 && state.auroraEFirstTapAt > 0 && state.auroraEFirstTapCharge > 0 && state.auroraEFirstTapCharge < 6 && performance.now() - state.auroraEFirstTapAt <= AURORA_E_DOUBLE_TAP_MS;
+    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !saurionESummon : isSaurion ? state.dinoRoarCharges > 0 : isVulture ? state.vultureFoldCharges > 0 && (state.vultureEvolutionTime <= 0 || vultureUltPowerActive()) : skin.id === 'aurora' ? state.abilityCooldown <= 0 || auroraRepulseWindow : state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
     const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0) || (isVulture && state.vultureCloakTime > 0) || Boolean(saurionESummon);
@@ -1937,7 +1946,9 @@
       ui.ability.textContent = isMegumi ? megumiE.icon : isVulture ? '⌖' : '✦';
       }
        ui.ability.setAttribute('aria-label', isVulture ? vultureUltCollapseActive() ? 'Dobra bloqueada durante o colapso final · ' + Math.ceil(state.vultureEvolutionTime) + 's' : vultureUltPowerActive() ? ready ? 'Propulsão Ascendente · E ampliado, causa dano ao atravessar inimigos · ' + state.vultureFoldCharges + ' usos · ' + Math.ceil(state.vultureUltPowerTime) + 's restantes' : 'Propulsão Ascendente recarregando: ' + Math.ceil(state.vultureFoldRecharge) + ' segundos' : state.vultureFoldCharges > 0 ? (active ? 'Camuflagem Cósmica ativa · ' : '') + 'Dobra Espacial · ' + state.vultureFoldCharges + ' de 3 usos restantes · tecla E' : 'Dobra Espacial recarregando: ' + Math.ceil(state.vultureFoldRecharge) + ' segundos' : isMahoraga ? state.mahoragaParryWindow > 0 ? 'Adaptação Divina ativa: escudo por ' + Math.ceil(state.mahoragaParryWindow) + ' segundos, reduz 70% do dano' : ready ? 'Ativar Adaptação Divina · escudo de 3 segundos e redução de 70% do dano · tecla E' : 'Adaptação Divina recarregando: ' + state.mahoragaParryCooldown.toFixed(1).replace('.', ',') + ' segundos' : isMegumi ? state.megumiSummonPhase === 'cinematic' ? 'Ritual de Mahoraga em andamento' : 'Próxima variação de E: ' + megumiE.name + ' · ' + megumiE.description + ' · tecla E' : isFlameStorm ? state.flameStormDash?.life > 0 ? 'Propulsão Infernal ativa por ' + state.flameStormDash.life.toFixed(1).replace('.', ',') + ' segundos · intangível, rebate nas bordas e permite corrigir a direção' : ready ? 'Ativar Propulsão Infernal · avanço flamejante e intangível por 5 segundos, com ricochete e direção controlável · tecla E' : 'Propulsão Infernal recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos' : isPrimalSaurion ? saurionESummon ? saurionESummon.name + ' ativo · ' + Math.ceil(saurionESummon.life) + 's' : ready ? 'Escolher dinossauro para o espaço E · recarga própria de 40s' : 'Chamado Primal recarrega em ' + Math.ceil(state.saurionSummonCooldownE) + 's' : eclipseIntro ? 'Abertura da Expansão de Domínio em andamento' : state.eclipseParadox?.life > 0 ? 'Ativar o Santuário para reforçar os cortes por 3 segundos sem encerrar o Paradoxo · tecla E' : eclipseActive ? 'Santuário ativo por mais ' + Math.ceil(state.eclipseTime) + ' segundos' : ready ? 'Usar habilidade ' + skin.ability + ' · tecla E' : skin.ability + ' recarregando: ' + Math.ceil(state.abilityCooldown) + ' segundos');
-      const eCountdown = isMegumi
+      const eCountdown = isAurora && auroraRepulseWindow
+        ? '↯'
+        : isMegumi
         ? state.abilityCooldown > 0 ? String(Math.ceil(state.abilityCooldown)) : megumiE.short
         : isMahoraga
         ? state.mahoragaParryWindow > 0 ? String(Math.ceil(state.mahoragaParryWindow)) : state.mahoragaParryCooldown > 0 ? state.mahoragaParryCooldown.toFixed(1).replace('.', ',') : state.mahoragaWheelReady ? '8/8' : ''
@@ -1954,6 +1965,12 @@
       }
       ui.ability.classList.toggle('is-counting', Boolean(eCountdown));
       ui.ability.title = skin.ability + ' · tecla E · ' + (isMahoraga ? 'Escudo de 3s, −70% dano; adapta tipos diferentes por cinco ondas até 55%, com reforço temporário ao repetir uma adaptação. ' : isMegumi ? 'Próxima técnica: ' + megumiE.name + ' · ' + megumiE.description + ' · ' : isFlameStorm ? 'Dash flamejante e intangível por 5s, com ricochetes nas bordas e direção ajustável; os quadros de fogo substituem a nave. ' : isVulture && vultureUltPowerActive() ? 'Propulsão Ascendente · E alcança 1,8× mais longe e causa 24 de dano ao atravessar inimigos (15 em chefes). ' : isVulture ? 'Dobra Espacial · 3 usos seguidos por recarga · cada uso teleporta e deixa a nave invisível por 2s; inimigos perdem o alvo e param de atirar. ' : isPrimalSaurion ? 'E escolhe uma criatura e tem recarga independente de 40s; ela pode ficar em campo junto de outra espécie invocada pelo Q. ' : isSaurion ? 'Duas cargas; recupera uma a cada ' + Math.ceil(dinoRoarCooldownDuration()) + 's. ' : hasDeveloperPerks() ? 'sem recarga: ' : '') + skin.description;
+      if (isAurora && auroraRepulseWindow) {
+        ui.ability.title = 'E duplo · toque novamente agora para empurrar inimigos e redirecionar tiros; sem dano direto.';
+        ui.ability.setAttribute('aria-label', 'E duplo disponível · empurrar inimigos e redirecionar tiros por até ' + Math.ceil((AURORA_E_DOUBLE_TAP_MS - (performance.now() - state.auroraEFirstTapAt)) / 1000 * 10) / 10 + ' segundos');
+      } else if (isAurora) {
+        ui.ability.title += ' · Com 1 a 5 cargas parciais da ult, pressione E duas vezes rapidamente para empurrar inimigos e desviar tiros.';
+      }
     }
     if (ui.eclipseQWrap && ui.eclipseQ) {
       const isAurora = skin.id === 'aurora';
@@ -2251,6 +2268,10 @@
       ['HABILIDADE E', skin.ability, shipAbilityDetails[skin.id].e],
       ['HABILIDADE Q', secondaryAbilityNames[skin.id], shipAbilityDetails[skin.id].q]
     ];
+    if (skin.id === 'aurora') abilityDetails.push([
+      'ULTIMATE · G', 'Coroa da Hipernova',
+      'Acerte inimigos com E ou Q para carregar seis segmentos. Com a barra cheia, G ativa a constelação por 8 segundos: seis estrelas orbitam a Aurora, linhas conectam a nave a todos os inimigos e feixes atingem os alvos, saltando pelos inimigos ligados pelo Q. Use E durante a ult para fazer as estrelas restantes convergirem na Explosão Nova; se não usar, a constelação termina com uma hipernova própria. A habilidade não concede invulnerabilidade e o dano contra chefes tem limite. A carga parcial também permite a variação de E descrita acima.'
+    ]);
     if (skin.id === 'vulture') abilityDetails.push([
       'ULTIMATE · G', 'Devoradora de Estrelas',
       'Consome 8 sucatas e transforma a nave. Nos primeiros 10s você pode se mover, disparar normalmente, usar Q com carga equivalente a 8 sucatas sem gastar outras e usar E com 1,8× de alcance e dano ao cruzar inimigos. Depois, começa o Colapso: por 6s o campo acompanha a nave, puxa e desacelera os inimigos e impede seus ataques. Você ainda pode se mover durante o campo; no fim, ele explode e causa 28 de dano em inimigos comuns e 18 em chefes. A forma reduz em 35% o dano recebido.'
@@ -2434,7 +2455,7 @@
     state.scoreMultiplier = 1; state.magnet = 105; state.pierce = 0; state.critChance = 0; state.armorChance = 0; state.regenLevel = 0; state.regenTimer = 24; state.drones = 0; state.droneCooldown = 0; state.lastBossType = '';
     state.blastRadius = 0; state.bossDamageBonus = 0; state.bonusShots = 0; state.lowHullBoost = 0; state.salvageHeal = 0; state.singularityRadius = 300; state.singularityDuration = 7; state.tempestTideCooldown = 0; state.tempestTideRadiusBonus = 0; state.tempestTideForceBonus = 0; state.reflectTime = 0; state.reflectContacts = new Set(); state.reflectDamageBonus = 0; state.reflectDurationBonus = 0; state.redshiftPerimeter = null; state.redshiftPerimeterCooldown = 0; state.redshiftPerimeterDurationBonus = 0; state.redshiftPerimeterDamageBonus = 0; state.redshiftPerimeterRangeBonus = 0; state.flashTrail = null; state.flashTrailCooldown = 0; state.flashTrailDurationBonus = 0; state.flashTrailDamageBonus = 0; state.flashTrailDensity = 0; state.flashTrailContacts = new Set(); state.eclipseTime = 0; state.eclipsePhase = 'idle'; state.eclipseCutTimer = 0; state.eclipseDurationBonus = 0; state.eclipseCutBonus = 0; state.eclipseCutDamage = 0; state.eclipseHitCooldowns = []; state.eclipseImpactCooldown = 0; state.eclipseParadox = null; state.eclipseParadoxCooldown = 0; state.eclipseParadoxDurationBonus = 0; state.eclipseParadoxRadiusBonus = 0; state.eclipseParadoxSuppressBonus = 0; state.eclipseParadoxDamageBonus = 0; state.eclipseParadoxCooldownBonus = 0; state.dinoRoarBonus = 0; state.dinoRoarRangeBonus = 0; state.dinoRoarCharges = 2; state.dinoRoarRecharge = 0; state.dinoStampedeCharges = 3; state.dinoStampedeRecharge = 0; state.dinoStampedeExtra = 0; state.dinoStampedeDamageBonus = 0; state.saurionSummonCooldownE = 0; state.saurionSummonCooldownQ = 0; state.saurionSummons = []; state.saurionPlayerBuffTime = 0; state.saurionPlayerDamageBuff = 0; state.saurionPlayerFireRateBuff = 0; state.endlessDamage = 0; state.endlessSpeed = 0;
     state.waveDamageTaken = false;
-    state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0; state.auroraUltCharge = 0; state.auroraUlt = null; state.damageCounterTotal = 0; state.damageCounterLastHit = 0; state.damageCounterIdle = 0; state.damageCounterPopups = [];
+    state.auroraLink = null; state.auroraLinkCooldown = 0; state.auroraLinkDurationBonus = 0; state.auroraLinkTargetBonus = 0; state.auroraLinkDamageBonus = 0; state.auroraUltCharge = 0; state.auroraUlt = null; state.auroraEFirstTapAt = 0; state.auroraEFirstTapCharge = 0; state.damageCounterTotal = 0; state.damageCounterLastHit = 0; state.damageCounterIdle = 0; state.damageCounterPopups = [];
     state.shipEWasCooling = false; state.shipQWasCooling = false; state.shipQChargeCount = skin.id === 'tempest' ? 4 : skin.id === 'saurion' ? 3 : null;
     state.aegisOrbit = null; state.aegisOrbitCooldown = 0; state.aegisOrbitDurationBonus = 0; state.aegisOrbitCountBonus = 0; state.aegisOrbitDamageBonus = 0; state.aegisBarrierCharges = 0; state.aegisBarrierTime = 0;
     state.tempestTideCharges = 4; state.tempestTideChargeBonus = 0; state.tempestTideDamageBonus = 0; state.tempestTideSweepBonus = 0;
@@ -2851,7 +2872,9 @@
       auroraEWarning: 0, auroraEWarningX: 0, auroraEWarningY: 0,
       auroraQCooldown: bossType === 'aurora' ? auroraBossDefaults.qOpeningDelay : 0,
       auroraQActive: 0, auroraQPulseTimer: 0, auroraQWarning: 0,
-      auroraQTargetX: 0, auroraQTargetY: 0, auroraReflectionCooldown: 0,
+      auroraQWarningTotal: 0, auroraQWarningRadius: 0, auroraQTargetX: 0, auroraQTargetY: 0, auroraReflectionCooldown: 0,
+      auroraUltUses: 0, auroraUltLastPhase: 0, auroraUltWarning: 0, auroraUltWarningTotal: 0,
+      auroraUltTargetX: 0, auroraUltTargetY: 0, auroraUltRadius: 0, auroraUltActive: 0, auroraUltActiveTotal: 0, auroraUltPulseTimer: 0, auroraUltHitCooldown: 0, auroraUltHits: 0,
       auroraMoveTimer: 0, auroraMoveMode: 'roam', auroraChaseAngle: 0,
       auroraTargetX: state.width / 2, auroraTargetY: state.height / 2,
       auroraDodgeScanTimer: 0, auroraDodgeCooldown: 0, auroraDodgeTime: 0,
@@ -3214,7 +3237,13 @@
   }
   function updateAuroraBossSkills(enemy, dt) {
     if (enemy.kind !== 'boss' || enemy.isMiniBoss || enemy.bossType !== 'aurora') return;
-
+    const phase = clamp(enemy.phase || 1, 1, 4);
+    const tuning = [
+      { qWarning:1.18, qRadius:56, qDuration:3.6, qCooldown:18, qPulse:.92, qDamage:.85, ultRadius:150, ultWarning:1.22, ultDuration:1.8 },
+      { qWarning:.96, qRadius:68, qDuration:4.2, qCooldown:15, qPulse:.8, qDamage:1, ultRadius:185, ultWarning:1.02, ultDuration:2 },
+      { qWarning:.72, qRadius:84, qDuration:4.8, qCooldown:12, qPulse:.68, qDamage:1.15, ultRadius:220, ultWarning:.78, ultDuration:2.35 },
+      { qWarning:.5, qRadius:104, qDuration:5.5, qCooldown:9.5, qPulse:.58, qDamage:1.3, ultRadius:258, ultWarning:.58, ultDuration:2.7 }
+    ][phase - 1];
     enemy.auroraECooldown = Math.max(0, (enemy.auroraECooldown || 0) - dt);
     if (enemy.auroraEWarning > 0) {
       enemy.auroraEWarning = Math.max(0, enemy.auroraEWarning - dt);
@@ -3239,8 +3268,8 @@
     enemy.auroraReflectionCooldown = Math.max(0, (enemy.auroraReflectionCooldown || 0) - dt);
     if (enemy.auroraQWarning > 0) {
       enemy.auroraQWarning = Math.max(0, enemy.auroraQWarning - dt);
-      if (enemy.auroraQWarning === 0 && distance(state.player, { x:enemy.auroraQTargetX, y:enemy.auroraQTargetY }) <= mobileSize(72) + state.player.radius) {
-        enemy.auroraQActive = auroraBossDefaults.qDuration;
+      if (enemy.auroraQWarning === 0 && distance(state.player, { x:enemy.auroraQTargetX, y:enemy.auroraQTargetY }) <= enemy.auroraQWarningRadius + state.player.radius) {
+        enemy.auroraQActive = tuning.qDuration;
         enemy.auroraQPulseTimer = .08;
         state.effects.push({ type: 'aurora-link-start', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, life: .5, total: .5, phase: 0 });
         state.effects.push({ type: 'aurora-link-wave', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, radius: Math.hypot(state.width, state.height) * 1.08, life: 1.12, total: 1.12, phase: 0 });
@@ -3256,7 +3285,7 @@
       enemy.auroraQActive = Math.max(0, enemy.auroraQActive - dt);
       enemy.auroraQPulseTimer -= dt;
       if (enemy.auroraQActive > 0 && enemy.auroraQPulseTimer <= 0) {
-        enemy.auroraQPulseTimer += auroraBossDefaults.qPulseInterval;
+        enemy.auroraQPulseTimer += tuning.qPulse;
         const from = { x: enemy.x, y: enemy.y };
         const target = { x: state.player.x, y: state.player.y };
         for (let index = 0; index < auroraBossDefaults.qTargets; index++) {
@@ -3271,16 +3300,128 @@
         }
         state.effects.push({ type: 'aurora-link-node', x: target.x, y: target.y, life: .42, total: .42, phase: 0 });
         state.effects.push({ type: 'aurora-link-wave', x: target.x, y: target.y, radius: mobileSize(54), life: .46, total: .46, phase: 0 });
-        if (distance(from, target) <= mobileSize(560) + state.player.radius) damagePlayer(auroraBossDefaults.qPulseDamage, 'boss-aurora');
+        if (distance(from, target) <= mobileSize(560) + state.player.radius) damagePlayer(tuning.qDamage, 'boss-aurora');
       }
     } else if (!enemy.auroraQWarning && enemy.auroraQCooldown <= 0) {
-      enemy.auroraQWarning = .72;
+      enemy.auroraQWarning = tuning.qWarning;
+      enemy.auroraQWarningTotal = tuning.qWarning;
+      enemy.auroraQWarningRadius = mobileSize(tuning.qRadius);
       enemy.auroraQTargetX = state.player.x;
       enemy.auroraQTargetY = state.player.y;
-      enemy.auroraQCooldown = auroraBossDefaults.qCooldown;
+      enemy.auroraQCooldown = tuning.qCooldown;
       toast('AURORA · ELO ESTELAR · SAIA DA ÁREA');
       tone(520, .22, 'triangle', .035);
     }
+
+    const ultimatePhase = phase >= 4 ? 4 : phase >= 2 ? 2 : 0;
+    if (ultimatePhase && enemy.auroraUltUses < 2 && ultimatePhase > enemy.auroraUltLastPhase && enemy.auroraUltWarning <= 0 && enemy.auroraUltActive <= 0 && enemy.auroraQActive <= 0 && enemy.auroraQWarning <= 0 && enemy.auroraEWarning <= 0) {
+      enemy.auroraUltLastPhase = ultimatePhase;
+      enemy.auroraUltUses++;
+      enemy.auroraUltWarning = tuning.ultWarning;
+      enemy.auroraUltWarningTotal = tuning.ultWarning;
+      enemy.auroraUltTargetX = state.player.x;
+      enemy.auroraUltTargetY = state.player.y;
+      enemy.auroraUltRadius = mobileSize(tuning.ultRadius);
+      enemy.auroraUltHits = 0;
+      enemy.auroraUltHitCooldown = 0;
+      state.effects.push({ type:'aurora-crown-start', x:enemy.auroraUltTargetX, y:enemy.auroraUltTargetY, life:.72, total:.72, phase:1 });
+      toast('AURORA · COROA DA HIPERNOVA · SAIA DA CONSTELAÇÃO');
+      tone(760, .2, 'triangle', .035);
+    }
+    if (enemy.auroraUltWarning > 0) {
+      enemy.auroraUltWarning = Math.max(0, enemy.auroraUltWarning - dt);
+      if (enemy.auroraUltWarning === 0) {
+        enemy.auroraUltActive = tuning.ultDuration;
+        enemy.auroraUltActiveTotal = tuning.ultDuration;
+        enemy.auroraUltPulseTimer = .26;
+        auroraBossRepulseShots(enemy, enemy.auroraUltRadius * 1.2, { x:enemy.auroraUltTargetX, y:enemy.auroraUltTargetY });
+        state.effects.push({ type:'aurora-repulse-wave', x:enemy.auroraUltTargetX, y:enemy.auroraUltTargetY, radius:0, maxRadius:enemy.auroraUltRadius, life:.64, total:.64, color:'#c2a6ff' });
+        burst(enemy.auroraUltTargetX, enemy.auroraUltTargetY, '#c2a6ff', 28, 175);
+        burst(enemy.auroraUltTargetX, enemy.auroraUltTargetY, '#eaffff', 16, 125);
+        toast('CONSTELAÇÃO DE AURORA · DESVIE DOS FEIXES');
+      }
+    }
+    if (enemy.auroraUltActive > 0) {
+      enemy.auroraUltActive = Math.max(0, enemy.auroraUltActive - dt);
+      enemy.auroraUltPulseTimer -= dt;
+      enemy.auroraUltHitCooldown = Math.max(0, enemy.auroraUltHitCooldown - dt);
+      if (enemy.auroraUltPulseTimer <= 0) {
+        enemy.auroraUltPulseTimer += phase >= 4 ? .58 : .82;
+        state.effects.push({ type:'aurora-crown-burst', x:enemy.auroraUltTargetX, y:enemy.auroraUltTargetY, radius:enemy.auroraUltRadius, life:.36, total:.36, phase:1 });
+        if (enemy.auroraUltHits < 2 && enemy.auroraUltHitCooldown <= 0 && distance(state.player, { x:enemy.auroraUltTargetX, y:enemy.auroraUltTargetY }) <= enemy.auroraUltRadius + state.player.radius) {
+          damagePlayer(phase >= 4 ? 2 : 1, 'boss-aurora');
+          enemy.auroraUltHits++;
+          enemy.auroraUltHitCooldown = .95;
+        }
+      }
+    }
+  }
+  function auroraBossRepulseShots(enemy, radius, center = enemy) {
+    let redirected = 0;
+    for (const bullet of state.bullets) {
+      if (bullet.dead || (bullet.auroraRepulseLock || 0) > state.elapsed || distance(center, bullet) > radius) continue;
+      const angle = random(0, Math.PI * 2, 'boss');
+      const speed = clamp(Math.hypot(bullet.vx, bullet.vy) * 1.02, 250, 520);
+      bullet.vx = Math.cos(angle) * speed;
+      bullet.vy = Math.sin(angle) * speed;
+      bullet.assistTarget = null;
+      bullet.auroraRepulseLock = state.elapsed + 1.5;
+      bullet.color = '#c2a6ff';
+      redirected++;
+    }
+    if (redirected) burst(center.x, center.y, '#c2a6ff', Math.min(18, redirected * 3), 118);
+    return redirected;
+  }
+  function activateAuroraRepulse() {
+    if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraUltCharge <= 0 || state.auroraUltCharge >= 6) return false;
+    const chargeCost = Math.min(5, Math.floor(state.auroraUltCharge));
+    if (chargeCost <= 0) return false;
+    state.auroraUltCharge = 0;
+    const origin = { x:state.player.x, y:state.player.y };
+    const radius = mobileSize(270 + chargeCost * 18);
+    let pushed = 0, deflected = 0;
+    state.effects.push({ type:'aurora-repulse-wave', x:origin.x, y:origin.y, radius:0, maxRadius:radius, life:.64, total:.64, color:'#80f3ff' });
+    for (const enemy of state.enemies) {
+      if (enemy.dead || distance(origin, enemy) > radius + enemy.r) continue;
+      const dx = enemy.x - origin.x, dy = enemy.y - origin.y;
+      const gap = Math.hypot(dx, dy) || 1;
+      const scatter = random(-.24, .24, 'ability');
+      const angle = Math.atan2(dy || -1, dx || 1) + scatter;
+      const chargeScale = .82 + chargeCost * .07;
+      const strength = mobileSize(((enemy.kind === 'boss' ? 74 : 128) + (1 - clamp(gap / radius, 0, 1)) * (enemy.kind === 'boss' ? 36 : 78)) * chargeScale);
+      enemy.x = clamp(enemy.x + Math.cos(angle) * strength, enemy.r + 8, state.width - enemy.r - 8);
+      enemy.y = clamp(enemy.y + Math.sin(angle) * strength, enemy.r + 8, state.height - enemy.r - 8);
+      state.effects.push({ type:'aurora-link-node', x:enemy.x, y:enemy.y, life:.3, total:.3, phase:pushed });
+      burst(enemy.x, enemy.y, pushed % 2 ? '#c2a6ff' : '#80f3ff', 5, 66);
+      pushed++;
+    }
+    for (const bullet of state.enemyBullets) {
+      if (bullet.dead || bullet.reflected || distance(origin, bullet) > radius + bullet.r) continue;
+      const angle = random(0, Math.PI * 2, 'ability');
+      const speed = clamp(Math.hypot(bullet.vx, bullet.vy) * 1.04, 250, 520);
+      bullet.vx = Math.cos(angle) * speed;
+      bullet.vy = Math.sin(angle) * speed;
+      bullet.reflected = true;
+      bullet.reflectLife = 2.2 + chargeCost * .18;
+      bullet.damage = Math.min(6, Math.max(1, bullet.damage || 1));
+      bullet.color = '#8cf1ff';
+      bullet.explosive = false;
+      bullet.exploded = false;
+      bullet.fuse = null;
+      bullet.blastRadius = 0;
+      bullet.bounces = 0;
+      burst(bullet.x, bullet.y, '#c2faff', 3, 44);
+      deflected++;
+    }
+    state.auroraEFirstTapAt = 0;
+    state.auroraEFirstTapCharge = 0;
+    burst(origin.x, origin.y, '#8cf1ff', 22, 138);
+    burst(origin.x, origin.y, '#d7c5ff', 12, 102);
+    toast('ELO REBATIDO · ' + chargeCost + ' CARGAS GASTAS · ' + pushed + ' EMPURRADOS · ' + deflected + ' TIROS DESVIADOS');
+    tone(430, .18, 'triangle', .035);
+    updateAuroraUltHud();
+    updateAbilityButton();
+    return true;
   }
   function explodeBullet(bullet) {
     if (bullet.exploded) return;
@@ -3619,7 +3760,6 @@
     if (enemy.kind === 'boss') amount *= 1 + state.bossDamageBonus;
     if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.phase < 4 && enemy.hp > 0 && enemy.hp - amount <= 0) amount = Math.min(amount, Math.max(0, enemy.hp - enemy.maxHp * .15));
     const appliedDamage = Math.min(Math.max(0, enemy.hp), Math.max(0, amount));
-    gainAuroraUltCharge(appliedDamage);
     if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && enemy.auroraQActive > 0 && appliedDamage > 0 && enemy.auroraReflectionCooldown <= 0) {
       enemy.auroraReflectionCooldown = 1.12;
       const dx = state.player.x - enemy.x, dy = state.player.y - enemy.y;
@@ -4645,6 +4785,7 @@
     const chain = auroraLinkChain();
     if (state.auroraLink) state.auroraLink.targets = chain;
     if (!chain.length) return;
+    const hasEffectiveHit = chain.some((enemy) => enemy && !enemy.dead && enemy.hp > 0);
     for (let index = 0; index < chain.length; index++) {
       const enemy = chain[index];
       if (enemy.dead) continue;
@@ -4659,6 +4800,10 @@
         state.effects.push({ type: 'aurora-link', x1: from.x, y1: from.y, x2: enemy.x, y2: enemy.y, cx: (from.x + enemy.x) / 2 - dy / (Math.hypot(dx, dy) || 1) * bend, cy: (from.y + enemy.y) / 2 + dx / (Math.hypot(dx, dy) || 1) * bend, life: .34, total: .34, phase: index });
       }
     }
+    if (hasEffectiveHit && state.auroraLink && !state.auroraLink.ultChargeAwarded) {
+      state.auroraLink.ultChargeAwarded = true;
+      gainAuroraUltCharge();
+    }
     tone(740, .06, 'sine', .014);
   }
   function activateAuroraLink() {
@@ -4667,8 +4812,7 @@
     if (!developerProfile && state.auroraLinkCooldown > 0) return;
     const duration = auroraLinkDuration();
     const targets = auroraLinkChain();
-    state.auroraLink = { life: duration, total: duration, pulseTimer: .08, targets };
-    if (targets.length) gainAuroraUltCharge(targets.length * 4.2);
+    state.auroraLink = { life: duration, total: duration, pulseTimer: .08, targets, ultChargeAwarded: false };
     state.auroraLinkCooldown = developerProfile ? 0 : auroraLinkCooldownDuration();
     state.effects.push({ type: 'aurora-link-start', x: state.player.x, y: state.player.y, life: .5, total: .5, phase: 0 });
     state.effects.push({ type: 'aurora-link-wave', x: state.player.x, y: state.player.y, radius: Math.hypot(state.width, state.height) * 1.08, life: 1.12, total: 1.12, phase: 0 });
@@ -4679,70 +4823,177 @@
     tone(610, .17, 'sine', .035);
     updateAbilityButton();
   }
-  function gainAuroraUltCharge(amount) {
-    if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraUlt || amount <= 0 || state.auroraUltCharge >= 6) return;
-    state.auroraUltCharge = Math.min(6, state.auroraUltCharge + amount / 42);
+  function gainAuroraUltCharge() {
+    if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraUlt || state.auroraUltCharge >= 6) return;
+    state.auroraUltCharge = Math.min(6, Math.floor(state.auroraUltCharge) + 1);
     updateAuroraUltHud();
+    if (state.auroraUltCharge >= 6) toast('COROA DA HIPERNOVA · G DISPONÍVEL');
   }
   function activateAuroraUltimate() {
     if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraUlt || state.auroraUltCharge < 6) return;
-    const targets = auroraLinkChain().slice(0, 6);
-    if (!targets.length) { toast('A CONSTELAÇÃO PRECISA DE ALVOS'); return; }
     state.auroraUltCharge = 0;
-    state.auroraUlt = { life:4.8, total:4.8, pulseTimer:.25, targets, pulse:0 };
-    for (let index = 0; index < targets.length; index++) {
-      const enemy = targets[index];
-      state.effects.push({ type:'aurora-link-node', x:enemy.x, y:enemy.y, life:.48, total:.48, phase:index });
-      if (index > 0) {
-        const from = targets[index - 1];
-        const dx = enemy.x - from.x, dy = enemy.y - from.y, length = Math.hypot(dx, dy) || 1;
-        const bend = (index % 2 ? 1 : -1) * Math.min(28, length * .1);
-        state.effects.push({ type:'aurora-link', x1:from.x, y1:from.y, x2:enemy.x, y2:enemy.y, cx:(from.x + enemy.x) / 2 - dy / length * bend, cy:(from.y + enemy.y) / 2 + dx / length * bend, life:.62, total:.62, phase:index });
-      }
-    }
-    state.effects.push({ type:'aurora-link-start', x:state.player.x, y:state.player.y, life:.7, total:.7, phase:0 });
-    burst(state.player.x, state.player.y, '#7df7e8', 18, 112);
+    state.auroraEFirstTapAt = 0;
+    state.auroraEFirstTapCharge = 0;
+    const constellationTargets = state.enemies.filter((enemy) => !enemy.dead && enemy.hp > 0);
+    constellationTargets.forEach((enemy, index) => { enemy.auroraUltAnchor = index % 6; });
+    state.auroraUlt = {
+      life: 8, total: 8, pulseTimer: .3, hudRefresh: 0, orbitAngle: -Math.PI / 2,
+      stars: Array.from({ length: 6 }, (_, index) => ({ index, fired: false })),
+      hitCounts: [], markedTargets: [], constellationTargets,
+      convergenceArea: null, converging: false, convergenceStarCount: 0
+    };
+    state.effects.push({ type:'aurora-crown-start', x:state.player.x, y:state.player.y, life:1.1, total:1.1, phase:0 });
+    burst(state.player.x, state.player.y, '#7df7e8', 30, 158);
+    burst(state.player.x, state.player.y, '#c2a6ff', 22, 128);
     recordAchievementEvent('ship-ability', 'aurora');
-    toast('CONSTELAÇÃO DA HIPERNOVA · ' + targets.length + ' ALVOS');
+    toast('COROA DA HIPERNOVA · SEIS ESTRELAS ATIVAS');
     tone(880, .2, 'sine', .04);
     updateAuroraUltHud();
+  }
+  function auroraUltimateStarPosition(ultimate, index) {
+    const angle = ultimate.orbitAngle + index * Math.PI / 3 + Math.sin(state.elapsed * .58 + index * 1.9) * .16;
+    const radiusX = Math.max(mobileSize(76), Math.min(state.width * .38, mobileSize(360)));
+    const radiusY = Math.max(mobileSize(62), Math.min(state.height * .36, mobileSize(250)));
+    const drift = .88 + Math.sin(state.elapsed * .9 + index * 1.7) * .12;
+    const margin = mobileSize(18);
+    return {
+      x: clamp(state.player.x + Math.cos(angle) * radiusX * drift, margin, state.width - margin),
+      y: clamp(state.player.y + Math.sin(angle) * radiusY * drift, margin, state.height - margin)
+    };
+  }
+  function auroraUltimateHitCount(ultimate, enemy) {
+    return ultimate.hitCounts.find((entry) => entry.enemy === enemy)?.count || 0;
+  }
+  function dealAuroraUltimateDamage(ultimate, enemy, requestedDamage) {
+    if (!enemy || enemy.dead || enemy.hp <= 0 || requestedDamage <= 0) return 0;
+    const record = ultimate.hitCounts.find((entry) => entry.enemy === enemy);
+    let damage = requestedDamage;
+    if (enemy.kind === 'boss') {
+      const damageSoFar = record?.damage || 0;
+      const bossBudget = Math.max(1, (enemy.maxHp || enemy.hp) * .16);
+      const remaining = Math.max(0, bossBudget - damageSoFar);
+      damage = Math.min(damage, remaining / Math.max(.01, 1 + state.bossDamageBonus));
+    }
+    if (damage <= 0) return 0;
+    const before = enemy.hp;
+    damageEnemy(enemy, damage, true);
+    const dealt = Math.max(0, before - Math.max(0, enemy.hp));
+    if (dealt <= 0) return 0;
+    if (record) { record.count++; record.damage = (record.damage || 0) + dealt; }
+    else ultimate.hitCounts.push({ enemy, count: 1, damage: dealt });
+    const mark = ultimate.markedTargets.find((entry) => entry.enemy === enemy);
+    if (mark) mark.expiresAt = state.elapsed + 3.6;
+    else ultimate.markedTargets.push({ enemy, expiresAt: state.elapsed + 3.6 });
+    enemy.auroraUltSlowTime = Math.max(enemy.auroraUltSlowTime || 0, .8);
+    return dealt;
+  }
+  function auroraUltimateCandidates(ultimate) {
+    const linked = state.auroraLink?.life > 0 ? (state.auroraLink.targets || []).filter((enemy) => enemy && !enemy.dead) : [];
+    return state.enemies.filter((enemy) => {
+      if (enemy.dead || enemy.hp <= 0) return false;
+      if (ultimate.convergenceArea && distance(enemy, ultimate.convergenceArea) > ultimate.convergenceArea.radius + enemy.r) return false;
+      const hits = auroraUltimateHitCount(ultimate, enemy);
+      if (enemy.kind === 'boss') {
+        const damageSoFar = ultimate.hitCounts.find((entry) => entry.enemy === enemy)?.damage || 0;
+        return damageSoFar < (enemy.maxHp || enemy.hp) * .16;
+      }
+      return hits < (ultimate.converging ? 2 : 1);
+    }).sort((a, b) => {
+      const aLinked = linked.includes(a), bLinked = linked.includes(b);
+      if (aLinked !== bLinked) return aLinked ? -1 : 1;
+      const hitGap = auroraUltimateHitCount(ultimate, a) - auroraUltimateHitCount(ultimate, b);
+      return hitGap || distance(state.player, a) - distance(state.player, b);
+    });
+  }
+  function fireAuroraUltimateStar(ultimate) {
+    const star = ultimate.stars.find((entry) => !entry.fired);
+    const candidates = auroraUltimateCandidates(ultimate);
+    const enemy = candidates[0];
+    if (!star || !enemy) return false;
+    const origin = auroraUltimateStarPosition(ultimate, star.index);
+    const qLinks = state.auroraLink?.life > 0 ? (state.auroraLink.targets || []).filter((target) => target && !target.dead) : [];
+    const candidateSet = new Set(candidates);
+    const path = [enemy];
+    const firstLinkIndex = qLinks.indexOf(enemy);
+    if (firstLinkIndex >= 0) {
+      for (let offset = 1; offset < qLinks.length && path.length < 3; offset++) {
+        const next = qLinks[(firstLinkIndex + offset) % qLinks.length];
+        if (candidateSet.has(next) && !path.includes(next)) path.push(next);
+      }
+    }
+    let from = origin;
+    path.forEach((target, hop) => {
+      const beamDamage = (target.kind === 'boss' ? 11 : 14) * state.abilityPower * Math.pow(.58, hop);
+      dealAuroraUltimateDamage(ultimate, target, beamDamage);
+      state.effects.push({ type:'aurora-ult-beam', x1:from.x, y1:from.y, x2:target.x, y2:target.y, life:.42, total:.42, phase:star.index * 3 + hop });
+      state.effects.push({ type:'aurora-link-node', x:target.x, y:target.y, life:.34, total:.34, phase:star.index + hop });
+      burst(target.x, target.y, hop % 2 ? '#c2a6ff' : '#bffff5', target.kind === 'boss' ? 7 : 5, 68);
+      from = target;
+    });
+    star.fired = true;
+    burst(origin.x, origin.y, '#c2a6ff', 4, 42);
+    return true;
+  }
+  function convergeAuroraUltimate(radius, hitCount) {
+    const ultimate = state.auroraUlt;
+    if (!ultimate || hitCount <= 0) return;
+    ultimate.converging = true;
+    ultimate.convergenceArea = { x:state.player.x, y:state.player.y, radius };
+    ultimate.convergenceStarCount = ultimate.stars.filter((star) => !star.fired).length;
+    ultimate.pulseTimer = Math.min(ultimate.pulseTimer, .03);
+    ultimate.life = Math.min(ultimate.life, .95);
+    state.effects.push({ type:'aurora-crown-start', x:state.player.x, y:state.player.y, life:.5, total:.5, phase:1 });
+    toast('EXPLOSÃO NOVA · COROA CONVERGINDO');
   }
   function finishAuroraUltimate() {
     const ultimate = state.auroraUlt;
     if (!ultimate) return;
-    const targets = ultimate.targets.filter((enemy) => enemy && !enemy.dead);
-    const connected = Math.max(1, targets.length);
-    for (const enemy of targets) {
-      const damage = enemy.kind === 'boss' ? 3.2 + connected * .35 : 2.8 + connected * .7;
-      damageEnemy(enemy, damage * state.abilityPower, true);
-      state.effects.push({ type:'aurora-link-wave', x:enemy.x, y:enemy.y, radius:mobileSize(96), life:.72, total:.72, phase:0 });
-      burst(enemy.x, enemy.y, '#bffff5', enemy.kind === 'boss' ? 10 : 7, 124);
+    const activeMarks = ultimate.markedTargets.filter((entry) => entry.enemy && !entry.enemy.dead && entry.expiresAt > state.elapsed);
+    const area = ultimate.convergenceArea;
+    const markedInFinish = activeMarks.filter((entry) => !area || distance(entry.enemy, area) <= area.radius + entry.enemy.r).length;
+    const markedScale = Math.min(10, markedInFinish);
+    const starBonus = area ? ultimate.convergenceStarCount : 0;
+    const finalDamage = (58 + markedScale * 2.8 + starBonus * 2.4) * state.abilityPower;
+    const center = area || state.player;
+    const finalRadius = Math.min(Math.hypot(state.width, state.height) * .9, mobileSize(470 + markedScale * 22 + starBonus * 34));
+    const targets = area
+      ? state.enemies.filter((enemy) => !enemy.dead && enemy.hp > 0 && distance(enemy, area) <= Math.max(area.radius, finalRadius) + enemy.r)
+      : ultimate.constellationTargets.filter((enemy) => enemy && !enemy.dead && enemy.hp > 0);
+    state.effects.push({ type:'nova', x:center.x, y:center.y, radius:0, maxRadius:finalRadius, color:'#8cf1ff', life:1.06, total:1.06 });
+    state.effects.push({ type:'aurora-crown-burst', x:center.x, y:center.y, radius:finalRadius, life:1.12, total:1.12, phase:area ? 1 : 0 });
+    state.effects.push({ type:'aurora-link-wave', x:center.x, y:center.y, radius:finalRadius, life:.76, total:.76, phase:0 });
+    for (let index = 0; index < targets.length; index++) {
+      const enemy = targets[index];
+      dealAuroraUltimateDamage(ultimate, enemy, finalDamage);
+      state.effects.push({ type:'aurora-link-node', x:enemy.x, y:enemy.y, life:.55, total:.55, phase:index });
+      burst(enemy.x, enemy.y, index % 2 ? '#c2a6ff' : '#bffff5', enemy.kind === 'boss' ? 10 : 7, 124);
     }
+    burst(center.x, center.y, '#7df7e8', 32, 188);
+    burst(center.x, center.y, '#f5f7ff', 18, 136);
     state.auroraUlt = null;
-    toast('HIPERNOVA · CONSTELAÇÃO CONVERGIDA');
-    tone(520, .32, 'sine', .045);
+    toast(area ? 'HIPERNOVA · EXPLOSÃO CONVERGIDA' : 'HIPERNOVA · CONSTELAÇÃO CONVERGIDA');
+    tone(520, .42, 'sine', .05);
     updateAuroraUltHud();
   }
   function advanceAuroraUltimate(dt) {
     const ultimate = state.auroraUlt;
     if (!ultimate) return;
+    ultimate.constellationTargets = state.enemies.filter((enemy) => !enemy.dead && enemy.hp > 0);
+    ultimate.constellationTargets.forEach((enemy, index) => {
+      if (!Number.isInteger(enemy.auroraUltAnchor)) enemy.auroraUltAnchor = index % 6;
+    });
+    // The stars travel around a broad path for the full ult, then rush inward
+    // when E converges the constellation.
+    ultimate.orbitAngle += dt * (ultimate.converging ? 5.2 : .92);
     ultimate.life = Math.max(0, ultimate.life - dt);
+    ultimate.hudRefresh -= dt;
+    if (ultimate.hudRefresh <= 0) { updateAuroraUltHud(); ultimate.hudRefresh += .25; }
     ultimate.pulseTimer -= dt;
     while (ultimate.life > 0 && ultimate.pulseTimer <= 0) {
-      ultimate.pulse++;
-      const targets = ultimate.targets.filter((enemy) => enemy && !enemy.dead);
-      targets.forEach((enemy, index) => {
-        enemy.auroraUltSlowTime = Math.max(enemy.auroraUltSlowTime || 0, .9);
-        damageEnemy(enemy, (enemy.kind === 'boss' ? .42 : .78) * state.abilityPower, true);
-        state.effects.push({ type:'aurora-link-node', x:enemy.x, y:enemy.y, life:.3, total:.3, phase:index + ultimate.pulse });
-        if (index > 0) {
-          const from = targets[index - 1];
-          const dx = enemy.x - from.x, dy = enemy.y - from.y, length = Math.hypot(dx, dy) || 1;
-          const bend = Math.sin(state.elapsed * 5 + index) * Math.min(20, length * .08);
-          state.effects.push({ type:'aurora-link', x1:from.x, y1:from.y, x2:enemy.x, y2:enemy.y, cx:(from.x + enemy.x) / 2 - dy / length * bend, cy:(from.y + enemy.y) / 2 + dx / length * bend, life:.36, total:.36, phase:index + ultimate.pulse });
-        }
-      });
-      ultimate.pulseTimer += .72;
+      const fired = fireAuroraUltimateStar(ultimate);
+      ultimate.pulseTimer += ultimate.converging ? .14 : .88;
+      if (!fired) break;
+      if (ultimate.converging && ultimate.stars.every((star) => star.fired)) ultimate.life = Math.min(ultimate.life, .42);
     }
     if (ultimate.life <= 0) finishAuroraUltimate();
   }
@@ -5182,6 +5433,7 @@
         state.effects.push({ type: 'aurora-link-node', x: target.x, y: target.y, life: .36, total: .36, phase: index });
       }
     }
+    return hits.map((hit) => hit.enemy);
   }
   function dinoRoarCooldownDuration() {
     if (currentSkin().id === 'saurion') return Math.max(12, 16 - Math.min(4, upgradeLevel('cooldown')));
@@ -5462,6 +5714,17 @@
     const developerProfile = hasDeveloperPerks();
     if (state.mode !== 'playing') return;
     const skin = currentSkin();
+    if (skin.id === 'aurora' && !state.auroraUlt && state.auroraUltCharge > 0 && state.auroraUltCharge < 6 && state.auroraEFirstTapAt > 0) {
+      const elapsedSinceTap = performance.now() - state.auroraEFirstTapAt;
+      if (elapsedSinceTap <= AURORA_E_DOUBLE_TAP_MS && state.auroraEFirstTapCharge > 0 && state.auroraEFirstTapCharge < 6) {
+        activateAuroraRepulse();
+        return;
+      }
+      if (elapsedSinceTap > AURORA_E_DOUBLE_TAP_MS) {
+        state.auroraEFirstTapAt = 0;
+        state.auroraEFirstTapCharge = 0;
+      }
+    }
     if (skin.id === 'vulture') {
       if (vultureUltCollapseActive() || (state.vultureEvolutionTime > 0 && !vultureUltPowerActive())) return;
       if (activateVultureFold()) recordAchievementEvent('ship-ability', 'vulture');
@@ -5499,10 +5762,15 @@
       state.eclipseTime = duration;
       startEclipseCinematic(state.eclipseSkipVideoEnabled);
     } else if (skin.id === 'aurora') {
+      const chargeBeforeNova = clamp(state.auroraUltCharge || 0, 0, 6);
+      state.auroraEFirstTapAt = chargeBeforeNova > 0 && chargeBeforeNova < 6 ? performance.now() : 0;
+      state.auroraEFirstTapCharge = chargeBeforeNova;
       const radius = mobileSize(360);
       state.effects.push({ type: 'nova', x: state.player.x, y: state.player.y, radius: 0, maxRadius: radius, life: .95, total: .95 });
-      damageAuroraNova(radius);
+      const novaHits = damageAuroraNova(radius);
+      if (novaHits.length) gainAuroraUltCharge();
       burst(state.player.x, state.player.y, skin.color, 76, 310); burst(state.player.x, state.player.y, '#ffffff', 28, 190); toast('EXPLOSÃO NOVA');
+      if (novaHits.length) convergeAuroraUltimate(radius, novaHits.length);
     } else if (skin.id === 'flashblade') {
       const angle = state.player.angle || -Math.PI / 2;
       state.effects.push({ type: 'blade', x: state.player.x, y: state.player.y, vx: Math.cos(angle) * 850, vy: Math.sin(angle) * 850, angle, turnTimer: .1, life: 8, total: 8, bounces: 0, damage: 13 * state.abilityPower, hitCooldowns: [], trail: [{ x: state.player.x, y: state.player.y }] });
@@ -6352,7 +6620,7 @@
           const dxHole = effect.x - pickup.x; const dyHole = effect.y - pickup.y; const d = Math.hypot(dxHole, dyHole);
           if (d < effect.radius) { const force = (120 + (1 - d / effect.radius) * 210) * dt; pickup.x += dxHole / (d || 1) * force; pickup.y += dyHole / (d || 1) * force; }
         }
-      } else if (effect.type === 'nova' || effect.type === 'prism-core-wave' || effect.type === 'prism-return-wave' || effect.type === 'saurion-summon-wave') effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
+      } else if (effect.type === 'nova' || effect.type === 'prism-core-wave' || effect.type === 'prism-return-wave' || effect.type === 'saurion-summon-wave' || effect.type === 'aurora-repulse-wave') effect.radius = effect.maxRadius * (1 - effect.life / effect.total);
       if (effect.life > 0) activeEffects.push(effect);
     }
     state.flashTrailContacts = currentFlashTrailContacts;
@@ -6861,8 +7129,8 @@
       ctx.restore();
     }
     if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && enemy.auroraQWarning > 0) {
-      const radius = mobileSize(72);
-      const warning = clamp(enemy.auroraQWarning / .72, 0, 1);
+      const radius = enemy.auroraQWarningRadius || mobileSize(72);
+      const warning = clamp(enemy.auroraQWarning / (enemy.auroraQWarningTotal || .72), 0, 1);
       const pulse = .68 + Math.sin(performance.now() / 48) * .24;
       ctx.save(); ctx.globalAlpha = (.42 + (1 - warning) * .48) * pulse;
       ctx.fillStyle = 'rgba(125,247,232,.08)'; ctx.beginPath(); ctx.arc(enemy.auroraQTargetX, enemy.auroraQTargetY, radius, 0, Math.PI * 2); ctx.fill();
@@ -6872,6 +7140,36 @@
       ctx.setLineDash([]); ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.5);
       ctx.beginPath(); ctx.moveTo(enemy.auroraQTargetX - radius * .42, enemy.auroraQTargetY); ctx.lineTo(enemy.auroraQTargetX + radius * .42, enemy.auroraQTargetY);
       ctx.moveTo(enemy.auroraQTargetX, enemy.auroraQTargetY - radius * .42); ctx.lineTo(enemy.auroraQTargetX, enemy.auroraQTargetY + radius * .42); ctx.stroke();
+      ctx.restore();
+    }
+    if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && (enemy.auroraUltWarning > 0 || enemy.auroraUltActive > 0)) {
+      const centerX = enemy.auroraUltTargetX, centerY = enemy.auroraUltTargetY;
+      const radius = enemy.auroraUltRadius || mobileSize(150);
+      const warning = enemy.auroraUltWarning > 0 ? clamp(enemy.auroraUltWarning / (enemy.auroraUltWarningTotal || 1), 0, 1) : 0;
+      const activeRatio = enemy.auroraUltActive > 0 ? clamp(enemy.auroraUltActive / (enemy.auroraUltActiveTotal || 1), 0, 1) : 0;
+      const pulse = .78 + Math.sin(performance.now() / 58) * .18;
+      ctx.save(); ctx.lineCap = 'round'; ctx.globalAlpha = enemy.auroraUltWarning > 0 ? (.38 + (1 - warning) * .48) * pulse : (.35 + activeRatio * .18) * pulse;
+      ctx.fillStyle = 'rgba(152,116,255,.09)'; ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#d6c2ff'; ctx.shadowColor = '#b38bff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(17);
+      ctx.lineWidth = mobileSize(enemy.auroraUltWarning > 0 ? 3.4 : 2.2); ctx.setLineDash(enemy.auroraUltWarning > 0 ? [mobileSize(8), mobileSize(5)] : [mobileSize(4), mobileSize(7)]);
+      ctx.lineDashOffset = -performance.now() / 17; ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+      if (enemy.auroraUltActive > 0) {
+        const rotation = performance.now() / 700;
+        let previous = null;
+        for (let star = 0; star < 6; star++) {
+          const angle = rotation + star * Math.PI / 3;
+          const orbitRadius = radius * (.7 + Math.sin(performance.now() / 190 + star) * .025);
+          const x = centerX + Math.cos(angle) * orbitRadius, y = centerY + Math.sin(angle) * orbitRadius;
+          ctx.globalAlpha = .72; ctx.strokeStyle = star % 2 ? '#c2a6ff' : '#a8f9ff'; ctx.lineWidth = mobileSize(1.25);
+          ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.lineTo(x, y); if (previous) { ctx.moveTo(previous.x, previous.y); ctx.lineTo(x, y); } ctx.stroke();
+          ctx.fillStyle = '#f5fbff'; ctx.shadowColor = star % 2 ? '#c2a6ff' : '#7df7e8'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
+          ctx.beginPath(); ctx.arc(x, y, mobileSize(4.3), 0, Math.PI * 2); ctx.fill(); previous = { x, y };
+        }
+        if (previous) { const firstAngle = rotation; const first = { x:centerX + Math.cos(firstAngle) * radius * .7, y:centerY + Math.sin(firstAngle) * radius * .7 }; ctx.beginPath(); ctx.moveTo(previous.x, previous.y); ctx.lineTo(first.x, first.y); ctx.stroke(); }
+      } else {
+        ctx.globalAlpha = .85; ctx.strokeStyle = '#f0e9ff'; ctx.lineWidth = mobileSize(2);
+        const cross = radius * .22; ctx.beginPath(); ctx.moveTo(centerX - cross, centerY); ctx.lineTo(centerX + cross, centerY); ctx.moveTo(centerX, centerY - cross); ctx.lineTo(centerX, centerY + cross); ctx.stroke();
+      }
       ctx.restore();
     }
     if ((enemy.kind === 'hunter' || (enemy.kind === 'boss' && enemy.bossType === 'hunter')) && enemy.hunterFuse > 0) {
@@ -7009,45 +7307,126 @@
   }
   function drawAuroraUltimate(timestamp) {
     const ultimate = state.auroraUlt;
-    const targets = ultimate?.targets?.filter((enemy) => enemy && !enemy.dead) || [];
-    if (!ultimate || ultimate.life <= 0 || !targets.length) return;
-    const points = [{ x:state.player.x, y:state.player.y }, ...targets];
-    const pulse = .7 + Math.sin(timestamp / 105) * .12;
+    if (!ultimate || ultimate.life <= 0) return;
+    const pulse = .78 + Math.sin(timestamp / 115) * .16;
     ctx.save();
     ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    points.slice(1).forEach((to, index) => {
-      const from = points[index];
-      const dx = to.x - from.x, dy = to.y - from.y, length = Math.hypot(dx, dy) || 1;
-      const bend = Math.sin(timestamp / 430 + index * 1.8) * Math.min(25, length * .08);
-      const cx = (from.x + to.x) / 2 - dy / length * bend;
-      const cy = (from.y + to.y) / 2 + dx / length * bend;
-      ctx.globalAlpha = pulse * .48;
-      ctx.strokeStyle = '#6ceeff';
-      ctx.lineWidth = mobileSize(5);
-      if (state.performanceMode !== 'light') { ctx.shadowColor = '#67eaff'; ctx.shadowBlur = mobileSize(15); }
-      ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.quadraticCurveTo(cx, cy, to.x, to.y); ctx.stroke();
-      ctx.globalAlpha = pulse;
-      ctx.strokeStyle = '#f4f2ff'; ctx.lineWidth = mobileSize(1.4); ctx.shadowBlur = 0;
-      ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.quadraticCurveTo(cx, cy, to.x, to.y); ctx.stroke();
-      const spark = (timestamp / 210 + index * .29) % 1, inverse = 1 - spark;
-      const sx = inverse * inverse * from.x + 2 * inverse * spark * cx + spark * spark * to.x;
-      const sy = inverse * inverse * from.y + 2 * inverse * spark * cy + spark * spark * to.y;
-      ctx.fillStyle = '#fff'; ctx.shadowColor = '#7df7e8'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
-      ctx.beginPath(); ctx.arc(sx, sy, mobileSize(2.6), 0, Math.PI * 2); ctx.fill();
-    });
-    for (let index = 0; index < targets.length; index++) {
-      const enemy = targets[index];
-      const radius = enemy.r + mobileSize(7 + 2 * Math.sin(timestamp / 170 + index));
-      ctx.globalAlpha = .5 + .28 * Math.sin(timestamp / 180 + index);
-      ctx.strokeStyle = index % 2 ? '#c2a6ff' : '#7df7e8';
-      ctx.lineWidth = mobileSize(1.6);
-      ctx.shadowColor = ctx.strokeStyle;
-      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
-      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, radius, timestamp / 850 + index, timestamp / 850 + index + Math.PI * 1.65); ctx.stroke();
-      ctx.fillStyle = '#fff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(8);
-      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, mobileSize(2.2), 0, Math.PI * 2); ctx.fill();
+    const starPoints = ultimate.stars.map((star) => auroraUltimateStarPosition(ultimate, star.index));
+    const center = { x:state.player.x, y:state.player.y };
+    // Each moving star is connected to its neighbors, making one continuous
+    // constellation instead of six separate effects.
+    for (let index = 0; index < starPoints.length; index++) {
+      const from = starPoints[index], to = starPoints[(index + 1) % starPoints.length];
+      ctx.globalAlpha = .3 + Math.sin(timestamp / 210 + index) * .07;
+      ctx.strokeStyle = index % 2 ? '#bd9cff' : '#61edff';
+      ctx.lineWidth = mobileSize(1.45);
+      ctx.setLineDash([mobileSize(5), mobileSize(8)]);
+      ctx.lineDashOffset = -timestamp / 30 - index * 2;
+      ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.lineTo(to.x, to.y); ctx.stroke();
+      const flow = (timestamp / 1250 + index * .19) % 1;
+      ctx.globalAlpha = .7;
+      ctx.fillStyle = '#f4ffff';
+      ctx.beginPath(); ctx.arc(from.x + (to.x - from.x) * flow, from.y + (to.y - from.y) * flow, mobileSize(1.55), 0, Math.PI * 2); ctx.fill();
     }
+    // Six fine tethers converge at Aurora's center so the constellation reads
+    // as one spell anchored to the ship.
+    starPoints.forEach((point, index) => {
+      ctx.globalAlpha = .27 + Math.sin(timestamp / 190 + index * .8) * .06;
+      ctx.strokeStyle = index % 2 ? '#c2a6ff' : '#7df7e8';
+      ctx.lineWidth = mobileSize(1.15);
+      ctx.setLineDash([mobileSize(4), mobileSize(8)]);
+      ctx.lineDashOffset = timestamp / 34 + index;
+      ctx.beginPath(); ctx.moveTo(center.x, center.y); ctx.lineTo(point.x, point.y); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+    ctx.globalAlpha = .7 + Math.sin(timestamp / 100) * .13;
+    ctx.strokeStyle = '#bffcff';
+    ctx.lineWidth = mobileSize(1.35);
+    ctx.shadowColor = '#7df7e8';
+    ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(11);
+    ctx.beginPath(); ctx.arc(center.x, center.y, mobileSize(8 + Math.sin(timestamp / 120) * 1.4), 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#f2ffff';
+    ctx.beginPath(); ctx.arc(center.x, center.y, mobileSize(2.4), 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    const network = ultimate.constellationTargets.filter((enemy) => enemy && !enemy.dead && enemy.hp > 0);
+    network.forEach((enemy, index) => {
+      let anchor = 0, nearestDistance = Infinity;
+      for (let starIndex = 0; starIndex < starPoints.length; starIndex++) {
+        const dxToStar = enemy.x - starPoints[starIndex].x, dyToStar = enemy.y - starPoints[starIndex].y;
+        const candidateDistance = dxToStar * dxToStar + dyToStar * dyToStar;
+        if (candidateDistance < nearestDistance) { nearestDistance = candidateDistance; anchor = starIndex; }
+      }
+      const source = starPoints[anchor];
+      const dx = enemy.x - source.x, dy = enemy.y - source.y;
+      const length = Math.hypot(dx, dy) || 1;
+      const bend = Math.sin(timestamp / 310 + index * .73) * Math.min(mobileSize(27), length * .045);
+      const cx = (source.x + enemy.x) / 2 - dy / length * bend;
+      const cy = (source.y + enemy.y) / 2 + dx / length * bend;
+      ctx.globalAlpha = .46 + Math.sin(timestamp / 170 + index) * .08;
+      ctx.strokeStyle = anchor % 2 ? '#b994ff' : '#63e8ff';
+      ctx.lineWidth = mobileSize(1.4);
+      ctx.setLineDash([mobileSize(5), mobileSize(8)]);
+      ctx.lineDashOffset = -timestamp / 24 - index * 2;
+      ctx.beginPath(); ctx.moveTo(source.x, source.y); ctx.quadraticCurveTo(cx, cy, enemy.x, enemy.y); ctx.stroke();
+      const mote = (timestamp / 760 + index * .173) % 1, inverse = 1 - mote;
+      const moteX = inverse * inverse * source.x + 2 * inverse * mote * cx + mote * mote * enemy.x;
+      const moteY = inverse * inverse * source.y + 2 * inverse * mote * cy + mote * mote * enemy.y;
+      ctx.globalAlpha = .58 + Math.sin(timestamp / 90 + index) * .18;
+      ctx.fillStyle = '#f3fdff';
+      ctx.beginPath(); ctx.arc(moteX, moteY, mobileSize(1.8), 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = .45 + Math.sin(timestamp / 140 + index) * .12;
+      ctx.strokeStyle = anchor % 2 ? '#eadbff' : '#c6faff';
+      ctx.lineWidth = mobileSize(1.1);
+      ctx.setLineDash([mobileSize(2), mobileSize(4)]);
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(5), timestamp / 620 + index, timestamp / 620 + index + Math.PI * 1.15); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = .68 + Math.sin(timestamp / 125 + index) * .12;
+      ctx.fillStyle = '#f7ffff';
+      if (state.performanceMode !== 'light') { ctx.shadowColor = anchor % 2 ? '#c2a6ff' : '#7df7e8'; ctx.shadowBlur = mobileSize(8); }
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, mobileSize(2.3), 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+    const marks = ultimate.markedTargets.filter((entry) => entry.enemy && !entry.enemy.dead && entry.expiresAt > state.elapsed);
+    let previous = { x:state.player.x, y:state.player.y };
+    marks.forEach((entry, index) => {
+      const enemy = entry.enemy;
+      const markLife = clamp((entry.expiresAt - state.elapsed) / 3.6, 0, 1);
+      const bend = Math.sin(timestamp / 360 + index) * Math.min(mobileSize(24), distance(previous, enemy) * .09);
+      const dx = enemy.x - previous.x, dy = enemy.y - previous.y, length = Math.hypot(dx, dy) || 1;
+      const cx = (previous.x + enemy.x) / 2 - dy / length * bend;
+      const cy = (previous.y + enemy.y) / 2 + dx / length * bend;
+      ctx.globalAlpha = .24 * markLife;
+      ctx.strokeStyle = index % 2 ? '#c2a6ff' : '#7df7e8';
+      ctx.lineWidth = mobileSize(1.1);
+      ctx.setLineDash([mobileSize(3), mobileSize(6)]);
+      ctx.beginPath(); ctx.moveTo(previous.x, previous.y); ctx.quadraticCurveTo(cx, cy, enemy.x, enemy.y); ctx.stroke();
+      ctx.globalAlpha = .68 * markLife;
+      ctx.setLineDash([mobileSize(2), mobileSize(4)]);
+      ctx.lineDashOffset = -timestamp / 31;
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.r + mobileSize(8), timestamp / 900 + index, timestamp / 900 + index + Math.PI * 1.55); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#f5fbff';
+      ctx.beginPath(); ctx.arc(enemy.x, enemy.y, mobileSize(2.1), 0, Math.PI * 2); ctx.fill();
+      previous = enemy;
+    });
+    ultimate.stars.forEach((star) => {
+      const point = auroraUltimateStarPosition(ultimate, star.index);
+      const faded = star.fired ? .2 : 1;
+      const radius = mobileSize((star.fired ? 2.4 : 4.1) + Math.sin(timestamp / 95 + star.index) * .65);
+      ctx.globalAlpha = pulse * faded;
+      if (state.performanceMode !== 'light') { ctx.shadowColor = star.index % 2 ? '#c2a6ff' : '#7df7e8'; ctx.shadowBlur = mobileSize(star.fired ? 3 : 12); }
+      ctx.fillStyle = star.index % 2 ? '#e6d7ff' : '#efffff';
+      ctx.beginPath();
+      ctx.moveTo(point.x, point.y - radius * 1.75);
+      ctx.lineTo(point.x + radius * .34, point.y - radius * .34);
+      ctx.lineTo(point.x + radius * 1.55, point.y);
+      ctx.lineTo(point.x + radius * .34, point.y + radius * .34);
+      ctx.lineTo(point.x, point.y + radius * 1.75);
+      ctx.lineTo(point.x - radius * .34, point.y + radius * .34);
+      ctx.lineTo(point.x - radius * 1.55, point.y);
+      ctx.lineTo(point.x - radius * .34, point.y - radius * .34);
+      ctx.closePath(); ctx.fill();
+    });
     ctx.restore();
   }
   function drawMahoragaWheel(x, y, radius, rotation, alpha, filledSegments = 0, ready = false) {
@@ -7487,6 +7866,63 @@
         ctx.strokeStyle = '#f1eadb'; ctx.lineWidth = mobileSize(1.5); ctx.beginPath(); ctx.arc(0, 0, radius * .72, 0, Math.PI * 2); ctx.stroke();
         for (let spoke = 0; spoke < 8; spoke++) { const a = spoke * Math.PI / 4; const x = Math.cos(a) * radius; const y = Math.sin(a) * radius; ctx.beginPath(); ctx.moveTo(Math.cos(a) * radius * .2, Math.sin(a) * radius * .2); ctx.lineTo(x, y); ctx.stroke(); ctx.fillStyle = '#e4c477'; ctx.beginPath(); ctx.arc(x, y, mobileSize(3.5), 0, Math.PI * 2); ctx.fill(); }
         ctx.fillStyle = '#e4c477'; ctx.beginPath(); ctx.arc(0, 0, mobileSize(8), 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      } else if (effect.type === 'aurora-crown-start') {
+        const progress = 1 - alpha;
+        const radius = mobileSize((effect.phase ? 26 : 18) + progress * (effect.phase ? 118 : 168));
+        const fade = Math.sin(Math.PI * clamp(progress, 0, 1));
+        ctx.save(); ctx.globalAlpha = fade * (effect.phase ? .72 : .9); ctx.lineCap = 'round';
+        const glow = ctx.createRadialGradient(effect.x, effect.y, 0, effect.x, effect.y, radius);
+        glow.addColorStop(0, 'rgba(228,250,255,.18)'); glow.addColorStop(.28, 'rgba(125,247,232,.12)'); glow.addColorStop(.68, 'rgba(194,166,255,.08)'); glow.addColorStop(1, 'rgba(194,166,255,0)');
+        ctx.fillStyle = glow; ctx.fillRect(effect.x - radius, effect.y - radius, radius * 2, radius * 2);
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#8deaff'; ctx.shadowBlur = mobileSize(14); }
+        ctx.strokeStyle = 'rgba(224,246,255,.78)'; ctx.lineWidth = mobileSize(2.3);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .82, timestamp / 430, timestamp / 430 + Math.PI * 1.65); ctx.stroke();
+        ctx.strokeStyle = 'rgba(194,166,255,.68)'; ctx.lineWidth = mobileSize(1.2);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .58, -timestamp / 510, -timestamp / 510 + Math.PI * 1.5); ctx.stroke();
+        for (let ray = 0; ray < 6; ray++) {
+          const angle = timestamp / 650 + ray * Math.PI / 3;
+          ctx.globalAlpha = fade * (effect.phase ? .38 : .55);
+          ctx.strokeStyle = ray % 2 ? '#c2a6ff' : '#bffff5';
+          ctx.lineWidth = mobileSize(1.25);
+          ctx.beginPath(); ctx.moveTo(effect.x + Math.cos(angle) * radius * .18, effect.y + Math.sin(angle) * radius * .18); ctx.lineTo(effect.x + Math.cos(angle) * radius, effect.y + Math.sin(angle) * radius); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'aurora-crown-burst') {
+        const progress = 1 - alpha;
+        const radius = Math.max(1, effect.radius * (.2 + progress * .8));
+        const fade = Math.sin(Math.PI * clamp(progress, 0, 1));
+        ctx.save(); ctx.globalAlpha = fade * .72; ctx.lineCap = 'round';
+        const glow = ctx.createRadialGradient(effect.x, effect.y, mobileSize(3), effect.x, effect.y, radius);
+        glow.addColorStop(0, 'rgba(249,253,255,.78)'); glow.addColorStop(.12, 'rgba(165,240,255,.44)'); glow.addColorStop(.42, 'rgba(125,247,232,.18)'); glow.addColorStop(.72, 'rgba(164,128,255,.1)'); glow.addColorStop(1, 'rgba(112,91,255,0)');
+        ctx.fillStyle = glow; ctx.fillRect(effect.x - radius, effect.y - radius, radius * 2, radius * 2);
+        if (state.performanceMode !== 'light') { ctx.shadowColor = '#9feaff'; ctx.shadowBlur = mobileSize(20); }
+        for (let ring = 0; ring < 4; ring++) {
+          const ringRadius = radius * (1 - ring * .16);
+          ctx.globalAlpha = fade * (.6 - ring * .1);
+          ctx.strokeStyle = ring === 1 || ring === 3 ? '#c2a6ff' : '#dffaff';
+          ctx.lineWidth = mobileSize(ring === 0 ? 3.4 : ring === 2 ? 2 : 1.2);
+          ctx.beginPath(); ctx.arc(effect.x, effect.y, ringRadius, timestamp / (ring + 1) * .001, timestamp / (ring + 1) * .001 + Math.PI * (1.5 + ring * .15)); ctx.stroke();
+        }
+        ctx.setLineDash([mobileSize(4), mobileSize(8)]); ctx.lineDashOffset = -timestamp / 18;
+        ctx.globalAlpha = fade * .56; ctx.strokeStyle = '#effaff'; ctx.lineWidth = mobileSize(1.2);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        for (let ray = 0; ray < 24; ray++) {
+          const angle = ray * Math.PI / 12 + timestamp / 1800;
+          const inner = radius * (.22 + (ray % 3) * .05), outer = radius * (.72 + (ray % 4) * .07);
+          ctx.globalAlpha = fade * (ray % 4 === 0 ? .62 : .3);
+          ctx.strokeStyle = ray % 2 ? '#c2a6ff' : '#dffaff'; ctx.lineWidth = mobileSize(ray % 4 === 0 ? 1.9 : 1);
+          ctx.beginPath(); ctx.moveTo(effect.x + Math.cos(angle) * inner, effect.y + Math.sin(angle) * inner); ctx.lineTo(effect.x + Math.cos(angle) * outer, effect.y + Math.sin(angle) * outer); ctx.stroke();
+        }
+        ctx.globalAlpha = fade * .92;
+        ctx.fillStyle = '#fbffff';
+        ctx.shadowColor = '#adf6ff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(22);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, mobileSize(12), 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0; ctx.strokeStyle = '#f6fcff'; ctx.lineWidth = mobileSize(2.3);
+        for (let spoke = 0; spoke < 8; spoke++) {
+          const angle = spoke * Math.PI / 4 + timestamp / 540;
+          ctx.beginPath(); ctx.moveTo(effect.x + Math.cos(angle) * mobileSize(17), effect.y + Math.sin(angle) * mobileSize(17)); ctx.lineTo(effect.x + Math.cos(angle) * radius * .42, effect.y + Math.sin(angle) * radius * .42); ctx.stroke();
+        }
+        ctx.restore();
       } else if (effect.type === 'aurora-link-start' || effect.type === 'aurora-link-node') {
         const progress = 1 - alpha;
         const radius = mobileSize(effect.type === 'aurora-link-start' ? 16 + progress * 56 : 4 + progress * 20);
@@ -7514,6 +7950,24 @@
         ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
         ctx.globalAlpha *= .5; ctx.lineWidth = mobileSize(1.25); ctx.strokeStyle = '#f0fffc'; ctx.shadowBlur = 0;
         ctx.beginPath(); ctx.arc(effect.x, effect.y, Math.max(0, radius - mobileSize(12)), 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'aurora-ult-beam') {
+        const dx = effect.x2 - effect.x1, dy = effect.y2 - effect.y1;
+        const length = Math.hypot(dx, dy) || 1;
+        const bend = Math.sin(timestamp / 90 + effect.phase) * Math.min(mobileSize(22), length * .06);
+        const cx = (effect.x1 + effect.x2) / 2 - dy / length * bend;
+        const cy = (effect.y1 + effect.y2) / 2 + dx / length * bend;
+        ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.globalAlpha = alpha * .5; ctx.strokeStyle = effect.phase % 2 ? '#b994ff' : '#57eaff'; ctx.lineWidth = mobileSize(7);
+        if (state.performanceMode !== 'light') { ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = mobileSize(16); }
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.quadraticCurveTo(cx, cy, effect.x2, effect.y2); ctx.stroke();
+        ctx.globalAlpha = alpha * .98; ctx.strokeStyle = '#f6ffff'; ctx.lineWidth = mobileSize(1.8); ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.moveTo(effect.x1, effect.y1); ctx.quadraticCurveTo(cx, cy, effect.x2, effect.y2); ctx.stroke();
+        const spark = clamp((timestamp / 230 + effect.phase * .17) % 1, 0, 1), inverse = 1 - spark;
+        const sx = inverse * inverse * effect.x1 + 2 * inverse * spark * cx + spark * spark * effect.x2;
+        const sy = inverse * inverse * effect.y1 + 2 * inverse * spark * cy + spark * spark * effect.y2;
+        ctx.fillStyle = '#fff'; ctx.shadowColor = '#8deaff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(8);
+        ctx.beginPath(); ctx.arc(sx, sy, mobileSize(2.7), 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       } else if (effect.type === 'aurora-link') {
         ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
@@ -7663,6 +8117,20 @@
         ctx.lineWidth = mobileSize((effect.isBossExplosion ? 8 : 5) * alpha + 1); ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.stroke();
         ctx.strokeStyle = '#fff2c7'; ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.6);
         ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * .72, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      } else if (effect.type === 'aurora-repulse-wave') {
+        const progress = 1 - alpha;
+        const radius = effect.radius || effect.maxRadius * progress;
+        const waveAlpha = Math.sin(Math.PI * clamp(progress, 0, 1));
+        ctx.save(); ctx.globalAlpha = waveAlpha * .62; ctx.lineCap = 'round';
+        const glow = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, radius - mobileSize(52)), effect.x, effect.y, radius);
+        glow.addColorStop(0, 'rgba(120,236,255,0)'); glow.addColorStop(.72, 'rgba(120,236,255,0)'); glow.addColorStop(.9, 'rgba(147,128,255,.12)'); glow.addColorStop(1, 'rgba(197,246,255,.4)');
+        ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = effect.color || '#80f3ff'; ctx.shadowColor = effect.color || '#80f3ff'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(19);
+        for (let ring = 0; ring < 3; ring++) {
+          ctx.globalAlpha = waveAlpha * (.72 - ring * .16); ctx.lineWidth = mobileSize(ring === 0 ? 3.2 : 1.5);
+          ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * (1 - ring * .09), timestamp / 480 + ring, timestamp / 480 + ring + Math.PI * (1.46 + ring * .1)); ctx.stroke();
+        }
+        ctx.restore();
       } else if (effect.type === 'nova') {
         const novaColor = effect.color || currentSkin().color;
         ctx.save(); ctx.globalAlpha = alpha; const nova = ctx.createRadialGradient(effect.x, effect.y, Math.max(0, effect.radius - mobileSize(40)), effect.x, effect.y, effect.radius); nova.addColorStop(0, 'rgba(125,247,232,.02)'); nova.addColorStop(.82, 'rgba(125,247,232,.09)'); nova.addColorStop(1, 'rgba(255,255,255,.35)'); ctx.fillStyle = nova; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = novaColor; ctx.lineWidth = mobileSize(8); ctx.shadowColor = novaColor; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(34); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = mobileSize(2); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * .92, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
@@ -7906,7 +8374,8 @@
     const playerSkin = currentSkin();
     const flameStormQActive = playerSkin.id === 'flamestorm' && state.flameStormQIntangible > 0;
     const keepMegumiVisible = playerSkin.id === 'megumi';
-    if (!eclipseActive && !megumiShadowCloakActive() && !vultureCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || keepMegumiVisible || flameStormQActive || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, state.player.radius, playerSkin, state.player.angle);
+    const playerDrawSize = playerSkin.id === 'aurora' ? state.player.radius * 1.1 : state.player.radius;
+    if (!eclipseActive && !megumiShadowCloakActive() && !vultureCloakActive() && (state.invulnerable <= 0 || adaptingMahoraga || keepMegumiVisible || flameStormQActive || Math.floor(timestamp / 90) % 2 === 0)) drawShip(state.player.x, state.player.y, playerDrawSize, playerSkin, state.player.angle);
     if (currentSkin().id === 'mahoraga' && state.mahoragaParryWindow > 0) {
       const windowRatio = clamp(state.mahoragaParryWindow / 3, 0, 1);
       ctx.save(); ctx.globalAlpha = .46 + Math.sin(timestamp / 130) * .12; ctx.strokeStyle = '#f7e5bb'; ctx.lineWidth = mobileSize(2.4);
@@ -8484,10 +8953,10 @@
     const isTraining = currentSkin().id === 'training';
     const isMegumi = currentSkin().id === 'megumi';
     const isVulture = currentSkin().id === 'vulture';
-    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isVulture ? 'Q míssil soma energia · toque duas vezes para consumir sucata · segure Q absorve · E dobra · G Ult com 8 sucatas' : isAurora ? 'E Explosão Nova · Q Elo Estelar' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Investida do Tigre' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
+    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isVulture ? 'Q míssil soma energia · toque duas vezes para consumir sucata · segure Q absorve · E dobra · G Ult com 8 sucatas' : isAurora ? 'E Explosão Nova · Q Elo Estelar · G Coroa da Hipernova' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Investida do Tigre' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
     const moveInstruction = state.controlMode === 'keys' ? 'WASD/setas' : state.controlMode === 'touch' ? 'toque e arraste' : 'analógico virtual';
-    const vultureTestHint = isVulture && profileNickname() === 'educvv dev' ? ' · V adiciona 8 sucatas para teste' : '';
-    if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos' + vultureTestHint + '.';
+    const testHint = isAurora && isDeveloperProfile() ? ' · V completa as seis cargas da ult' : isVulture && profileNickname() === 'educvv dev' ? ' · V adiciona 8 sucatas para teste' : '';
+    if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos' + testHint + '.';
   }
   function createDeviceIndicators() {
     [ui.missionSetupModal, ui.settingsModal].forEach((modal) => {
@@ -9122,6 +9591,9 @@
     if (!editableTarget && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) event.preventDefault();
     if (event.code === 'KeyF' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun && ['playing', 'paused'].includes(state.mode) && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
       event.preventDefault(); clearCurrentWaveForAdmin(); return;
+    }
+    if (event.code === 'KeyV' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && currentSkin().id === 'aurora' && state.mode === 'playing' && !editableTarget) {
+      event.preventDefault(); state.auroraUltCharge = 6; updateAuroraUltHud(); toast('TESTE AURORA · COROA DA HIPERNOVA CARREGADA'); tone(880, .18, 'sine', .04); return;
     }
     if (event.code === 'KeyV' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && profileNickname() === 'educvv dev' && currentSkin().id === 'vulture' && state.mode === 'playing' && !state.dailyChallenge && !state.championshipRun && state.vultureEvolutionTime <= 0 && state.vultureOverloadTime <= 0 && !editableTarget) {
       event.preventDefault(); state.vultureScrap = 8; state.vultureOverloadCountdown = 10; updateHud(); toast('TESTE VULTURE · 8 SUCATAS · Q OU G EM 10s'); tone(540, .2, 'sawtooth', .04); return;

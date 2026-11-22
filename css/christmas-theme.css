@@ -694,6 +694,23 @@
   animation: cv-christmas-lights-bright 1.7s ease-in-out infinite alternate-reverse;
 }
 
+/* Pause apenas os efeitos sazonais fora de foco ou durante o jogo. */
+:root[data-theme="christmas"].cv-page-hidden body,
+:root[data-theme="christmas"].cv-game-active body {
+  animation-play-state: paused !important;
+}
+
+:root[data-theme="christmas"].cv-page-hidden .site-header::before,
+:root[data-theme="christmas"].cv-page-hidden .site-header::after,
+:root[data-theme="christmas"].cv-page-hidden .hero-panel::before,
+:root[data-theme="christmas"].cv-page-hidden .site-footer::before,
+:root[data-theme="christmas"].cv-game-active .site-header::before,
+:root[data-theme="christmas"].cv-game-active .site-header::after,
+:root[data-theme="christmas"].cv-game-active .hero-panel::before,
+:root[data-theme="christmas"].cv-game-active .site-footer::before {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme="christmas"] .site-header::before,
   :root[data-theme="christmas"] .site-header::after,

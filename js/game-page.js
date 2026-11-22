@@ -214,6 +214,19 @@
 
     iframe.title = game.title;
     iframe.addEventListener('load', () => { if (loader) loader.hidden = true; }, { once: true });
+    const gameStage = iframe.closest('.game-stage') || iframe.parentElement;
+    if (gameStage && 'IntersectionObserver' in window) {
+      const gameVisibilityObserver = new IntersectionObserver((entries) => {
+        const inGameArea = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.15);
+        document.documentElement.classList.toggle('cv-game-active', inGameArea);
+      }, { threshold: [0, 0.15, 0.5] });
+      gameVisibilityObserver.observe(gameStage);
+      window.addEventListener('pagehide', () => gameVisibilityObserver.disconnect(), { once: true });
+    } else {
+      iframe.addEventListener('focus', () => document.documentElement.classList.add('cv-game-active'));
+      iframe.addEventListener('blur', () => document.documentElement.classList.remove('cv-game-active'));
+      gameStage?.addEventListener('pointerdown', () => document.documentElement.classList.add('cv-game-active'), { passive: true });
+    }
     if (fullscreen) {
       fullscreen.addEventListener('click', () => {
         if (iframe.requestFullscreen) iframe.requestFullscreen();

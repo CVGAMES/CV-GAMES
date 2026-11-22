@@ -52,7 +52,15 @@
     applyTheme(readTheme(), false);
   }
 
+  function syncPageVisibility() {
+    root.classList.toggle('cv-page-hidden', document.hidden);
+  }
+
   applyTheme(readTheme(), false);
+  syncPageVisibility();
+  document.addEventListener('visibilitychange', syncPageVisibility);
+  window.addEventListener('pagehide', () => root.classList.add('cv-page-hidden'));
+  window.addEventListener('pageshow', syncPageVisibility);
 
   document.addEventListener('click', (event) => {
     const button = event.target && event.target.closest
