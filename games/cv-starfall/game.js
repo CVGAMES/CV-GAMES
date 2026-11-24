@@ -83,11 +83,13 @@
     frame.src = new URL('saurion-frame-' + (index + 1) + '.png', document.baseURI).href;
     return frame;
   });
+  const saurionBiteSprite = new Image();
+  saurionBiteSprite.src = new URL('saurion-bite-frames.png', document.baseURI).href;
   const saurionDinoSprites = Object.fromEntries([
     ['spinosaurus', 'dino-spinosaurus.png'], ['triceratops', 'dino-triceratops.png'],
     ['titanosaur', 'dino-sauropod.png'], ['tyrannosaurus', 'dino-tyrannosaurus.png'],
     ['carnotaurus', 'dino-carnotaurus.png'], ['ankylosaurus', 'dino-ankylosaurus.png'],
-    ['therizinosaurus', 'dino-therizinosaurus.png'], ['raptor', 'saurion-raptor-skill.png']
+    ['therizinosaurus', 'dino-therizinosaurus.png'], ['parasaurolophus', 'dino-parasaurolophus.png']
   ].map(([id, path]) => { const image = new Image(); image.src = new URL(path, document.baseURI).href; return [id, image]; }));
   const eclipseShrineSprite = new Image();
   eclipseShrineSprite.src = new URL('eclipse-shrine.png', document.baseURI).href;
@@ -175,14 +177,14 @@
     vulture: { e:'Dobra Espacial · tem 3 cargas; cada uso teleporta na direção do movimento, deixa a nave camuflada por 2s e faz inimigos perderem o alvo e pararem de atirar. As cargas voltam juntas em 22–24s. Na forma ascendente, o alcance aumenta 1,8× e atravessar inimigos causa 24 de dano (15 em chefes), com atordoamento breve.', q:'Míssil Gravitacional · os tiros automáticos continuam normais. A energia do canhão se carrega até 100% em 3s e se soma ao dano do Q. Toque Q uma vez para disparar com a energia guardada; toque duas vezes em até 0,75s para somar a energia do primeiro disparo e consumir toda a sucata disponível, ganhando 2,5 de dano por peça (até +20). Com 8 sucatas e a contagem ativa, um toque lança o míssil carregado e consome as 8. Segure Q por meio segundo para absorver 3 sucatas e recuperar 1 escudo, se houver espaço; recarga da absorção: 3,2s.' }
   });
   const saurionCreatures = Object.freeze([
-    { id:'spinosaurus', name:'Espinossauro', role:'controle e caça', radius:30, duration:22, attack:2, kind:'spino' },
-    { id:'triceratops', name:'Tricerátops', role:'aríete e provocação', radius:33, duration:22, attack:2, kind:'trike' },
-    { id:'titanosaur', name:'Titanossauro', role:'suporte e ondas sísmicas', radius:39, duration:22, attack:6, kind:'titan' },
-    { id:'tyrannosaurus', name:'Tiranossauro Rex', role:'dano focado e fúria', radius:34, duration:22, attack:1.5, kind:'rex' },
-    { id:'carnotaurus', name:'Carnotauro', role:'perseguição e investida', radius:29, duration:22, attack:.5, kind:'carno' },
-    { id:'ankylosaurus', name:'Anquilossauro', role:'defesa e impacto', radius:33, duration:22, attack:2.8, kind:'ankyl' },
-    { id:'therizinosaurus', name:'Terizinossauro', role:'garras em área', radius:30, duration:22, attack:2.2, kind:'theri' },
-    { id:'raptor', name:'Raptor', role:'caça veloz', radius:24, duration:22, attack:1.1, kind:'raptor' }
+    { id:'spinosaurus', name:'Espinossauro', role:'controle e caça', radius:30, visualScale:5, duration:22, attack:2, kind:'spino' },
+    { id:'triceratops', name:'Tricerátops', role:'aríete e provocação', radius:33, visualScale:5, duration:22, attack:2, kind:'trike' },
+    { id:'titanosaur', name:'Titanossauro', role:'suporte e ondas sísmicas', radius:39, visualScale:5.55, duration:22, attack:6, kind:'titan' },
+    { id:'tyrannosaurus', name:'Tiranossauro Rex', role:'dano focado e fúria', radius:34, visualScale:5.25, duration:22, attack:1.5, kind:'rex' },
+    { id:'carnotaurus', name:'Carnotauro', role:'perseguição e investida', radius:29, visualScale:4.55, duration:22, attack:.5, kind:'carno' },
+    { id:'ankylosaurus', name:'Anquilossauro', role:'defesa e impacto', radius:33, visualScale:4.95, duration:22, attack:2.8, kind:'ankyl' },
+    { id:'therizinosaurus', name:'Terizinossauro', role:'garras em área', radius:30, visualScale:4.8, duration:22, attack:2.2, kind:'theri' },
+    { id:'parasaurolophus', name:'Parassaurolofo', role:'apoio e pressão sonora', radius:29, visualScale:4.65, duration:22, attack:1.1, kind:'parasaur' }
   ]);
   const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12, flamestorm:13, 'saurion-primal':14, vulture:15 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
@@ -2008,9 +2010,10 @@
     const megumiE = megumiTechnique();
     const isSaurion = skin.id === 'saurion';
     const isPrimalSaurion = skin.id === 'saurion-primal';
+    const isSaurionDevReplace = isPrimalSaurion && isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun;
     const saurionESummon = isPrimalSaurion ? saurionSummonForSlot('e') : null;
     const auroraRepulseWindow = isAurora && !state.auroraUlt && state.auroraUltCharge > 0 && state.auroraUltCharge < 6 && state.auroraEFirstTapAt > 0 && state.auroraEFirstTapCharge > 0 && state.auroraEFirstTapCharge < 6 && performance.now() - state.auroraEFirstTapAt <= AURORA_E_DOUBLE_TAP_MS;
-    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? state.saurionSummonCooldownE <= 0 && !saurionESummon : isSaurion ? state.dinoRoarCharges > 0 : isVulture ? state.vultureFoldCharges > 0 && (state.vultureEvolutionTime <= 0 || vultureUltPowerActive()) : skin.id === 'aurora' ? state.abilityCooldown <= 0 || auroraRepulseWindow : state.abilityCooldown <= 0;
+    const ready = isMahoraga ? state.mahoragaParryCooldown <= 0 : isPrimalSaurion ? (state.saurionSummonCooldownE <= 0 || (isSaurionDevReplace && Boolean(saurionESummon))) && (!saurionESummon || isSaurionDevReplace) : isSaurion ? state.dinoRoarCharges > 0 : isVulture ? state.vultureFoldCharges > 0 && (state.vultureEvolutionTime <= 0 || vultureUltPowerActive()) : skin.id === 'aurora' ? state.abilityCooldown <= 0 || auroraRepulseWindow : state.abilityCooldown <= 0;
     const eclipseIntro = skin.id === 'eclipse' && state.eclipsePhase === 'cinematic';
     const eclipseActive = skin.id === 'eclipse' && state.eclipsePhase === 'active';
     const active = eclipseIntro || eclipseActive || (isMahoraga && state.mahoragaParryWindow > 0) || (isMegumi && state.megumiSummonPhase === 'cinematic') || (isFlameStorm && state.flameStormDash?.life > 0) || (isVulture && state.vultureCloakTime > 0) || Boolean(saurionESummon);
@@ -2115,7 +2118,7 @@
       const vultureChargedReady = state.vultureScrap >= 8 && state.vultureOverloadCountdown > 0;
       const vultureEnergyBonus = Math.round(18 * clamp((state.vultureCannonCharge || 0) / VULTURE_CANNON_CHARGE_SECONDS, 0, 1));
       const vultureScrapBonus = Math.round(2.5 * clamp(state.vultureScrap, 0, 8));
-      const qReady = isVulture ? state.vultureOverloadTime <= 0 && (vulturePowerPhase ? qCooldown <= 0 : !vultureCollapsePhase && (vultureChargedReady || vultureComboReady || qCooldown <= 0 || vultureAbsorptionReady)) : isPrimalSaurion ? qCooldown <= 0 && !saurionQSummon : (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
+      const qReady = isVulture ? state.vultureOverloadTime <= 0 && (vulturePowerPhase ? qCooldown <= 0 : !vultureCollapsePhase && (vultureChargedReady || vultureComboReady || qCooldown <= 0 || vultureAbsorptionReady)) : isPrimalSaurion ? (qCooldown <= 0 || (isSaurionDevReplace && Boolean(saurionQSummon))) && (!saurionQSummon || isSaurionDevReplace) : (hasDeveloperPerks() && !isMegumi) || (isTempest && state.tempestTideCharges > 0) || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isMahoraga || isMegumi || isFlameStorm) && qCooldown <= 0) || (isSaurion && dinoCharges > 0);
       ui.eclipseQWrap.hidden = !showQ;
       ui.eclipseQ.disabled = !showQ || state.mode !== 'playing' || vultureCollapsePhase || state.megumiSummonPhase === 'cinematic' || (isEclipse && state.eclipsePhase !== 'idle') || ((isAurora || isAegis || isEclipse || isChronos || isRedshift || isFlashblade || isFlameStorm || isVulture) && qActive && !vultureComboReady) || !qReady;
       if (isFlameStorm) ui.eclipseQ.textContent = flameStormVortexIcon;
@@ -5795,14 +5798,17 @@
   function openSaurionSummonPicker(key) {
     const slot = key === 'q' ? 'q' : 'e';
     const sameSlotSummon = saurionSummonForSlot(slot);
-    if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing' || sameSlotSummon) return;
+    const devReplace = isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun;
+    if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing' || (sameSlotSummon && !devReplace)) return;
     const cooldownKey = key === 'q' ? 'saurionSummonCooldownQ' : 'saurionSummonCooldownE';
-    if (state[cooldownKey] > 0) return;
+    if (state[cooldownKey] > 0 && !(devReplace && sameSlotSummon)) return;
     pendingSaurionSummonKey = key;
     const otherSummon = saurionSummonForSlot(slot === 'q' ? 'e' : 'q');
-    if (ui.saurionSummonPickerSkill) ui.saurionSummonPickerSkill.textContent = 'Invocação pela habilidade ' + key.toUpperCase() + ' · recarga própria de 40 segundos' + (otherSummon ? ' · ' + otherSummon.name + ' já está em campo e não pode ser repetido' : ' · Q e E podem manter criaturas diferentes em campo');
+    if (ui.saurionSummonPickerSkill) ui.saurionSummonPickerSkill.textContent = devReplace
+      ? 'Invocação pela habilidade ' + key.toUpperCase() + (sameSlotSummon ? ' · modo dev: a nova criatura substituirá ' + sameSlotSummon.name : '') + (otherSummon ? ' · a outra habilidade mantém ' + otherSummon.name : '')
+      : 'Invocação pela habilidade ' + key.toUpperCase() + ' · recarga própria de 40 segundos' + (otherSummon ? ' · ' + otherSummon.name + ' já está em campo e não pode ser repetido' : ' · Q e E podem manter criaturas diferentes em campo');
     document.querySelectorAll('[data-saurion-summon-choice]').forEach((button) => {
-      const alreadySummoned = otherSummon?.id === button.dataset.saurionSummonChoice;
+      const alreadySummoned = !devReplace && otherSummon?.id === button.dataset.saurionSummonChoice;
       button.disabled = Boolean(alreadySummoned);
       button.title = alreadySummoned ? otherSummon.name + ' já está invocado pela habilidade ' + otherSummon.slot.toUpperCase() : '';
     });
@@ -5820,22 +5826,36 @@
   function summonSaurionCreature(key, creatureId) {
     if (currentSkin().id !== 'saurion-primal' || state.mode !== 'playing') return;
     const slot = key === 'q' ? 'q' : 'e';
-    if (saurionSummonForSlot(slot)) { toast('A HABILIDADE ' + slot.toUpperCase() + ' JÁ TEM UMA CRIATURA EM CAMPO'); return; }
+    const devReplace = isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun;
+    const sameSlotSummon = saurionSummonForSlot(slot);
+    if (sameSlotSummon && !devReplace) { toast('A HABILIDADE ' + slot.toUpperCase() + ' JÁ TEM UMA CRIATURA EM CAMPO'); return; }
     const otherSummon = saurionSummonForSlot(slot === 'q' ? 'e' : 'q');
-    if (otherSummon?.id === creatureId) { toast(otherSummon.name.toUpperCase() + ' JÁ ESTÁ EM CAMPO PELA HABILIDADE ' + otherSummon.slot.toUpperCase()); return; }
+    if (otherSummon?.id === creatureId && !devReplace) { toast(otherSummon.name.toUpperCase() + ' JÁ ESTÁ EM CAMPO PELA HABILIDADE ' + otherSummon.slot.toUpperCase()); return; }
     const cooldownKey = key === 'q' ? 'saurionSummonCooldownQ' : 'saurionSummonCooldownE';
-    if (state[cooldownKey] > 0) return;
-    const availableCreatures = saurionCreatures.filter((item) => item.id !== otherSummon?.id);
+    if (state[cooldownKey] > 0 && !(devReplace && sameSlotSummon)) return;
+    const availableCreatures = devReplace ? saurionCreatures : saurionCreatures.filter((item) => item.id !== otherSummon?.id);
     const creature = availableCreatures.find((item) => item.id === creatureId) || availableCreatures[Math.floor(randomUnit('ability') * availableCreatures.length)];
     const summon = {
-      ...creature, slot, x:state.player.x + (slot === 'q' ? -1 : 1) * mobileSize(66), y:state.player.y - mobileSize(62), angle:-Math.PI / 2,
+      ...creature, slot,
+      x:sameSlotSummon?.x ?? (creature.kind === 'ankyl' ? state.player.x - Math.cos(state.player.moveAngle ?? state.player.angle) * mobileSize(30) : state.player.x + (slot === 'q' ? -1 : 1) * mobileSize(66)),
+      y:sameSlotSummon?.y ?? (creature.kind === 'ankyl' ? state.player.y - Math.sin(state.player.moveAngle ?? state.player.angle) * mobileSize(30) : state.player.y - mobileSize(62)),
+      angle:creature.kind === 'ankyl' ? (state.player.moveAngle ?? state.player.angle) : -Math.PI / 2,
       life:creature.duration, total:creature.duration, hp:creature.kind === 'titan' ? 56 : creature.kind === 'trike' ? 44 : creature.kind === 'rex' ? 38 : creature.kind === 'ankyl' ? 40 : 30,
-      attackCooldown:.65, stompCooldown:6, tailCooldown:creature.kind === 'spino' ? 2.5 : 10, rushCooldown:1.8,
+      attackCooldown:.65, stompCooldown:6, tailCooldown:creature.kind === 'spino' ? 2.5 : creature.kind === 'titan' ? 1.1 : creature.kind === 'ankyl' ? 2.2 : 10, rushCooldown:creature.kind === 'trike' ? .15 : 1.8,
       provokeTime:0, fearTime:0, dashTime:0, dashDirection:1, dashHit:new Set(), trampleCooldowns:new Map(), tailPose:0, commandCooldown:0, rageUsed:false
     };
     summon.maxHp = summon.hp;
+    if (sameSlotSummon) {
+      burst(sameSlotSummon.x, sameSlotSummon.y, '#b9ff80', 16, 145);
+      state.saurionSummons = saurionSummons().filter((active) => active !== sameSlotSummon);
+    }
     state.saurionSummons.push(summon);
     state[cooldownKey] = 40;
+    if (summon.kind === 'ankyl' && restoreOneShield()) {
+      state.effects.push({ type:'saurion-ankyl-shield', x:state.player.x, y:state.player.y, radius:0, maxRadius:mobileSize(72), followPlayer:true, life:.72, total:.72 });
+      updateHud();
+      toast('ANQUILOSSAURO · ESCUDO +1');
+    }
     burst(summon.x, summon.y, '#7dff3f', 34, 210);
     burst(summon.x, summon.y, '#d4ff8a', 14, 130);
     for (const enemy of state.enemies) {
@@ -5862,7 +5882,9 @@
       state.saurionPlayerFireRateBuff = summon.kind === 'rex' ? .18 : .14;
     }
     recordAchievementEvent('ship-ability', 'saurion-primal');
-    toast(creature.name.toUpperCase() + ' · ' + creature.role.toUpperCase() + ' · ' + key.toUpperCase() + ' RECARREGA EM 40s');
+    toast(devReplace
+      ? 'DEV · ' + (sameSlotSummon ? sameSlotSummon.name.toUpperCase() + ' SUBSTITUÍDO POR ' : '') + creature.name.toUpperCase() + ' · TOQUE ' + key.toUpperCase() + ' PARA TROCAR ENQUANTO ESTIVER EM CAMPO'
+      : creature.name.toUpperCase() + ' · ' + creature.role.toUpperCase() + ' · ' + key.toUpperCase() + ' RECARREGA EM 40s');
     tone(126, .42, 'sawtooth', .045);
     updateAbilityButton();
   }
@@ -5870,7 +5892,36 @@
     if (!enemy || enemy.dead) return;
     const maxHp = Math.max(1, enemy.maxHp || enemy.hp || 1);
     const damage = enemy.kind === 'boss' ? Math.min(maxHp * fraction, maxHp * bossCap) : Math.max(1, maxHp * fraction);
+    const previousHp = enemy.hp;
+    const biteX = enemy.x;
+    const biteY = enemy.y - mobileSize(3);
     damageEnemy(enemy, damage, true);
+    if (Number.isFinite(previousHp) && enemy.hp < previousHp) {
+      const width = clamp(enemy.r * 3.1, mobileSize(42), mobileSize(88));
+      state.effects.push({ type:'saurion-bite', x:biteX, y:biteY, width, height:width * .829, life:.3, total:.3 });
+    }
+  }
+  function isEnemyInSaurionArc(summon, enemy, range, halfAngle) {
+    const dx = enemy.x - summon.x;
+    const dy = enemy.y - summon.y;
+    if (Math.hypot(dx, dy) > mobileSize(range) + enemy.r) return false;
+    const direction = Math.atan2(dy, dx);
+    const difference = Math.atan2(Math.sin(direction - summon.angle), Math.cos(direction - summon.angle));
+    return Math.abs(difference) <= halfAngle;
+  }
+  function isEnemyInSaurionBiteTriangle(summon, enemy, range, halfAngle) {
+    const dx = enemy.x - summon.x;
+    const dy = enemy.y - summon.y;
+    const forward = dx * Math.cos(summon.angle) + dy * Math.sin(summon.angle);
+    const sideways = Math.abs(-dx * Math.sin(summon.angle) + dy * Math.cos(summon.angle));
+    return forward > 0 && forward <= mobileSize(range) + enemy.r && sideways <= forward * Math.tan(halfAngle) + enemy.r;
+  }
+  function distanceToSaurionSegment(point, start, end) {
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const lengthSquared = dx * dx + dy * dy;
+    const progress = lengthSquared > 0 ? clamp(((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared, 0, 1) : 0;
+    return Math.hypot(point.x - (start.x + dx * progress), point.y - (start.y + dy * progress));
   }
   function updateSaurionSummon(dt) {
     state.saurionSummonCooldownE = Math.max(0, state.saurionSummonCooldownE - dt);
@@ -5881,6 +5932,7 @@
     for (const summon of saurionSummons().slice()) {
     summon.life -= dt;
     summon.attackCooldown -= dt;
+    summon.biteCooldown = Math.max(0, (summon.biteCooldown || 0) - dt);
     summon.rushCooldown -= dt;
     summon.stompCooldown -= dt;
     summon.tailCooldown -= dt;
@@ -5895,40 +5947,98 @@
       continue;
     }
     const targets = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(summon, a) - distance(summon, b));
-    const target = summon.kind === 'carno' ? [...targets].sort((a, b) => (b.speed || 0) - (a.speed || 0))[0] : targets[0];
-    const followX = state.player.x + Math.cos(state.elapsed * 1.7 + .5) * mobileSize(50) + (summon.slot === 'q' ? -1 : 1) * mobileSize(68);
-    const followY = state.player.y - mobileSize(50) + Math.sin(state.elapsed * 2.1) * mobileSize(15);
+    const target = summon.kind === 'carno'
+      ? [...targets].sort((a, b) => (b.speed || 0) - (a.speed || 0))[0]
+      : summon.kind === 'rex'
+        ? [...targets].sort((a, b) => (b.hp || b.maxHp || 0) - (a.hp || a.maxHp || 0) || (b.maxHp || 0) - (a.maxHp || 0))[0]
+        : summon.kind === 'trike'
+        ? [...targets].sort((a, b) => distance(state.player, a) - distance(state.player, b))[0]
+        : targets[0];
+    const playerHeading = Number.isFinite(state.player.moveAngle) ? state.player.moveAngle : state.player.angle;
+    const titanTrailDistance = mobileSize(138);
+    const titanSideOffset = (summon.slot === 'q' ? -1 : 1) * mobileSize(32);
+    const ankylTrailDistance = mobileSize(30);
+    const titanScreenMargin = mobileSize(Math.max(summon.radius, summon.radius * (summon.visualScale || 5.55) * .48));
+    const followX = summon.kind === 'titan'
+      ? clamp(state.player.x - Math.cos(playerHeading) * titanTrailDistance + Math.sin(playerHeading) * titanSideOffset, titanScreenMargin, state.width - titanScreenMargin)
+      : summon.kind === 'ankyl'
+        ? state.player.x - Math.cos(playerHeading) * ankylTrailDistance
+        : state.player.x + Math.cos(state.elapsed * 1.7 + .5) * mobileSize(50) + (summon.slot === 'q' ? -1 : 1) * mobileSize(68);
+    const followY = summon.kind === 'titan'
+      ? clamp(state.player.y - Math.sin(playerHeading) * titanTrailDistance - Math.cos(playerHeading) * titanSideOffset, titanScreenMargin, state.height - titanScreenMargin)
+      : summon.kind === 'ankyl'
+        ? state.player.y - Math.sin(playerHeading) * ankylTrailDistance
+        : state.player.y - mobileSize(50) + Math.sin(state.elapsed * 2.1) * mobileSize(15);
+    const previousSummonX = summon.x;
+    const previousSummonY = summon.y;
     if ((summon.kind === 'trike' || summon.kind === 'carno') && summon.dashTime > 0) {
       const previousX = summon.x;
+      const previousY = summon.y;
       const summonRadius = mobileSize(summon.radius);
       if (summon.kind === 'trike') {
-        summon.x = clamp(summon.x + summon.dashDirection * mobileSize(690) * dt, summonRadius, state.width - summonRadius);
-        summon.y += (state.player.y - summon.y) * Math.min(1, dt * 3);
+        const dashSpeed = mobileSize(690);
+        summon.x = clamp(summon.x + Math.cos(summon.dashAngle || summon.angle) * dashSpeed * dt, summonRadius, state.width - summonRadius);
+        summon.y = clamp(summon.y + Math.sin(summon.dashAngle || summon.angle) * dashSpeed * dt, summonRadius, state.height - summonRadius);
       } else {
         summon.x = clamp(summon.x + Math.cos(summon.dashAngle || summon.angle) * mobileSize(620) * dt, summonRadius, state.width - summonRadius);
         summon.y = clamp(summon.y + Math.sin(summon.dashAngle || summon.angle) * mobileSize(620) * dt, summonRadius, state.height - summonRadius);
       }
       summon.dashTime -= dt;
       for (const enemy of targets) {
-        if (summon.dashHit.has(enemy) || distance(enemy, { x:summon.x, y:summon.y }) > summonRadius + enemy.r + mobileSize(13)) continue;
+        const rushHalfLength = mobileSize(summon.radius * (summon.kind === 'trike' ? 1.25 : 1.65));
+        const rushBodyWidth = mobileSize(summon.radius * (summon.kind === 'trike' ? .82 : .64));
+        const dashAngle = summon.dashAngle || summon.angle;
+        const hitDuringRush = distanceToSaurionSegment(enemy, {
+          x:previousX - Math.cos(dashAngle) * rushHalfLength,
+          y:previousY - Math.sin(dashAngle) * rushHalfLength
+        }, {
+          x:summon.x + Math.cos(dashAngle) * rushHalfLength,
+          y:summon.y + Math.sin(dashAngle) * rushHalfLength
+        }) <= rushBodyWidth + enemy.r;
+        if (summon.dashHit.has(enemy) || !hitDuringRush) continue;
         summon.dashHit.add(enemy);
         applySaurionDamage(enemy, summon.kind === 'carno' ? .10 : enemy.kind === 'boss' || enemy.kind === 'brute' ? .5 : 1, summon.kind === 'carno' ? .012 : .035);
         enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .4 : .85);
         burst((previousX + summon.x) / 2, summon.y, '#a5ff54', 8, 105);
       }
-      if (summon.kind === 'trike' && (summon.x <= summonRadius + 1 || summon.x >= state.width - summonRadius - 1)) summon.dashTime = 0;
+      if (summon.kind === 'trike' && (summon.x <= summonRadius + 1 || summon.x >= state.width - summonRadius - 1 || summon.y <= summonRadius + 1 || summon.y >= state.height - summonRadius - 1)) summon.dashTime = 0;
       if (summon.dashTime <= 0) { summon.dashHit.clear(); if (summon.kind === 'trike') summon.rushCooldown = 5; else summon.commandCooldown = 4; }
     } else {
-      const speed = summon.kind === 'titan' ? 2.1 : summon.kind === 'carno' ? 4.5 : summon.kind === 'raptor' ? 4 : 3.1;
-      summon.x += (followX - summon.x) * Math.min(1, dt * speed);
-      summon.y += (followY - summon.y) * Math.min(1, dt * speed);
-      if (target) summon.angle = Math.atan2(target.y - summon.y, target.x - summon.x);
+      if (summon.kind !== 'trike') {
+        if ((summon.kind === 'carno' || summon.kind === 'rex' || summon.kind === 'theri') && target) {
+          const dx = target.x - summon.x;
+          const dy = target.y - summon.y;
+          const distanceToTarget = Math.hypot(dx, dy) || 1;
+          summon.angle = Math.atan2(dy, dx);
+          const stoppingDistance = mobileSize(summon.kind === 'carno' ? 82 : summon.kind === 'rex' ? 92 : 105) + target.r;
+          const pursuitSpeed = summon.kind === 'carno' ? 345 : summon.kind === 'rex' ? 225 : 245;
+          const step = Math.min(Math.max(0, distanceToTarget - stoppingDistance), mobileSize(pursuitSpeed) * dt);
+          summon.x = clamp(summon.x + dx / distanceToTarget * step, mobileSize(summon.radius), state.width - mobileSize(summon.radius));
+          summon.y = clamp(summon.y + dy / distanceToTarget * step, mobileSize(summon.radius), state.height - mobileSize(summon.radius));
+        } else if (summon.kind !== 'carno' && summon.kind !== 'rex' && summon.kind !== 'theri') {
+          const speed = summon.kind === 'titan' ? 1.35 : summon.kind === 'ankyl' ? 5.4 : 3.1;
+          summon.x += (followX - summon.x) * Math.min(1, dt * speed);
+          summon.y += (followY - summon.y) * Math.min(1, dt * speed);
+        }
+      }
+      const titanMoveX = summon.x - previousSummonX;
+      const titanMoveY = summon.y - previousSummonY;
+      if (summon.kind === 'titan' && Math.hypot(titanMoveX, titanMoveY) > mobileSize(1)) summon.angle = Math.atan2(titanMoveY, titanMoveX);
+      else if (summon.kind === 'ankyl') summon.angle = playerHeading;
+      else if (target) summon.angle = Math.atan2(target.y - summon.y, target.x - summon.x);
       else summon.angle = -Math.PI / 2;
     }
     if (summon.kind === 'titan') {
+      const movedX = summon.x - previousSummonX;
+      const movedY = summon.y - previousSummonY;
+      const travelAngle = Math.hypot(movedX, movedY) > mobileSize(1) ? Math.atan2(movedY, movedX) : summon.angle;
+      const bodyHalfLength = mobileSize(summon.radius * 2.15);
+      const bodyWidth = mobileSize(summon.radius * .68);
+      const bodyStart = { x:previousSummonX - Math.cos(travelAngle) * bodyHalfLength, y:previousSummonY - Math.sin(travelAngle) * bodyHalfLength };
+      const bodyEnd = { x:summon.x + Math.cos(travelAngle) * bodyHalfLength, y:summon.y + Math.sin(travelAngle) * bodyHalfLength };
       for (const enemy of targets) {
         const cooldown = Math.max(0, (summon.trampleCooldowns.get(enemy) || 0) - dt);
-        if (cooldown <= 0 && distance(summon, enemy) <= mobileSize(summon.radius * .78) + enemy.r) {
+        if (cooldown <= 0 && distanceToSaurionSegment(enemy, bodyStart, bodyEnd) <= bodyWidth + enemy.r) {
           summon.trampleCooldowns.set(enemy, 1.5);
           applySaurionDamage(enemy, enemy.kind === 'boss' ? .06 : .75, .012);
           enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .22 : .38);
@@ -5938,36 +6048,127 @@
         } else if (cooldown > 0) summon.trampleCooldowns.set(enemy, cooldown);
       }
     }
+    if (summon.kind === 'ankyl') {
+      const bodyHalfLength = mobileSize(summon.radius * 2.05);
+      const bodyWidth = mobileSize(summon.radius * .78);
+      const bodyStart = { x:summon.x - Math.cos(summon.angle) * bodyHalfLength, y:summon.y - Math.sin(summon.angle) * bodyHalfLength };
+      const bodyEnd = { x:summon.x + Math.cos(summon.angle) * bodyHalfLength, y:summon.y + Math.sin(summon.angle) * bodyHalfLength };
+      for (const enemy of targets) {
+        const cooldown = Math.max(0, (summon.trampleCooldowns.get(enemy) || 0) - dt);
+        if (cooldown <= 0 && distanceToSaurionSegment(enemy, bodyStart, bodyEnd) <= bodyWidth + enemy.r) {
+          summon.trampleCooldowns.set(enemy, 1.15);
+          applySaurionDamage(enemy, .42, .024);
+          enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .1 : .2);
+          burst(enemy.x, enemy.y, '#a9c953', 6, 78);
+        } else if (cooldown > 0) summon.trampleCooldowns.set(enemy, cooldown);
+      }
+    }
     if (summon.kind === 'trike' && summon.dashTime <= 0 && target && summon.rushCooldown <= 0) {
-      summon.dashDirection = summon.x < state.width / 2 ? 1 : -1;
-      summon.dashTime = 1.25;
+      summon.dashAngle = Math.atan2(target.y - summon.y, target.x - summon.x);
+      summon.angle = summon.dashAngle;
+      summon.dashTime = clamp((distance(summon, target) + mobileSize(summon.radius * 1.35)) / mobileSize(690), .28, 1.6);
       summon.dashHit.clear();
       burst(summon.x, summon.y, '#a5ff54', 12, 125);
     }
-    if (summon.kind === 'titan' && summon.stompCooldown <= 0) {
+    if (summon.kind === 'titan' && summon.stompCooldown <= 0 && targets.some((enemy) => distance(summon, enemy) <= mobileSize(235) + enemy.r)) {
       summon.stompCooldown = 6;
-      state.effects.push({ type:'saurion-summon-wave', x:summon.x, y:summon.y, radius:0, maxRadius:mobileSize(235), life:.56, total:.56, color:'#b4d96c' });
+      state.effects.push({ type:'saurion-summon-wave', x:summon.x, y:summon.y, radius:0, maxRadius:mobileSize(235), life:.56, total:.56, color:'#c69a68' });
       for (const enemy of targets) if (distance(summon, enemy) < mobileSize(235) + enemy.r) {
         applySaurionDamage(enemy, .10, .022);
         enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .25 : .5);
       }
     }
-    if (summon.attackCooldown <= 0 && targets.length) {
-      const nearby = targets.filter((enemy) => distance(summon, enemy) <= mobileSize(summon.kind === 'theri' ? 175 : 145) + enemy.r);
+    if (summon.kind === 'ankyl' && summon.tailCooldown <= 0) {
+      const tailLength = mobileSize(summon.radius * 2.05);
+      const tailX = summon.x - Math.cos(summon.angle) * tailLength;
+      const tailY = summon.y - Math.sin(summon.angle) * tailLength;
+      const shockRadius = mobileSize(220);
+      const tailTargets = targets.filter((enemy) => distance({ x:tailX, y:tailY }, enemy) <= shockRadius + enemy.r);
+      if (tailTargets.length) {
+        summon.tailCooldown = 8.5;
+        summon.tailPose = .42;
+        state.effects.push({ type:'saurion-ankyl-shockwave', x:tailX, y:tailY, radius:0, maxRadius:shockRadius, hit:new Set(), life:.74, total:.74 });
+        burst(tailX, tailY, '#d5b66d', 18, 165);
+      }
+    }
+    if (summon.kind === 'spino') {
+      const clawRange = 188;
+      const clawHalfAngle = Math.PI * .34;
+      if (summon.attackCooldown <= 0) {
+        const clawTargets = targets.filter((enemy) => isEnemyInSaurionArc(summon, enemy, clawRange, clawHalfAngle));
+        if (clawTargets.length) {
+          summon.attackCooldown = 1.35;
+          summon.tailPose = .3;
+          state.effects.push({ type:'saurion-spino-claw', x:summon.x, y:summon.y, angle:summon.angle, radius:mobileSize(clawRange), life:.32, total:.32 });
+          clawTargets.forEach((enemy) => {
+            applySaurionDamage(enemy, .2, .02);
+            enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .12 : .2);
+          });
+          burst(summon.x + Math.cos(summon.angle) * mobileSize(72), summon.y + Math.sin(summon.angle) * mobileSize(72), '#b4d96c', 12, 120);
+        }
+      }
+      if (summon.biteCooldown <= 0) {
+        const biteTarget = targets.find((enemy) => isEnemyInSaurionBiteTriangle(summon, enemy, 96, Math.PI / 7));
+        if (biteTarget) {
+          summon.biteCooldown = 2.2;
+          applySaurionDamage(biteTarget, .44, .045);
+          biteTarget.dinoStun = Math.max(biteTarget.dinoStun || 0, biteTarget.kind === 'boss' ? .2 : .35);
+          burst(biteTarget.x, biteTarget.y, '#d5efb0', 10, 112);
+        }
+      }
+    } else if (summon.kind === 'trike' && summon.dashTime <= 0 && summon.attackCooldown <= 0 && targets.length) {
+      const hornTargets = targets.filter((enemy) => isEnemyInSaurionBiteTriangle(summon, enemy, 142, Math.PI / 5));
+      if (hornTargets.length) {
+        summon.attackCooldown = 1.05;
+        state.effects.push({ type:'saurion-trike-horns', x:summon.x, y:summon.y, angle:summon.angle, radius:mobileSize(142), life:.3, total:.3 });
+        for (const enemy of hornTargets) {
+          applySaurionDamage(enemy, enemy.kind === 'boss' || enemy.kind === 'brute' ? .055 : .16, .012);
+          enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .1 : .24);
+          const angle = Math.atan2(enemy.y - summon.y, enemy.x - summon.x);
+          enemy.tempestRepulse = { time:.18, total:.18, vx:Math.cos(angle) * 92, vy:Math.sin(angle) * 92, spin:0 };
+        }
+        burst(summon.x + Math.cos(summon.angle) * mobileSize(70), summon.y + Math.sin(summon.angle) * mobileSize(70), '#f1bf86', 8, 95);
+      } else summon.attackCooldown = .18;
+    } else if (summon.kind === 'titan' && summon.tailCooldown <= 0 && targets.length) {
+      const tailArea = { ...summon, angle:summon.angle + Math.PI };
+      const tailTargets = targets.filter((enemy) => isEnemyInSaurionBiteTriangle(tailArea, enemy, 250, Math.PI / 4));
+      if (tailTargets.length) {
+        summon.tailCooldown = 10;
+        summon.attackCooldown = .55;
+        summon.tailPose = .42;
+        state.effects.push({ type:'saurion-titan-tail', x:summon.x, y:summon.y, angle:tailArea.angle, radius:mobileSize(250), life:.42, total:.42 });
+        for (const enemy of tailTargets) {
+          applySaurionDamage(enemy, .75, .035);
+          enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .18 : .32);
+          const angle = Math.atan2(enemy.y - summon.y, enemy.x - summon.x);
+          enemy.tempestRepulse = { time:.22, total:.22, vx:Math.cos(angle) * 100, vy:Math.sin(angle) * 100, spin:0 };
+        }
+        burst(summon.x + Math.cos(tailArea.angle) * mobileSize(155), summon.y + Math.sin(tailArea.angle) * mobileSize(155), '#d6ad77', 13, 135);
+      }
+    } else if (summon.kind !== 'trike' && summon.kind !== 'titan' && summon.kind !== 'ankyl' && summon.attackCooldown <= 0 && targets.length) {
+      const carnoBiteOrigin = summon.kind === 'carno'
+        ? { x:summon.x + Math.cos(summon.angle) * mobileSize(48), y:summon.y + Math.sin(summon.angle) * mobileSize(48) }
+        : summon.kind === 'rex'
+          ? { x:summon.x + Math.cos(summon.angle) * mobileSize(58), y:summon.y + Math.sin(summon.angle) * mobileSize(58) }
+        : summon;
+      const biteRange = summon.kind === 'carno' ? 165 : summon.kind === 'rex' ? 155 : summon.kind === 'theri' ? 175 : 145;
+      const nearby = targets.filter((enemy) => distance(carnoBiteOrigin, enemy) <= mobileSize(biteRange) + enemy.r);
+      if (summon.kind === 'rex') nearby.sort((a, b) => (b.hp || b.maxHp || 0) - (a.hp || a.maxHp || 0) || (b.maxHp || 0) - (a.maxHp || 0));
       const prey = nearby[0];
-      if (summon.kind === 'spino' && nearby.length > 3 && summon.tailCooldown <= 0) {
-        summon.tailCooldown = 2.5; summon.attackCooldown = .55;
-        nearby.forEach((enemy) => { applySaurionDamage(enemy, .5, .03); enemy.tempestRepulse = { time:.42, total:.42, vx:Math.cos(Math.atan2(enemy.y-summon.y,enemy.x-summon.x))*165, vy:Math.sin(Math.atan2(enemy.y-summon.y,enemy.x-summon.x))*165, spin:1.5 }; });
-        summon.tailPose = .5; burst(summon.x, summon.y, '#78f044', 16, 145);
-      } else if (summon.kind === 'titan' && summon.tailCooldown > 0) {
-        summon.attackCooldown = .25;
-      } else if (prey) {
-        const cooldown = summon.kind === 'carno' ? .5 : summon.kind === 'rex' ? 1.5 : summon.kind === 'raptor' ? 1.1 : summon.kind === 'ankyl' ? 2.8 : summon.kind === 'theri' ? 2.2 : 2;
+      if (prey) {
+        const cooldown = summon.kind === 'carno' ? .5 : summon.kind === 'rex' ? 1.5 : summon.kind === 'ankyl' ? 2.8 : summon.kind === 'theri' ? 2.2 : 2;
         summon.attackCooldown = cooldown;
-        if (summon.kind === 'spino') applySaurionDamage(prey, .35, .027);
-        else if (summon.kind === 'trike') { applySaurionDamage(prey, prey.kind === 'boss' || prey.kind === 'brute' ? .5 : 1, .035); prey.dinoStun = Math.max(prey.dinoStun || 0, .45); }
-        else if (summon.kind === 'titan') { summon.tailCooldown = 10; applySaurionDamage(prey, .75, .035); }
-        else if (summon.kind === 'rex') {
+        if (summon.kind === 'theri') {
+          summon.tailPose = .38;
+          state.effects.push({ type:'saurion-theri-claw', x:summon.x, y:summon.y, angle:summon.angle, radius:mobileSize(biteRange), life:.42, total:.42 });
+          for (const enemy of nearby) {
+            applySaurionDamage(enemy, .22, .02);
+            enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .08 : .12);
+          }
+          burst(summon.x, summon.y, '#d7b5ff', Math.min(18, 8 + nearby.length * 2), 135);
+          continue;
+        }
+        if (summon.kind === 'rex') {
           applySaurionDamage(prey, .28, .03);
           if (prey.kind === 'boss' || prey.kind === 'brute') {
             prey.saurionAttackSlowTime = Math.max(prey.saurionAttackSlowTime || 0, 5);
@@ -5977,11 +6178,9 @@
           }
         }
         else if (summon.kind === 'carno') applySaurionDamage(prey, .20, .008);
-        else if (summon.kind === 'ankyl') { applySaurionDamage(prey, .32, .024); nearby.slice(0, 4).forEach((enemy) => { if (enemy !== prey) { applySaurionDamage(enemy, .18, .018); enemy.dinoStun = Math.max(enemy.dinoStun || 0, .35); } }); }
-        else if (summon.kind === 'theri') { nearby.slice(0, 3).forEach((enemy) => applySaurionDamage(enemy, .22, .02)); }
         else applySaurionDamage(prey, .2, .012);
         summon.tailPose = .28;
-        burst(prey.x, prey.y, '#8dff4b', summon.kind === 'titan' ? 13 : 7, 105);
+        burst(prey.x, prey.y, '#8dff4b', 7, 105);
       }
     }
     summon.tailPose = Math.max(0, summon.tailPose - dt);
@@ -6606,7 +6805,9 @@
     const saurionInterceptions = currentSkin().id === 'saurion-primal' ? saurionSummons() : [];
     if (saurionInterceptions.length) for (const bullet of state.enemyBullets) {
       if (bullet.dead || bullet.reflected) continue;
-      const saurionInterception = saurionInterceptions.find((summon) => distance(bullet, summon) < bullet.r + mobileSize(summon.radius) * .68);
+      const saurionInterception = saurionInterceptions.find((summon) => summon.kind === 'ankyl'
+        ? distance(bullet, state.player) < bullet.r + state.player.radius + mobileSize(18)
+        : distance(bullet, summon) < bullet.r + mobileSize(summon.radius) * .68);
       if (!saurionInterception) continue;
       bullet.dead = true;
       saurionInterception.hp -= Math.max(1, bullet.damage || 1);
@@ -6649,7 +6850,25 @@
     const currentFlashTrailContacts = new Set();
     for (const effect of state.effects) {
       effect.life -= dt;
-      if (effect.type === 'vulture-pulse' && effect.life > 0) {
+      if (effect.type === 'saurion-ankyl-shockwave' && effect.life > 0) {
+        const previousRadius = effect.radius || 0;
+        effect.radius = effect.maxRadius * clamp(1 - effect.life / effect.total, 0, 1);
+        if (!(effect.hit instanceof Set)) effect.hit = new Set();
+        for (const enemy of state.enemies) {
+          if (enemy.dead || effect.hit.has(enemy)) continue;
+          const distanceFromCrater = distance(effect, enemy);
+          if (distanceFromCrater > effect.radius + enemy.r || distanceFromCrater + enemy.r < previousRadius) continue;
+          effect.hit.add(enemy);
+          applySaurionDamage(enemy, .32, .024);
+          enemy.dinoStun = Math.max(enemy.dinoStun || 0, enemy.kind === 'boss' ? .16 : .36);
+          const angle = Math.atan2(enemy.y - effect.y, enemy.x - effect.x);
+          enemy.tempestRepulse = { time:.28, total:.28, vx:Math.cos(angle) * 145, vy:Math.sin(angle) * 145, spin:0 };
+          burst(enemy.x, enemy.y, '#d5b66d', 5, 76);
+        }
+      } else if (effect.type === 'saurion-ankyl-shield' && effect.life > 0) {
+        if (effect.followPlayer) { effect.x = state.player.x; effect.y = state.player.y; }
+        effect.radius = effect.maxRadius * clamp(1 - effect.life / effect.total, 0, 1);
+      } else if (effect.type === 'vulture-pulse' && effect.life > 0) {
         effect.radius = effect.maxRadius * clamp(1 - effect.life / effect.total, 0, 1);
       } else if (effect.type === 'vulture-absorb-field' && effect.life > 0) {
         effect.x = state.player.x; effect.y = state.player.y; effect.rotation += dt * 4.4;
@@ -7116,8 +7335,8 @@
     for (const summon of summons) {
       const image = saurionDinoSprites[summon.id];
       const fade = clamp(summon.life / .5, 0, 1);
-      ctx.save(); ctx.translate(summon.x, summon.y); ctx.rotate((summon.angle || -Math.PI / 2) + Math.PI / 2);
-      const height = mobileSize(summon.radius * (summon.kind === 'titan' ? 5.2 : 4.6));
+      ctx.save(); ctx.translate(summon.x, summon.y); ctx.rotate((summon.angle ?? -Math.PI / 2) - Math.PI / 2);
+      const height = mobileSize(summon.radius * (summon.visualScale || 4.6));
       ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade;
       if (image?.complete && image.naturalWidth) {
         const width = height * image.naturalWidth / image.naturalHeight;
@@ -7129,10 +7348,14 @@
         ctx.beginPath(); ctx.moveTo(0, -height * .48); ctx.lineTo(height * .25, height * .3); ctx.lineTo(0, height * .48); ctx.lineTo(-height * .25, height * .3); ctx.closePath(); ctx.fill(); ctx.stroke();
       }
       if (summon.tailPose > 0) {
-        ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade * clamp(summon.tailPose / .28, 0, 1);
-        ctx.strokeStyle = '#d8ff8d'; ctx.lineWidth = mobileSize(3); ctx.shadowColor = '#72ec3e';
+        ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade * clamp(summon.tailPose / (summon.kind === 'ankyl' ? .42 : .28), 0, 1);
+        ctx.strokeStyle = summon.kind === 'ankyl' ? '#e6c981' : '#d8ff8d'; ctx.lineWidth = mobileSize(summon.kind === 'ankyl' ? 4 : 3);
+        ctx.shadowColor = summon.kind === 'ankyl' ? '#b08c4e' : '#72ec3e';
         ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(10);
-        ctx.beginPath(); ctx.arc(0, 0, height * .58, -.95, 1.2); ctx.stroke();
+        if (summon.kind === 'ankyl') {
+          ctx.beginPath(); ctx.moveTo(-height * .27, height * .43); ctx.quadraticCurveTo(0, height * .75, height * .27, height * .43); ctx.stroke();
+          ctx.globalAlpha *= .66; ctx.lineWidth = mobileSize(1.5); ctx.beginPath(); ctx.moveTo(-height * .35, height * .37); ctx.quadraticCurveTo(0, height * .68, height * .35, height * .37); ctx.stroke();
+        } else { ctx.beginPath(); ctx.arc(0, 0, height * .58, -.95, 1.2); ctx.stroke(); }
       }
       ctx.restore();
       if (summon.hp < summon.maxHp) {
@@ -8286,6 +8509,60 @@
         ctx.save(); ctx.globalAlpha = alpha * .6; ctx.strokeStyle = effect.color || '#8bff4b'; ctx.lineWidth = mobileSize(2.3); ctx.shadowColor = effect.color || '#8bff4b';
         ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12); ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.stroke();
         ctx.globalAlpha = alpha * .11; ctx.fillStyle = effect.color || '#8bff4b'; ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      } else if (effect.type === 'saurion-ankyl-shield') {
+        const pulse = .82 + Math.sin(timestamp / 75) * .12;
+        const shieldRadius = state.player.radius + mobileSize(12) + effect.radius * .22;
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha * .48 * pulse; ctx.strokeStyle = '#c6da83'; ctx.lineWidth = mobileSize(3);
+        ctx.shadowColor = '#a8c95d'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+        ctx.beginPath(); ctx.arc(0, 0, shieldRadius, -Math.PI * .9, Math.PI * .9); ctx.stroke();
+        ctx.globalAlpha = alpha * .68; ctx.strokeStyle = '#eff4cf'; ctx.lineWidth = mobileSize(1.2);
+        for (let plate = 0; plate < 5; plate++) {
+          const angle = (plate / 5) * Math.PI * 2 + timestamp / 700;
+          ctx.beginPath(); ctx.arc(0, 0, shieldRadius, angle, angle + Math.PI * .2); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'saurion-ankyl-shockwave') {
+        const progress = 1 - alpha;
+        const reach = Math.max(mobileSize(8), effect.radius);
+        const crackAlpha = clamp(alpha * 1.35, 0, 1);
+        ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.globalAlpha = alpha * .42; ctx.strokeStyle = '#e1c27b'; ctx.lineWidth = mobileSize(3.2);
+        ctx.shadowColor = '#c39a59'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(13);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, reach, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .78; ctx.strokeStyle = '#302d23'; ctx.lineWidth = mobileSize(4.5); ctx.shadowBlur = 0;
+        const crackCount = state.performanceMode === 'light' ? 9 : 15;
+        for (let crack = 0; crack < crackCount; crack++) {
+          const angle = crack / crackCount * Math.PI * 2 + .13;
+          const startRadius = reach * (.1 + ((crack * 7) % 4) * .018);
+          const middleRadius = reach * (.47 + Math.sin(crack * 2.1) * .045);
+          const endRadius = reach * (.84 + ((crack * 3) % 4) * .035);
+          const bend = Math.sin(crack * 5.7 + progress * 2) * reach * .045;
+          const nx = -Math.sin(angle), ny = Math.cos(angle);
+          const sx = effect.x + Math.cos(angle) * startRadius;
+          const sy = effect.y + Math.sin(angle) * startRadius;
+          const mx = effect.x + Math.cos(angle) * middleRadius + nx * bend;
+          const my = effect.y + Math.sin(angle) * middleRadius + ny * bend;
+          const ex = effect.x + Math.cos(angle) * endRadius - nx * bend * .35;
+          const ey = effect.y + Math.sin(angle) * endRadius - ny * bend * .35;
+          ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(mx, my); ctx.lineTo(ex, ey); ctx.stroke();
+          ctx.globalAlpha = crackAlpha * .84; ctx.strokeStyle = '#d6b973'; ctx.lineWidth = mobileSize(1.35);
+          ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(mx, my); ctx.lineTo(ex, ey); ctx.stroke();
+          if (crack % 2 === 0) {
+            const branchAngle = angle + (crack % 4 === 0 ? 1 : -1) * (.32 + (crack % 3) * .08);
+            const branchX = mx + Math.cos(branchAngle) * reach * .28;
+            const branchY = my + Math.sin(branchAngle) * reach * .28;
+            ctx.globalAlpha = alpha * .72; ctx.strokeStyle = '#302d23'; ctx.lineWidth = mobileSize(3.1);
+            ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(branchX, branchY); ctx.stroke();
+            ctx.globalAlpha = crackAlpha * .8; ctx.strokeStyle = '#d6b973'; ctx.lineWidth = mobileSize(1.15);
+            ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(branchX, branchY); ctx.stroke();
+          }
+        }
+        ctx.globalAlpha = alpha * .42; ctx.strokeStyle = '#e1c27b'; ctx.lineWidth = mobileSize(1.8);
+        ctx.beginPath(); ctx.arc(effect.x, effect.y, reach * .97, 0, Math.PI * 2); ctx.stroke();
+        const impactFlash = clamp(1 - progress * 5, 0, 1);
+        ctx.globalAlpha = impactFlash * .5; ctx.fillStyle = '#f3d898'; ctx.beginPath(); ctx.arc(effect.x, effect.y, mobileSize(16 + progress * 28), 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
       } else if (effect.type === 'flamestorm-vortex') {
         const vortexOpacity = flameStormVortexVisualOpacity(effect);
         ctx.save(); ctx.translate(effect.x, effect.y); ctx.globalCompositeOperation = 'screen';
@@ -8655,6 +8932,96 @@
         for (let ring = 0; ring < 3; ring++) {
           ctx.globalAlpha = waveAlpha * (.72 - ring * .16); ctx.lineWidth = mobileSize(ring === 0 ? 3.2 : 1.5);
           ctx.beginPath(); ctx.arc(effect.x, effect.y, radius * (1 - ring * .09), timestamp / 480 + ring, timestamp / 480 + ring + Math.PI * (1.46 + ring * .1)); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'saurion-bite') {
+        if (saurionBiteSprite.complete && saurionBiteSprite.naturalWidth && saurionBiteSprite.naturalHeight) {
+          const columns = 6; const rows = 3; const frames = columns * rows;
+          const frameWidth = saurionBiteSprite.naturalWidth / columns;
+          const frameHeight = saurionBiteSprite.naturalHeight / rows;
+          const frame = Math.min(frames - 1, Math.floor((1 - alpha) * frames));
+          const sourceX = (frame % columns) * frameWidth;
+          const sourceY = Math.floor(frame / columns) * frameHeight;
+          ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = clamp(alpha * 2.8, 0, 1);
+          ctx.drawImage(saurionBiteSprite, sourceX, sourceY, frameWidth, frameHeight, effect.x - effect.width / 2, effect.y - effect.height / 2, effect.width, effect.height);
+          ctx.restore();
+        }
+      } else if (effect.type === 'saurion-spino-claw') {
+        const progress = 1 - alpha;
+        const fade = clamp(Math.min(progress * 6 + .2, alpha * 3.5), 0, 1);
+        const reach = effect.radius * (.58 + progress * .42);
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        for (let claw = 0; claw < 4; claw++) {
+          const spread = (claw / 3 - .5) * reach * .72;
+          const startX = reach * (.22 + Math.abs(claw - 1.5) * .035);
+          const endX = reach * (.9 - Math.abs(claw - 1.5) * .08);
+          ctx.beginPath(); ctx.moveTo(startX, spread + reach * .09);
+          ctx.quadraticCurveTo((startX + endX) * .54, spread - reach * .06, endX, spread - reach * .17);
+          ctx.globalAlpha = fade * .28; ctx.strokeStyle = '#1c281b'; ctx.lineWidth = mobileSize(10); ctx.stroke();
+          ctx.globalAlpha = fade * .8; ctx.strokeStyle = '#a7bd92'; ctx.lineWidth = mobileSize(4.2); ctx.stroke();
+          ctx.globalAlpha = fade * .72; ctx.strokeStyle = '#edf6d8'; ctx.lineWidth = mobileSize(1.25); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'saurion-theri-claw') {
+        const progress = 1 - alpha;
+        const fade = clamp(Math.min(progress * 6 + .16, alpha * 3.8), 0, 1);
+        const reach = effect.radius * (.58 + progress * .42);
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle + progress * .12);
+        ctx.globalAlpha = fade * .2; ctx.strokeStyle = '#b783eb'; ctx.lineWidth = mobileSize(2.2);
+        ctx.beginPath(); ctx.arc(0, 0, reach * (.83 + progress * .12), 0, Math.PI * 2); ctx.stroke();
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        for (let claw = 0; claw < 8; claw++) {
+          const angle = claw / 8 * Math.PI * 2;
+          const inner = reach * .2;
+          const outer = reach * (.82 + (claw % 2) * .08);
+          const bend = (claw % 2 ? 1 : -1) * reach * .075;
+          const startX = Math.cos(angle) * inner; const startY = Math.sin(angle) * inner;
+          const endX = Math.cos(angle) * outer; const endY = Math.sin(angle) * outer;
+          const middleX = Math.cos(angle) * (inner + outer) * .5 - Math.sin(angle) * bend;
+          const middleY = Math.sin(angle) * (inner + outer) * .5 + Math.cos(angle) * bend;
+          ctx.beginPath(); ctx.moveTo(startX, startY); ctx.quadraticCurveTo(middleX, middleY, endX, endY);
+          ctx.globalAlpha = fade * .3; ctx.strokeStyle = '#30213d'; ctx.lineWidth = mobileSize(9); ctx.stroke();
+          ctx.globalAlpha = fade * .82; ctx.strokeStyle = '#aa83c9'; ctx.lineWidth = mobileSize(4.1); ctx.stroke();
+          ctx.globalAlpha = fade * .78; ctx.strokeStyle = '#f0ddff'; ctx.lineWidth = mobileSize(1.35); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'saurion-trike-horns') {
+        const progress = 1 - alpha;
+        const fade = clamp(Math.min(progress * 5 + .15, alpha * 3.2), 0, 1);
+        const reach = effect.radius * (.72 + progress * .28);
+        const halfAngle = Math.PI / 5;
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle);
+        ctx.globalAlpha = fade * .2;
+        const hornWave = ctx.createRadialGradient(0, 0, reach * .15, 0, 0, reach);
+        hornWave.addColorStop(0, 'rgba(255,220,170,.02)'); hornWave.addColorStop(.72, 'rgba(236,151,96,.2)'); hornWave.addColorStop(1, 'rgba(255,226,178,.48)');
+        ctx.fillStyle = hornWave; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, reach, -halfAngle, halfAngle); ctx.closePath(); ctx.fill();
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowColor = '#f3b777'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(12);
+        for (const side of [-1, 1]) {
+          ctx.beginPath(); ctx.moveTo(reach * .22, side * reach * .045); ctx.quadraticCurveTo(reach * .62, side * reach * .18, reach * .98, side * reach * .36);
+          ctx.globalAlpha = fade * .3; ctx.strokeStyle = '#522e26'; ctx.lineWidth = mobileSize(9); ctx.stroke();
+          ctx.globalAlpha = fade * .86; ctx.strokeStyle = '#d97955'; ctx.lineWidth = mobileSize(4); ctx.stroke();
+          ctx.globalAlpha = fade * .8; ctx.strokeStyle = '#ffe0b1'; ctx.lineWidth = mobileSize(1.4); ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'saurion-titan-tail') {
+        const progress = 1 - alpha;
+        const fade = clamp(Math.min(progress * 4.8 + .2, alpha * 3.2), 0, 1);
+        const reach = effect.radius * (.78 + progress * .22);
+        const halfAngle = Math.PI / 4;
+        ctx.save(); ctx.translate(effect.x, effect.y); ctx.rotate(effect.angle);
+        ctx.globalAlpha = fade * .19;
+        const tailSweep = ctx.createRadialGradient(0, 0, reach * .2, 0, 0, reach);
+        tailSweep.addColorStop(0, 'rgba(195,151,99,.02)'); tailSweep.addColorStop(.8, 'rgba(195,151,99,.18)'); tailSweep.addColorStop(1, 'rgba(255,226,174,.48)');
+        ctx.fillStyle = tailSweep; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, reach, -halfAngle, halfAngle); ctx.closePath(); ctx.fill();
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowColor = '#d7b17a'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(14);
+        for (let lash = -1; lash <= 1; lash++) {
+          const side = lash * reach * .2;
+          const startX = reach * .3;
+          const endX = reach * (.86 - Math.abs(lash) * .04);
+          ctx.beginPath(); ctx.moveTo(startX, side * .38); ctx.quadraticCurveTo(reach * .64, side * 1.35, endX, side * 1.5);
+          ctx.globalAlpha = fade * .26; ctx.strokeStyle = '#49382a'; ctx.lineWidth = mobileSize(11 - Math.abs(lash) * 2); ctx.stroke();
+          ctx.globalAlpha = fade * .86; ctx.strokeStyle = lash === 0 ? '#e4c18b' : '#b89162'; ctx.lineWidth = mobileSize(lash === 0 ? 4 : 2.7); ctx.stroke();
+          ctx.globalAlpha = fade * .76; ctx.strokeStyle = '#fff0d1'; ctx.lineWidth = mobileSize(1.2); ctx.stroke();
         }
         ctx.restore();
       } else if (effect.type === 'nova') {
@@ -9489,6 +9856,7 @@
     const moveInstruction = state.controlMode === 'keys' ? 'WASD/setas' : state.controlMode === 'touch' ? 'toque e arraste' : 'analógico virtual';
     const testHint = isTraining && isDeveloperProfile() ? ' · V carrega as quatro placas do Aríete de Aço'
       : isAurora && isDeveloperProfile() ? ' · V completa as seis cargas da ult'
+      : isPrimalSaurion && isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun ? ' · modo dev: Q/E substitui o dinossauro da habilidade'
       : isVulture && profileNickname() === 'educvv dev' ? ' · V adiciona 8 sucatas para teste' : '';
     if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos' + testHint + '.';
   }
