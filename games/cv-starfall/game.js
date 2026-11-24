@@ -36,6 +36,15 @@
   eclipseSprite.src = new URL('eclipse-ship.png', document.baseURI).href;
   const auroraShipSprite = new Image();
   auroraShipSprite.src = new URL('aurora-ship.png', document.baseURI).href;
+  const ferrumShipSprite = new Image();
+  ferrumShipSprite.src = new URL('ferrum-ship.png?v=2', document.baseURI).href;
+  const ferrumArmoredSprite = new Image();
+  ferrumArmoredSprite.src = new URL('ferrum-armored.png', document.baseURI).href;
+  const FERRUM_PLATE_DAMAGE = 16;
+  const FERRUM_MAX_PRESSURE = 4 * FERRUM_PLATE_DAMAGE;
+  const FERRUM_RAM_USES = 5;
+  const FERRUM_E_USES = 3;
+  const FERRUM_HIT_PRESSURE = 2;
   const vultureShipSprite = new Image();
   vultureShipSprite.src = new URL('vulture-ship.png', document.baseURI).href;
   const vultureEvolutionSprite = new Image();
@@ -89,6 +98,8 @@
   if (!canvas || !ctx) return;
   const $ = (selector) => document.querySelector(selector);
   const ui = {
+    ferrumMeter: $('[data-ferrum-meter]'), ferrumPlates: document.querySelectorAll('[data-ferrum-plate]'),
+    ferrumReadout: $('[data-ferrum-readout]'), ferrumUlt: $('[data-ferrum-ult]'),
     stage: $('[data-stage]'), overlay: $('[data-main-overlay]'), title: $('[data-overlay-title]'), copy: $('[data-overlay-copy]'), start: $('[data-start]'), missionSetupModal: $('[data-mission-setup]'), exitModal: $('[data-exit-confirmation]'), stop: $('[data-stop-mission]'), audio: $('[data-game-audio]'), eclipseCutscene: $('[data-eclipse-cutscene]'), eclipseVideo: $('[data-eclipse-video]'), megumiCutscene: $('[data-megumi-cutscene]'),
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), vultureUlt: $('[data-vulture-ult]'), auroraUlt: $('[data-aurora-ult]'), auroraUltMeter: $('[data-aurora-ult-meter]'), auroraUltCount: $('[data-aurora-ult-count]'), auroraUltSegments: Array.from(document.querySelectorAll('[data-aurora-ult-segment]')), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
@@ -125,7 +136,7 @@
   };
   const skins = [
     { id: 'aurora', name: 'Aurora', color: '#7df7e8', accent: '#bffff5', ability: 'Explosão Nova', abilityShort: 'NOVA', cooldown: 22, cooldownQ: 24, shape: 'classic', description: 'E libera uma Explosão Nova mais ampla e poderosa. Q conecta até dez alvos por até nove segundos. Acertos efetivos de Q e E carregam seis segmentos; com a barra cheia, G ativa a Coroa da Hipernova por 8 segundos, ligando todos os inimigos à constelação.' },
-    { id: 'training', name: 'Ferrum', color: '#aeb5c0', accent: '#282d36', ability: '', abilityShort: '', cooldown: 0, cooldownQ: 0, shape: 'training', noAbilities: true, description: 'Nave de treino sem habilidades E ou Q. Move-se 10% mais devagar e recebe metade do dano.' },
+    { id: 'training', name: 'Ferrum', color: '#aeb5c0', accent: '#282d36', ability: '', abilityShort: '', cooldown: 0, cooldownQ: 0, shape: 'training', noAbilities: true, description: 'Quatro placas ativam a forma do Aríete: cinco investidas Q e três Contrachoques E, sem recarga por tempo. Move-se 10% mais devagar e recebe metade do dano.' },
     { id: 'aegis', name: 'Aegis', color: '#72bdff', accent: '#c9eaff', ability: 'Barreira Aegis', abilityShort: 'BARREIRA', cooldown: 30, cooldownQ: 36, shape: 'shield', unlockWave: 10, description: 'E concede uma carga temporária de escudo por 9 segundos. Q invoca até quatro Órbitas Sentinelas: cada fragmento intercepta um tiro e o converte em projétil teleguiado; os fragmentos intactos são lançados contra inimigos ao final.' },
     { id: 'chronos', name: 'Chronos', color: '#c897ff', accent: '#efd5ff', ability: 'Dobra Temporal', abilityShort: 'TEMPO', cooldown: 22, cooldownQ: 24, shape: 'ring', unlockWave: 20, description: 'E desacelera fortemente inimigos e projéteis por mais tempo. Q cria Ecos do Futuro que repetem os disparos após curto atraso, com dano aumentado.' },
     { id: 'tempest', name: 'Tempestade', color: '#87aaff', accent: '#d5dcff', ability: 'Poço Negro', abilityShort: 'POÇO NEGRO', cooldown: 30, cooldownQ: 24, shape: 'wing', unlockWave: 30, description: 'E dispara um Poço Negro maior e duradouro que puxa inimigos e causa dano repetido. Q libera a Maré Reversa, que causa dano, empurra inimigos e desvia tiros próximos; começa com quatro cargas, ampliáveis até seis. As cargas só recarregam juntas depois que todas forem usadas.' },
@@ -140,7 +151,7 @@
     { id: 'flamestorm', name: 'Flame Storm', color: '#ff302e', accent: '#ffd0cb', ability: 'Propulsão Infernal', abilityShort: 'PROPULSÃO', cooldown: 18, cooldownQ: 24, shape: 'flamestorm', secret: true, profileRestricted: true, allowedProfiles: ['storm', 'educvv dev', 'educvv dev1'], description: 'Nave especial. E: avança por 5 segundos com impulso flamejante e fica intangível, rebate nas paredes e aceita correções de direção; os dois quadros de fogo ocupam o lugar da nave e o rastro fere inimigos. A recarga do E cai de 18 para 15 segundos com três Condensadores. Q: cria um vórtice carmesim por 5 segundos, puxa inimigos e absorve tiros próximos após atraí-los; a nave fica invulnerável durante o vórtice e por 0,7s após ele terminar.' },
     { id: 'vulture', name: 'Vulture', color: '#ff7133', accent: '#ffbd67', ability: 'Dobra Espacial', abilityShort: 'DOBRA', cooldown: 24, cooldownQ: 24, shape: 'vulture', secret: true, description: 'Os tiros automáticos mantêm o ritmo normal enquanto a energia carrega. Ao usar Q, o míssil soma a carga acumulada e recebe dano adicional proporcional às sucatas; com 8 sucatas, Q consome as 8 e lança um míssil mais forte. Segure Q para absorver 3 sucatas e recuperar 1 escudo. E mantém três dobras. G gasta 8 sucatas: a forma ascendente dura 10s com Q carregado e E ampliado; depois, o campo final segura os inimigos por 6s antes da explosão.' }
   ];
-  const secondaryAbilityNames = Object.freeze({ aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Investida do Tigre', 'saurion-primal':'Arsenal Jurássico', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim', vulture:'Míssil gravitacional / Absorção' });
+  const secondaryAbilityNames = Object.freeze({ training:'Investida Ferrum', aurora:'Elo Estelar', aegis:'Órbitas Sentinelas', chronos:'Ecos do Futuro', tempest:'Maré Reversa', flashblade:'Rastro de Ruptura', redshift:'Perímetro de Cerco', eclipse:'Paradoxo Absoluto', saurion:'Investida do Tigre', 'saurion-primal':'Arsenal Jurássico', prisma:'Dobra de Horizonte', mahoraga:'Espada da Exterminação', megumi:'Ritual do Guardião', flamestorm:'Vórtice Carmesim', vulture:'Míssil gravitacional / Absorção' });
   const megumiTechniques = Object.freeze({
     rabbits:{ id:'rabbits', name:'Fuga dos Coelhos', short:'COELHOS', icon:'🐇', description:'Cinco shikigami-armadilha se espalham, atiram e atraem inimigos.' },
     shadow:{ id:'shadow', name:'Ocultação nas Sombras', short:'SOMBRA', icon:'◑', description:'Fica invisível, dispara projéteis sombrios, atravessa as bordas e recolhe recursos.' },
@@ -234,6 +245,7 @@
   const VULTURE_ULT_COLLAPSE_SECONDS = 6;
   const AURORA_E_DOUBLE_TAP_MS = 560;
   const state = {
+    ferrumPressure: 0, ferrumRam: null, ferrumRamCharges: 0, ferrumECharges: 0, ferrumCountershock: null,
     auroraLink: null, auroraLinkCooldown: 0, auroraLinkDurationBonus: 0, auroraLinkTargetBonus: 0, auroraLinkDamageBonus: 0, auroraUltCharge: 0, auroraUlt: null, auroraEFirstTapAt: 0, auroraEFirstTapCharge: 0,
     damageCounterEnabled: initialNicknameSettings.damageCounterEnabled, damageCounterPosition: initialNicknameSettings.damageCounterPosition, damageCounterTotal: 0, damageCounterLastHit: 0, damageCounterIdle: 0, damageCounterPopups: [], damageCounterEditing: false, damageCounterDragging: false, damageCounterEditStart: null, damageCounterEditorHadMenu: false, trainingDamageRemainder: 0,
     eclipseSkipVideoEnabled: initialNicknameSettings.eclipseSkipVideo,
@@ -408,6 +420,8 @@
     ,{ id:'salvageHeal', icon:'✚', name:'Recuperação de destroços', description:'Inimigos destruídos podem liberar energia de reparo.', max:4, available:()=>state.salvageHeal<4, apply:()=>{state.salvageHeal+=1;} }
     ,{ id:'endlessDamage', icon:'✹', name:'Núcleo adaptativo', description:'Reforço repetível com ganho decrescente, limitado a +60% de dano.', max:0, stack:true, available:()=>state.endlessDamage<.6, apply:()=>{state.endlessDamage=Math.min(.6,state.endlessDamage + .11 / (1 + upgradeLevel('endlessDamage') * .14));} }
     ,{ id:'endlessSpeed', icon:'➤', name:'Impulso de longo curso', description:'Aumenta a mobilidade aos poucos, com velocidade máxima controlada.', max:0, stack:true, available:()=>state.endlessSpeed<118, apply:()=>{state.endlessSpeed=Math.min(120,state.endlessSpeed + 8 / (1 + upgradeLevel('endlessSpeed') * .12));} }
+    ,{ id:'ferrumCharge', icon:'◈', name:'Reator de pressão', description:'Ganha 20% mais pressão por dano. O dano causado é ajustado pela vida do alvo para manter o ritmo nas ondas altas.', max:3, available:()=>currentSkin().id==='training'&&upgradeLevel('ferrumCharge')<3, apply:()=>{} }
+    ,{ id:'ferrumDashRange', icon:'➤', name:'Aríete de longo curso', description:'Aumenta em cerca de 100 unidades a distância de cada investida Q, até três níveis.', max:3, available:()=>currentSkin().id==='training'&&upgradeLevel('ferrumDashRange')<3, apply:()=>{} }
   ];
 
   function upgradeCanBeOffered(upgrade) {
@@ -420,9 +434,10 @@
     const id = upgrade.id;
     if (['repair','lifeSupport','regen','salvageHeal'].includes(id)) return 'health';
     if (['shield','armor','aegisOrbitDuration','aegisOrbitCount','aegisOrbitDamage','aegisOrbitCooldown','returnCore','mahoragaAdaptation','mahoragaGuard'].includes(id)) return 'defense';
-    if (['speed','lowHull','endlessSpeed','flashTrailDuration','flashTrailDensity','flameStormDashCore','vultureFoldRange'].includes(id)) return 'mobility';
+    if (['speed','lowHull','endlessSpeed','flashTrailDuration','flashTrailDensity','flameStormDashCore','vultureFoldRange','ferrumDashRange'].includes(id)) return 'mobility';
     if (['bounty','magnet','endlessDamage'].includes(id)) return 'reward';
     if (['damage','rapid','spread','pierce','critical','drone','volley','blast','bossDamage','flameStormVortexCore','dinoFangs','dinoStampede','dinoResonance','vulturePulseDamage','vulturePulseRadius'].includes(id)) return 'offense';
+    if (id === 'ferrumCharge') return 'ability';
     return 'ability';
   }
   function upgradeProgressLabel(upgrade, nextLevel) {
@@ -1268,7 +1283,7 @@
   function isAllUpgradesProfile() { return profileNickname() === 'educvv dev1'; }
   function hasDeveloperPerks() { return isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun && state.adminNoCooldown; }
   function shipCooldownSummary(skin) {
-    if (skin.id === 'training') return 'sem habilidades · dano recebido reduzido em 50%';
+    if (skin.id === 'training') return 'G Aríete · 4 placas · 5 Q + 3 E · sem recarga';
     if (skin.id === 'mahoraga') return 'E: escudo 3s, −70% · adapta tipos diferentes por 5 ondas, até −55%';
     if (skin.id === 'megumi') return 'Ritual Umbral · E 3 variações · 20s→15s · Q Mahoraga 5 ondas +1 vida · recarga 45s';
     if (skin.id === 'flamestorm') return 'Propulsão Infernal · E 18s→15s · dash 5s · Q 24s→18s · vórtice 5s';
@@ -1477,13 +1492,8 @@
 
   function hangarShipSvg(skin) {
     if (skin.shape === 'training') {
-      return '<svg class="starfall-hangar-ship-sprite" viewBox="0 0 52 60" aria-hidden="true" focusable="false">'
-        + '<defs><linearGradient id="starfall-ferrum-hull" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#edf0f4"/><stop offset=".34" stop-color="#aeb5c0"/><stop offset=".68" stop-color="#737c89"/><stop offset="1" stop-color="#343a44"/></linearGradient><linearGradient id="starfall-ferrum-flame" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e0e7f0"/><stop offset=".35" stop-color="#8591a1" stop-opacity=".75"/><stop offset="1" stop-color="#303742" stop-opacity="0"/></linearGradient></defs>'
-        + '<path d="M26 4.72 L32.72 20.08 L45.52 37.68 L34.8 35.28 L31.44 43.12 L26 39.92 L20.56 43.12 L17.2 35.28 L6.48 37.68 L19.28 20.08 Z" fill="url(#starfall-ferrum-hull)" stroke="#242932" stroke-width="1.8" stroke-linejoin="round"/>'
-        + '<path d="M26 10.48 L29.2 22.96 L28.08 34 L26 36.72 L23.92 34 L22.8 22.96 Z" fill="#20252d" stroke="#d0d5dd" stroke-width=".9" stroke-linejoin="round"/>'
-        + '<ellipse cx="26" cy="23.92" rx="1.44" ry="3.52" fill="#dce1e8"/>'
-        + '<path d="M13.52 33.2 L19.6 34.8 M38.48 33.2 L32.4 34.8 M22.32 38.96 L23.12 42.16 M29.68 38.96 L28.88 42.16" fill="none" stroke="#171b21" stroke-width="1.7" stroke-linecap="round"/>'
-        + '<path d="M22.8 41.2 L26 58 L29.2 41.2 Z" fill="url(#starfall-ferrum-flame)"/>'
+      return '<svg class="starfall-hangar-ship-sprite starfall-ferrum-sprite" viewBox="448 212 532 594" aria-hidden="true" focusable="false">'
+        + '<image href="ferrum-ship.png?v=2" x="0" y="0" width="1427" height="1102" preserveAspectRatio="none"/>'
         + '</svg>';
     }
     const points = {
@@ -1507,10 +1517,13 @@
     if (!ui.equippedShip) return;
     const skin = currentSkin();
     ui.panel?.classList.toggle('is-vulture-hud', skin.id === 'vulture');
+    ui.panel?.classList.toggle('is-aurora-hud', skin.id === 'aurora');
+    ui.panel?.classList.toggle('is-ferrum-hud', skin.id === 'training');
     const silhouettes = { classic: 'M20 3 L34 35 L20 28 L6 35 Z', blade: 'M20 2 L24 16 L36 33 L20 27 L4 33 L16 16 Z', wing: 'M20 2 L25 16 L37 30 L25 27 L20 38 L15 27 L3 30 L15 16 Z', shield: 'M20 2 L32 17 L29 32 L20 37 L11 32 L8 17 Z', ring: 'M20 3 L34 35 L20 28 L6 35 Z', reflector: 'M20 2 L33 10 L37 23 L28 34 L20 38 L12 34 L3 23 L7 10 Z', prism: 'M20 2 L34 13 L30 31 L20 38 L10 31 L6 13 Z', training: 'M20 2 L25 12 L38 28 L29 27 L25 36 L20 32 L15 36 L11 27 L2 28 L15 12 Z', megumi:'M20 2 L27 15 L37 27 L27 25 L23 36 L20 31 L17 36 L13 25 L3 27 L13 15 Z', mahoraga: 'M20 10 L23 13 L30 14 L36 18 L33 22 L29 20 L28 26 L24 25 L22 33 L20 36 L18 33 L16 25 L12 26 L11 20 L7 22 L4 18 L10 14 L17 13 Z' };
     ui.equippedShip.style.setProperty('--skin-color', skin.color);
     const equippedIcon = skin.shape === 'eclipse'
       ? '<span class="starfall-equipped-icon starfall-eclipse-sprite" aria-hidden="true"></span>'
+      : skin.shape === 'training' ? '<span class="starfall-equipped-icon starfall-training-icon starfall-ferrum-equipped-icon" aria-hidden="true">' + hangarShipSvg(skin) + '</span>'
       : skin.id === 'aurora' ? '<span class="starfall-equipped-icon starfall-aurora-icon" aria-hidden="true"><img src="aurora-ship.png" alt=""></span>'
       : skin.shape === 'saurion-primal' ? '<span class="starfall-equipped-icon starfall-saurion-icon" aria-hidden="true"><img src="saurion-frame-1.png" alt=""></span>'
       : skin.shape === 'dino' ? '<span class="starfall-equipped-icon starfall-dino-icon starfall-dino-image-wrap starfall-tigrum-icon" aria-hidden="true"><img src="tigrum-q-roar.png" alt=""></span>'
@@ -1521,7 +1534,7 @@
       : skin.shape === 'mahoraga' ? '<span class="starfall-equipped-icon starfall-mahoraga-sprite" aria-hidden="true"><img src="mahoraga-ship.png" alt=""></span>'
       : skin.shape === 'reflector' ? '<span class="starfall-equipped-icon starfall-redshift-icon" aria-hidden="true">' + bastiaoShipSvg(skin.color,skin.accent) + '</span>'
       : '<svg class="starfall-equipped-icon' + (skin.shape === 'mahoraga' ? ' starfall-mahoraga-icon' : skin.shape === 'megumi' ? ' starfall-megumi-icon' : skin.shape === 'training' ? ' starfall-training-icon' : '') + '" viewBox="0 0 40 40" aria-hidden="true"><path d="' + silhouettes[skin.shape] + '" fill="' + skin.color + '" stroke="' + skin.accent + '" stroke-width="1.5"/><ellipse cx="20" cy="19" rx="3.3" ry="6" fill="#f1ffff"/><path d="M15 31 L20 38 L25 31" fill="' + skin.accent + '"/>' + (skin.shape === 'ring' ? '<ellipse cx="20" cy="21" rx="17" ry="8" fill="none" stroke="' + skin.accent + '" stroke-width="1.2"/>' : skin.shape === 'reflector' ? '<path d="M3 17 Q20 1 37 17" fill="none" stroke="' + skin.accent + '" stroke-width="2"/>' : skin.shape === 'mahoraga' ? '<circle cx="20" cy="5" r="5" fill="#2b343e" stroke="#e4c477" stroke-width="1.2"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#f4ecdb" stroke-width=".9"/><circle cx="20" cy="5" r="1.5" fill="#e4c477"/>' : skin.shape === 'megumi' ? '<circle cx="20" cy="5" r="5" fill="#211a2f" stroke="#c4b2e8" stroke-width="1"/><path d="M20 0V10M15 5H25M16.5 1.5L23.5 8.5M23.5 1.5L16.5 8.5" stroke="#eee6ff" stroke-width=".7"/><circle cx="20" cy="5" r="1.5" fill="#c4b2e8"/>' : '') + '</svg>';
-    ui.equippedShip.innerHTML = equippedIcon + '<span><strong>Nave equipada: ' + skin.name + '</strong><small>' + (skin.noAbilities ? 'SEM HABILIDADES · ' : skin.ability + ' · ') + shipCooldownSummary(skin) + '</small></span>';
+    ui.equippedShip.innerHTML = equippedIcon + '<span><strong>Nave equipada: ' + skin.name + '</strong><small>' + (skin.noAbilities ? 'Casco reforçado · ' : skin.ability + ' · ') + shipCooldownSummary(skin) + '</small></span>';
     updateEclipseSkipOption();
     updateAbilityButton();
     updateAuroraUltHud();
@@ -1726,6 +1739,7 @@
   }
   function setMode(mode) {
     state.mode = mode;
+    updateFerrumHud();
     document.body.dataset.cvStarfallState = mode;
     document.documentElement.classList.toggle('cv-game-active', ['playing', 'paused', 'upgrade', 'gameover'].includes(mode));
     ui.overlay.hidden = !['intro', 'gameover', 'paused'].includes(mode);
@@ -1755,6 +1769,7 @@
     return [0, 2, 4].map((index) => parseInt(hex.slice(index, index + 2), 16)).join(',');
   }
   function updateHud() {
+    updateFerrumHud();
     ui.wave.textContent = String(state.wave);
     if (ui.zone) ui.zone.textContent = currentZone().name;
     if (ui.timer) ui.timer.textContent = formatTime(state.elapsed);
@@ -1822,6 +1837,42 @@
       ui.vultureUlt.setAttribute('aria-label', 'Ativar Devoradora de Estrelas · gastar 8 sucatas · forma ativa por 10 segundos e campo final por 6 segundos · tecla G');
     }
   }
+  function updateFerrumHud() {
+    const visible = currentSkin().id === 'training' && state.mode === 'playing';
+    ui.ferrumMeter.hidden = !visible;
+    const chargedUses = state.ferrumRamCharges > 0;
+    const transformed = Boolean(state.ferrumRam);
+    const ready = state.ferrumPressure >= FERRUM_MAX_PRESSURE;
+    ui.ferrumUlt.hidden = !(visible && !chargedUses && !transformed && ready);
+    ui.ferrumUlt.disabled = ui.ferrumUlt.hidden;
+    if (!visible) return;
+    const plates = transformed ? 4 : Math.floor(state.ferrumPressure / FERRUM_PLATE_DAMAGE);
+    ui.ferrumPlates.forEach((plate, index) => plate.classList.toggle('is-lit', index < plates));
+    const readout = transformed
+      ? state.ferrumRam?.phase === 'dash'
+        ? 'FORMA ATIVA · INVESTIDA · ' + state.ferrumRamCharges + '/' + FERRUM_RAM_USES + ' Q · E ' + state.ferrumECharges + '/' + FERRUM_E_USES
+        : 'FORMA ATIVA · ' + state.ferrumRamCharges + '/' + FERRUM_RAM_USES + ' Q · E ' + state.ferrumECharges + '/' + FERRUM_E_USES
+      : 'Pressão ' + plates + '/4';
+    if (ui.ferrumReadout.textContent !== readout) ui.ferrumReadout.textContent = readout;
+    ui.ferrumUlt.title = 'G · Ativar forma do Aríete de Aço · 5 investidas Q e 3 Contrachoques E';
+    ui.ferrumUlt.setAttribute('aria-label', 'Ativar forma do Aríete de Aço · 5 investidas Q e 3 Contrachoques E');
+  }
+  function ferrumReferenceTargetHealth(enemy) {
+    if (enemy?.kind === 'boss') return enemy.isMiniBoss ? 7 : 18;
+    return ({ meteor:2, drone:3, hunter:3, brute:8, ricochet:4 })[enemy?.kind] || 3;
+  }
+  function addFerrumPressure(amount, enemy = null) {
+    if (currentSkin().id !== 'training' || state.mode !== 'playing' || state.ferrumRam || state.ferrumRamCharges > 0 || state.ferrumPressure >= FERRUM_MAX_PRESSURE || amount <= 0) return;
+    const previousPlates = Math.floor(state.ferrumPressure / FERRUM_PLATE_DAMAGE);
+    const targetHealth = Math.max(1, enemy?.maxHp || enemy?.hp || 1);
+    const normalizedDamage = enemy ? amount * ferrumReferenceTargetHealth(enemy) / targetHealth : amount;
+    const pressureGain = normalizedDamage * (1 + Math.min(3, upgradeLevel('ferrumCharge')) * .2);
+    state.ferrumPressure = Math.min(FERRUM_MAX_PRESSURE, state.ferrumPressure + pressureGain);
+    if (Math.floor(state.ferrumPressure / FERRUM_PLATE_DAMAGE) !== previousPlates) {
+      updateFerrumHud();
+      if (state.ferrumPressure === FERRUM_MAX_PRESSURE) toast('ARÍETE DE AÇO · G DISPONÍVEL');
+    }
+  }
   function updateAuroraUltHud() {
     const isAurora = currentSkin().id === 'aurora';
     const show = isAurora && ['playing','paused','upgrade'].includes(state.mode);
@@ -1840,7 +1891,8 @@
       segment.classList.toggle('is-filled', fill >= 1);
       segment.classList.toggle('is-partial', fill > 0 && fill < 1);
     });
-    if (ui.auroraUltCount) ui.auroraUltCount.textContent = Math.floor(charge + .0001) + '/6';
+    const chargeText = Number.isInteger(charge) ? String(charge) : charge.toFixed(1).replace('.', ',');
+    if (ui.auroraUltCount) ui.auroraUltCount.textContent = chargeText + '/6';
     ui.auroraUltMeter?.classList.toggle('is-charged', ready);
     ui.auroraUltMeter?.classList.toggle('is-active', active);
     if (ui.auroraUlt) {
@@ -1848,9 +1900,9 @@
       ui.auroraUlt.disabled = !ready || active || state.mode !== 'playing';
       ui.auroraUlt.classList.toggle('is-ready', ready && state.mode === 'playing');
       ui.auroraUlt.classList.toggle('is-active', active);
-      ui.auroraUlt.setAttribute('aria-label', active ? 'Coroa da Hipernova ativa · ' + Math.ceil(state.auroraUlt.life) + ' segundos restantes' : ready ? 'Ativar Coroa da Hipernova · tecla G' : 'Coroa da Hipernova · carga ' + Math.floor(charge) + ' de 6');
+      ui.auroraUlt.setAttribute('aria-label', active ? 'Coroa da Hipernova ativa · ' + Math.ceil(state.auroraUlt.life) + ' segundos restantes' : ready ? 'Ativar Coroa da Hipernova · tecla G' : 'Coroa da Hipernova · carga ' + chargeText + ' de 6');
       const activeMarks = active ? state.auroraUlt.markedTargets.filter((entry) => entry.enemy && !entry.enemy.dead && entry.expiresAt > state.elapsed).length : 0;
-      ui.auroraUlt.title = active ? 'Coroa da Hipernova · ' + Math.ceil(state.auroraUlt.life) + 's restantes · ' + state.auroraUlt.constellationTargets.length + ' inimigos ligados · ' + activeMarks + ' marcados · use E para convergir as estrelas' : ready ? 'G · Coroa da Hipernova · liga todos os inimigos por 8 segundos; finalize com E ou aguarde a hipernova' : 'Coroa da Hipernova · acerte com Q ou E para carregar ' + Math.floor(charge) + ' de 6';
+      ui.auroraUlt.title = active ? 'Coroa da Hipernova · ' + Math.ceil(state.auroraUlt.life) + 's restantes · ' + state.auroraUlt.constellationTargets.length + ' inimigos ligados · ' + activeMarks + ' marcados · use E para convergir as estrelas' : ready ? 'G · Coroa da Hipernova · liga todos os inimigos por 8 segundos; finalize com E ou aguarde a hipernova' : 'Coroa da Hipernova · tiros básicos carregam lentamente; Q e E carregam mais';
     }
   }
   function updateMahoragaFormControls() {
@@ -1899,11 +1951,51 @@
     updateVultureChargeMeter();
     if (ui.prismSelectWrap) ui.prismSelectWrap.hidden = skin.id !== 'prisma' || !['playing','paused'].includes(state.mode);
     if (skin.noAbilities) {
-      if (ui.abilityWrap) ui.abilityWrap.hidden = true;
-      if (ui.eclipseQWrap) ui.eclipseQWrap.hidden = true;
-      if (ui.abilityCooldown) ui.abilityCooldown.hidden = true;
-      if (ui.eclipseQCooldown) ui.eclipseQCooldown.hidden = true;
       if (ui.prismSelectWrap) ui.prismSelectWrap.hidden = true;
+      const ferrumActive = skin.id === 'training' && Boolean(state.ferrumRam) && (state.ferrumRamCharges > 0 || state.ferrumRam.phase === 'dash');
+      const showFerrumQ = ferrumActive && ['playing', 'paused'].includes(state.mode);
+      const showFerrumE = skin.id === 'training' && ((ferrumActive && state.ferrumECharges > 0) || Boolean(state.ferrumCountershock)) && ['playing', 'paused'].includes(state.mode);
+      if (ui.abilityWrap) ui.abilityWrap.hidden = !showFerrumE;
+      if (ui.abilityCooldown) {
+        ui.abilityCooldown.textContent = state.ferrumCountershock ? Math.ceil(state.ferrumCountershock.time) + 's' : state.ferrumECharges + '/' + FERRUM_E_USES;
+        ui.abilityCooldown.hidden = !showFerrumE;
+      }
+      if (ui.ability) {
+        ui.ability.classList.remove('is-mahoraga','is-megumi','is-flamestorm','is-vulture','is-saurion-primal');
+        ui.ability.classList.toggle('is-ferrum', showFerrumE);
+        ui.ability.style.setProperty('--ship-color', skin.color);
+        ui.ability.style.setProperty('--ship-accent', skin.accent);
+        ui.ability.textContent = '⬡';
+        ui.ability.disabled = !showFerrumE || state.mode !== 'playing' || !ferrumActive || state.ferrumRam?.phase !== 'transformed' || state.ferrumECharges <= 0 || Boolean(state.ferrumCountershock);
+        ui.ability.setAttribute('aria-pressed', String(Boolean(state.ferrumCountershock)));
+        const eLabel = state.ferrumCountershock
+          ? 'Contrachoque ativo · ' + state.ferrumCountershock.blocked + '/3 tiros bloqueados · ' + state.ferrumECharges + '/' + FERRUM_E_USES + ' usos restantes · ' + Math.ceil(state.ferrumCountershock.time) + 's'
+          : 'Contrachoque de Aço · ' + state.ferrumECharges + '/' + FERRUM_E_USES + ' usos · sem recarga';
+        ui.ability.title = eLabel;
+        ui.ability.setAttribute('aria-label', eLabel);
+      }
+      if (ui.eclipseQWrap) {
+        ui.eclipseQWrap.hidden = !showFerrumQ;
+        ui.eclipseQWrap.style.setProperty('--ship-color', skin.color);
+        ui.eclipseQWrap.style.setProperty('--ship-accent', skin.accent);
+      }
+      if (ui.eclipseQ) {
+        ui.eclipseQ.classList.remove('is-aurora','is-aegis','is-chronos','is-tigrum','is-saurion-primal','is-redshift','is-flashblade','is-tempest','is-mahoraga','is-megumi','is-flamestorm','is-vulture','is-prisma');
+        ui.eclipseQ.classList.toggle('is-ferrum', showFerrumQ);
+        ui.eclipseQ.textContent = '➤';
+        ui.eclipseQ.disabled = !showFerrumQ || state.mode !== 'playing' || state.ferrumRam?.phase !== 'transformed' || state.ferrumRamCharges <= 0;
+        ui.eclipseQ.setAttribute('aria-pressed', String(ferrumActive));
+        const qLabel = state.ferrumRam?.phase === 'dash'
+          ? 'Investida da Ferrum em andamento · ' + state.ferrumRamCharges + ' investidas restantes'
+          : 'Aríete de Aço · lançar investida Q · ' + state.ferrumRamCharges + ' de 5 restantes';
+        ui.eclipseQ.title = qLabel;
+        ui.eclipseQ.setAttribute('aria-label', qLabel);
+      }
+      if (ui.eclipseQCooldown) {
+        ui.eclipseQCooldown.textContent = state.ferrumRamCharges + '/5';
+        ui.eclipseQCooldown.hidden = !showFerrumQ;
+      }
+      if (ui.eclipseQWrap && !showFerrumQ) ui.eclipseQ.classList.remove('is-ferrum');
       return;
     }
     if (skin.id === 'prisma') { updatePrismAbilityButton(); return; }
@@ -1925,6 +2017,7 @@
     if (ui.abilityWrap) ui.abilityWrap.hidden = !showAbility;
     if (ui.ability) {
       ui.ability.classList.remove('is-prisma');
+      ui.ability.classList.remove('is-ferrum');
       ui.ability.classList.toggle('is-mahoraga', isMahoraga);
       ui.ability.classList.toggle('is-megumi', isMegumi);
       ui.ability.classList.toggle('is-flamestorm', isFlameStorm);
@@ -1986,6 +2079,7 @@
       const isMegumi = skin.id === 'megumi';
       const isFlameStorm = skin.id === 'flamestorm';
       const isVulture = skin.id === 'vulture';
+      ui.eclipseQ.classList.remove('is-ferrum');
       const vulturePowerPhase = isVulture && vultureUltPowerActive();
       const vultureCollapsePhase = isVulture && vultureUltCollapseActive();
       ui.eclipseQWrap.style.setProperty('--ship-accent', skin.accent);
@@ -2071,7 +2165,7 @@
                 : isMahoraga ? 'Espada da Exterminação · tecla Q · talho mundial em onda atravessa a arena, destrói tiros e atinge até oito alvos; 20 de dano no primeiro, 10 nos seguintes e dano reduzido contra chefes'
                    : isAurora ? 'Ativar Elo Estelar · tecla Q · feixes saltam por ' + auroraLinkTime + 's entre até ' + auroraLinkTargets + ' alvos · cada vida perdida causa 2 de dano aos alvos conectados' : isAegis ? 'Ativar Órbitas Sentinelas · tecla Q · ' + aegisOrbitCount + ' fragmentos por ' + aegisOrbitTime + 's; cada um intercepta um tiro e dispara contra um inimigo' : isEclipse ? 'Ativar Paradoxo Absoluto · tecla Q · distorção por toda a tela durante ' + paradoxDuration + 's; desacelera, interrompe ataques e sentencia os alvos no colapso · recarga ' + paradoxCooldown + 's' : isChronos ? 'Ativar Eco do Futuro · tecla Q · repete os disparos após 0,30s com ' + Math.round((.7 + state.chronosEchoDamageBonus) * 100) + '% do dano' : isRedshift ? 'Ativar Perímetro de Cerco · tecla Q · campo por ' + perimeterDuration + ' segundos' : isFlashblade ? 'Ativar Rastro de Ruptura · tecla Q · impulso de 2,6× e rastros por ' + trailDuration + ' segundos' : isTempest ? 'Ativar Maré Reversa · tecla Q · ' + tempestTideCharges + '/' + tempestTideMax + ' cargas; dano e alcance ampliados, empurrão e 40% de chance de desviar tiros' : 'Ativar Investida do Tigre · tecla Q · ' + (hasDeveloperPerks() ? 'usos ilimitados' : dinoCharges + ' cargas restantes');
       ui.eclipseQ.setAttribute('aria-label', qLabel);
-       ui.eclipseQ.title = isVulture ? vultureCollapsePhase ? 'Colapso final: inimigos são puxados e suprimidos durante 6s; Q retorna após a explosão' : vulturePowerPhase ? 'Forma Ascendente por 10s: Q usa carga equivalente a 8 sucatas e recarrega em ' + vulturePulseCooldownDuration() + 's · E também fica ampliado · depois há o campo final de 6s' : vultureComboReady ? 'Q novamente em até ' + (VULTURE_Q_DOUBLE_TAP_MS / 1000).toFixed(2).replace('.', ',') + 's: o míssil soma a energia do primeiro Q e consome toda a sucata atual' : state.vultureScrap >= 8 ? 'Q dispara o míssil carregado: consome 8 sucatas e soma energia acumulada · segure Q absorve 3 sucatas e recupera 1 escudo · G: forma ativa 10s + campo final 6s · sobrecarga em ' + Math.ceil(state.vultureOverloadCountdown) + 's' : 'Q dispara o míssil com energia acumulada · toque Q duas vezes em até 0,75s para consumir a sucata disponível e somar 2,5 de dano por peça (até +20) · segure Q por meio segundo absorve 3 sucatas e recupera 1 escudo · recarga ' + vulturePulseCooldownDuration() + 's'
+       ui.eclipseQ.title = isVulture ? vultureCollapsePhase ? 'Colapso final: inimigos são puxados e suprimidos durante 6s; Q retorna após a explosão' : vulturePowerPhase ? 'Forma Ascendente por 10s: Q usa carga equivalente a 8 sucatas e recarrega em 2s · E também fica ampliado · depois há o campo final de 6s' : vultureComboReady ? 'Q novamente em até ' + (VULTURE_Q_DOUBLE_TAP_MS / 1000).toFixed(2).replace('.', ',') + 's: o míssil soma a energia do primeiro Q e consome toda a sucata atual' : state.vultureScrap >= 8 ? 'Q dispara o míssil carregado: consome 8 sucatas e soma energia acumulada · segure Q absorve 3 sucatas e recupera 1 escudo · G: forma ativa 10s + campo final 6s · sobrecarga em ' + Math.ceil(state.vultureOverloadCountdown) + 's' : 'Q dispara o míssil com energia acumulada · toque Q duas vezes em até 0,75s para consumir a sucata disponível e somar 2,5 de dano por peça (até +20) · segure Q por meio segundo absorve 3 sucatas e recupera 1 escudo · recarga ' + vulturePulseCooldownDuration() + 's'
         : isSaurion ? 'Investida do Tigre · Q · três cargas; projéteis de energia em forma de tigre perseguem e atingem inimigos · recarga de ' + dinoStampedeCooldownDuration() + 's por carga'
          : isPrimalSaurion ? 'Arsenal Jurássico · Q · escolha um dinossauro; pode coexistir com uma espécie diferente invocada pelo E · recarga própria 40s'
         : isMegumi ? 'Ritual do Guardião · Q · cutscene de invocação · forma Mahoraga por cinco ondas com uma vida extra · recarga de 45s depois que termina'
@@ -2239,12 +2333,16 @@
     if (skin.noAbilities) {
       ui.shipDetailsKicker.textContent = 'NAVE DE TREINO · DOSSIÊ DO CASCO';
       ui.shipDetailsTitle.textContent = skin.name;
-      ui.shipDetailsSummary.textContent = 'Sem habilidades E ou Q · velocidade 10% menor · recebe metade do dano.';
+      ui.shipDetailsSummary.textContent = 'Forma do Aríete no G · 5 investidas Q · 3 usos E · habilidades sem recarga por tempo.';
       ui.shipDetailsList.replaceChildren();
       for (const [label, headingText, copy] of [
         ['PROTEÇÃO', 'Blindagem Ferrum', 'Todo dano recebido é reduzido pela metade. Frações são acumuladas para que impactos pequenos também sejam mitigados ao longo da partida.'],
+        ['G', 'Forma do Aríete de Aço', 'Cada 16 de dano causado acende uma placa, inclusive contra chefes; receber um acerto também acrescenta pressão. Com quatro placas, G ativa a forma transformada e libera cinco investidas Q e três usos de E. A forma dura enquanto ainda houver investidas Q.'],
+        ['Q', 'Investida Ferrum', 'Pressione Q para lançar uma investida longa na direção apontada. Ela atravessa inimigos e chefes, atingindo cada alvo uma vez; causa 10 de dano e empurra sobreviventes leves para os lados. Contra chefes, o dano segue limitado a 8% da vida máxima por acerto. Q usa cargas, sem recarga por tempo.'],
+        ['E', 'Contrachoque de Aço', 'A forma do G concede três usos de E, sem recarga por tempo. Cada uso mantém a proa erguida por 1,15 segundo e bloqueia até três projéteis comuns frontais; ao final, uma onda sem dano empurra inimigos próximos e redireciona tiros comuns. Chefes recebem empurrão menor.'],
+        ['IMPACTO', 'Abrir passagem', 'Cada inimigo na trajetória sofre um acerto de 10 de dano. Sobreviventes são empurrados para os lados. Ao atingir um chefe, a Ferrum recua e o dano é limitado a 8% da vida máxima dele.'],
         ['CONTROLE', 'Propulsores de treino', 'A velocidade inicial é 10% menor que a das outras naves. Melhorias de velocidade continuam disponíveis durante a missão.'],
-        ['SUPRIMENTO', 'Cargas de habilidade adaptadas', 'Como a Ferrum não usa habilidades, os drops de recarga viram recompensas aleatórias: vida, escudo ou uma escolha de melhoria para a missão. Se vida e escudos já estiverem no limite, a recompensa vira uma barreira temporária ou pontos.'],
+        ['MELHORIAS', 'Reforços de Ferrum', 'Os suprimentos podem ampliar o magnetismo para coletar itens mais cedo, acelerar os tiros automáticos, carregar G com menos dano e aumentar o alcance do Q. E e Q usam cargas e não recebem recarga por tempo.'],
         ['PLACAR', 'Elegível para o ranking', 'Resultados com a Ferrum contam normalmente para o placar.']
       ]) {
         const detail = document.createElement('section'); detail.className = 'starfall-rank-detail-card starfall-ship-detail-card';
@@ -2336,7 +2434,7 @@
       else if (skin.shape !== 'eclipse') icon.textContent = skin.shape === 'reflector' ? '◈' : skin.shape === 'prism' ? '◇' : skin.shape === 'training' ? '⬢' : skin.shape === 'mahoraga' ? '☸' : skin.shape === 'megumi' ? '影' : '✦';
       const name = document.createElement('strong'); name.textContent = concealed ? 'NAVE DESCONHECIDA' : skin.name;
       const primary = document.createElement('span'); primary.className = 'starfall-skin-skill' + (skin.noAbilities ? ' starfall-skin-training-note' : '');
-      if (skin.noAbilities) primary.textContent = 'SEM HABILIDADES · CASCO REFORÇADO';
+       if (skin.noAbilities) primary.textContent = 'G · Forma Aríete · Q 5 cargas · E 3 cargas';
       else primary.innerHTML = '<kbd>E</kbd><span>' + (concealed ? 'SINAL SELADO' : skin.ability) + '</span>';
       const secondary = skin.noAbilities ? null : document.createElement('span');
       if (secondary) { secondary.className = 'starfall-skin-skill'; secondary.innerHTML = '<kbd>Q</kbd><span>' + (concealed ? 'SINAL SELADO' : secondaryAbilityNames[skin.id]) + '</span>'; }
@@ -2360,7 +2458,7 @@
         ui.copy.textContent = skin.id === 'prisma'
           ? 'Prisma Real equipada: nave especial de teste. As missões com ela não são enviadas ao Top 10; seus recordes continuam salvos neste aparelho.'
           : skin.id === 'megumi' ? 'Umbra equipada: nave secreta elegível para o ranking do CV STARFALL.'
-          : skin.noAbilities ? 'Ferrum equipada: nave de treino sem habilidades E/Q. Move-se um pouco mais devagar, recebe metade do dano e continua elegível para o ranking.'
+          : skin.noAbilities ? 'Ferrum equipada · G libera 5 investidas Q e 3 usos E, sem recarga por tempo. Buffs podem ampliar a coleta, a cadência de tiro, a carga do G e o alcance do Q.'
             : 'Cada nave tem habilidades especiais. Use E e Q para ativá-las; abra Naves e Habilidades e selecione Ver detalhes para conhecer cada poder.';
         closeShips();
         if (skin.id === 'prisma' && ui.prismRankNotice) {
@@ -2428,6 +2526,11 @@
     ui.toast.classList.add('is-visible');
   }
   function resetGame() {
+    state.ferrumPressure = 0;
+    state.ferrumRam = null;
+    state.ferrumRamCharges = 0;
+    state.ferrumECharges = 0;
+    state.ferrumCountershock = null;
     if (megumiCutsceneTimer) window.clearTimeout(megumiCutsceneTimer);
     megumiCutsceneTimer = 0;
     state.megumiTechnique = rollMegumiTechnique(''); state.megumiSummonCooldown = 0; state.megumiTransformed = false; state.megumiFormWavesRemaining = 0; state.megumiSummonPhase = 'idle'; state.megumiTransformSource = ''; state.megumiCloakTime = 0; state.megumiRabbits = [];
@@ -2681,7 +2784,7 @@
     const availableUpgrades = upgradeList.filter(upgradeCanBeOffered);
     const choices = [];
     while (availableUpgrades.length && choices.length < limit) {
-      const weights = availableUpgrades.map((upgrade) => upgrade.id === 'spread' || upgrade.id === 'volley' ? 1.7 : 1);
+      const weights = availableUpgrades.map((upgrade) => currentSkin().id === 'training' && ['rapid','magnet','ferrumCharge','ferrumDashRange'].includes(upgrade.id) ? 3 : upgrade.id === 'spread' || upgrade.id === 'volley' ? 1.7 : 1);
       const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
       let roll = randomUnit('upgrades') * totalWeight;
       let selectedIndex = 0;
@@ -2702,7 +2805,7 @@
     const copy = ui.upgrade.querySelector(':scope > p:not(.starfall-kicker)');
     if (kicker) kicker.textContent = 'SUPRIMENTO FERRUM';
     if (heading) heading.textContent = 'Escolha um reforço';
-    if (copy) copy.textContent = 'A carga virou uma oportunidade de fortalecer sua nave nesta onda.';
+    if (copy) copy.textContent = 'A carga virou uma melhoria. E/Q da Ferrum usam cargas, sem recarga por tempo; procure mais coleta, tiros rápidos, carga para o G ou alcance de Q.';
     ui.upgradeOptions.replaceChildren();
     setMode('upgrade');
     ui.status.textContent = 'Escolha um reforço encontrado na carga de treino.';
@@ -2872,6 +2975,7 @@
       auroraEWarning: 0, auroraEWarningX: 0, auroraEWarningY: 0,
       auroraQCooldown: bossType === 'aurora' ? auroraBossDefaults.qOpeningDelay : 0,
       auroraQActive: 0, auroraQPulseTimer: 0, auroraQWarning: 0,
+      auroraQSequenceRemaining: 0, auroraQSequenceTotal: 0, auroraQAttempt: 0, auroraQSequenceTimer: 0,
       auroraQWarningTotal: 0, auroraQWarningRadius: 0, auroraQTargetX: 0, auroraQTargetY: 0, auroraReflectionCooldown: 0,
       auroraUltUses: 0, auroraUltLastPhase: 0, auroraUltWarning: 0, auroraUltWarningTotal: 0,
       auroraUltTargetX: 0, auroraUltTargetY: 0, auroraUltRadius: 0, auroraUltActive: 0, auroraUltActiveTotal: 0, auroraUltPulseTimer: 0, auroraUltHitCooldown: 0, auroraUltHits: 0,
@@ -2991,7 +3095,7 @@
         : centeredShot * .16);
       const critical = randomUnit('combat') < state.critChance;
       const regularShotColor = megumiShadowCloakActive() ? '#8c78b7' : currentSkin().id === 'training' ? '#f2f5fb' : currentSkin().accent;
-      const shot = { x: state.player.x + Math.cos(direction) * mobileSize(13), y: state.player.y + Math.sin(direction) * mobileSize(13), vx: Math.cos(direction) * 510, vy: Math.sin(direction) * 510, r: mobileSize(critical ? 5 : 3.5), damage: state.player.damage * (1 + state.endlessDamage) * mahoragaDamageBuff * saurionDamageBuff * (critical ? 2 : 1), pierce: state.pierce, hit: [], assistTarget: bossAssist ? target : null, color: currentSkin().id === 'vulture' ? critical ? '#fff0a6' : '#ffad55' : megumiShadowCloakActive() ? critical ? '#d7c8f4' : regularShotColor : critical ? '#ffe38a' : regularShotColor, megumiShadowShot:megumiShadowCloakActive(), vultureEnergyShot:currentSkin().id === 'vulture', charge:0 };
+      const shot = { x: state.player.x + Math.cos(direction) * mobileSize(13), y: state.player.y + Math.sin(direction) * mobileSize(13), vx: Math.cos(direction) * 510, vy: Math.sin(direction) * 510, r: mobileSize(critical ? 5 : 3.5), damage: state.player.damage * (1 + state.endlessDamage) * mahoragaDamageBuff * saurionDamageBuff * (critical ? 2 : 1), pierce: state.pierce, hit: [], assistTarget: bossAssist ? target : null, color: currentSkin().id === 'vulture' ? critical ? '#fff0a6' : '#ffad55' : megumiShadowCloakActive() ? critical ? '#d7c8f4' : regularShotColor : critical ? '#ffe38a' : regularShotColor, megumiShadowShot:megumiShadowCloakActive(), vultureEnergyShot:currentSkin().id === 'vulture', playerPrimaryShot:true, charge:0 };
       state.bullets.push(shot);
       queueChronosEcho(shot);
     }
@@ -3239,10 +3343,10 @@
     if (enemy.kind !== 'boss' || enemy.isMiniBoss || enemy.bossType !== 'aurora') return;
     const phase = clamp(enemy.phase || 1, 1, 4);
     const tuning = [
-      { qWarning:1.18, qRadius:56, qDuration:3.6, qCooldown:18, qPulse:.92, qDamage:.85, ultRadius:150, ultWarning:1.22, ultDuration:1.8 },
-      { qWarning:.96, qRadius:68, qDuration:4.2, qCooldown:15, qPulse:.8, qDamage:1, ultRadius:185, ultWarning:1.02, ultDuration:2 },
-      { qWarning:.72, qRadius:84, qDuration:4.8, qCooldown:12, qPulse:.68, qDamage:1.15, ultRadius:220, ultWarning:.78, ultDuration:2.35 },
-      { qWarning:.5, qRadius:104, qDuration:5.5, qCooldown:9.5, qPulse:.58, qDamage:1.3, ultRadius:258, ultWarning:.58, ultDuration:2.7 }
+      { qWarning:1.18, qRadius:56, qDuration:3.6, qCooldown:18, qPulse:.92, qDamage:.85, qAttempts:2, ultRadius:150, ultWarning:1.22, ultDuration:1.8 },
+      { qWarning:.96, qRadius:68, qDuration:4.2, qCooldown:15, qPulse:.8, qDamage:1, qAttempts:3, ultRadius:185, ultWarning:1.02, ultDuration:2 },
+      { qWarning:.72, qRadius:84, qDuration:4.8, qCooldown:12, qPulse:.68, qDamage:1.15, qAttempts:4, ultRadius:220, ultWarning:.78, ultDuration:2.35 },
+      { qWarning:.5, qRadius:104, qDuration:5.5, qCooldown:9.5, qPulse:.58, qDamage:1.3, qAttempts:5, ultRadius:258, ultWarning:.58, ultDuration:2.7 }
     ][phase - 1];
     enemy.auroraECooldown = Math.max(0, (enemy.auroraECooldown || 0) - dt);
     if (enemy.auroraEWarning > 0) {
@@ -3266,19 +3370,39 @@
 
     enemy.auroraQCooldown = Math.max(0, (enemy.auroraQCooldown || 0) - dt);
     enemy.auroraReflectionCooldown = Math.max(0, (enemy.auroraReflectionCooldown || 0) - dt);
+    if (enemy.auroraQSequenceRemaining > 0 && enemy.auroraQWarning <= 0) {
+      enemy.auroraQSequenceTimer = Math.max(0, enemy.auroraQSequenceTimer - dt);
+      if (enemy.auroraQSequenceTimer <= 0) {
+        enemy.auroraQSequenceRemaining--;
+        enemy.auroraQAttempt++;
+        enemy.auroraQWarning = tuning.qWarning;
+        enemy.auroraQWarningTotal = tuning.qWarning;
+        enemy.auroraQWarningRadius = mobileSize(tuning.qRadius);
+        enemy.auroraQTargetX = state.player.x;
+        enemy.auroraQTargetY = state.player.y;
+        toast('AURORA · ELO ESTELAR · TENTATIVA ' + enemy.auroraQAttempt + '/' + enemy.auroraQSequenceTotal + ' · SAIA DA ÁREA');
+        tone(520, .18, 'triangle', .03);
+      }
+    }
     if (enemy.auroraQWarning > 0) {
       enemy.auroraQWarning = Math.max(0, enemy.auroraQWarning - dt);
-      if (enemy.auroraQWarning === 0 && distance(state.player, { x:enemy.auroraQTargetX, y:enemy.auroraQTargetY }) <= enemy.auroraQWarningRadius + state.player.radius) {
-        enemy.auroraQActive = tuning.qDuration;
-        enemy.auroraQPulseTimer = .08;
-        state.effects.push({ type: 'aurora-link-start', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, life: .5, total: .5, phase: 0 });
-        state.effects.push({ type: 'aurora-link-wave', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, radius: Math.hypot(state.width, state.height) * 1.08, life: 1.12, total: 1.12, phase: 0 });
-        burst(enemy.auroraQTargetX, enemy.auroraQTargetY, '#7df7e8', 16, 92);
-        burst(enemy.auroraQTargetX, enemy.auroraQTargetY, '#bffff5', 8, 68);
-        toast('ELO ESTELAR · VINCULADO');
-        tone(610, .17, 'sine', .035);
-      } else if (enemy.auroraQWarning === 0) {
-        toast('ELO ESTELAR · DESVIADO');
+      if (enemy.auroraQWarning === 0) {
+        if (distance(state.player, { x:enemy.auroraQTargetX, y:enemy.auroraQTargetY }) <= enemy.auroraQWarningRadius + state.player.radius) {
+          if (enemy.auroraQActive <= 0) {
+            enemy.auroraQActive = tuning.qDuration;
+            enemy.auroraQPulseTimer = .08;
+          }
+          state.effects.push({ type: 'aurora-link-start', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, life: .5, total: .5, phase: 0 });
+          state.effects.push({ type: 'aurora-link-wave', x: enemy.auroraQTargetX, y: enemy.auroraQTargetY, radius: Math.hypot(state.width, state.height) * 1.08, life: 1.12, total: 1.12, phase: 0 });
+          burst(enemy.auroraQTargetX, enemy.auroraQTargetY, '#7df7e8', 16, 92);
+          burst(enemy.auroraQTargetX, enemy.auroraQTargetY, '#bffff5', 8, 68);
+          toast('ELO ESTELAR · VINCULADO');
+          tone(610, .17, 'sine', .035);
+        } else {
+          toast('ELO ESTELAR · DESVIADO');
+        }
+        if (enemy.auroraQSequenceRemaining > 0) enemy.auroraQSequenceTimer = .38;
+        else enemy.auroraQCooldown = tuning.qCooldown;
       }
     }
     if (enemy.auroraQActive > 0) {
@@ -3302,19 +3426,15 @@
         state.effects.push({ type: 'aurora-link-wave', x: target.x, y: target.y, radius: mobileSize(54), life: .46, total: .46, phase: 0 });
         if (distance(from, target) <= mobileSize(560) + state.player.radius) damagePlayer(tuning.qDamage, 'boss-aurora');
       }
-    } else if (!enemy.auroraQWarning && enemy.auroraQCooldown <= 0) {
-      enemy.auroraQWarning = tuning.qWarning;
-      enemy.auroraQWarningTotal = tuning.qWarning;
-      enemy.auroraQWarningRadius = mobileSize(tuning.qRadius);
-      enemy.auroraQTargetX = state.player.x;
-      enemy.auroraQTargetY = state.player.y;
-      enemy.auroraQCooldown = tuning.qCooldown;
-      toast('AURORA · ELO ESTELAR · SAIA DA ÁREA');
-      tone(520, .22, 'triangle', .035);
+    } else if (!enemy.auroraQWarning && enemy.auroraQCooldown <= 0 && enemy.auroraQSequenceRemaining <= 0 && enemy.auroraQActive <= 0) {
+      enemy.auroraQSequenceRemaining = tuning.qAttempts;
+      enemy.auroraQSequenceTotal = tuning.qAttempts;
+      enemy.auroraQAttempt = 0;
+      enemy.auroraQSequenceTimer = 0;
     }
 
     const ultimatePhase = phase >= 4 ? 4 : phase >= 2 ? 2 : 0;
-    if (ultimatePhase && enemy.auroraUltUses < 2 && ultimatePhase > enemy.auroraUltLastPhase && enemy.auroraUltWarning <= 0 && enemy.auroraUltActive <= 0 && enemy.auroraQActive <= 0 && enemy.auroraQWarning <= 0 && enemy.auroraEWarning <= 0) {
+    if (ultimatePhase && enemy.auroraUltUses < 2 && ultimatePhase > enemy.auroraUltLastPhase && enemy.auroraUltWarning <= 0 && enemy.auroraUltActive <= 0 && enemy.auroraQActive <= 0 && enemy.auroraQWarning <= 0 && enemy.auroraQSequenceRemaining <= 0 && enemy.auroraEWarning <= 0) {
       enemy.auroraUltLastPhase = ultimatePhase;
       enemy.auroraUltUses++;
       enemy.auroraUltWarning = tuning.ultWarning;
@@ -3592,7 +3712,7 @@
     updateHud();
   }
   function damagePlayer(amount = 1, attackType = 'projectile') {
-    if (megumiShadowCloakActive() || vultureCloakActive() || (currentSkin().id === 'flamestorm' && (state.flameStormDash?.life > 0 || state.flameStormQIntangible > 0))) return;
+    if ((currentSkin().id === 'training' && state.ferrumRam?.phase === 'dash') || megumiShadowCloakActive() || vultureCloakActive() || (currentSkin().id === 'flamestorm' && (state.flameStormDash?.life > 0 || state.flameStormQIntangible > 0))) return;
     const isMahoraga = mahoragaAdaptationActive();
     const mahoragaShieldActive = isMahoraga && state.mahoragaParryWindow > 0;
     const vultureVulnerable = currentSkin().id === 'vulture' && state.vultureVulnerableTime > 0;
@@ -3644,6 +3764,7 @@
         return;
       }
     }
+    addFerrumPressure(FERRUM_HIT_PRESSURE);
     const tempUsed = Math.min(state.tempShields, remaining); state.tempShields -= tempUsed; remaining -= tempUsed;
     if (tempUsed && state.aegisBarrierCharges > 0) {
       state.aegisBarrierCharges = Math.max(0, state.aegisBarrierCharges - tempUsed);
@@ -3750,7 +3871,7 @@
     }
     updateHud();
   }
-  function damageEnemy(enemy, amount, fromAbility) {
+  function damageEnemy(enemy, amount, fromAbility, source = 'player') {
     if (!enemy || enemy.dead) return;
     if (abilitySourceIs('mahoraga') && enemy.mahoragaMarkBonus > 0) {
       amount *= 1 + enemy.mahoragaMarkBonus;
@@ -3760,6 +3881,7 @@
     if (enemy.kind === 'boss') amount *= 1 + state.bossDamageBonus;
     if (enemy.kind === 'boss' && !enemy.isMiniBoss && enemy.phase < 4 && enemy.hp > 0 && enemy.hp - amount <= 0) amount = Math.min(amount, Math.max(0, enemy.hp - enemy.maxHp * .15));
     const appliedDamage = Math.min(Math.max(0, enemy.hp), Math.max(0, amount));
+    if (source === 'player' && appliedDamage > 0) addFerrumPressure(appliedDamage, enemy);
     if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && enemy.auroraQActive > 0 && appliedDamage > 0 && enemy.auroraReflectionCooldown <= 0) {
       enemy.auroraReflectionCooldown = 1.12;
       const dx = state.player.x - enemy.x, dy = state.player.y - enemy.y;
@@ -4326,6 +4448,7 @@
     updateAbilityButton();
   }
   function activateSecondaryAbility() {
+    if (currentSkin().id === 'training') { activateFerrumInvestida(); return; }
     if (currentSkin().noAbilities) return;
     if (currentSkin().id === 'prisma' && !state.prismDispatchSkinId) { activatePrismAbilityChoice('q'); return; }
     if (currentSkin().id === 'mahoraga') { activateMahoragaWorldSlash(); return; }
@@ -4431,7 +4554,7 @@
     const doubleTap = vultureQDoubleTapAvailable();
     const empoweredPhase = vultureUltPowerActive();
     const hasFullCharge = state.vultureScrap >= 8 && state.vultureOverloadCountdown > 0;
-    if (currentSkin().id !== 'vulture' || state.mode !== 'playing' || vultureUltCollapseActive() || (state.vultureEvolutionTime > 0 && !empoweredPhase) || (!empoweredPhase && !hasFullCharge && !doubleTap && state.vultureQCooldown > 0) || state.vultureOverloadTime > 0 || (!empoweredPhase && !doubleTap && state.effects.some((effect) => effect.type === 'vulture-horizon-shot' && effect.life > 0))) return;
+    if (currentSkin().id !== 'vulture' || state.mode !== 'playing' || vultureUltCollapseActive() || (state.vultureEvolutionTime > 0 && !empoweredPhase) || (empoweredPhase ? state.vultureQCooldown > 0 : !hasFullCharge && !doubleTap && state.vultureQCooldown > 0) || state.vultureOverloadTime > 0 || (!empoweredPhase && !doubleTap && state.effects.some((effect) => effect.type === 'vulture-horizon-shot' && effect.life > 0))) return;
     const currentEnergyCharge = clamp((state.vultureCannonCharge || 0) / VULTURE_CANNON_CHARGE_SECONDS, 0, 1);
     const energyCharge = doubleTap ? Math.max(currentEnergyCharge, state.vultureQStoredEnergyCharge || 0) : currentEnergyCharge;
     const scrapCharge = state.vultureScrap;
@@ -4454,7 +4577,7 @@
       state.vultureQStoredEnergyCharge = energyCharge;
     }
     state.vultureCannonCharge = 0;
-    state.vultureQCooldown = hasDeveloperPerks() ? 0 : vulturePulseCooldownDuration();
+    state.vultureQCooldown = empoweredPhase ? 2 : hasDeveloperPerks() ? 0 : vulturePulseCooldownDuration();
     recordAchievementEvent('ship-ability', 'vulture');
     updateHud();
   }
@@ -4823,11 +4946,190 @@
     tone(610, .17, 'sine', .035);
     updateAbilityButton();
   }
-  function gainAuroraUltCharge() {
-    if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraUlt || state.auroraUltCharge >= 6) return;
-    state.auroraUltCharge = Math.min(6, Math.floor(state.auroraUltCharge) + 1);
+  function activateFerrumRam() {
+    if (currentSkin().id !== 'training' || state.mode !== 'playing') return;
+    if (state.ferrumRam || state.ferrumRamCharges > 0 || state.ferrumPressure < FERRUM_MAX_PRESSURE) return;
+    state.ferrumPressure = 0;
+    state.ferrumRamCharges = FERRUM_RAM_USES;
+    state.ferrumRam = { phase:'transformed', blocks:0 };
+    state.ferrumECharges = FERRUM_E_USES;
+    state.ferrumCountershock = null;
+    tone(735, .052, 'square', .023);
+    tone(1120, .14, 'triangle', .035);
+    state.effects.push({ type:'ferrum-transformation', x:state.player.x, y:state.player.y, life:1.15, total:1.15, followPlayer:true, rotation:0 });
+    burst(state.player.x, state.player.y, '#d6e3ef', 22, 125);
+    burst(state.player.x, state.player.y, '#ffffff', 12, 72);
+    toast('FERRUM TRANSFORMADA · 5 Q · 3 E · SEM RECARGA');
+    updateFerrumHud();
+    updateAbilityButton();
+  }
+  function activateFerrumInvestida() {
+    if (currentSkin().id !== 'training' || state.mode !== 'playing' || state.ferrumRam?.phase !== 'transformed' || state.ferrumRamCharges <= 0) return;
+    state.ferrumRamCharges -= 1;
+    state.ferrumRam = { phase:'dash', angle:state.player.angle, time:.62, hit:new Set(), blocks:0 };
+    tone(105, .17, 'sawtooth', .035);
+    updateFerrumHud();
+    updateAbilityButton();
+  }
+  function finishFerrumDash() {
+    state.ferrumRam = state.ferrumRamCharges > 0 ? { phase:'transformed', blocks:0 } : null;
+    updateFerrumHud();
+    updateAbilityButton();
+  }
+
+  function activateFerrumCountershock() {
+    if (currentSkin().id !== 'training' || state.mode !== 'playing' || state.ferrumRam?.phase !== 'transformed' || state.ferrumRamCharges <= 0 || state.ferrumECharges <= 0 || state.ferrumCountershock) return;
+    state.ferrumECharges -= 1;
+    state.ferrumCountershock = { time:1.15, total:1.15, blocked:0 };
+    updateFerrumHud();
+    state.effects.push({ type:'ferrum-countershock-guard', life:1.15, total:1.15, followPlayer:true });
+    burst(state.player.x, state.player.y, '#e5edf6', 12, 86);
+    tone(410, .12, 'triangle', .035);
+    toast('CONTRACHOQUE DE AÇO · ' + state.ferrumECharges + '/' + FERRUM_E_USES + ' USOS RESTANTES');
+    updateAbilityButton();
+  }
+
+  function finishFerrumCountershock() {
+    const player = state.player;
+    const radius = mobileSize(205);
+    state.ferrumCountershock = null;
+    updateFerrumHud();
+    state.effects.push({ type:'ferrum-countershock-wave', x:player.x, y:player.y, radius, life:.48, total:.48 });
+    let pushed = 0;
+    for (const enemy of state.enemies) {
+      if (enemy.dead) continue;
+      const dx = enemy.x - player.x, dy = enemy.y - player.y;
+      const gap = Math.hypot(dx, dy);
+      if (gap > radius + enemy.r) continue;
+      const angle = gap > .001 ? Math.atan2(dy, dx) : random(0, Math.PI * 2, 'ability');
+      const distanceScale = clamp(1 - gap / (radius + enemy.r), .35, 1);
+      const massScale = enemy.kind === 'boss' ? .24 : enemy.isMiniBoss ? .48 : 1;
+      const shove = mobileSize(118) * distanceScale * massScale;
+      enemy.x = clamp(enemy.x + Math.cos(angle) * shove, enemy.r, state.width - enemy.r);
+      enemy.y = clamp(enemy.y + Math.sin(angle) * shove, enemy.r, state.height - enemy.r);
+      enemy.ramCooldown = Math.max(enemy.ramCooldown || 0, .65);
+      burst(enemy.x, enemy.y, '#dce8f5', enemy.kind === 'boss' ? 5 : 3, 48);
+      pushed++;
+    }
+    let deflected = 0;
+    for (const bullet of state.enemyBullets) {
+      if (bullet.dead || bullet.reflected || bullet.explosive || bullet.fuse != null || bullet.bounces > 0 || bullet.turnRate || bullet.homingTime > 0) continue;
+      if (distance(bullet, player) > radius + bullet.r) continue;
+      const target = state.enemies.filter((enemy) => !enemy.dead).sort((a, b) => distance(bullet, a) - distance(bullet, b))[0];
+      const radial = Math.atan2(bullet.y - player.y, bullet.x - player.x);
+      const aimed = target ? Math.atan2(target.y - bullet.y, target.x - bullet.x) : radial;
+      const angle = aimed + (randomUnit('ability') - .5) * .72;
+      const speed = clamp(Math.hypot(bullet.vx, bullet.vy) || 300, 260, 440);
+      bullet.vx = Math.cos(angle) * speed;
+      bullet.vy = Math.sin(angle) * speed;
+      bullet.damage = Math.min(3, Math.max(1, bullet.damage || 1));
+      bullet.color = '#e1ebf5';
+      bullet.reflected = true;
+      bullet.reflectLife = 1.8;
+      bullet.explosive = false;
+      bullet.fuse = null;
+      bullet.blastRadius = 0;
+      bullet.bounces = 0;
+      bullet.tempestTideSweep = null;
+      bullet.tempestTideTargeted = false;
+      deflected++;
+    }
+    tone(185, .22, 'sawtooth', .045);
+    toast('CONTRACHOQUE · ' + pushed + ' INIMIGOS AFASTADOS · ' + deflected + ' TIROS DESVIADOS');
+    updateAbilityButton();
+  }
+
+  function advanceFerrumCountershock(dt) {
+    const shield = state.ferrumCountershock;
+    if (!shield) return;
+    const secondsShown = Math.ceil(shield.time);
+    shield.time = Math.max(0, shield.time - dt);
+    if (shield.time <= 0) finishFerrumCountershock();
+    else if (Math.ceil(shield.time) !== secondsShown) updateAbilityButton();
+  }
+
+  // First contact along a swept path, in units of distance from its start.
+  function ferrumContactDistance(x, y, dirX, dirY, travel, target, radius) {
+    const dx = target.x - x, dy = target.y - y;
+    const forward = dx * dirX + dy * dirY;
+    const side = dx * dirY - dy * dirX;
+    if (Math.abs(side) > radius) return Infinity;
+    const halfChord = Math.sqrt(Math.max(0, radius * radius - side * side));
+    if (forward + halfChord < 0 || forward - halfChord > travel) return Infinity;
+    return Math.max(0, forward - halfChord);
+  }
+
+  function blockFerrumCountershockShot(bullet, travelTime) {
+    const shield = state.ferrumCountershock;
+    if (!shield || shield.blocked >= 3 || bullet.explosive || bullet.fuse != null || bullet.bounces > 0 || bullet.turnRate || bullet.homingTime > 0 || bullet.reflected) return false;
+    const speed = Math.hypot(bullet.vx, bullet.vy);
+    if (!speed) return false;
+    const player = state.player;
+    const dirX = bullet.vx / speed, dirY = bullet.vy / speed;
+    const hit = ferrumContactDistance(bullet.x, bullet.y, dirX, dirY, speed * travelTime, player, player.radius * 1.85 + bullet.r);
+    if (!Number.isFinite(hit)) return false;
+    const x = bullet.x + dirX * hit, y = bullet.y + dirY * hit;
+    const rx = x - player.x, ry = y - player.y;
+    const facing = rx * Math.cos(player.angle) + ry * Math.sin(player.angle);
+    if (facing < Math.hypot(rx, ry) * .55 || rx * dirX + ry * dirY >= 0) return false;
+    bullet.dead = true;
+    shield.blocked++;
+    burst(x, y, '#edf5ff', 7, 82);
+    tone(530 + shield.blocked * 95, .055, 'triangle', .026);
+    updateAbilityButton();
+    return true;
+  }
+
+  function advanceFerrumDash(dt) {
+    const ram = state.ferrumRam;
+    const player = state.player;
+    const dirX = Math.cos(ram.angle), dirY = Math.sin(ram.angle);
+    const startX = player.x, startY = player.y;
+    const travel = mobileSize(1120 + Math.min(3, upgradeLevel('ferrumDashRange')) * 161.3) * Math.min(ram.time, dt);
+    const wallX = dirX > 0 ? state.width - 17 : 17;
+    const wallY = dirY > 0 ? state.height - 17 : 17;
+    const step = Math.max(0, Math.min(travel, dirX ? (wallX - startX) / dirX : Infinity, dirY ? (wallY - startY) / dirY : Infinity));
+    const contacts = [];
+    for (const enemy of state.enemies) {
+      if (enemy.dead || ram.hit.has(enemy)) continue;
+      const entry = ferrumContactDistance(startX, startY, dirX, dirY, step, enemy, enemy.r + player.radius);
+      if (Number.isFinite(entry)) contacts.push({ enemy, entry });
+    }
+    player.angle = player.moveAngle = ram.angle;
+    for (const { enemy, entry } of contacts.sort((a, b) => a.entry - b.entry)) {
+      ram.hit.add(enemy);
+      const boss = enemy.kind === 'boss';
+      const damage = 10 + 4 * ram.blocks;
+      const impactX = startX + dirX * (entry + player.radius);
+      const impactY = startY + dirY * (entry + player.radius);
+      state.effects.push({ type:'ferrum-impact', x:impactX, y:impactY, angle:ram.angle, life:.28, total:.28 });
+      burst(impactX, impactY, '#f3f8ff', boss ? 18 : 8, 110);
+      damageEnemy(enemy, boss ? Math.min(damage, enemy.maxHp * .08 / (1 + state.bossDamageBonus)) : damage, true, 'ram');
+      if (boss) {
+        enemy.ramCooldown = Math.max(enemy.ramCooldown || 0, .9);
+        continue;
+      }
+      if (!enemy.dead) {
+        const side = (enemy.y - startY) * dirX - (enemy.x - startX) * dirY >= 0 ? 1 : -1;
+        const shove = enemy.r + player.radius + mobileSize(18);
+        enemy.x = clamp(enemy.x - side * dirY * shove, enemy.r, state.width - enemy.r);
+        enemy.y = clamp(enemy.y + side * dirX * shove, enemy.r, state.height - enemy.r);
+        enemy.ramCooldown = Math.max(enemy.ramCooldown || 0, .45);
+      }
+    }
+    player.x = startX + dirX * step;
+    player.y = startY + dirY * step;
+    ram.time -= dt;
+    if (ram.time <= 0 || step < travel) {
+      finishFerrumDash();
+    }
+  }
+  function gainAuroraUltCharge(amount = 1) {
+    if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraUlt || state.auroraUltCharge >= 6 || !(amount > 0)) return;
+    const previousCharge = state.auroraUltCharge;
+    state.auroraUltCharge = Math.min(6, previousCharge + amount);
     updateAuroraUltHud();
-    if (state.auroraUltCharge >= 6) toast('COROA DA HIPERNOVA · G DISPONÍVEL');
+    if (previousCharge < 6 && state.auroraUltCharge >= 6) toast('COROA DA HIPERNOVA · G DISPONÍVEL');
   }
   function activateAuroraUltimate() {
     if (currentSkin().id !== 'aurora' || state.mode !== 'playing' || state.auroraUlt || state.auroraUltCharge < 6) return;
@@ -5709,6 +6011,7 @@
     updateAbilityButton();
   }
   function activateAbility() {
+    if (currentSkin().id === 'training') { activateFerrumCountershock(); return; }
     if (currentSkin().noAbilities) return;
     if (currentSkin().id === 'prisma' && !state.prismDispatchSkinId) { activatePrismAbilityChoice('e'); return; }
     const developerProfile = hasDeveloperPerks();
@@ -5827,6 +6130,7 @@
     state.vultureOverloadTime = Math.max(0, state.vultureOverloadTime - dt);
     state.vultureVulnerableTime = Math.max(0, state.vultureVulnerableTime - dt);
     state.vultureVulnerableHitCooldown = Math.max(0, state.vultureVulnerableHitCooldown - dt);
+    advanceFerrumCountershock(dt);
     if (currentSkin().id === 'vulture' && state.vultureScrap >= 8 && state.mode === 'playing') {
       state.vultureOverloadCountdown = Math.max(0, state.vultureOverloadCountdown - dt);
       if (state.vultureOverloadCountdown <= 0) triggerVultureOverload();
@@ -5873,7 +6177,7 @@
       }
     }
     state.eclipseParadoxCooldown = Math.max(0, state.eclipseParadoxCooldown - dt);
-    state.vultureQCooldown = hasDeveloperPerks() ? 0 : Math.max(0, state.vultureQCooldown - dt);
+    state.vultureQCooldown = hasDeveloperPerks() && !vultureUltPowerActive() ? 0 : Math.max(0, state.vultureQCooldown - dt);
     state.redshiftPerimeterCooldown = Math.max(0, state.redshiftPerimeterCooldown - dt);
     state.flashTrailCooldown = Math.max(0, state.flashTrailCooldown - dt);
     advanceTempestTideRecharge(dt);
@@ -5938,7 +6242,9 @@
     const flashbladeDash = abilitySourceIs('flashblade') && state.flashTrail?.life > 0;
     const normalMoveSpeed = Math.min(525, state.player.speed + state.endlessSpeed);
     const moveSpeed = normalMoveSpeed * (flameStormDashActive ? 2.65 : flashbladeDash ? 2.6 : 1);
-    if (flameStormDashActive) {
+    if (state.ferrumRam?.phase === 'dash') {
+      advanceFerrumDash(dt);
+    } else if (flameStormDashActive) {
       const minX = 17 + Math.min(state.player.radius * 2.8, state.width * .18);
       const minY = 17 + Math.min(state.player.radius * 4, state.height * .18);
       const maxX = Math.max(minX, state.width - minX), maxY = Math.max(minY, state.height - minY);
@@ -6060,6 +6366,7 @@
       : null;
     for (const bullet of state.enemyBullets) {
       if (bullet.dead || destroyEnemyShotAtFlashTrail(bullet)) continue;
+      if (blockFerrumCountershockShot(bullet, dt * slowFactor)) continue;
       reflectIncomingBullet(bullet);
       if (bullet.reflected) {
         if (bullet.tempestTideTargeted) {
@@ -6241,20 +6548,20 @@
           enemy.hunterFuse -= dt * enemySlowFactor;
           if (enemy.hunterFuse <= 0) {
             const blastRadius = mobileSize(purpleBoss ? 250 : 170);
-            state.effects.push({ type: 'hunter-explosion', x: enemy.x, y: enemy.y, radius: blastRadius, isBossExplosion: purpleBoss, life: .62, total: .62 });
+            state.effects.push({ type: 'hunter-explosion', x: enemy.x, y: enemy.y, radius: blastRadius, isBossExplosion: purpleBoss, life: .26, total: .26 });
             burst(enemy.x, enemy.y, purpleBoss ? '#c07cff' : '#ff583b', purpleBoss ? 52 : 36, purpleBoss ? 330 : 260);
             burst(enemy.x, enemy.y, purpleBoss ? '#f5d6ff' : '#ffd080', purpleBoss ? 26 : 18, purpleBoss ? 230 : 175);
-            if (hunterDistance <= blastRadius + state.player.radius) damagePlayer(purpleBoss ? 3 : 2, mahoragaAttackType(enemy, 'impact'));
+            if (hunterDistance <= blastRadius + state.player.radius) damagePlayer(purpleBoss ? 3 : 1, mahoragaAttackType(enemy, 'impact'));
             enemy.hunterExplosionCooldown = purpleBoss ? 5.2 : 3.6;
             enemy.hunterFuse = null; enemy.hunterFuseTotal = null;
-            if (purpleHunter) { damageEnemy(enemy, enemy.hp, true); continue; }
+            if (purpleHunter) { damageEnemy(enemy, enemy.hp, true, 'self'); continue; }
           }
         } else if (hunterDistance > triggerRadius + mobileSize(38) || enemy.hunterExplosionCooldown > 0) {
           enemy.hunterFuse = null; enemy.hunterFuseTotal = null;
         }
       }
       if (distance(state.player, enemy) < state.player.radius + enemy.r * .75) {
-        if ((state.invulnerable > 0 && !(currentSkin().id === 'vulture' && state.vultureVulnerableTime > 0)) || stunnedByDino || stunnedByParadox || megumiShadowCloakActive() || vultureCloakActive() || flameStormDashActive || state.flameStormQIntangible > 0) continue;
+        if ((state.invulnerable > 0 && !(currentSkin().id === 'vulture' && state.vultureVulnerableTime > 0)) || stunnedByDino || stunnedByParadox || megumiShadowCloakActive() || vultureCloakActive() || flameStormDashActive || state.flameStormQIntangible > 0 || state.ferrumRam?.phase === 'dash') continue;
         if (state.reflectTime > 0) {
           if (!state.reflectContacts.has(enemy)) {
             state.reflectContacts.add(enemy);
@@ -6286,6 +6593,7 @@
         if (bullet.dead || enemy.dead || (bullet.hit && bullet.hit.includes(enemy))) continue;
         if (Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.r + enemy.r * .72) {
           damageEnemy(enemy, bullet.damage, false); burst(bullet.x, bullet.y, bullet.color, 4, 56);
+          if (bullet.playerPrimaryShot && currentSkin().id === 'aurora') gainAuroraUltCharge(.035);
           if (state.blastRadius > 0) state.enemies.forEach((nearby) => { if (nearby !== enemy && !nearby.dead && distance(enemy, nearby) < state.blastRadius + nearby.r) damageEnemy(nearby, bullet.damage * .45, true); });
           if (bullet.pierce > 0) { bullet.pierce--; bullet.hit = bullet.hit || []; bullet.hit.push(enemy); }
           else bullet.dead = true;
@@ -6878,6 +7186,46 @@
       return;
     }
     if (ship.id === 'aurora' && auroraShipSprite.complete && auroraShipSprite.naturalWidth) {
+      const now = performance.now();
+      const jetPulse = .82 + .18 * Math.sin(now / 62);
+      const jetStart = size * 1.17;
+      const jetLength = size * (.88 + jetPulse * .34);
+      const jetWidth = size * (.2 + jetPulse * .055);
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = alpha * .76;
+      ctx.shadowColor = '#58eaff';
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .26;
+      const jet = ctx.createLinearGradient(0, jetStart, 0, jetStart + jetLength);
+      jet.addColorStop(0, 'rgba(236,255,255,.92)');
+      jet.addColorStop(.18, 'rgba(82,235,255,.86)');
+      jet.addColorStop(.58, 'rgba(71,151,255,.55)');
+      jet.addColorStop(.88, 'rgba(158,111,255,.2)');
+      jet.addColorStop(1, 'rgba(100,183,255,0)');
+      ctx.fillStyle = jet;
+      ctx.beginPath();
+      ctx.moveTo(-jetWidth * .5, jetStart);
+      ctx.quadraticCurveTo(-jetWidth * .58, jetStart + jetLength * .42, 0, jetStart + jetLength);
+      ctx.quadraticCurveTo(jetWidth * .58, jetStart + jetLength * .42, jetWidth * .5, jetStart);
+      ctx.closePath();
+      ctx.fill();
+
+      const coreLength = jetLength * .76;
+      const core = ctx.createLinearGradient(0, jetStart, 0, jetStart + coreLength);
+      core.addColorStop(0, 'rgba(255,255,255,.96)');
+      core.addColorStop(.28, 'rgba(183,250,255,.86)');
+      core.addColorStop(1, 'rgba(96,199,255,0)');
+      ctx.globalAlpha = alpha * (.52 + jetPulse * .1);
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = core;
+      ctx.beginPath();
+      ctx.moveTo(-jetWidth * .13, jetStart);
+      ctx.quadraticCurveTo(-jetWidth * .16, jetStart + coreLength * .42, 0, jetStart + coreLength);
+      ctx.quadraticCurveTo(jetWidth * .16, jetStart + coreLength * .42, jetWidth * .13, jetStart);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       const spriteHeight = size * 3.7;
       const spriteWidth = spriteHeight * .94;
       ctx.globalCompositeOperation = 'screen';
@@ -7032,21 +7380,72 @@
       return;
     }
     if (ship.shape === 'training') {
-      const pulse = .8 + .2 * Math.sin(performance.now() / 72);
-      const plume = ctx.createLinearGradient(0, size * .7, 0, size * 1.75);
-      plume.addColorStop(0, 'rgba(224,231,240,.9)'); plume.addColorStop(.35, 'rgba(133,145,161,.7)'); plume.addColorStop(1, 'rgba(48,55,66,0)');
-      ctx.fillStyle = plume; ctx.globalAlpha *= pulse;
-      ctx.beginPath(); ctx.moveTo(-size * .2, size * .7); ctx.lineTo(0, size * 1.75); ctx.lineTo(size * .2, size * .7); ctx.closePath(); ctx.fill();
-      ctx.globalAlpha = alpha; ctx.shadowColor = '#8e98a7'; ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .42;
-      const hull = ctx.createLinearGradient(-size, -size, size, size);
-      hull.addColorStop(0, '#edf0f4'); hull.addColorStop(.34, '#aeb5c0'); hull.addColorStop(.68, '#737c89'); hull.addColorStop(1, '#343a44');
-      ctx.fillStyle = hull; ctx.strokeStyle = '#242932'; ctx.lineWidth = Math.max(1.5, size * .1);
-      ctx.beginPath(); ctx.moveTo(0, -size * 1.58); ctx.lineTo(size * .42, -size * .62); ctx.lineTo(size * 1.22, size * .48); ctx.lineTo(size * .55, size * .33); ctx.lineTo(size * .34, size * .82); ctx.lineTo(0, size * .62); ctx.lineTo(-size * .34, size * .82); ctx.lineTo(-size * .55, size * .33); ctx.lineTo(-size * 1.22, size * .48); ctx.lineTo(-size * .42, -size * .62); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.shadowBlur = 0; ctx.fillStyle = '#20252d'; ctx.strokeStyle = '#d0d5dd'; ctx.lineWidth = Math.max(1, size * .035);
-      ctx.beginPath(); ctx.moveTo(0, -size * 1.22); ctx.lineTo(size * .2, -size * .44); ctx.lineTo(size * .13, size * .25); ctx.lineTo(0, size * .42); ctx.lineTo(-size * .13, size * .25); ctx.lineTo(-size * .2, -size * .44); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#dce1e8'; ctx.beginPath(); ctx.ellipse(0, -size * .38, size * .09, size * .22, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#171b21'; ctx.lineWidth = Math.max(1.4, size * .075);
-      ctx.beginPath(); ctx.moveTo(-size * .78, size * .2); ctx.lineTo(-size * .4, size * .3); ctx.moveTo(size * .78, size * .2); ctx.lineTo(size * .4, size * .3); ctx.moveTo(-size * .23, size * .56); ctx.lineTo(-size * .18, size * .76); ctx.moveTo(size * .23, size * .56); ctx.lineTo(size * .18, size * .76); ctx.stroke();
+      const thrusterPulse = .9 + .1 * Math.sin(performance.now() / 82);
+      const ram = state.ferrumRam;
+      const ferrumThrusters = [
+        { x:-.16, length:1.24, width:.23 },
+        { x:.16, length:1.24, width:.23 }
+      ];
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.shadowColor = '#cbd3dc';
+      ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * .16;
+      for (const nozzle of ferrumThrusters) {
+        const x = nozzle.x * size;
+        const startY = size * 1.48;
+        const length = size * nozzle.length * thrusterPulse * (ram?.phase === 'dash' ? 2.6 : 1);
+        const width = size * nozzle.width * (.94 + thrusterPulse * .06);
+        const flame = ctx.createLinearGradient(x, startY, x, startY + length);
+        flame.addColorStop(0, 'rgba(247,249,252,.68)');
+        flame.addColorStop(.2, 'rgba(207,214,222,.54)');
+        flame.addColorStop(.56, 'rgba(148,159,172,.3)');
+        flame.addColorStop(1, 'rgba(112,124,139,0)');
+        ctx.globalAlpha = alpha * (.46 + thrusterPulse * .1);
+        ctx.fillStyle = flame;
+        ctx.beginPath();
+        ctx.moveTo(x - width * .42, startY);
+        ctx.quadraticCurveTo(x - width * .52, startY + length * .4, x, startY + length);
+        ctx.quadraticCurveTo(x + width * .52, startY + length * .4, x + width * .42, startY);
+        ctx.closePath();
+        ctx.fill();
+
+        const coreLength = length * .7;
+        const core = ctx.createLinearGradient(x, startY, x, startY + coreLength);
+        core.addColorStop(0, 'rgba(255,255,255,.76)');
+        core.addColorStop(.34, 'rgba(236,240,245,.48)');
+        core.addColorStop(1, 'rgba(169,180,194,0)');
+        ctx.globalAlpha = alpha * (.34 + thrusterPulse * .1);
+        ctx.fillStyle = core;
+        ctx.beginPath();
+        ctx.moveTo(x - width * .13, startY);
+        ctx.quadraticCurveTo(x - width * .16, startY + coreLength * .42, x, startY + coreLength);
+        ctx.quadraticCurveTo(x + width * .16, startY + coreLength * .42, x + width * .13, startY);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+      if (ram && ferrumArmoredSprite.complete && ferrumArmoredSprite.naturalWidth) {
+        const slide = 1;
+        const scaleX = size * 3.5 / 532, scaleY = size * 3.9 / 594;
+        if (slide < 1 && ferrumShipSprite.complete && ferrumShipSprite.naturalWidth) {
+          ctx.drawImage(ferrumShipSprite, 448, 212, 532, 594, -266 * scaleX, -297 * scaleY, 532 * scaleX, 594 * scaleY);
+        }
+        ctx.globalAlpha = alpha * slide;
+        ctx.shadowBlur = 0;
+        const gap = (1 - slide) ** 2 * size * .7;
+        // The two images share the same engine anchor; keep the longer armored nose in frame.
+        for (let half = 0; half < 2; half++) {
+          const x = half * 266;
+          ctx.drawImage(ferrumArmoredSprite, 448 + x, 170, 266, 636,
+            (x - 266) * scaleX + (half ? gap : -gap), -339 * scaleY, 266 * scaleX, 636 * scaleY);
+        }
+      } else if (ferrumShipSprite.complete && ferrumShipSprite.naturalWidth) {
+        ctx.shadowBlur = 0;
+        ctx.drawImage(ferrumShipSprite, 448, 212, 532, 594, -size * 1.75, -size * 1.95, size * 3.5, size * 3.9);
+      } else {
+        ctx.fillStyle = '#aeb5c0'; ctx.strokeStyle = '#242932'; ctx.lineWidth = Math.max(1.5, size * .1);
+        ctx.beginPath(); ctx.moveTo(0, -size * 1.58); ctx.lineTo(size * .42, -size * .62); ctx.lineTo(size * 1.22, size * .48); ctx.lineTo(size * .55, size * .33); ctx.lineTo(size * .34, size * .82); ctx.lineTo(0, size * .62); ctx.lineTo(-size * .34, size * .82); ctx.lineTo(-size * .55, size * .33); ctx.lineTo(-size * 1.22, size * .48); ctx.lineTo(-size * .42, -size * .62); ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
       ctx.restore();
       return;
     }
@@ -7140,6 +7539,8 @@
       ctx.setLineDash([]); ctx.shadowBlur = 0; ctx.lineWidth = mobileSize(1.5);
       ctx.beginPath(); ctx.moveTo(enemy.auroraQTargetX - radius * .42, enemy.auroraQTargetY); ctx.lineTo(enemy.auroraQTargetX + radius * .42, enemy.auroraQTargetY);
       ctx.moveTo(enemy.auroraQTargetX, enemy.auroraQTargetY - radius * .42); ctx.lineTo(enemy.auroraQTargetX, enemy.auroraQTargetY + radius * .42); ctx.stroke();
+      ctx.fillStyle = '#eafffb'; ctx.font = '800 ' + mobileSize(10) + 'px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillText('ELO ' + (enemy.auroraQAttempt || 1) + '/' + (enemy.auroraQSequenceTotal || 1), enemy.auroraQTargetX, enemy.auroraQTargetY - radius - mobileSize(6));
       ctx.restore();
     }
     if (enemy.kind === 'boss' && enemy.bossType === 'aurora' && (enemy.auroraUltWarning > 0 || enemy.auroraUltActive > 0)) {
@@ -7613,7 +8014,132 @@
     }
     for (const effect of state.effects) {
       const alpha = clamp(effect.life / (effect.total || effect.life), 0, 1);
-      if (effect.type === 'vulture-transform') {
+      if (effect.type === 'ferrum-transformation') {
+        const progress = 1 - alpha;
+        const x = effect.followPlayer ? state.player.x : effect.x;
+        const y = effect.followPlayer ? state.player.y : effect.y;
+        const size = mobileSize(state.player.radius);
+        const radius = size * (1.7 + progress * 6.4);
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(progress * .72);
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha * (.62 + Math.sin(timestamp / 45) * .12);
+        const core = ctx.createRadialGradient(0, 0, size * .2, 0, 0, radius);
+        core.addColorStop(0, 'rgba(255,255,255,.72)');
+        core.addColorStop(.18, 'rgba(224,237,252,.38)');
+        core.addColorStop(.55, 'rgba(159,183,213,.12)');
+        core.addColorStop(1, 'rgba(159,183,213,0)');
+        ctx.fillStyle = core;
+        ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowColor = '#e5f1ff';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * 1.4;
+        for (let ring = 0; ring < 3; ring++) {
+          const ringRadius = size * (1.65 + progress * (3.1 + ring * 1.05));
+          ctx.globalAlpha = alpha * (.88 - ring * .16);
+          ctx.strokeStyle = ring === 1 ? '#ffffff' : ring === 2 ? '#a8b8cc' : '#e4edf8';
+          ctx.lineWidth = mobileSize(ring === 0 ? 2.8 : 1.5);
+          ctx.beginPath();
+          ctx.arc(0, 0, ringRadius, timestamp / (ring === 1 ? -360 : 290) + ring, timestamp / (ring === 1 ? -360 : 290) + ring + Math.PI * (ring === 1 ? 1.55 : 1.76));
+          ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+        for (let plate = 0; plate < 4; plate++) {
+          ctx.save();
+          ctx.rotate(plate * Math.PI / 2);
+          const slide = size * (4.5 * (1 - progress) + 1.12);
+          ctx.translate(slide, 0);
+          ctx.globalAlpha = alpha * (.78 + progress * .22);
+          ctx.fillStyle = 'rgba(196,211,231,.4)';
+          ctx.strokeStyle = plate % 2 ? '#f8fbff' : '#aab8ca';
+          ctx.lineWidth = mobileSize(1.6);
+          ctx.beginPath();
+          ctx.moveTo(size * .08, -size * .92);
+          ctx.lineTo(size * 1.42, -size * .46);
+          ctx.lineTo(size * 1.68, 0);
+          ctx.lineTo(size * 1.42, size * .46);
+          ctx.lineTo(size * .08, size * .92);
+          ctx.lineTo(-size * .24, size * .48);
+          ctx.lineTo(-size * .24, -size * .48);
+          ctx.closePath();
+          ctx.fill(); ctx.stroke();
+          ctx.restore();
+        }
+        ctx.globalAlpha = alpha * Math.max(0, 1 - progress * 1.7);
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = '#eef6ff';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : size * 2.2;
+        ctx.beginPath(); ctx.arc(0, 0, size * (.72 + progress * .4), 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      } else if (effect.type === 'ferrum-countershock-guard') {
+        const x = effect.followPlayer ? state.player.x : effect.x;
+        const y = effect.followPlayer ? state.player.y : effect.y;
+        const size = mobileSize(state.player.radius);
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(state.player.angle);
+        ctx.globalAlpha = alpha * (.78 + Math.sin(timestamp / 52) * .12);
+        ctx.shadowColor = '#dceaff';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(17);
+        ctx.fillStyle = 'rgba(204,222,244,.18)';
+        ctx.strokeStyle = '#f1f7ff';
+        ctx.lineWidth = mobileSize(2.6);
+        ctx.beginPath();
+        ctx.moveTo(size * .48, -size * 1.28);
+        ctx.arc(size * .48, 0, size * 1.28, -1.18, 1.18);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(255,255,255,.82)';
+        ctx.lineWidth = mobileSize(1.1);
+        ctx.beginPath();
+        ctx.moveTo(size * .58, -size * .91);
+        ctx.lineTo(size * 1.13, 0);
+        ctx.lineTo(size * .58, size * .91);
+        ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'ferrum-countershock-wave') {
+        const progress = 1 - alpha;
+        const radius = mobileSize(18 + effect.radius * progress);
+        ctx.save();
+        ctx.globalAlpha = alpha * .9;
+        ctx.strokeStyle = '#e6effb';
+        ctx.lineWidth = mobileSize(4 * alpha + 1);
+        ctx.shadowColor = '#c6d9f3';
+        ctx.shadowBlur = state.performanceMode === 'light' ? 0 : mobileSize(20);
+        ctx.beginPath();
+        ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(246,250,255,.72)';
+        ctx.lineWidth = mobileSize(1.5);
+        for (let ray = 0; ray < 8; ray++) {
+          const angle = ray * Math.PI / 4 + progress * .22;
+          const inner = radius * .83;
+          const outer = radius + mobileSize(13 * alpha);
+          ctx.beginPath();
+          ctx.moveTo(effect.x + Math.cos(angle) * inner, effect.y + Math.sin(angle) * inner);
+          ctx.lineTo(effect.x + Math.cos(angle) * outer, effect.y + Math.sin(angle) * outer);
+          ctx.stroke();
+        }
+        ctx.restore();
+      } else if (effect.type === 'ferrum-impact') {
+        const radius = mobileSize(9 + (1 - alpha) * 34);
+        ctx.save();
+        ctx.translate(effect.x, effect.y);
+        ctx.rotate(effect.angle);
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = '#e5f3ff';
+        ctx.lineWidth = mobileSize(1 + 2 * alpha);
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-radius * .35, -radius);
+        ctx.lineTo(radius * .52, 0);
+        ctx.lineTo(-radius * .35, radius);
+        ctx.stroke();
+        ctx.restore();
+      } else if (effect.type === 'vulture-transform') {
         const progress = 1 - alpha;
         const radius = mobileSize(34 + progress * 210);
         const centerX = effect.followPlayer ? state.player.x : effect.x;
@@ -8103,7 +8629,7 @@
         ctx.restore();
       } else if (effect.type === 'hunter-explosion') {
         const progress = 1 - alpha;
-        const radius = effect.radius * (.22 + progress * .78);
+        const radius = effect.radius * (.78 + progress * .22);
         ctx.save(); ctx.globalAlpha = alpha * .76;
         const blast = ctx.createRadialGradient(effect.x, effect.y, 0, effect.x, effect.y, radius);
         blast.addColorStop(0, effect.isBossExplosion ? 'rgba(255,245,255,.84)' : 'rgba(255,245,205,.72)');
@@ -8697,6 +9223,12 @@
   }
   function makeRankShipModel(shipId) {
     const skin = skins.find((item) => item.id === shipId) || skins[0];
+    if (skin.shape === 'training') {
+      const image = document.createElement('img');
+      image.className = 'starfall-rank-ship-model starfall-rank-ship-image starfall-rank-ferrum-image';
+      image.src = 'ferrum-ship.png?v=2'; image.alt = ''; image.setAttribute('aria-hidden', 'true');
+      return image;
+    }
     if (skin.shape === 'eclipse') {
       const image = document.createElement('img');
       image.className = 'starfall-rank-ship-model starfall-rank-ship-image';
@@ -8953,9 +9485,11 @@
     const isTraining = currentSkin().id === 'training';
     const isMegumi = currentSkin().id === 'megumi';
     const isVulture = currentSkin().id === 'vulture';
-    const abilityInstruction = isTraining ? 'melhorias da missão' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isVulture ? 'Q míssil soma energia · toque duas vezes para consumir sucata · segure Q absorve · E dobra · G Ult com 8 sucatas' : isAurora ? 'E Explosão Nova · Q Elo Estelar · G Coroa da Hipernova' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Investida do Tigre' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
+    const abilityInstruction = isTraining ? 'G ativa a forma · Q 5 investidas · E 3 contrachoques · sem recarga' : isPrisma ? 'E/Q habilidades · G abre Arquivo de Ecos' : isMahoraga ? 'E adaptação · Q Corte Mundial · G volta à Umbra' : isMegumi ? 'E técnica sombria · Q invoca Mahoraga · G volta à forma normal' : isVulture ? 'Q míssil soma energia · toque duas vezes para consumir sucata · segure Q absorve · E dobra · G Ult com 8 sucatas' : isAurora ? 'E Explosão Nova · Q Elo Estelar · G Coroa da Hipernova' : isAegis ? 'E barreira · Q Órbitas Sentinelas' : isEclipse ? 'E Santuário · Q Paradoxo Absoluto' : isChronos ? 'E dobra temporal · Q Ecos' : isPrimalSaurion ? 'E Chamado Primal · Q Arsenal Jurássico · Z fúria do Rex · X investida do Carnotauro' : isSaurion ? 'E Rugido · Q Investida do Tigre' : isRedshift ? 'E reflete projéteis · Q Perímetro' : isFlashblade ? 'E Corte Flash · Q Impulso' : isTempest ? 'E Poço Negro · Q Maré Reversa' : 'habilidade E';
     const moveInstruction = state.controlMode === 'keys' ? 'WASD/setas' : state.controlMode === 'touch' ? 'toque e arraste' : 'analógico virtual';
-    const testHint = isAurora && isDeveloperProfile() ? ' · V completa as seis cargas da ult' : isVulture && profileNickname() === 'educvv dev' ? ' · V adiciona 8 sucatas para teste' : '';
+    const testHint = isTraining && isDeveloperProfile() ? ' · V carrega as quatro placas do Aríete de Aço'
+      : isAurora && isDeveloperProfile() ? ' · V completa as seis cargas da ult'
+      : isVulture && profileNickname() === 'educvv dev' ? ' · V adiciona 8 sucatas para teste' : '';
     if (ui.controlHint) ui.controlHint.textContent = moveInstruction + ' ou WASD/setas movem · ' + abilityInstruction + ' · R liga/desliga os tiros automáticos' + testHint + '.';
   }
   function createDeviceIndicators() {
@@ -9575,6 +10109,7 @@
   bindAbilityControl(ui.saurionCommand, activateSaurionCommand);
   ui.vultureUlt?.addEventListener('click', activateVultureUltimate);
   ui.auroraUlt?.addEventListener('click', activateAuroraUltimate);
+  ui.ferrumUlt.addEventListener('click', activateFerrumRam);
   ui.mahoragaReturn?.addEventListener('click', () => deactivateMahoragaForm());
   ui.fireToggle?.addEventListener('click', toggleAutomaticFire);
   ui.favorite?.addEventListener('click', toggleFavorite);
@@ -9592,10 +10127,19 @@
     if (event.code === 'KeyF' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && !state.dailyChallenge && !state.championshipRun && ['playing', 'paused'].includes(state.mode) && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
       event.preventDefault(); clearCurrentWaveForAdmin(); return;
     }
-    if (event.code === 'KeyV' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && isDeveloperProfile() && currentSkin().id === 'aurora' && state.mode === 'playing' && !editableTarget) {
+    const chargeShortcut = event.code === 'KeyV' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && state.mode === 'playing' && !editableTarget;
+    if (chargeShortcut && isDeveloperProfile() && currentSkin().id === 'training' && !state.ferrumRam && state.ferrumRamCharges <= 0) {
+      event.preventDefault();
+      state.ferrumPressure = FERRUM_MAX_PRESSURE;
+      updateFerrumHud();
+      toast('TESTE FERRUM · ARÍETE DE AÇO CARREGADO');
+      tone(880, .18, 'triangle', .04);
+      return;
+    }
+    if (chargeShortcut && isDeveloperProfile() && currentSkin().id === 'aurora') {
       event.preventDefault(); state.auroraUltCharge = 6; updateAuroraUltHud(); toast('TESTE AURORA · COROA DA HIPERNOVA CARREGADA'); tone(880, .18, 'sine', .04); return;
     }
-    if (event.code === 'KeyV' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && profileNickname() === 'educvv dev' && currentSkin().id === 'vulture' && state.mode === 'playing' && !state.dailyChallenge && !state.championshipRun && state.vultureEvolutionTime <= 0 && state.vultureOverloadTime <= 0 && !editableTarget) {
+    if (chargeShortcut && profileNickname() === 'educvv dev' && currentSkin().id === 'vulture' && !state.dailyChallenge && !state.championshipRun && state.vultureEvolutionTime <= 0 && state.vultureOverloadTime <= 0) {
       event.preventDefault(); state.vultureScrap = 8; state.vultureOverloadCountdown = 10; updateHud(); toast('TESTE VULTURE · 8 SUCATAS · Q OU G EM 10s'); tone(540, .2, 'sawtooth', .04); return;
     }
     if (event.code === 'KeyR' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !editableTarget && ['playing', 'paused', 'upgrade'].includes(state.mode)) {
@@ -9617,6 +10161,7 @@
     if (event.code === 'KeyG' && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest?.('input,textarea,select,[contenteditable="true"],[role="dialog"]')) {
       if (currentSkin().id === 'vulture') { event.preventDefault(); activateVultureUltimate(); return; }
       if (currentSkin().id === 'aurora') { event.preventDefault(); activateAuroraUltimate(); return; }
+      if (currentSkin().id === 'training') { event.preventDefault(); activateFerrumRam(); return; }
       if (deactivateMahoragaForm()) { event.preventDefault(); return; }
       openPrismWheel();
     }

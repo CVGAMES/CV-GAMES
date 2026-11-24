@@ -499,6 +499,13 @@
   }
 }
 
+@media (min-width: 761px) and (hover: hover) and (pointer: fine) {
+  :root[data-theme="christmas"] .hero-panel::after {
+    width: 27rem;
+    height: 28rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme="christmas"] body,
   :root[data-theme="christmas"] body.game-page,
@@ -807,4 +814,28 @@
 :root[data-theme="christmas"] body:not(.cv-starfall-page) .favorite-button:focus-visible {
   border-color: rgba(239, 174, 142, .8);
   background: linear-gradient(145deg, rgba(119, 53, 69, .98), rgba(74, 39, 52, .98));
+}
+
+/* Mantém o tema natalino leve em celulares: neve estática e sem filtros animados. */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  :root[data-theme="christmas"] body,
+  :root[data-theme="christmas"] body.game-page {
+    background:
+      url("../img/natal-flocos.svg") 0 0 / 210px 250px repeat,
+      linear-gradient(160deg, #071426, #0b1d34 52%, #091525) 0 0 / 100% 100% no-repeat;
+    background-attachment: scroll;
+    animation: none !important;
+  }
+
+  :root[data-theme="christmas"] .site-header::before,
+  :root[data-theme="christmas"] .site-header::after,
+  :root[data-theme="christmas"] .hero-panel::before,
+  :root[data-theme="christmas"] .site-footer::before {
+    animation: none !important;
+    filter: none !important;
+  }
+
+  :root[data-theme="christmas"] .hero-panel::after {
+    filter: none;
+  }
 }

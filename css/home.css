@@ -158,6 +158,8 @@ a { color: inherit; }
 
 .header-actions { display: flex; gap: .45rem; align-items: center; }
 .cv-wallet-badge { display:inline-flex; min-height:2.35rem; align-items:center; gap:.38rem; padding:.24rem .58rem .24rem .3rem; border:1px solid rgba(255,198,82,.38); border-radius:.75rem; color:var(--text); background:linear-gradient(135deg,rgba(113,73,13,.28),rgba(14,23,40,.88)); box-shadow:inset 0 0 14px rgba(255,197,70,.08); white-space:nowrap; }
+/* A carteira continua guardando os saldos, mas fica fora dos menus por enquanto. */
+.cv-wallet-badge { display:none !important; }
 .cv-wallet-badge > img { width:1.72rem; height:1.72rem; flex:none; object-fit:contain; border-radius:50%; mix-blend-mode:screen; filter:drop-shadow(0 0 5px rgba(255,199,72,.36)); }
 .cv-wallet-badge > span { display:grid; justify-items:start; gap:.02rem; line-height:1; }
 .cv-wallet-badge strong { color:#ffe4a0; font-size:.75rem; font-weight:950; }

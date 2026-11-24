@@ -164,6 +164,8 @@ body.has-fullscreen-fallback { overflow:hidden; }
   box-shadow:0 0 14px color-mix(in srgb,var(--skin-color,#9fd8ff) 30%,transparent);
 }
 .starfall-skin-icon { color:var(--skin-color,#9fd8ff); font-size:1.1rem; line-height:1; }
+.starfall-skin-icon.starfall-hangar-hull-icon { display:grid; width:2.75rem; height:2.75rem; place-items:center; }
+.starfall-skin-icon.starfall-hangar-hull-icon .starfall-hangar-ship-sprite { display:block; width:100%; height:100%; overflow:visible; }
 .starfall-skin-icon.starfall-eclipse-sprite { display:block; width:2.7rem; height:2.7rem; background:url('eclipse-ship.png') center / contain no-repeat; }
 .starfall-redshift-ship-sprite { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 0 4px color-mix(in srgb,var(--skin-color,#d83a2e) 42%,transparent)); }
 .starfall-skin-card strong { font-size:.68rem; }
@@ -323,6 +325,7 @@ body.has-fullscreen-fallback { overflow:hidden; }
 .starfall-rank-ship-art { width:3.1rem; height:3.1rem; padding:.18rem; overflow:hidden; border:1px solid rgba(129,211,255,.2); background:radial-gradient(circle,rgba(88,171,232,.2),rgba(21,44,72,.3)); }
 .starfall-rank-ship-model { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 0 5px rgba(120,210,255,.35)); }
 .starfall-rank-ship-image { object-fit:contain; }
+.starfall-rank-ferrum-image { transform:scale(2.05); filter:none; }
 .starfall-rank-tigrum-image { transform:scale(1.08); filter:drop-shadow(0 0 6px rgba(255,138,40,.52)); }
 .starfall-rank-flamestorm-image { mix-blend-mode:screen; transform:scale(1.08); }
 .starfall-rank-ship-metric .starfall-rank-metric-copy strong { font-size:.82rem; }
@@ -643,6 +646,8 @@ body[data-cv-starfall-state="paused"] .starfall-game-panel:not(:fullscreen):not(
 @media(max-width:700px) {
   body[data-cv-starfall-state="playing"] .starfall-ability-wrap { position:fixed; z-index:10001; right:max(.8rem,env(safe-area-inset-right)); bottom:max(.8rem,env(safe-area-inset-bottom)); display:grid; justify-items:center; gap:.08rem; }
   body[data-cv-starfall-state="playing"] .starfall-game-panel.is-vulture-hud .starfall-ability-wrap { bottom:3.5rem; bottom:max(3.5rem,calc(env(safe-area-inset-bottom,0px) + 3rem)); }
+  body[data-cv-starfall-state="playing"] .starfall-game-panel.is-aurora-hud .starfall-ability-wrap { bottom:4.8rem; bottom:max(4.8rem,calc(env(safe-area-inset-bottom,0px) + 4.25rem)); }
+  body[data-cv-starfall-state="playing"] .starfall-game-panel.is-ferrum-hud .starfall-ability-wrap { bottom:4.8rem; bottom:max(4.8rem,calc(env(safe-area-inset-bottom,0px) + 4.25rem)); }
   body[data-cv-starfall-state="playing"] .starfall-ability { position:static; width:3.8rem; min-width:3.8rem; height:3.8rem; min-height:3.8rem; padding:.45rem; font-size:1.25rem; }
   body[data-cv-starfall-state="playing"] .starfall-ability-cooldown { min-width:0; padding:0; border-radius:0; background:transparent; font-size:.5rem; }
   body[data-cv-starfall-state="playing"] .starfall-ability.is-counting { padding-bottom:.62rem; }
@@ -695,6 +700,10 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-primary-ability-wrap .starfall-ability-cooldown { color:var(--ship-accent,#b8e9dc); }
 .starfall-secondary-ability-wrap .starfall-ability-cooldown { color:var(--ship-accent,#b8d9ff); }
 .starfall-ability-cooldown { text-transform:uppercase; }
+.starfall-primary-ability.is-ferrum { border-color:rgba(236,243,252,.9); background:linear-gradient(145deg,rgba(142,157,177,.76),rgba(43,51,64,.96)); color:#f7fbff; box-shadow:0 0 17px rgba(207,220,237,.3),inset 0 0 12px rgba(255,255,255,.14); }
+.starfall-primary-ability.is-ferrum::after { border-color:rgba(241,247,255,.92); background:#515d6d; color:#f5f9ff; box-shadow:0 0 9px rgba(214,229,248,.3); }
+.starfall-primary-ability.is-ferrum[aria-pressed="true"] { border-color:#fff; background:linear-gradient(145deg,rgba(194,207,224,.96),rgba(70,82,100,.99)); color:#fff; box-shadow:0 0 24px rgba(221,232,245,.48),inset 0 0 13px rgba(255,255,255,.22); }
+.starfall-primary-ability.is-ferrum:disabled { opacity:.68; filter:saturate(.72); }
 
 @media(max-width:700px) {
   .starfall-game-panel:fullscreen .starfall-hud,
@@ -709,6 +718,10 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
   .starfall-game-panel.is-fullscreen-fallback .starfall-ability-wrap { position:fixed; z-index:10001; right:max(.8rem,env(safe-area-inset-right)); bottom:max(.8rem,env(safe-area-inset-bottom)); display:grid; justify-items:center; gap:.08rem; }
   body[data-cv-starfall-state="playing"] .starfall-game-panel.is-vulture-hud:fullscreen .starfall-ability-wrap,
   body[data-cv-starfall-state="playing"] .starfall-game-panel.is-vulture-hud.is-fullscreen-fallback .starfall-ability-wrap { bottom:3.5rem; bottom:max(3.5rem,calc(env(safe-area-inset-bottom,0px) + 3rem)); }
+  body[data-cv-starfall-state="playing"] .starfall-game-panel.is-aurora-hud:fullscreen .starfall-ability-wrap,
+  body[data-cv-starfall-state="playing"] .starfall-game-panel.is-aurora-hud.is-fullscreen-fallback .starfall-ability-wrap { bottom:4.8rem; bottom:max(4.8rem,calc(env(safe-area-inset-bottom,0px) + 4.25rem)); }
+  body[data-cv-starfall-state="playing"] .starfall-game-panel.is-ferrum-hud:fullscreen .starfall-ability-wrap,
+  body[data-cv-starfall-state="playing"] .starfall-game-panel.is-ferrum-hud.is-fullscreen-fallback .starfall-ability-wrap { bottom:4.8rem; bottom:max(4.8rem,calc(env(safe-area-inset-bottom,0px) + 4.25rem)); }
   .starfall-game-panel:fullscreen .starfall-controls .starfall-ability,
   .starfall-game-panel.is-fullscreen-fallback .starfall-controls .starfall-ability { position:static; display:grid; width:3.8rem; min-width:3.8rem; height:3.8rem; min-height:3.8rem; place-items:center; padding:.45rem; }
 }
@@ -770,6 +783,7 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-skin-select .starfall-vulture-icon { width:3.4rem; height:3.4rem; }
 .starfall-skin-select .starfall-eclipse-sprite { width:3.2rem; height:3.2rem; }
 .starfall-skin-select .starfall-hangar-hull-icon .starfall-hangar-ship-sprite { display:block; width:100%; height:100%; overflow:visible; }
+.starfall-equipped-icon.starfall-training-icon .starfall-hangar-ship-sprite { display:block; width:100%; height:100%; overflow:visible; }
 .starfall-skin-select .starfall-training-icon { border:0; border-radius:0; background:transparent; color:#cbd1da; text-shadow:0 1px 4px #111; }
 .starfall-skin-select .starfall-eclipse-sprite { display:block; background-size:contain; }
 .starfall-skin-select .starfall-dino-icon { font-size:1.7rem; }
@@ -952,6 +966,23 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 @media(prefers-reduced-motion:reduce) { .starfall-vulture-scrap-hud.is-overloaded { animation:none; filter:drop-shadow(0 0 10px rgba(255,145,42,.9)); } }
 
 /* Aurora: six-step constellation charge and its G ultimate. */
+.starfall-ferrum-meter[hidden], .starfall-ferrum-ult[hidden] { display:none; }
+.starfall-ferrum-meter { position:absolute; z-index:2; right:.4rem; bottom:.35rem; width:min(42vw,15rem); aspect-ratio:866/288; pointer-events:none; }
+.starfall-ferrum-meter img, .starfall-ferrum-meter svg, .starfall-ferrum-ult img { display:block; width:100%; height:100%; object-fit:contain; }
+.starfall-ferrum-meter svg { position:absolute; inset:0; }
+.starfall-ferrum-meter path { opacity:0; transition:opacity .15s; }
+.starfall-ferrum-meter path.is-lit { opacity:.9; }
+.starfall-ferrum-readout { position:absolute; bottom:2%; right:7%; color:#e8f0fa; font-size:clamp(.55rem,1.3vw,.72rem); font-weight:800; text-shadow:0 1px 3px #090b13; }
+.starfall-ferrum-ult { position:absolute; z-index:3; right:.35rem; bottom:4.9rem; width:10rem; height:3.8rem; padding:0; border:0; background:transparent; cursor:pointer; touch-action:manipulation; }
+.starfall-ferrum-ult small { position:absolute; right:11%; top:0; border-radius:.3rem; padding:.1rem .25rem; color:white; background:#374151; font-weight:900; }
+.starfall-ferrum-ult:focus-visible { outline:2px solid #d6e3ef; }
+.starfall-secondary-ability.is-ferrum { border-color:rgba(226,234,244,.9); background:linear-gradient(145deg,rgba(116,128,144,.94),rgba(31,37,47,.98)); color:#f7fbff; box-shadow:0 0 16px rgba(207,220,237,.24),inset 0 0 11px rgba(255,255,255,.12); }
+.starfall-secondary-ability.is-ferrum::after { border-color:rgba(241,247,255,.9); background:#515d6d; color:#f5f9ff; }
+.starfall-secondary-ability.is-ferrum[aria-pressed="true"] { border-color:#fff; background:linear-gradient(145deg,rgba(196,207,221,.98),rgba(74,85,101,.99)); box-shadow:0 0 22px rgba(221,232,245,.42),inset 0 0 12px rgba(255,255,255,.2); }
+@media(max-width:700px) {
+  .starfall-game-panel.is-ferrum-hud .starfall-ferrum-meter:not([hidden]) { position:fixed; right:max(.35rem,env(safe-area-inset-right)); bottom:max(.4rem,env(safe-area-inset-bottom)); width:min(45vw,11rem); z-index:2; }
+  body[data-cv-starfall-state="playing"] .starfall-ferrum-ult { position:fixed; left:max(.65rem,env(safe-area-inset-left)); right:auto; bottom:max(1rem,env(safe-area-inset-bottom)); width:8.2rem; height:3.3rem; z-index:10002; }
+}
 .starfall-skin-icon.starfall-aurora-icon,.starfall-equipped-icon.starfall-aurora-icon { overflow:visible; border:0; border-radius:0; background:transparent; }
 .starfall-skin-icon.starfall-aurora-icon img { display:block; width:250%; height:250%; max-width:none; object-fit:contain; mix-blend-mode:screen; transform:translateY(-.55rem); }
 .starfall-equipped-ship:has(.starfall-equipped-icon.starfall-aurora-icon) .starfall-equipped-icon { width:2.9rem; height:2.9rem; }
@@ -960,7 +991,7 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-skin-select .starfall-aurora-icon { display:grid; width:2.95rem; height:2.95rem; place-items:center; }
 .starfall-equipped-icon.starfall-aurora-icon { display:grid; place-items:center; }
 .starfall-aurora-ult-meter[hidden],.starfall-aurora-ult[hidden] { display:none !important; }
-.starfall-aurora-ult-meter { position:absolute; z-index:2; right:.55rem; bottom:.38rem; width:min(42vw,15rem); aspect-ratio:865/289; pointer-events:none; filter:drop-shadow(0 0 7px rgba(105,232,255,.28)); }
+.starfall-aurora-ult-meter { position:absolute; z-index:2; right:.65rem; bottom:.55rem; width:min(43vw,15rem); aspect-ratio:865/289; pointer-events:none; filter:drop-shadow(0 0 7px rgba(105,232,255,.28)); }
 .starfall-aurora-ult-meter > img { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:contain; }
 .starfall-aurora-ult-segments { position:absolute; left:21.9%; right:8%; top:42.7%; bottom:39.5%; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:.7%; }
 .starfall-aurora-ult-segments i { position:relative; display:block; overflow:hidden; clip-path:polygon(6% 0,100% 0,94% 100%,0 100%); background:transparent; }
@@ -968,7 +999,7 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-aurora-ult-count { position:absolute; right:9%; top:16%; color:#effcff; font-size:clamp(.48rem,1.4vw,.68rem); font-weight:1000; line-height:1; text-shadow:0 1px 4px #060b22,0 0 8px #75eaff; }
 .starfall-aurora-ult-meter.is-charged { filter:drop-shadow(0 0 12px rgba(101,229,255,.8)); }
 .starfall-aurora-ult-meter.is-active { filter:drop-shadow(0 0 10px rgba(194,166,255,.58)) drop-shadow(0 0 5px rgba(105,232,255,.34)); }
-.starfall-aurora-ult { position:absolute; z-index:3; right:.95rem; bottom:4.55rem; display:block; width:9.6rem; min-width:9.6rem; height:4.05rem; padding:0; border:0; border-radius:.55rem; background:transparent; opacity:.4; filter:drop-shadow(0 0 6px rgba(99,225,255,.15)); cursor:pointer; transition:opacity .18s ease,filter .18s ease,transform .18s ease; }
+.starfall-aurora-ult { position:absolute; z-index:3; right:.85rem; bottom:4.25rem; display:block; width:11rem; min-width:11rem; height:4.4rem; padding:0; border:0; border-radius:.6rem; background:transparent; opacity:.4; filter:drop-shadow(0 0 6px rgba(99,225,255,.15)); cursor:pointer; transition:opacity .18s ease,filter .18s ease,transform .18s ease; }
 .starfall-aurora-ult img { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:contain; pointer-events:none; }
 .starfall-aurora-ult small { position:absolute; z-index:1; top:.12rem; right:.1rem; display:grid; width:1rem; height:1rem; place-items:center; border:1px solid rgba(192,240,255,.82); border-radius:50%; background:#171c48; color:#edffff; font-size:.56rem; font-weight:950; }
 .starfall-aurora-ult.is-ready { opacity:.94; animation:starfall-aurora-ready 1.35s ease-in-out infinite alternate; }
@@ -977,8 +1008,8 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-aurora-ult:disabled { cursor:not-allowed; }
 @keyframes starfall-aurora-ready { from { filter:drop-shadow(0 0 5px rgba(99,225,255,.2)); } to { filter:drop-shadow(0 0 14px rgba(124,181,255,.75)); } }
 @media(max-width:700px) {
-  body[data-cv-starfall-state="playing"] .starfall-aurora-ult-meter:not([hidden]) { position:fixed; right:max(.35rem,env(safe-area-inset-right)); bottom:max(.4rem,env(safe-area-inset-bottom)); width:min(50vw,11rem); z-index:10000; }
-  body[data-cv-starfall-state="playing"] .starfall-aurora-ult:not([hidden]) { position:fixed; left:max(.55rem,env(safe-area-inset-left)); right:auto; bottom:max(.55rem,env(safe-area-inset-bottom)); width:7rem; min-width:7rem; height:2.95rem; z-index:10002; }
+  .starfall-game-panel.is-aurora-hud .starfall-aurora-ult-meter:not([hidden]) { position:fixed; right:max(.35rem,env(safe-area-inset-right)); bottom:max(.4rem,env(safe-area-inset-bottom)); width:min(43vw,11rem); z-index:2; }
+  body[data-cv-starfall-state="playing"] .starfall-aurora-ult:not([hidden]) { position:fixed; left:max(.65rem,env(safe-area-inset-left)); right:auto; bottom:max(1rem,env(safe-area-inset-bottom)); width:8.2rem; min-width:8.2rem; height:3.3rem; z-index:10002; }
   body[data-cv-starfall-state="playing"] .starfall-aurora-ult small { top:-.2rem; right:-.12rem; }
 }
 @media(prefers-reduced-motion:reduce) { .starfall-aurora-ult.is-ready { animation:none; filter:drop-shadow(0 0 10px rgba(101,224,255,.55)); } }
