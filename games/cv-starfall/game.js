@@ -179,7 +179,7 @@
   const saurionCreatures = Object.freeze([
     { id:'spinosaurus', name:'Espinossauro', role:'controle e caça', radius:30, visualScale:5, duration:22, attack:2, kind:'spino' },
     { id:'triceratops', name:'Tricerátops', role:'aríete e provocação', radius:33, visualScale:5, duration:22, attack:2, kind:'trike' },
-    { id:'titanosaur', name:'Titanossauro', role:'suporte e ondas sísmicas', radius:39, visualScale:5.55, duration:22, attack:6, kind:'titan' },
+    { id:'titanosaur', name:'Titanossauro', role:'suporte e ondas sísmicas', radius:39, visualScale:8.5, duration:22, attack:6, kind:'titan' },
     { id:'tyrannosaurus', name:'Tiranossauro Rex', role:'dano focado e fúria', radius:34, visualScale:5.25, duration:22, attack:1.5, kind:'rex' },
     { id:'carnotaurus', name:'Carnotauro', role:'perseguição e investida', radius:29, visualScale:4.55, duration:22, attack:.5, kind:'carno' },
     { id:'ankylosaurus', name:'Anquilossauro', role:'defesa e impacto', radius:33, visualScale:4.95, duration:22, attack:2.8, kind:'ankyl' },
@@ -2432,6 +2432,7 @@
       image.src = saurionDinoSprites[creature.id]?.src || '';
       image.alt = '';
       image.loading = 'lazy';
+      if (creature.kind === 'titan') image.classList.add('starfall-saurion-sideways-dino');
       const name = document.createElement('span');
       name.textContent = creature.name;
       button.append(image, name);
@@ -7378,14 +7379,16 @@
     for (const summon of summons) {
       const image = saurionDinoSprites[summon.id];
       const fade = clamp(summon.life / .5, 0, 1);
-      ctx.save(); ctx.translate(summon.x, summon.y); ctx.rotate((summon.angle ?? -Math.PI / 2) - Math.PI / 2);
+      ctx.save(); ctx.translate(summon.x, summon.y); ctx.rotate((summon.angle ?? -Math.PI / 2) - Math.PI / 2 + (summon.kind === 'titan' ? -Math.PI / 2 : 0));
       const height = mobileSize(summon.radius * (summon.visualScale || 4.6));
       ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade;
       if (image?.complete && image.naturalWidth) {
-        const width = height * image.naturalWidth / image.naturalHeight;
+        const aspect = image.naturalWidth / image.naturalHeight;
+        const width = summon.kind === 'titan' ? height : height * aspect;
+        const drawHeight = summon.kind === 'titan' ? height / aspect : height;
         ctx.globalAlpha = fade * .98; ctx.filter = summon.kind === 'titan' ? 'brightness(1.34) saturate(1.18)' : 'brightness(1.12) saturate(1.1)';
         ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
-        ctx.drawImage(image, -width / 2, -height / 2, width, height);
+        ctx.drawImage(image, -width / 2, -drawHeight / 2, width, drawHeight);
       } else {
         ctx.filter = 'none'; ctx.fillStyle = '#2c4c21'; ctx.strokeStyle = '#a2ff56'; ctx.lineWidth = mobileSize(2);
         ctx.beginPath(); ctx.moveTo(0, -height * .48); ctx.lineTo(height * .25, height * .3); ctx.lineTo(0, height * .48); ctx.lineTo(-height * .25, height * .3); ctx.closePath(); ctx.fill(); ctx.stroke();
