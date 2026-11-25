@@ -810,6 +810,24 @@ body[data-cv-starfall-state="playing"] .starfall-primary-ability[aria-pressed="t
 .starfall-ship-detail-card h3 { margin:.28rem 0 .45rem; padding-right:2rem; font-size:.92rem; }
 .starfall-ship-detail-card p { margin:0; color:#b8cbe2; font-size:.76rem; line-height:1.58; text-align:left; }
 .starfall-ship-details-cooldowns { margin:0; padding:.65rem .75rem; border:1px solid rgba(139,194,239,.16); border-radius:.7rem; background:rgba(96,160,209,.08); color:#a9c5df; font-size:.68rem; line-height:1.5; }
+.starfall-saurion-dinos-trigger { width:100%; min-height:2.8rem; padding:.65rem .9rem; border:1px solid rgba(138,232,94,.48); border-radius:.8rem; background:linear-gradient(135deg,rgba(46,105,50,.4),rgba(14,29,45,.88)); color:#d9ffc8; font:inherit; font-size:.78rem; font-weight:950; letter-spacing:.06em; cursor:pointer; box-shadow:0 0 1.1rem rgba(95,208,70,.1); }
+.starfall-saurion-dinos-trigger:hover,.starfall-saurion-dinos-trigger:focus-visible { border-color:#a7ff79; background:linear-gradient(135deg,rgba(67,142,60,.55),rgba(17,42,58,.96)); outline:2px solid rgba(167,255,121,.42); outline-offset:2px; }
+.starfall-saurion-dino-catalog { display:grid; gap:.7rem; padding:.85rem; border:1px solid rgba(132,228,94,.3); border-radius:1rem; background:linear-gradient(155deg,rgba(30,66,45,.45),rgba(9,17,33,.85) 58%); }
+.starfall-saurion-dino-heading { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+.starfall-saurion-dino-heading .starfall-kicker { margin:0 0 .2rem; color:#a7ef82; }
+.starfall-saurion-dino-heading h3 { margin:0; font-size:1rem; }
+.starfall-saurion-dino-back { flex:0 0 auto; padding:.48rem .65rem; border:1px solid rgba(139,194,239,.28); border-radius:999px; background:rgba(96,160,209,.08); color:#c3e5ff; font:inherit; font-size:.57rem; font-weight:900; cursor:pointer; }
+.starfall-saurion-dino-intro { margin:0; color:#b8cbe2; font-size:.7rem; line-height:1.55; }
+.starfall-saurion-dino-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(9.2rem,1fr)); gap:.45rem; }
+.starfall-saurion-dino-option { display:flex; align-items:center; gap:.55rem; min-height:3.35rem; padding:.42rem .55rem; border:1px solid rgba(145,180,205,.2); border-radius:.75rem; background:rgba(13,25,43,.75); color:#dce9f6; text-align:left; font:inherit; font-size:.69rem; font-weight:850; cursor:pointer; transition:border-color .16s ease,background .16s ease,transform .16s ease; }
+.starfall-saurion-dino-option img { flex:0 0 auto; width:2rem; height:2rem; object-fit:contain; filter:drop-shadow(0 0 .35rem rgba(165,255,121,.18)); }
+.starfall-saurion-dino-option:hover,.starfall-saurion-dino-option:focus-visible { border-color:rgba(167,255,121,.58); outline:2px solid rgba(167,255,121,.25); outline-offset:1px; }
+.starfall-saurion-dino-option[aria-pressed="true"] { border-color:#a7ff79; background:linear-gradient(135deg,rgba(77,135,57,.32),rgba(17,37,53,.88)); box-shadow:inset 0 0 1rem rgba(124,229,83,.08); }
+.starfall-saurion-dino-info { padding:.75rem .8rem; border:1px solid rgba(132,228,94,.28); border-radius:.8rem; background:rgba(99,153,68,.1); }
+.starfall-saurion-dino-info .starfall-ship-detail-key { color:#a7ef82; }
+.starfall-saurion-dino-info h4 { margin:.25rem 0 .4rem; font-size:.9rem; }
+.starfall-saurion-dino-info > p:last-child { margin:0; color:#c5d5e4; font-size:.73rem; line-height:1.6; }
+.starfall-saurion-dinos-trigger[hidden],.starfall-saurion-dino-catalog[hidden],.starfall-saurion-dino-info[hidden] { display:none !important; }
 @media(max-width:560px) { .starfall-skin-picker { grid-template-columns:1fr; } .starfall-ship-detail-list { grid-template-columns:1fr; } .starfall-ship-details-dialog { max-height:calc(100dvh - 1rem); } .starfall-ship-details-card { max-height:calc(100dvh - 1rem); padding:2.6rem .8rem .85rem; } }
 @media(max-width:700px) {
   .starfall-prism-wheel { padding:.45rem; }

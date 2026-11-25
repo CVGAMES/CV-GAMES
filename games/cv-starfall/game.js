@@ -106,7 +106,7 @@
     wave: $('[data-wave]'), score: $('[data-score]'), lives: $('[data-lives]'), shields: $('[data-shields]'), healthFill: $('[data-health-fill]'), best: $('[data-best]'), overlayBest: $('[data-overlay-best]'),
     zone: $('[data-zone]'), timer: $('[data-timer]'), upgrade: $('[data-upgrade]'), upgradeOptions: $('[data-upgrade-options]'), pause: $('[data-pause]'), pauseIcon: $('[data-pause-icon]'), pauseLabel: $('[data-pause-label]'), abilityWrap: $('.starfall-primary-ability-wrap'), ability: $('[data-ability]'), abilityCooldown: $('[data-ability-cooldown]'), eclipseQWrap: $('[data-eclipse-q-wrap]'), eclipseQ: $('[data-eclipse-q]'), eclipseQCooldown: $('[data-eclipse-q-cooldown]'), vultureUlt: $('[data-vulture-ult]'), auroraUlt: $('[data-aurora-ult]'), auroraUltMeter: $('[data-aurora-ult-meter]'), auroraUltCount: $('[data-aurora-ult-count]'), auroraUltSegments: Array.from(document.querySelectorAll('[data-aurora-ult-segment]')), panel: $('[data-fullscreen-root]'), hud: $('.starfall-hud'), status: $('[data-status]'), toast: $('[data-toast]'), favorite: $('[data-game-favorite]'),
     skinPicker: $('[data-skin-picker]'), equippedShip: $('[data-equipped-ship]'), secretUnlockDialog: $('[data-secret-unlock-dialog]'), secretUnlockForm: $('[data-secret-unlock-form]'), secretUnlockInput: $('[data-secret-unlock-input]'), secretUnlockError: $('[data-secret-unlock-error]'), eclipseSkipOptions: Array.from(document.querySelectorAll('[data-eclipse-skip-option]')), eclipseSkipCheckboxes: Array.from(document.querySelectorAll('[data-eclipse-skip-video]')),
-    shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), settingsModal: $('[data-settings-modal]'),
+    shipModal: $('[data-ship-modal]'), shipDetailsDialog: $('[data-ship-details-dialog]'), shipDetailsKicker: $('[data-ship-details-kicker]'), shipDetailsTitle: $('[data-ship-details-title]'), shipDetailsSummary: $('[data-ship-details-summary]'), shipDetailsList: $('[data-ship-details-list]'), shipDetailsCooldowns: $('[data-ship-details-cooldowns]'), saurionDinosOpen: $('[data-saurion-dinos-open]'), saurionDinoCatalog: $('[data-saurion-dino-catalog]'), saurionDinoList: $('[data-saurion-dino-list]'), saurionDinoInfo: $('[data-saurion-dino-info]'), saurionDinoName: $('[data-saurion-dino-name]'), saurionDinoRole: $('[data-saurion-dino-role]'), saurionDinoDescription: $('[data-saurion-dino-description]'), settingsModal: $('[data-settings-modal]'),
     damageCounterOptions: $('[data-damage-counter-option]'), damageCounterCheckbox: $('[data-damage-counter]'), editDamageCounter: $('[data-edit-damage-counter]'), damageCounterEditor: $('[data-damage-counter-editor]'), saveDamageCounter: $('[data-save-damage-counter]'), cancelDamageCounter: $('[data-cancel-damage-counter]'), fireToggle: $('[data-fire-toggle]'), saurionCommand: $('[data-saurion-command]'), saurionSummonPicker: $('[data-saurion-summon-picker]'), saurionSummonPickerSkill: $('[data-saurion-picker-skill]'), settingsSyncStatus: $('[data-settings-sync-status]'), performanceModeButtons: Array.from(document.querySelectorAll('[data-performance-mode]')), mahoragaAwakening: $('[data-mahoraga-awakening]'), mahoragaAwakeningType: $('[data-mahoraga-awakening-type]'), mahoragaAwakeningBuff: $('[data-mahoraga-awakening-buff]'), mahoragaReadout: $('[data-mahoraga-readout]'), megumiFormTimer: $('[data-megumi-form-timer]'), mahoragaReturn: $('[data-mahoraga-return]'),
     deviceTypeIndicators: [], adminTools: null, adminClearWave: null, adminToggleBuffs: null, adminToggleCooldown: null, achievementsModal: $('[data-achievements-modal]'), achievementsList: $('[data-achievements-list]'), achievementsCount: $('[data-achievement-count]'), dailyStart: $('[data-start-daily]'), dailyRecord: $('[data-daily-record]'),
     dailySummaryModal: $('[data-daily-summary-modal]'), dailySummaryStart: $('[data-start-daily-again]'), dailySummaryDate: $('[data-daily-summary-date]'), dailySummaryResult: $('[data-daily-summary-result]'), dailySummaryRecord: $('[data-daily-summary-record]'), dailySummaryDetails: $('[data-daily-summary-details]'), runSummary: $('[data-run-summary]'), joystick: $('[data-joystick]'), joystickNub: $('[data-joystick-nub]'), controlHint: $('[data-control-hint]'),
@@ -186,6 +186,16 @@
     { id:'therizinosaurus', name:'Terizinossauro', role:'garras em área', radius:30, visualScale:4.8, duration:22, attack:2.2, kind:'theri' },
     { id:'parasaurolophus', name:'Parassaurolofo', role:'apoio e pressão sonora', radius:29, visualScale:4.65, duration:22, attack:1.1, kind:'parasaur' }
   ]);
+  const saurionDinoGuides = Object.freeze({
+    spino: { role:'Controle frontal · acompanha a nave', description:'Ao ser invocado, solta uma onda que empurra e atordoa os inimigos próximos; perseguidores também recuam por alguns instantes. Depois, usa garras em um arco à sua frente para atingir vários alvos e uma mordida mais forte em um inimigo dentro do triângulo frontal.' },
+    trike: { role:'Aríete · provoca e abre caminho', description:'A chegada provoca os inimigos por 25 segundos. O Tricerátops não segue a nave: mira no inimigo mais próximo do jogador, avança em linha reta e causa dano de atropelamento. Quando termina a arrancada, fica parado e usa os chifres para se defender até preparar outro avanço.' },
+    titan: { role:'Suporte pesado · segue lentamente', description:'A invocação cria uma onda sísmica que empurra, atordoa e fere os inimigos. O Titanossauro caminha bem devagar atrás da nave, causa dano ao passar por cima, bate a cauda em uma área à sua frente e pisa no chão para criar outra onda de choque ao redor.' },
+    rex: { role:'Predador · persegue o alvo mais resistente', description:'O rugido inicial assusta os inimigos e reduz sua cadência de ataque por 25 segundos. O Rex persegue o inimigo com mais vida e o morde individualmente. Enquanto ele estiver em campo, pressione Z uma vez para aumentar o dano e a cadência da nave em 25% por 15 segundos.' },
+    carno: { role:'Perseguidor veloz · caça o mais rápido', description:'Na chegada, desacelera os inimigos próximos e aumenta a cadência de tiro da nave por 15 segundos. Depois, persegue o inimigo mais veloz, morde um alvo por vez e pode usar X para fazer uma investida curta que atropela os inimigos no caminho.' },
+    ankyl: { role:'Protetor · acompanha logo atrás', description:'O Anquilossauro fica voltado para a nave e concede um escudo ao ser invocado, se houver espaço. Seu corpo causa dano por contato e ele pode interceptar projéteis próximos sacrificando a própria vida. A cauda bate no chão e cria uma onda de choque em área.' },
+    theri: { role:'Caçador livre · garras em área', description:'O Terizinossauro se solta e persegue os inimigos próximos. Quando alcança o alcance de ataque, golpeia com as garras e causa dano a todos os inimigos ao redor, em vez de focar apenas um alvo.' },
+    parasaur: { role:'Apoio · combate próximo', description:'O Parassaurolofo acompanha a nave e ataca individualmente os inimigos que chegam perto. Nesta versão ele não tem uma habilidade sonora especial separada; sua função atual é apoiar com ataques próximos.' }
+  });
   const shipCodeById = Object.freeze({ aurora:1, aegis:2, chronos:3, tempest:4, flashblade:5, redshift:6, eclipse:7, saurion:8, prisma:9, training:10, mahoraga:11, megumi:12, flamestorm:13, 'saurion-primal':14, vulture:15 });
   const shipIdByCode = Object.freeze(Object.fromEntries(Object.entries(shipCodeById).map(([id, code]) => [code, id])));
   let secretShipUnlocks = readSecretShipUnlocks();
@@ -2333,6 +2343,12 @@
   }
   function openShipDetails(skin) {
     if (!ui.shipDetailsDialog || !ui.shipDetailsList) return;
+    if (ui.saurionDinosOpen) {
+      ui.saurionDinosOpen.hidden = skin.id !== 'saurion-primal';
+      ui.saurionDinosOpen.setAttribute('aria-expanded', 'false');
+    }
+    if (ui.saurionDinoCatalog) ui.saurionDinoCatalog.hidden = true;
+    if (ui.saurionDinoInfo) ui.saurionDinoInfo.hidden = true;
     if (skin.noAbilities) {
       ui.shipDetailsKicker.textContent = 'NAVE DE TREINO · DOSSIÊ DO CASCO';
       ui.shipDetailsTitle.textContent = skin.name;
@@ -2392,6 +2408,7 @@
       resource.append(kicker, heading, description); ui.shipDetailsList.append(resource);
     }
     ui.shipDetailsCooldowns.textContent = 'Recargas e melhorias · ' + shipCooldownSummary(skin);
+    if (skin.id === 'saurion-primal') renderSaurionDinoCatalog();
     if (skin.id === 'vulture') {
       const lore = document.createElement('section'); lore.className = 'starfall-rank-detail-card starfall-ship-detail-card starfall-vulture-lore';
       const kicker = document.createElement('small'); kicker.className = 'starfall-ship-detail-key'; kicker.textContent = 'ORIGEM';
@@ -2401,6 +2418,32 @@
     }
     if (typeof ui.shipDetailsDialog.showModal === 'function') ui.shipDetailsDialog.showModal();
     else ui.shipDetailsDialog.setAttribute('open', '');
+  }
+  function renderSaurionDinoCatalog() {
+    if (!ui.saurionDinoList) return;
+    ui.saurionDinoList.replaceChildren();
+    for (const creature of saurionCreatures) {
+      const guide = saurionDinoGuides[creature.kind];
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'starfall-saurion-dino-option';
+      button.setAttribute('aria-pressed', 'false');
+      const image = document.createElement('img');
+      image.src = saurionDinoSprites[creature.id]?.src || '';
+      image.alt = '';
+      image.loading = 'lazy';
+      const name = document.createElement('span');
+      name.textContent = creature.name;
+      button.append(image, name);
+      button.addEventListener('click', () => {
+        ui.saurionDinoList.querySelectorAll('.starfall-saurion-dino-option').forEach((option) => option.setAttribute('aria-pressed', String(option === button)));
+        if (ui.saurionDinoRole) ui.saurionDinoRole.textContent = guide.role;
+        if (ui.saurionDinoName) ui.saurionDinoName.textContent = creature.name;
+        if (ui.saurionDinoDescription) ui.saurionDinoDescription.textContent = guide.description;
+        if (ui.saurionDinoInfo) ui.saurionDinoInfo.hidden = false;
+      });
+      ui.saurionDinoList.append(button);
+    }
   }
   function renderSkinPicker() {
     if (!ui.skinPicker) return;
@@ -10399,6 +10442,17 @@
   document.querySelectorAll('[data-close-settings]').forEach((button) => button.addEventListener('click', closeSettings));
   document.querySelectorAll('[data-close-ships]').forEach((button) => button.addEventListener('click', closeShips));
   $('[data-close-ship-details]')?.addEventListener('click', () => ui.shipDetailsDialog?.close());
+  ui.saurionDinosOpen?.addEventListener('click', () => {
+    if (!ui.saurionDinoCatalog) return;
+    ui.saurionDinoCatalog.hidden = false;
+    ui.saurionDinosOpen.setAttribute('aria-expanded', 'true');
+    ui.saurionDinoCatalog.scrollIntoView({ block:'nearest', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+  $('[data-saurion-dinos-back]')?.addEventListener('click', () => {
+    if (ui.saurionDinoCatalog) ui.saurionDinoCatalog.hidden = true;
+    ui.saurionDinosOpen?.setAttribute('aria-expanded', 'false');
+    ui.saurionDinosOpen?.focus();
+  });
   ui.shipDetailsDialog?.addEventListener('click', (event) => { if (event.target === ui.shipDetailsDialog) ui.shipDetailsDialog.close(); });
   document.querySelectorAll('[data-secret-unlock-close]').forEach((button) => button.addEventListener('click', closeSecretShipUnlock));
   ui.secretUnlockForm?.addEventListener('submit', submitSecretShipUnlock);
